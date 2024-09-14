@@ -3,18 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../../shared/show_custom_snackbar.dart';
+import 'package:playbazaar/api/Authentication/auth_service.dart';
+import 'package:playbazaar/api/firestore/firestore_account.dart';
+import 'package:playbazaar/screens/main_screens/login_pages.dart';
+import '../../helper/sharedpreferences.dart';
+import '../../utils/show_custom_snackbar.dart';
 
-class EmailVerificationCountdown extends StatefulWidget {
-  const EmailVerificationCountdown({super.key});
+class CountdownTimer extends StatefulWidget {
+  const CountdownTimer({super.key});
 
   @override
-  EmailVerificationCountdownState createState() => EmailVerificationCountdownState();
+  State<CountdownTimer> createState() => _CountdownState();
 }
 
-class EmailVerificationCountdownState extends State<EmailVerificationCountdown> {
+class _CountdownState extends State<CountdownTimer> {
   late Timer _timer;
-  final Duration _countdownDuration = const Duration(hours: 24);  // Maximum allowed time for verification
+  final Duration _countdownDuration = const Duration(minutes: 2);
   DateTime? _creationTime;
   DateTime? _endTime;
   User? _currentUser;
@@ -68,9 +72,18 @@ class EmailVerificationCountdownState extends State<EmailVerificationCountdown> 
   }
 
   Future<void> _handleTimeUp() async {
-    // Handle the situation where time runs out (e.g., mark account as inaccessible)
-    showCustomSnackbar('Verification time expired. Your account may be disabled.', false);
+    await SharedPreferencesManager.setBool(SharedPreferencesKeys.userLoggedInKey, false);
+    await FirestoreAccount().forceDeleteAccount();
+    await AuthService().logOutUser();
+    navigateToLogin();
   }
+  navigateToLogin() {
+    Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginPage())
+    );
+  }
+
 
   void _listenToEmailVerification() {
     _userSubscription = FirebaseAuth.instance.userChanges().listen((User? user) async {

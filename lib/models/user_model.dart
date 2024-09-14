@@ -14,9 +14,8 @@ class UserModel {
   String? avatarImage;
   Timestamp? timestamp;
   String? availabilityState;
-  String? accountState;
+  bool? accountCondition;
   UserRole role;
-
 
 
   UserModel({ 
@@ -29,7 +28,7 @@ class UserModel {
     this.avatarImage,
     this.timestamp,
     this.availabilityState,
-    this.accountState,
+    this.accountCondition,
     this.role = UserRole.normal,
     
   });
@@ -51,7 +50,7 @@ class UserModel {
         avatarImage: snapshot.get('avatarImage') as String?,
         timestamp: snapshot.get('timestamp') as Timestamp?,
         availabilityState: snapshot.get('availabilityStatus') as String,
-        accountState: snapshot.get('accountState') as String,
+        accountCondition: snapshot.get('accountCondition') as bool,
         role: role,
     );
   }
@@ -66,7 +65,7 @@ class UserModel {
       'avatarImage': avatarImage,
       'timestamp': timestamp,
       'availabilityState': availabilityState,
-      'accountState': accountState,
+      'accountCondition': accountCondition,
       'role': role.name,
     };
   }
@@ -83,11 +82,28 @@ class UserModel {
       avatarImage: user['avatarImage'],
       timestamp: user['timestamp'],
       availabilityState: user['availabilityState'],
-      accountState: user['accountState'],
+      accountCondition: user['accountCondition'],
       role: UserRole.values.byName(user['role']) ?? UserRole.normal,
     );
   }
 }
+
+class UserProfileModel {
+  final String email;
+  final String? firstName;
+  final String? lastName;
+  final String? aboutMe;
+  final int? userPoint;
+
+  UserProfileModel({
+    required this.email,
+    this.firstName,
+    this.lastName,
+    this.aboutMe,
+    this.userPoint,
+  });
+}
+
 
 class UserFriendModel {
   String friendId;

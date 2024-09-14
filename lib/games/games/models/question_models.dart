@@ -19,7 +19,7 @@ class QuizQuestionModel {
 
   factory QuizQuestionModel.fromMap(Map<String, dynamic> map) {
     return QuizQuestionModel(
-      path: map['path'] as String,
+      path: map['path'] as String?,
       question: map['question'] as String,
       correctAnswer: map['correctAnswer'] as String,
       wrongAnswers: map['wrongAnswers'] as String,
@@ -27,6 +27,7 @@ class QuizQuestionModel {
       random: (map['random'] as num?)?.toDouble(),
     );
   }
+
 
   @override
   String toString() {

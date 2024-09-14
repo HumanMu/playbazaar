@@ -2,7 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../api/firestore/firestore_quiz.dart';
-import '../../../../shared/show_custom_snackbar.dart';
+import '../../../../utils/show_custom_snackbar.dart';
 import '../../models/question_models.dart';
 import '../sharedpreferences/quiz.dart';
 
@@ -39,28 +39,25 @@ class _QuizPlayScreen extends State<QuizPlayScreen> {
   }
 
 
-
-
   Future<void> getQuestionsFromFirestore() async {
     try {
       final questionResult = await FirestoreQuiz().getRandomQuizQuestions(
-          quizId: 'hazaragi');
+          quizId: widget.selectedQuiz);
       // Update the state with the fetched questions
       setState(() {
         questionData = questionResult;
         isLoading = false;
-        if (questionData.isNotEmpty) { // Check if there are questions
+        if (questionData.isNotEmpty) {
           currentQuestion = questionData[selectedAnswer].question;
           currentAnswer = questionData[selectedAnswer].wrongAnswers.split(',');
           currentAnswer.add(questionData[selectedAnswer].correctAnswer);
           currentAnswer.shuffle(Random());
         }
       });
+      isLoading = false;
     } catch (error) {
-      // Handle any errors that occur during the fetch
       setState(() {
         isLoading = false;
-        errorMessage = 'Failed to load questions: $error';
       });
     }
   }

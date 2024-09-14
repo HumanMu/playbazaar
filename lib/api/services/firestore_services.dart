@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import '../../constants/constants.dart';
 import '../../models/user_model.dart';
-import '../firestore/firestore_account.dart';
 import '../repositories/user_repository.dart';
 
 class FirestoreServices extends ChangeNotifier {
@@ -18,7 +17,7 @@ class FirestoreServices extends ChangeNotifier {
   final List<UserModel> _userList = [];
 
 
-  Future<void> saveUserData(
+  Future<bool> createUser(
       String firstname,
       String lastname,
       String email,
@@ -37,15 +36,39 @@ class FirestoreServices extends ChangeNotifier {
         "groups": [],
         "friendsId": [],
         "availabilityState": '',
-        "accountState" : 'inaccessible',
+        "accountCondition" : AccountCondition.good.toString().split('.').last,
         'role': UserRole.normal.toString().split('.').last,
       });
-      await FirestoreAccount().deleteInaccessibleAccounts();
-
+      return true;
     } catch (e) {
-      throw Exception("Failed to save user data: $e");
+      return false;
     }
   }
+
+
+  Future<bool> editUserData( UserProfileModel upm, String userId ) async {
+    try {
+      Map<String, dynamic> updateData = {};
+
+      // Add fields to update only if they are provided (non-null)
+      if (upm.firstName != null) updateData['firstname'] = upm.firstName;
+      if (upm.lastName != null) updateData['lastname'] = upm.lastName;
+      if (upm.aboutMe != null) updateData['aboutme'] = upm.aboutMe;
+
+      // Check if there's something to update
+      if (updateData.isNotEmpty) {
+        await userCollection.doc(userId).update(updateData);
+        return true;
+      } else {
+        return false;
+        throw Exception("No fields to update");
+      }
+    } catch (e) {
+      return false;
+      throw Exception("Failed to edit user data: $e");
+    }
+  }
+
 
 
 
@@ -89,7 +112,7 @@ class FirestoreServices extends ChangeNotifier {
             avatarImage: doc['avatarImage'],
             timestamp: doc['timestamp'],
             availabilityState: doc['availabilityState'],
-            accountState: doc['accountState'],
+            accountCondition: doc['accountCondition'],
             role: role,
           );
         }).toList();
@@ -125,7 +148,7 @@ class FirestoreServices extends ChangeNotifier {
           avatarImage: doc['avatarImage'],
           timestamp: doc['timestamp'],
           availabilityState: doc['availabilityState'],
-          accountState: doc['accountState'],
+          accountCondition: doc['accountCondition'],
           role: role,
         );
       }).single;

@@ -4,15 +4,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:playbazaar/screens/main_screens/profile_page.dart';
-import 'package:playbazaar/screens/main_screens/register_page.dart';
 import '../../api/Authentication/auth_service.dart';
 import '../../api/Firestore/firestore_groups.dart';
 import '../../helper/sharedpreferences.dart';
 import '../../languages/custom_language.dart';
-import '../../shared/show_custom_snackbar.dart';
-import '../widgets/avatars/primary_avatar.dart';
-import '../widgets/header.dart';
+import '../../utils/headerstack.dart';
+import '../../utils/show_custom_snackbar.dart';
 import '../widgets/text_boxes/text_widgets.dart';
 
 class LoginPage extends StatefulWidget {
@@ -46,29 +43,7 @@ class _LoginPage extends State<LoginPage> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Stack(
-                        children: [
-                          Opacity(
-                            opacity: 0.5,
-                            child: ClipPath(
-                              clipper: Header(),
-                              child: Container(
-                                color: Colors.limeAccent,
-                                height: 205,
-                              ),
-                            ),
-                          ),
-                          ClipPath(
-                            clipper: Header(),
-                            child: Container(
-                              color: Colors.redAccent,
-                              height: 185,
-                              alignment: Alignment.centerLeft,
-                              child: const PrimaryAvatarImage(editing: false),
-                            ),
-                          ),
-                        ],
-                      ),
+                      const HeaderStack(),
                       Container(
                         padding: const EdgeInsets.all(20.0),
                         child: Column(
@@ -95,7 +70,6 @@ class _LoginPage extends State<LoginPage> {
                                       );
                                     } ,
                                     validator: (val) {
-
                                       bool isValid = EmailValidator.validate(email);
                                       return isValid ? null : "not_valid_email".tr;
                                     },
@@ -153,9 +127,10 @@ class _LoginPage extends State<LoginPage> {
                                       fontWeight: FontWeight.bold,
                                     ),
                                     recognizer: TapGestureRecognizer() ..onTap = () {
-                                      navigateAndReplaceScreen(context,
+                                      Get.offNamed('/register');
+                                      /*navigateAndReplaceScreen(context,
                                           const RegisterPage()
-                                      ); //_navigateAndReplaceCurrentScreen(context, const RegisterPage());
+                                      );*/ //_navigateAndReplaceCurrentScreen(context, const RegisterPage());
                                     }),
                               ]),
                         ),
@@ -176,23 +151,20 @@ class _LoginPage extends State<LoginPage> {
       });
 
       try {
-        bool result = await authService.loginUserWithEmailAndPassword(email, password);
+        final result = await authService.loginUserWithEmailAndPassword(email, password);
 
         if (result) {
           final email = FirebaseAuth.instance.currentUser!.email.toString();
           QuerySnapshot snapshot = await FirestoreGroups(userId: FirebaseAuth.instance.currentUser!.uid).getUserByEmail(email);
-
           await SharedPreferencesManager.setBool(SharedPreferencesKeys.userLoggedInKey, true);
-          await SharedPreferencesManager.setString(SharedPreferencesKeys.userNameKey, snapshot.docs[0]['firstname']);
           await SharedPreferencesManager.setString(SharedPreferencesKeys.userEmailKey, email);
+          await SharedPreferencesManager.setString(SharedPreferencesKeys.userNameKey, snapshot.docs[0]['firstname']);
+          await SharedPreferencesManager.setString(SharedPreferencesKeys.userLastNameKey, snapshot.docs[0]['lastname']);
           await SharedPreferencesManager.setString(SharedPreferencesKeys.userRoleKey,snapshot.docs[0]['role']);
+          await SharedPreferencesManager.setDouble(SharedPreferencesKeys.userPointKey,snapshot.docs[0]['userpoints']);
 
-          if (mounted) {
-            navigateAndReplaceScreen(context, const ProfilePage());
-          } else {
-            showCustomSnackbar("not_expected_result".tr, false);
-            return;
-          }
+          Get.offNamed('/profile');
+
         } else {
           showCustomSnackbar("not_expected_result".tr, false);
           return;

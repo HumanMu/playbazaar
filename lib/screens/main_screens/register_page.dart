@@ -3,12 +3,10 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../api/Authentication/auth_service.dart';
-import '../../helper/sharedpreferences.dart';
-import '../../shared/show_custom_snackbar.dart';
-import '../widgets/avatars/primary_avatar.dart';
-import '../widgets/header.dart';
+import '../../controller/userController/account_controller.dart';
+import '../../utils/headerstack.dart';
+import '../../utils/show_custom_snackbar.dart';
 import '../widgets/text_boxes/text_widgets.dart';
-import 'login_pages.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -18,7 +16,8 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPage extends State<RegisterPage> {
-  final formKey = GlobalKey<FormState>();
+  final AccountController accountController = Get.put(AccountController());
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   AuthService authService = AuthService();
   bool isLoading = false;
   String firstname = "";
@@ -31,43 +30,17 @@ class _RegisterPage extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      body: isLoading
-          ? const Center(
-              child: CircularProgressIndicator(color: Colors.red),
-            )
-          : SingleChildScrollView(
+      body: Obx(() {
+        return accountController.isLoading.value ? const Center(
+          child: CircularProgressIndicator(color: Colors.red),
+        )
+            : SingleChildScrollView(
               scrollDirection: Axis.vertical,
-
-              // slivers: [
-              //   SliverFillRemaining(
-              //     hasScrollBody: false,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Stack(
-                    children: [
-                      Opacity(
-                        opacity: 0.5,
-                        child: ClipPath(
-                          clipper: Header(),
-                          child: Container(
-                            color: Colors.limeAccent,
-                            height: 205,
-                          ),
-                        ),
-                      ),
-                      ClipPath(
-                        clipper: Header(),
-                        child: Container(
-                          color: Colors.redAccent,
-                          height: 185,
-                          alignment: Alignment.centerLeft,
-                          child: const PrimaryAvatarImage(editing: false),
-                        ),
-                      ),
-                    ],
-                  ),
+                  const HeaderStack(),
                   Container(
                     padding: const EdgeInsets.all(20.0),
                     child: Column(
@@ -85,9 +58,7 @@ class _RegisterPage extends State<RegisterPage> {
                             key: formKey,
                             child: Column(
                               children: [
-                                const SizedBox(
-                                  height: 20,
-                                ),
+                                const SizedBox(height: 8),
                                 TextFormField(
                                   decoration: textInputDecoration.copyWith(
                                     labelText: "name".tr,
@@ -97,7 +68,7 @@ class _RegisterPage extends State<RegisterPage> {
                                     ),
                                   ),
                                   style:
-                                      const TextStyle(color: Colors.lightGreen),
+                                  const TextStyle(color: Colors.lightGreen),
                                   onChanged: (val) {
                                     setState(() {
                                       firstname = val;
@@ -111,9 +82,7 @@ class _RegisterPage extends State<RegisterPage> {
                                     }
                                   },
                                 ),
-                                const SizedBox(
-                                  height: 8,
-                                ),
+                                const SizedBox(height: 8),
                                 TextFormField(
                                   decoration: textInputDecoration.copyWith(
                                     labelText: "lastname".tr + "optional".tr,
@@ -131,9 +100,7 @@ class _RegisterPage extends State<RegisterPage> {
                                   },
                                 ),
 
-                                const SizedBox(
-                                  height: 8,
-                                ),
+                                const SizedBox(height: 8),
                                 TextFormField(
                                   decoration: textInputDecoration.copyWith(
                                     labelText: "email".tr,
@@ -143,16 +110,14 @@ class _RegisterPage extends State<RegisterPage> {
                                     ),
                                   ),
                                   style:
-                                      const TextStyle(color: Colors.lightGreen),
+                                  const TextStyle(color: Colors.lightGreen),
                                   onChanged: (val) {
                                     setState(() {
                                       email = val;
                                     });
                                   },
                                 ),
-                                const SizedBox(
-                                  height: 8,
-                                ),
+                                const SizedBox(height: 8),
                                 TextFormField(
                                   obscureText: true,
                                   decoration: textInputDecoration.copyWith(
@@ -163,16 +128,14 @@ class _RegisterPage extends State<RegisterPage> {
                                     ),
                                   ),
                                   style:
-                                      const TextStyle(color: Colors.lightGreen),
+                                  const TextStyle(color: Colors.lightGreen),
                                   onChanged: (val) {
                                     setState(() {
                                       password = val;
                                     });
                                   },
                                 ),
-                                const SizedBox(
-                                  height: 8,
-                                ),
+                                const SizedBox(height: 8),
                                 TextFormField(
                                   obscureText: true,
                                   decoration: textInputDecoration.copyWith(
@@ -183,16 +146,14 @@ class _RegisterPage extends State<RegisterPage> {
                                     ),
                                   ),
                                   style:
-                                      const TextStyle(color: Colors.lightGreen),
+                                  const TextStyle(color: Colors.lightGreen),
                                   onChanged: (val) {
                                     setState(() {
                                       password2 = val;
                                     });
                                   },
                                 ),
-                                const SizedBox(
-                                  height: 8,
-                                ),
+                                const SizedBox(height: 8),
                                 _submitButton(),
                               ],
                             )),
@@ -214,79 +175,19 @@ class _RegisterPage extends State<RegisterPage> {
                             ),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (builder) => const LoginPage(),
-                                ));
+                                Get.offNamed('/login');
                               }),
                       ],
                     ),
                   ),
                 ],
               ),
-            ),
-      //   ],
-      // ),
+            );
+        }
+      )
     );
   }
 
-   bool _verifyRegistrationInfo () {
-     final bool isValid = EmailValidator.validate(email);
-     if(!isValid) {
-       showCustomSnackbar('invalid_email_format'.tr, false);
-       return false;
-     }
-     else if(password != password2 ) {
-        showCustomSnackbar('different_password'.tr, false);
-     return false;
-     }
-     else {
-       return true;
-     }
-   }
-
-  _registerUser() async {
-    bool verificationResult = _verifyRegistrationInfo();
-    if (verificationResult) {
-      if (formKey.currentState!.validate()) {
-        setState(() {
-          isLoading = true;
-        });
-
-        try {
-          bool result = await authService.registerUserWithEmailAndPassword(
-              firstname, lastname, email, password
-          );
-
-          if (result) {
-            await SharedPreferencesManager.setBool(SharedPreferencesKeys.userLoggedInKey, true);
-            await SharedPreferencesManager.setString(SharedPreferencesKeys.userNameKey, firstname);
-            await SharedPreferencesManager.setString(SharedPreferencesKeys.userLastNameKey, lastname);
-            await SharedPreferencesManager.setString(SharedPreferencesKeys.userEmailKey, email);
-
-            if (mounted) {
-              navigateAndReplaceScreen(context, const LoginPage());
-              showCustomSnackbar("registration_succed".tr, true);
-            } else {
-              showCustomSnackbar('not_expected_result'.tr, false);
-            }
-          } else {
-            showCustomSnackbar('not_expected_result'.tr, false);
-          }
-          setState(() {
-            isLoading = false;
-          });
-        } catch (e) {
-          showCustomSnackbar('error_occurred'.tr, false);
-        } finally {
-            setState(() {
-              isLoading = false;
-            });
-        }
-      }
-    } else {
-      showCustomSnackbar('not_expected_result'.tr, false);
-    }
-  }
 
   Widget _submitButton() {
     return Container(
@@ -298,7 +199,20 @@ class _RegisterPage extends State<RegisterPage> {
         border: Border.all(),
       ),
       child: ElevatedButton(
-        onPressed: _registerUser,
+        onPressed: () {
+          bool result = _verifyRegistrationInfo();
+          if (result ) {
+            accountController.registerUser(
+                firstname,
+                lastname,
+                email,
+                password
+            );
+          }
+          else {
+            return;
+          }
+        },
         style: ButtonStyle(
             shape: WidgetStateProperty.all(RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(15),
@@ -317,5 +231,20 @@ class _RegisterPage extends State<RegisterPage> {
         ),
       ),
     );
+  }
+
+  bool _verifyRegistrationInfo () {
+    final bool isValid = EmailValidator.validate(email);
+    if(!isValid) {
+      showCustomSnackbar('invalid_email_format'.tr, false);
+      return false;
+    }
+    else if(password != password2 ) {
+      showCustomSnackbar('different_password'.tr, false);
+      return false;
+    }
+    else {
+      return true;
+    }
   }
 }

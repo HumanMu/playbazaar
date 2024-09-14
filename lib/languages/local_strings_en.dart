@@ -96,6 +96,7 @@ class LocalStringsEn extends Translations {
       'not_found_message': 'For creating your own group, click the button bellow, or search for a group',
       'friend_notfound': 'Could not find any friend!',
       'registration_succed': 'Your account has been created succesfully',
+      'authentication_failed' : 'Authentication failed. Please try again',
       'not_expected_result' : 'An unexpected result, try again please',
       'members_notfound' : 'Could not find any members',
       'name_is_required' : 'Name is required',
@@ -112,10 +113,16 @@ class LocalStringsEn extends Translations {
       'user_not_found' : 'No user found with these credentials. Please check your email and password!',
       'too_many_requests': 'Too many login attempts. Please try again later!',
       'verification_email_sent': 'Verification email sent!',
+      'signed_as' : 'Signed as',
       'verify_email_counter' : 'For security reasons, please verify your email within 24 hours. Failure to do so will result in the permanent deletion of your account!',
       'account_removed_not_verifying_email': 'Your account has been permanently deleted due to the failure to verify your email address.',
       'account_removed_permanantly' : 'Your account has been permanently deleted',
       'relogin_to_delete_your_account' : 'To delete your account, please reauthenticate by signing in again.',
+      'didnt_made_changes' : 'You have not made any changes to be saved',
+      'your_changes_succed' : 'Your information has been changed successfully',
+      'account_succed_but_info_failed': 'Your account has been created, but your first and last name could not be saved. Please add them through the edit option',
+      'check_your_inbox' : 'Please log into your email and click on the verification link',
+
 
 
       // Notifcation
@@ -148,6 +155,7 @@ class LocalStringsEn extends Translations {
       'btn_review_question' : 'Review Question',
       'btn_approve' : 'Approve',
       'btn_reject' : 'Reject',
+      'btn_resent' : 'Resent Email',
 
 
 
@@ -174,6 +182,8 @@ class LocalStringsEn extends Translations {
 
 
 
+      // Long message
+      'email_verification_intro' : 'Welcome to Play Bazaar! An email verification has been sent to your email. Please verify your email to complete the process. We verify each member in Play Bazaar to ensure our platform remains a safe space where every user is a real person.',
 
 
 

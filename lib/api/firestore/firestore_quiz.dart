@@ -73,36 +73,37 @@ class FirestoreQuiz {
 
   Future<List<QuizQuestionModel>> getRandomQuizQuestions({
     required String quizId,
-    int? numberOfQuetions})
-  async {
-    // Generate a random number to use as a seed for shuffling
+    int? numberOfQuetions,
+  }) async {
     final randomSeed = Random().nextDouble();
     numberOfQuetions ??= 10;
 
-   // Print below got printed
-    final snapshot = await quizReference.doc('quizz').collection('quetionRequest')
-        .orderBy('random', descending: false)
-        .startAt([randomSeed])
-        .limit(numberOfQuetions)
-        .get();
-    // If the returned list is less than 20, fetch from the beginning
-    List<QueryDocumentSnapshot<Map<String, dynamic>>> docs = snapshot.docs;
-    if (docs.length < 10) {
-      final additionalDocs = await quizReference.doc('quizz').collection(quizId)
+    try {
+      final snapshot = await quizReference.doc('quizz').collection(quizId)
           .orderBy('random', descending: false)
-          .endBefore([randomSeed])
-          .limit(10 - docs.length)
+          .startAt([randomSeed])
+          .limit(numberOfQuetions)
           .get();
-      docs.addAll(additionalDocs.docs);
-    }
 
-    // Map each document snapshot to a QuizzQuestionModel
-    return docs.map((doc) {
-      final data = doc.data();
-      final question = QuizQuestionModel.fromMap(data);
-      return question;
-    }).toList();
+      List<QueryDocumentSnapshot<Map<String, dynamic>>> docs = snapshot.docs;
+      if (docs.length < numberOfQuetions) {
+        final additionalDocs = await quizReference.doc('quizz').collection(quizId)
+            .orderBy('random', descending: false)
+            .limit(numberOfQuetions - docs.length)
+            .get();
+        docs.addAll(additionalDocs.docs);
+      }
+
+      return docs.map((doc) {
+        final data = doc.data();
+        final question = QuizQuestionModel.fromMap(data);
+        return question;
+      }).toList();
+    } catch (e) {
+      return [];
+    }
   }
+
 
   Future<void> addCountry({
     required String gameId,

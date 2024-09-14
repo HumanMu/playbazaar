@@ -98,6 +98,7 @@ class LocalStringsFa extends Translations {
       'not_found_message': ' ۱: دکمه پایین سمت چپ (+) را برای ایجاد گروه خودت فشار بده  \n ۲: علامت جستجو بالا سمت چپ را برای جستجوی گروه که دیگران ایجاد کرده فشار بده',
       'friend_notfound': 'دوستی یافت نشد!',
       'registration_succed': 'ثبت نام شما با موفقیت انجام شد',
+      'authentication_failed' : 'حراز هویت ناموفق بود. لطفاً دوباره تلاش کنید',
       'not_expected_result' : 'اتفاق غیر منتظره رخ داد, لطفا دوباره تلاش کن',
       'members_notfound' : 'هیچ عضوی  پیدا نشد',
       'name_is_required' : 'وارد کردن نام ضروری است!',
@@ -111,6 +112,7 @@ class LocalStringsFa extends Translations {
       'user_not_found' : 'کاربر با این مشخصات یافت نشد, لطفا ایمیل و پسورد خودرا چک کنید!',
       'too-many-requests': 'تعداد دفعات تلاش برای ورود بیش از حد است. لطفاً بعداً دوباره تلاش کنید.',
       'verification_email_sent': 'ایمیل تأیید ارسال شد. ایمیل خود را باز کرده و حساب خدرا تایید کنید!',
+      'signed_as' : 'ورود با آدرس ',
       'verify_email_counter' : 'به دلایل امنیتی، لطفاً ایمیل خود را ظرف ۲۴ ساعت تأیید کنید. در غیر این صورت، حساب کاربری شما به صورت دائمی حذف خواهد شد!',
       'invalid_email_format' : 'فرمت ایمیل نامعتبر می باشد',
       'different_password' : 'رمز اول و دوم باید یکی باشد',
@@ -118,7 +120,10 @@ class LocalStringsFa extends Translations {
       'account_removed_not_verifying_email': 'حساب کاربری شما به دلیل عدم تأیید ایمیل به طور دائم حذف شده است',
       'account_removed_permanantly' : 'حساب کاربری شما به طور دائم حذف شده است',
       'relogin_to_delete_your_account' : 'برای حذف حساب کاربری خود، لطفاً دوباره وارد شوید تا هویت خود را تأیید کنید.',
-
+      'didnt_made_changes' : 'شما هیچ تغییری برای ذخیره کردن انجام نداده‌اید',
+      'your_changes_succed' : 'اطلاعات شما با موفقیت تغییر یافت',
+      'account_succed_but_info_failed' : 'حساب شما ایجاد شده است، اما نام و نام خانوادگی شما ذخیره نشد. لطفاً از طریق گزینه ویرایش آن را اضافه کنید',
+      'check_your_email' : 'لطفاً وارد ایمیل خود شوید و روی لینک تایید فشار بده',
 
       // Notifcation
       'question_added' : 'سوال شما با موفقیت ثبت شد',
@@ -151,6 +156,8 @@ class LocalStringsFa extends Translations {
       'btn_review_question' : 'بازبینی درخواست ها',
       'btn_approve' : 'تایید',
       'btn_reject' : 'رد کن',
+      'btn_resent' : 'ارسال مجدد ایمیل',
+
 
 
 
@@ -179,6 +186,9 @@ class LocalStringsFa extends Translations {
       'contact_us_title': 'تماس با ما',
       'contact_us_description': 'اگر سوال یا نگرانی در مورد این سیاست حفظ حریم خصوصی دارید، لطفاً با ما از طریق kh.techn@gmail.com تماس بگیرید.',
 
+
+      // Long message
+      'email_verification_intro' : 'به Play Bazaar خوش آمدید! یک ایمیل تایید به ایمیل شما ارسال شده است. لطفاً ایمیل خود را تایید کنید تا فرآیند تکمیل شود. ما هر عضو را در Play Bazaar تایید می‌کنیم تا اطمینان حاصل کنیم که پلتفرم ما فضایی امن است که در آن هر کاربر یک انسان واقعی است.'
     }
   };
 

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:playbazaar/screens/secondary_screens/search_page.dart';
 import '../../api/firestore/firestore_user.dart';
-import '../../shared/show_custom_snackbar.dart';
+import '../../utils/show_custom_snackbar.dart';
 import '../widgets/cards/friends_list_tile.dart';
 import '../widgets/cards/recieved_requests_tile.dart';
 import '../widgets/text_boxes/text_widgets.dart';

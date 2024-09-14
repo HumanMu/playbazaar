@@ -1,3 +1,0 @@
-
-
-int friendRequestLength = 0;

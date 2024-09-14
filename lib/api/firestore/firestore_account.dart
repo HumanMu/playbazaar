@@ -1,20 +1,17 @@
 import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
-
-import '../../shared/show_custom_snackbar.dart';
+import '../../utils/show_custom_snackbar.dart';
 
 class FirestoreAccount {
   final CollectionReference userCollection =
   FirebaseFirestore.instance.collection("users");
 
-  Future<void> markUserAsInaccessible(String userId) async {
+  Future<void> markUserAccessible(String userId) async {
     try {
       await userCollection.doc(userId).update({
-        'accountState': 'inaccessible',
-        'inaccessibilityDate': DateTime.now(),
+        'isEmailVerified': true,
       });
     } catch (e) {
       showCustomSnackbar('Error marking user as inaccessible', false);
@@ -23,12 +20,9 @@ class FirestoreAccount {
 
   Future<void> deleteUserAccount(String? userId) async {
     try {
-      // Delete user data from Firestore
       if (userId != null) {
         await userCollection.doc(userId).delete();
       }
-
-      // Delete user authentication
       User? user = FirebaseAuth.instance.currentUser;
       if (user != null) {
         await user.delete();
@@ -46,11 +40,11 @@ class FirestoreAccount {
 
   Future<void> deleteInaccessibleAccounts() async {
     final DateTime now = DateTime.now();
-    const Duration periodBeforeDeletion = Duration(days: 1);
+    const Duration periodBeforeDeletion = Duration(seconds: 1);
 
     try {
       final querySnapshot = await userCollection
-          .where('accountState', isEqualTo: 'inaccessible')
+          .where('isEmailVerified', isEqualTo: false)
           .where('timestamp', isLessThanOrEqualTo: now.subtract(periodBeforeDeletion))
           .get();
 
@@ -60,26 +54,48 @@ class FirestoreAccount {
       // Delete user authentication
       User? user = FirebaseAuth.instance.currentUser;
       if (user != null) {
-        await user.delete();
+        final result = await user.delete();
       }
 
     } catch (e) {
-      if(kDebugMode) {
-        log("error deleting account");
+      log("error deleting account: $e");
+
+    }
+  }
+
+
+  Future<void> forceDeleteAccount() async {
+    try {
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .where('accountState', isEqualTo: 'inaccessible')
+          .get();
+
+      for (final doc in querySnapshot.docs) {
+        final uid = doc.id; // Get the user's UID
+
+        // Delete the document
+        await doc.reference.delete();
+
+        // Remove authentication
+        final user = FirebaseAuth.instance.currentUser;
+        if (user != null) {
+          await user.delete();
+        }
       }
+    } catch (e) {
+      print('Error deleting forced accounts: $e');
     }
   }
 
   Future<void> cancelAccountDeletion(String userId) async {
     try {
-      // Update the Firestore document to mark the account as active again
       await userCollection.doc(userId).update({
         'accountState': 'accessible'
       });
 
-      showCustomSnackbar('Your account has been reactivated as the email has been verified.', true);
     } catch (e) {
-      showCustomSnackbar('Error reactivating account', false);
+      rethrow;
     }
   }
 }

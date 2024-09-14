@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../api/firestore/firestore_quiz.dart';
 import '../../../../helper/sharedpreferences.dart';
-import '../../../../shared/show_custom_snackbar.dart';
+import '../../../../utils/show_custom_snackbar.dart';
 import '../../../constants/constants.dart';
 import '../../models/question_models.dart';
 

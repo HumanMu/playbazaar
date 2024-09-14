@@ -14,6 +14,11 @@ class SharedPreferencesManager {
     await prefs.setString(key, value);
   }
 
+  static Future<void> setDouble(String key, int value) async {
+    final prefs = await _prefs;
+    await prefs.setInt(key, value);
+  }
+
 
   // Set a list of strings
   static Future<void> setStringList(String key, List<String> value) async {
@@ -33,6 +38,11 @@ class SharedPreferencesManager {
     return prefs.getString(key);
   }
 
+  static Future<int?> getInt(String key) async {
+    final prefs = await _prefs;
+    return prefs.getInt(key);
+  }
+
   // Get a list of strings
   static Future<List<String>?> getStringList(String key) async {
     final prefs = await _prefs;
@@ -48,5 +58,7 @@ class SharedPreferencesKeys {
   static const String userEmailKey = "USEREMAILKEY";
   static const String userLastNameKey = "USERLASTNAMEKEY";
   static const String appLanguageKey = "APPLANGUAGEKEY";
-  static const String userRoleKey = "USER_ROLE"; // Key to store user role (enum)
+  static const String userAboutMeKey = "USERABOUTMEKEY";
+  static const String userPointKey = "USERPOINTKEY";
+  static const String userRoleKey = "USERROLE";
 }

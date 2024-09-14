@@ -1,15 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:playbazaar/controller/userController/auth_controller.dart';
 import '../../api/Authentication/auth_service.dart';
 import '../../api/firestore/firestore_user.dart';
-import '../../games/games/quiz/main_quiz_page.dart';
 import '../../helper/sharedpreferences.dart';
-import '../main_screens/home_page.dart';
-import '../main_screens/login_pages.dart';
-import '../main_screens/profile_page.dart';
-import '../secondary_screens/policy.dart';
-import '../secondary_screens/recieved_requests.dart';
 import 'avatars/primary_avatar.dart';
 import 'list_tile.dart';
 
@@ -29,7 +24,7 @@ class SidebarDrawer extends StatefulWidget {
 
 class SidebarDrawerState extends State<SidebarDrawer> {
   final String? currentUserId = FirebaseAuth.instance.currentUser!.uid;
-  //AuthService authService = AuthService();
+  AuthController authController = Get.put(AuthController());
   late int friendRequestLength = 0;
   String userName = "";
 
@@ -51,52 +46,14 @@ class SidebarDrawerState extends State<SidebarDrawer> {
     }
   }
 
-  void navigateToFriends() {
-    Navigator.pushReplacement(
-      widget.parentContext,
-      MaterialPageRoute(builder: (context) => const RecievedRequests()),
-    );
-  }
-
-  void navigateToProfile() {
-    Navigator.pushReplacement(
-      widget.parentContext,
-      MaterialPageRoute(builder: (context) => const ProfilePage()),
-    );
-  }
-
-  void navigateToChatPage() {
-    Navigator.pushReplacement(
-      widget.parentContext,
-      MaterialPageRoute(builder: (context) => const HomePage()),
-    );
-  }
-
-  void navigateToGames() {
-    Navigator.pushReplacement(
-      widget.parentContext,
-      MaterialPageRoute(builder: (context) => const QuizMainPage()),
-    );
-  }
-
-  void navigateToPolicy() {
-    Navigator.pushReplacement(
-      widget.parentContext,
-      MaterialPageRoute(builder: (context) => const Policy()),
-    );
+  void navigateTo(String path) {
+    Get.toNamed('/$path');
   }
 
   void logoutAction() async {
-    await widget.authService.logOutUser();
-
+    await authController.logOutUser();
     if (!mounted) return;
-
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => const LoginPage()),
-      (Route<dynamic> route) =>
-          false, // This removes all the previous routes to prevent users from go back to previous route after logout
-    );
+    Get.offAllNamed('/login');
   }
 
   getFriendRequestsLength() async {
@@ -136,25 +93,25 @@ class SidebarDrawerState extends State<SidebarDrawer> {
                 icon: Icons.group,
                 length: friendRequestLength,
                 hasFriends: true,
-                action: navigateToFriends,
+                action: ()=> navigateTo('reciviedRequests'),
               ),
               ListTileWidget(
                 iconColor: Colors.red,
                 title: "my_page".tr,
                 icon: Icons.home,
-                action: navigateToProfile,
+                action: () => navigateTo('profile'),
               ),
               ListTileWidget(
                 iconColor: Colors.red,
                 title: "my_chat".tr,
                 icon: Icons.mark_unread_chat_alt,
-                action: navigateToChatPage,
+                action: () => navigateTo('home'),
               ),
               ListTileWidget(
                 iconColor: Colors.red,
                 title: "games".tr,
                 icon: Icons.games_sharp,
-                action: navigateToGames,
+                action: () => navigateTo('mainQuiz'),
               ),
               ListTileWidget(
                 iconColor: Colors.red,
@@ -163,7 +120,6 @@ class SidebarDrawerState extends State<SidebarDrawer> {
                 action: logoutAction,
               ),
               const Divider(
-                // This draws a horizontal line between widgets
                 color: Colors.grey, // Line color
                 thickness: 1, // Line thickness
                 indent: 20, // Left padding
@@ -173,7 +129,7 @@ class SidebarDrawerState extends State<SidebarDrawer> {
                 iconColor: Colors.red,
                 title: "policy_title".tr,
                 icon: Icons.policy_outlined,
-                action: navigateToPolicy,
+                action: () => navigateTo('policy'),
               ),
             ],
           ),

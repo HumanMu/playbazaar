@@ -5,7 +5,7 @@
  // Without country/language code are for all english speakers
 
 List<String> quizListConstantsEnRoutes = ['Geography', 'English', 'General Knowledge'];
-List<String> quizListConstantsAfRoutes = ['Geography Fa', 'Hazaragi Af', 'Herati Af', 'English Fa', 'General Knowledge Fa'];
+List<String> quizListConstantsAfRoutes = ['geography_fa', 'hazaragi_af', 'herati_af', 'english_fa', 'general_nowledge_fa'];
 List<String> quizListConstantsFa = ['جغرافیا', 'هزارگی', 'هراتی', 'انگلیسی', 'اطلاعات عمومی'];
 
 List<String> gameListConstants = ['Quiz', 'Ludo',];

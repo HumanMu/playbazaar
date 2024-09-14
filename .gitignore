@@ -49,12 +49,26 @@ build/
 packages/
 .packages
 pubspec.lock
+.metadata
 
 #IDE-specific files:
 .vscode/
 
+# Android/IntelliJ related files
+/local.properties
+/.idea/workspace.xml
+/.idea/libraries
+/captures/
+.externalNativeBuild/
+
+# Files for iOS (Flutter projects)
+ios/Flutter/Flutter.framework/
+ios/Flutter/Flutter.podspec
+ios/ServiceDefinitions.json
+ios/Runner/GeneratedPluginRegistrant.*
 
 #others
 .flutter_secret
 .flutter_plugins
 google-services.json
+.env

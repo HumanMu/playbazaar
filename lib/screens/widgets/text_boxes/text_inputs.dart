@@ -129,24 +129,26 @@ class CustomTextInputs extends StatelessWidget {
 
 
 /// TextController
-class CustomTextFormField extends TextFormField {
+class CustomTextFormField extends StatelessWidget {
+  final TextEditingController controller;
+  final String? labelText;
 
-  final String initialVal;
+  const CustomTextFormField({super.key, required this.controller, this.labelText});
 
-  CustomTextFormField({super.key,
-    required this.initialVal,
-  });
-
-
+  @override
   Widget build(BuildContext context) {
     return TextFormField(
-      initialValue: initialValue,
-      decoration: const InputDecoration(
-        labelText: 'CustomTextFormField',
+      controller: controller, // Use the controller here
+      decoration: InputDecoration(
+        labelText: labelText?? "",
+      ),
+      style: const TextStyle(
+        color: Colors.white,
       ),
     );
   }
 }
+
 
 
 

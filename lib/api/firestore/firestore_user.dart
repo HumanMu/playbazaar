@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:playbazaar/api/firestore/firestore_account.dart';
 
 import '../../models/user_model.dart';
 import '../services/firestore_services.dart';
@@ -43,14 +44,22 @@ class FirestoreUser extends ChangeNotifier {
   }
 
   // Saving user data
-  Future saveUserData(String firstname, String lastname, String email ) async{
-    return await FirestoreServices().saveUserData(
+  Future<bool> createUser(String firstname, String lastname, String email ) async{
+    return await FirestoreServices().createUser(
         firstname,
         lastname,
         email,
       FirebaseAuth.instance.currentUser!.uid);
-
   }
+
+  // Saving user data
+  Future<bool> editUserData(UserProfileModel data) async{
+    return await FirestoreServices().editUserData(
+        data,
+        FirebaseAuth.instance.currentUser!.uid
+    );
+  }
+
 
 
   Future<void> getUserById(String id) async {
@@ -80,14 +89,17 @@ class FirestoreUser extends ChangeNotifier {
       return "NotFriends";
     }
   }
+
   getOnlineState(String availabilityState) async{
     return await _db.collection('users').doc(userId).update({
       'availabilityState': availabilityState
     });
   }
+
   getFriendList() {
     return userCollection.doc(userId).snapshots(); // Firestore don't know the length of a collection, so therefor return mother collection
   }
+
   getFriendRequests() {
     return userCollection.doc(userId).snapshots();
   }
@@ -100,6 +112,7 @@ class FirestoreUser extends ChangeNotifier {
       docRef.delete();
     }
   }
+
   acceptFriendRequest(String friendId) async {
     DocumentReference docRef =  userCollection.doc(userId)
         .collection('friendRequests').doc(friendId);

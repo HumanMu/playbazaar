@@ -7,7 +7,7 @@ import '../../api/Authentication/auth_service.dart';
 import '../../api/Firestore/firestore_groups.dart';
 import '../../api/firestore/firestore_user.dart';
 import '../../helper/sharedpreferences.dart';
-import '../../shared/show_custom_snackbar.dart';
+import '../../utils/show_custom_snackbar.dart';
 import '../../utils/notfound.dart';
 import '../../utils/text_boxes/text_box_decoration.dart';
 import '../secondary_screens/search_page.dart';
@@ -117,6 +117,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+
   groupList() {
     return StreamBuilder(
       stream: userSnapshot,
@@ -128,8 +129,8 @@ class _HomePageState extends State<HomePage> {
               itemCount: snapshot.data['groups'].length,
               itemBuilder: (context, index) {
                 int reverseIndex = snapshot.data['groups'].length -
-                    index -
-                    1; // For not showing the group id
+                    index - 1; // For not showing the group id
+
                 final user = snapshot.data['groups'];
                 return CustomGroupTile(
                   groupId: getId(user[reverseIndex]),

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 
-class Policy extends StatelessWidget {
-  const Policy({super.key});
+class PolicyPage extends StatelessWidget {
+  const PolicyPage({super.key});
 
   @override
   Widget build(BuildContext context) {
