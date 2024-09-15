@@ -44,7 +44,7 @@ class _LudoWorldWarState extends State<LudoWorldWar> {
     );
   }
 
-  _handleNavigation(String? selectedPath) {
+  _handleNavigation(String? selectedPath, String title) {
     print("Navigation Parameter: $selectedPath");
   }
 

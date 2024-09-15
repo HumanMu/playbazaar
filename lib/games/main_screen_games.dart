@@ -82,7 +82,7 @@ class _MainScreenGames extends State<MainScreenGames> {
     );
   }
 
-  _handleNavigation(String? selectedPath) {
+  _handleNavigation(String? selectedPath, String title) {
    switch(selectedPath){
      case "Quiz":
        navigateToAnotherScreen(context, const QuizMainPage());

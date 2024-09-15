@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class GameListBox extends StatefulWidget {
   final String title;
   final String navigationParameter;
-  final Function(String)? onTap;
+  final Function(String, String)? onTap;
 
   const GameListBox({
     super.key,
@@ -21,29 +21,30 @@ class GameListBoxState extends State<GameListBox> {
 
   @override
   Widget build(BuildContext context) {
+
     return GestureDetector(
       onTap: () {
         setState(() {
           isClicked = !isClicked; // Toggle the clicked state for visual feedback
         });
         if (widget.onTap != null) {
-          widget.onTap!(widget.navigationParameter); // Call the callback with the navigation parameter
+          widget.onTap!(widget.navigationParameter, widget.title); // Call the callback with the navigation parameter
         }
       },
       child: Container(
         margin: const EdgeInsets.all(3),
         height: 70,
         decoration: BoxDecoration(
-          color: isClicked ? Colors.green : Colors.blue,
+          color: Colors.blue,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Center(
           child: Text(
             widget.title,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              color: isClicked ? Colors.white : Colors.black,
+              color:  Colors.white,
             ),
           ),
         ),

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:playbazaar/api/Authentication/auth_service.dart';
 import 'package:playbazaar/api/firestore/firestore_account.dart';
 import 'package:playbazaar/screens/main_screens/login_pages.dart';
 import '../../helper/sharedpreferences.dart';
@@ -74,7 +73,6 @@ class _CountdownState extends State<CountdownTimer> {
   Future<void> _handleTimeUp() async {
     await SharedPreferencesManager.setBool(SharedPreferencesKeys.userLoggedInKey, false);
     await FirestoreAccount().forceDeleteAccount();
-    await AuthService().logOutUser();
     navigateToLogin();
   }
   navigateToLogin() {
@@ -110,10 +108,13 @@ class _CountdownState extends State<CountdownTimer> {
 
   @override
   void dispose() {
-    _timer.cancel();
+    if (_timer.isActive) {
+      _timer.cancel();
+    }
     _userSubscription.cancel();
     super.dispose();
   }
+
 
   String _formatDuration(Duration duration) {
     String twoDigits(int n) => n.toString().padLeft(2, "0");

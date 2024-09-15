@@ -10,7 +10,8 @@ import '../sharedpreferences/quiz.dart';
 
 class QuizPlayScreen extends StatefulWidget {
   final String selectedQuiz;
-  const QuizPlayScreen({super.key, required this.selectedQuiz});
+  final String quizTitle;
+  const QuizPlayScreen({super.key, required this.selectedQuiz, required this.quizTitle});
 
   @override
   State<QuizPlayScreen> createState()  => _QuizPlayScreen();
@@ -37,6 +38,7 @@ class _QuizPlayScreen extends State<QuizPlayScreen> {
     super.initState();
     getQuestionsFromFirestore();
   }
+
 
 
   Future<void> getQuestionsFromFirestore() async {
@@ -70,49 +72,54 @@ class _QuizPlayScreen extends State<QuizPlayScreen> {
       appBar: AppBar(
         centerTitle: true,
         elevation: 0,
-        title: Text(widget.selectedQuiz),
+        title: Text(widget.quizTitle,
+          style: const TextStyle(color: Colors.white, fontSize: 30),
+        ),
         backgroundColor: Colors.red,
       ),
       body: isLoading? const Center(child: CircularProgressIndicator()) : Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  currentQuestion,
-                  style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
+            child: questionData.isEmpty? Center(
+              child: Text('empty_quizz_message'.tr,style: const TextStyle(fontSize: 16)),
+            )
+              : Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    currentQuestion,
+                    style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 20),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: currentAnswer.length,
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: ElevatedButton(
-                          onPressed: () => checkAnswer(index),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: getButtonColor(index),
-                          ),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(vertical: 10),
-                            child: Text(currentAnswer[index],
-                              style: const TextStyle(fontSize: 17 ),
+                  const SizedBox(height: 20),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: currentAnswer.length,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8.0),
+                          child: ElevatedButton(
+                            onPressed: () => checkAnswer(index),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: getButtonColor(index),
+                            ),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              child: Text(currentAnswer[index],
+                                style: const TextStyle(fontSize: 17 ),
+                              ),
                             ),
                           ),
-                        ),
-                      );
-                    },
+                        );
+                      },
+                    ),
                   ),
-                ),
-                ElevatedButton(onPressed: nextQuestion,
-                  child: Text("btn_next".tr),
-                )
-              ],
-            ),
+                  ElevatedButton(onPressed: nextQuestion,
+                    child: Text("btn_next".tr),
+                  )
+                ],
+              ),
           ),
     );
   }

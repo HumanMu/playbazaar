@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:playbazaar/games/games/quiz/screens/add_question.dart';
 import 'package:playbazaar/screens/main_screens/edit_page.dart';
 import 'package:playbazaar/screens/main_screens/home_page.dart';
 import 'package:playbazaar/screens/main_screens/login_pages.dart';
@@ -14,6 +15,7 @@ import 'package:provider/provider.dart';
 import 'api/firestore/firestore_user.dart';
 import 'controller/userController/auth_controller.dart';
 import 'games/games/quiz/main_quiz_page.dart';
+import 'games/games/quiz/screens/review_question_page.dart';
 import 'languages/local_strings.dart';
 import 'middleware/auth_guard.dart';
 
@@ -91,6 +93,14 @@ class PlayBazaar extends StatelessWidget {
               GetPage(
                   name: '/reciviedRequests',
                   page: () => const RecievedRequests()
+              ),
+              GetPage(
+                  name: '/questionReviewPage',
+                  page: () => const ReviewQuestionsPage()
+              ),
+              GetPage(
+                  name: '/addQuestion',
+                  page: () => const AddQuestion()
               ),
               GetPage(
                   name: '/mainQuiz',

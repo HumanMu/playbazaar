@@ -183,6 +183,7 @@ class LocalStringsEn extends Translations {
 
 
       // Long message
+      'empty_quizz_message' : 'This game currently lacks words, and we need your help. Please go back to the previous page and press the \'Submit Question\' button at the bottom of the page to send us the words you\'d like to be added to the game. Thank you for your kindness and efforts.',
       'email_verification_intro' : 'Welcome to Play Bazaar! An email verification has been sent to your email. Please verify your email to complete the process. We verify each member in Play Bazaar to ensure our platform remains a safe space where every user is a real person.',
 
 

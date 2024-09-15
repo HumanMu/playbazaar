@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:playbazaar/games/games/quiz/screens/add_question.dart';
 import 'package:playbazaar/games/games/quiz/screens/quiz_play_page.dart';
-import 'package:playbazaar/games/games/quiz/screens/review_question_page.dart';
 import '../../../api/Authentication/auth_service.dart';
 import '../../../helper/sharedpreferences.dart';
 import '../../../screens/widgets/sidebar_drawer.dart';
@@ -86,7 +84,7 @@ class _QuizMainPage extends State<QuizMainPage> {
               return GameListBox(
                 title: quizNames[index],
                 navigationParameter: quizPath[index],
-                onTap:  _handleNavigation,
+                onTap: _handleNavigation,
               );
             },
           ),
@@ -98,25 +96,43 @@ class _QuizMainPage extends State<QuizMainPage> {
               padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 3),
               child: Text("add_question_hint".tr),
             ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const AddQuestion()),
-                );
-              },
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-              child: Text("btn_send_question".tr),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const ReviewQuestionsPage()),
-                );
-              },
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-              child: Text("btn_review_question".tr),
+            Row(
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 0, left: 5, right: 5),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Get.toNamed('/addQuestion');
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                          shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(5))
+                          )
+                      ),
+                      child: Text("btn_send_question".tr),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only( bottom: 0, left: 5, right: 0),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Get.toNamed('/questionReviewPage');
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                          shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(5))
+                          )
+                      ),
+                      child: Text("btn_review_question".tr),
+                    ),
+                  ),
+                ),
+              ],
             )
           ],
         )
@@ -124,10 +140,11 @@ class _QuizMainPage extends State<QuizMainPage> {
     );
   }
 
-  void _handleNavigation(String selectedPath) {
+  void _handleNavigation(String selectedPath, String title) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => QuizPlayScreen(selectedQuiz: selectedPath)),
+      MaterialPageRoute(builder: (context) => QuizPlayScreen(selectedQuiz: selectedPath, quizTitle: title)),
     );
   }
+
 }

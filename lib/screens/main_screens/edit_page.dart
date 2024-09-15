@@ -178,8 +178,6 @@ class _EditPage extends State<EditPage> {
       ),
       onPressed: () {
         saveUserData();
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => const ProfilePage()));
       },
       child: Text('btn_save'.tr),
     );
@@ -212,6 +210,6 @@ class _EditPage extends State<EditPage> {
       showCustomSnackbar('didnt_made_changes'.tr, false);
     }
 
- 
+    Get.offNamed('/profile');
   }
 }
