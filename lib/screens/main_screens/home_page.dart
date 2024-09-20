@@ -47,6 +47,14 @@ class _HomePageState extends State<HomePage> {
     getFriends();
   }
 
+  @override
+  void dispose() {
+    groupNameController.dispose();
+    groupPasswordController.dispose();
+    _controller.dispose();
+    super.dispose();
+  }
+
   String getId(String res) {
     return res.substring(0, res.indexOf("_"));
   }
@@ -128,15 +136,14 @@ class _HomePageState extends State<HomePage> {
             return ListView.builder(
               itemCount: snapshot.data['groups'].length,
               itemBuilder: (context, index) {
-                int reverseIndex = snapshot.data['groups'].length -
-                    index - 1; // For not showing the group id
+                int reverseIndex = snapshot.data['groups'].length - index -1;
 
                 final user = snapshot.data['groups'];
                 return CustomGroupTile(
                   groupId: getId(user[reverseIndex]),
                   groupName: getName(user[reverseIndex])[1].trim(),
                   admin: userName,
-                  password: getName(user[reverseIndex])[2].trim(),
+                  password: getName(user[reverseIndex]).length > 2?  getName(user[reverseIndex])[2]: null,
                 );
               },
             );

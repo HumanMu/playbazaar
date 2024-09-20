@@ -54,6 +54,8 @@ dependencies:
   encrypt: ^5.0.3
   pointycastle: ^3.9.1
   cupertino_icons: ^1.0.8
+  just_audio: ^0.9.40
+  permission_handler: ^11.3.1
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -67,7 +69,8 @@ dev_dependencies:
   flutter_lints: ^4.0.0
 
 flutter_icons:
-  android: "launcher_icon"
+  image_path: "icons/play_bazaar_logo.png"
+  android: true
   ios: true
   remove_alpha_ios: true
   # The "flutter_lints" package below contains a set of recommended lints to
@@ -91,6 +94,8 @@ flutter:
   assets:
     - assets/icons/
     - assets/images/
+    - assets/sounds/
+    - assets/sounds/button/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

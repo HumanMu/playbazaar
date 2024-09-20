@@ -2,11 +2,13 @@ import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../api/firestore/firestore_user.dart';
 import '../../helper/sharedpreferences.dart';
+import '../../utils/show_custom_snackbar.dart';
 
 class AuthController extends GetxController {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   var isSignedIn = false.obs;
   var isEmailVerified = false.obs;
-  var language = ['fa', 'AF'].obs;
+  var language = ['en', 'US'].obs;
   var isInitialized = false.obs;
 
   @override
@@ -17,7 +19,7 @@ class AuthController extends GetxController {
   }
 
   Future<void> initializeSettings() async {
-    await _checkAuthStatus();  // Checking auth status
+    await _checkAuthStatus();
     await getUserLoggedInState();
     await getAppLanguage();
     isInitialized.value = true;
@@ -28,7 +30,7 @@ class AuthController extends GetxController {
     User? user = FirebaseAuth.instance.currentUser;
 
     if (user != null) {
-      await user.reload(); // Reload the user to get the latest status
+      await user.reload();
       isEmailVerified.value = user.emailVerified;
       update();
     }
@@ -38,7 +40,7 @@ class AuthController extends GetxController {
     User? user = FirebaseAuth.instance.currentUser;
 
     if (user != null) {
-      await user.reload(); // Reload to get the latest email verification status
+      await user.reload();
       isSignedIn.value = true;
       isEmailVerified.value = user.emailVerified;
     } else {
@@ -63,6 +65,16 @@ class AuthController extends GetxController {
     if (FirebaseAuth.instance.currentUser != null) {
       await FirestoreUser(userId: FirebaseAuth.instance.currentUser!.uid)
           .getOnlineState(status);
+    }
+  }
+
+  // Password Reset Method
+  Future<void> sendPasswordResetEmail(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+      showCustomSnackbar('reset_link_sent'.tr, true);
+    } catch (e) {
+      showCustomSnackbar('error_occurred'.tr, false);
     }
   }
 

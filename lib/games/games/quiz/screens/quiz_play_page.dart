@@ -1,11 +1,13 @@
 import 'dart:math';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:just_audio/just_audio.dart';
 import '../../../../api/firestore/firestore_quiz.dart';
+import '../../../../controller/game_controller/game_controller.dart';
 import '../../../../utils/show_custom_snackbar.dart';
 import '../../models/question_models.dart';
 import '../sharedpreferences/quiz.dart';
-
 
 
 class QuizPlayScreen extends StatefulWidget {
@@ -19,7 +21,7 @@ class QuizPlayScreen extends StatefulWidget {
 }
 
 class _QuizPlayScreen extends State<QuizPlayScreen> {
-
+  late AudioPlayer _player;
   bool isLoading = true;
   int answeredQuetions = 0;
   late List<QuizQuestionModel> questionData = [];
@@ -36,16 +38,34 @@ class _QuizPlayScreen extends State<QuizPlayScreen> {
   @override
   void initState() {
     super.initState();
+    _player = AudioPlayer();
+    _playSound();
     getQuestionsFromFirestore();
   }
 
+  @override
+  void dispose() {
+    _player.dispose();
+    super.dispose();
+  }
+
+
+  void _playSound() async {
+    try {
+      await _player.setAsset('assets/sounds/button/ui_clicked.wav');
+      _player.play();
+    } catch (e) {
+      if (kDebugMode) {
+        print("Error playing sound: $e");
+      }
+    }
+  }
 
 
   Future<void> getQuestionsFromFirestore() async {
     try {
       final questionResult = await FirestoreQuiz().getRandomQuizQuestions(
           quizId: widget.selectedQuiz);
-      // Update the state with the fetched questions
       setState(() {
         questionData = questionResult;
         isLoading = false;
@@ -100,7 +120,10 @@ class _QuizPlayScreen extends State<QuizPlayScreen> {
                         return Padding(
                           padding: const EdgeInsets.symmetric(vertical: 8.0),
                           child: ElevatedButton(
-                            onPressed: () => checkAnswer(index),
+                            onPressed: (){
+                              _playSound();
+                              checkAnswer(index);
+                            },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: getButtonColor(index),
                             ),

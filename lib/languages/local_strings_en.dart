@@ -6,23 +6,23 @@ class LocalStringsEn extends Translations {
   Map<String, Map<String, String>> get keys => {
     'en_US': {
       //appName
-      'appName' : 'Play Bazaar',
+      'app_name' : 'Play Bazaar',
 
       // Games
       'games' : 'Games',
       'games_list': 'Games list',
       'ludo_world_war' : 'Ludo World War',
       'add_question_hint' : 'Do you have a question you would like to add to any of these games? Press the button below!',
-      'quetions_hint' : 'Question',
+      'question_hint' : 'Question',
       'add_question_title' : 'Sending Question',
-      'pick_quiz_hint' : 'To which quiz should this be added?',
+      'pick_quiz_hint' : 'Which quiz should this be added to?',
       'correct_answer' : 'Correct answer',
       'wrong_answers' : 'Wrong answers',
       'wrong_answer' : 'Wrong answer',
       'more_information_add_quiz' : 'More information. For example, areas where it is used...',
       'enter_your_answer_here' : 'Enter your answer here...',
       'quiz_list' : 'Quiz List',
-      "game_result": "Game Results",
+      'game_result': 'Game Results',
       'notification_title' : 'Play Bazaar',
       'question_is_answered' : 'You have already provided an answer to this question',
       'pick_an_answer' : 'Please select an answer before proceeding',
@@ -65,7 +65,7 @@ class LocalStringsEn extends Translations {
       'requests': 'Requests',
       'my_page' : 'My Page',
       'logout' : 'Logout',
-      'my_chat' : 'Chat',
+      'my_chat' : 'Messages',
       'my_friends': 'My Friends',
       'request_friendship' : 'Friend request',
       'delete_friend': 'Delete',
@@ -81,10 +81,18 @@ class LocalStringsEn extends Translations {
       'your_message_here' : 'Write your message here ...',
       'do_have_account' : 'Have an account? ',
       'login_from_here' : 'Login from here',
+
+      'reset_password': 'Reset Password',
+      'enter_your_email': 'Enter your email',
+      'send_reset_link': 'Send Reset Link',
+      'reset_link_sent': 'Password reset link sent! Check your email.',
+      'forgot_password': 'Forgot Password?',
       'received_requests' : 'Recivied requests',
       'description' : 'Description',
       'no_description' : 'No description',
       'path': 'Request to be added to',
+      'select' : 'Select',
+
 
 
 
@@ -122,6 +130,8 @@ class LocalStringsEn extends Translations {
       'your_changes_succed' : 'Your information has been changed successfully',
       'account_succed_but_info_failed': 'Your account has been created, but your first and last name could not be saved. Please add them through the edit option',
       'check_your_inbox' : 'Please log into your email and click on the verification link',
+      'change_path' : 'Change the path below',
+
 
 
 
@@ -137,7 +147,7 @@ class LocalStringsEn extends Translations {
       'friends' : 'Friends',
 
       // Buttons
-      'btn_chat_groups' : 'Chat groups',
+      'btn_chats' : 'Messages',
       'btn_home': 'Home',
       'btn_cancel': 'Cancel',
       'btn_create': 'Create',
@@ -149,7 +159,7 @@ class LocalStringsEn extends Translations {
       'btn_save' : 'Save',
       'btn_next' : 'Next Question',
       'btn_result' : 'View Results',
-      'btn_send_question' : 'Send your question',
+      'btn_send_question' : 'Send Questions',
       'btn_send' : 'Send',
       'btn_continue' : 'Continue',
       'btn_review_question' : 'Review Question',
@@ -164,31 +174,25 @@ class LocalStringsEn extends Translations {
       //  Policy
       'policy_title': 'Policy',
       'policy_introduction_title': 'Privacy Policy for Play Bazaar',
-      'policy_introduction_description': 'At Play Bazaar, we prioritize your privacy and are committed to ensuring the security of your personal information. This privacy policy outlines how we handle, store, and protect your data when using our app.',
-      'policy_info_collection_title': 'Information Collection and Storage',
-      'policy_info_collection_description': 'When you use the Play Bazaar app, we may collect certain personal information, including but not limited to your name, email address, and any other relevant details required for account creation and app functionality. All information collected is securely stored in our database, which is hosted on Firestore, a cloud storage service owned and operated by Google.',
-      'policy_data_security_and_thirdparty_title' : 'Data Security and Third-Party Access',
-      'policy_data_security_and_thirdparty_description_part1': 'We do not share, sell, or distribute your personal information to any third-party companies. Your data is used solely for the purpose of providing you with services through the Khorasan app.',
-      'policy_data_security_and_thirdparty_description_part2':   'While your data is stored in Firestore, which belongs to Google, this does not grant Google any rights to use your personal information for any purpose unrelated to our app. Google is responsible for maintaining the security of their cloud services, and we ensure that your information is protected as per Google’s stringent security measures.',
-      'policy_agreement_title' :  'Agreement to Policy',
-      'policy_agreement_description' : 'By using the Play Bazaar app, you acknowledge and agree to this privacy policy. We encourage you to review this policy regularly, as continued use of the app indicates your acceptance of any changes or updates.',
-      'policy_updates_title': 'Policy Updates',
-      'policy_updates_description' : 'We reserve the right to update or modify this privacy policy at any time. Any changes made will be reflected on this page, and your continued use of the app constitutes your agreement to such modifications.',
-
+      'policy_introduction_description': 'Hos Play Bazaar prioriterer vi dit privatliv og er forpligtet til at sikre sikkerheden af dine personlige oplysninger. Denne privatlivspolitik beskriver, hvordan vi håndterer, opbevarer og beskytter dine data, når du bruger vores app.',
+      'policy_info_collection_title': 'Information Indsamling og Opbevaring',
+      'policy_info_collection_description': 'Når du bruger Play Bazaar-appen, kan vi indsamle visse personlige oplysninger, herunder men ikke begrænset til dit navn, e-mailadresse og andre relevante oplysninger, der er nødvendige for kontooprettelse og app-funktionalitet. Alle indsamlede oplysninger opbevares sikkert i vores database, som er hostet på Firestore, en cloud-lagringstjeneste ejet og drevet af Google.',
+      'policy_data_security_and_thirdparty_title' : 'Databeskyttelse og Tredjepartsadgang',
+      'policy_data_security_and_thirdparty_description_part1': 'Vi deler, sælger eller distribuerer ikke dine personlige oplysninger til tredjepartsvirksomheder. Dine data anvendes udelukkende til at give dig tjenester gennem Play Bazaar-appen.',
+      'policy_data_security_and_thirdparty_description_part2': 'Selvom dine data opbevares i Firestore, som tilhører Google, giver dette ikke Google nogen rettigheder til at bruge dine personlige oplysninger til formål, der ikke er relateret til vores app. Google er ansvarlig for at opretholde sikkerheden af deres cloud-tjenester, og vi sikrer, at dine oplysninger er beskyttet i henhold til Googles strenge sikkerhedsforanstaltninger.',
+      'policy_agreement_title' :  'Aftale om Politik',
+      'policy_agreement_description' : 'Ved at bruge Play Bazaar-appen anerkender og accepterer du denne privatlivspolitik. Vi opfordrer dig til at gennemgå denne politik regelmæssigt, da fortsat brug af appen indikerer din accept af eventuelle ændringer eller opdateringer.',
+      'policy_updates_title': 'Politikopdateringer',
+      'policy_updates_description' : 'Vi forbeholder os retten til at opdatere eller ændre denne privatlivspolitik til enhver tid. Eventuelle ændringer vil blive reflekteret på denne side, og din fortsatte brug af appen udgør din accept af sådanne ændringer.',
 
       // contact us
-      'contact_us_title' : 'Contact Us',
-      'contact_us_description' : 'If you have any questions or concerns regarding this privacy policy, please contact us at kh.techn@gmail.com',
-
-
+      'contact_us_title' : 'Kontakt os',
+      'contact_us_description' : 'Hvis du har spørgsmål eller bekymringer vedrørende denne privatlivspolitik, bedes du kontakte os på kh.techn@gmail.com',
 
       // Long message
-      'empty_quizz_message' : 'This game currently lacks words, and we need your help. Please go back to the previous page and press the \'Submit Question\' button at the bottom of the page to send us the words you\'d like to be added to the game. Thank you for your kindness and efforts.',
-      'email_verification_intro' : 'Welcome to Play Bazaar! An email verification has been sent to your email. Please verify your email to complete the process. We verify each member in Play Bazaar to ensure our platform remains a safe space where every user is a real person.',
-
-
-
-    },
+      'empty_quizz_message' : 'Dette spil mangler i øjeblikket ord, og vi har brug for din hjælp. Gå venligst tilbage til den forrige side og tryk på knappen \'Indsend Spørgsmål\' nederst på siden for at sende os de ord, du gerne vil have tilføjet til spillet. Tak for din venlighed og indsats.',
+      'email_verification_intro' : 'Velkommen til Play Bazaar! En e-mailbekræftelse er sendt til din e-mail. Bekræft venligst din e-mail for at fuldføre processen. Vi verificerer hver medlem i Play Bazaar for at sikre, at vores platform forbliver et sikkert sted, hvor hver bruger er en reel person.'
+    }
   };
 
 }

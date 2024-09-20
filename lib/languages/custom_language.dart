@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import '../helper/sharedpreferences.dart';
 
 class CustomLanguage extends StatelessWidget {
@@ -8,7 +7,9 @@ class CustomLanguage extends StatelessWidget {
 
   final List<Map<String, dynamic>> locale = [
     {'name': 'English', 'locale': const Locale('en', 'US')},
+    {'name': 'Dansk', 'locale': const Locale('dk', 'DK')},
     {'name': 'فارسی', 'locale': const Locale('fa', 'AF')},
+    {'name': 'العربية', 'locale': const Locale('ar', 'SA')},
   ];
 
   @override

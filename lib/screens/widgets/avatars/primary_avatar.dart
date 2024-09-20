@@ -46,11 +46,11 @@ class _PrimaryAvatarState extends State<PrimaryAvatarImage> {
                 backgroundColor: Colors.deepOrangeAccent,
                 radius: 45,
                 child: CircleAvatar(
-                  backgroundImage: AssetImage('assets/icons/afghanChatLogo.png'),
+                  backgroundImage: AssetImage('assets/icons/play_bazaar_logo.png'),
                   radius: 40.0,
                 ),
               ),
-              Positioned(
+              /*Positioned(
                 bottom: -15,
                 right: 50,
                 child: IconButton(
@@ -60,7 +60,7 @@ class _PrimaryAvatarState extends State<PrimaryAvatarImage> {
                     color: Colors.green,
                   ),
                 ),
-              ),
+              ),*/
             ],
 
         ),

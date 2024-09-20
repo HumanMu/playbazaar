@@ -95,7 +95,13 @@ class _LoginPage extends State<LoginPage> {
                                     } ,
 
                                   ),
-                                  const SizedBox(height: 15),
+                                  TextButton(
+                                    onPressed: () {
+                                      Get.toNamed('/resetPassword');
+                                    },
+                                    child: Text('forgot_password'.tr),
+                                  ),
+                                  const SizedBox(height: 10),
                                   _submitButton(),
                                   const SizedBox(height: 15),
                                   Container(

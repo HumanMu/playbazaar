@@ -3,10 +3,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../api/firestore/firestore_quiz.dart';
-import '../../../../helper/sharedpreferences.dart';
 import '../../../../utils/show_custom_snackbar.dart';
-import '../../../constants/constants.dart';
 import '../../models/question_models.dart';
+import '../functions/quiz_language.dart';
 
 
 class AddQuestion extends StatefulWidget {
@@ -17,7 +16,6 @@ class AddQuestion extends StatefulWidget {
 }
 
 class AddQuestionState extends State<AddQuestion> {
-
   List<String> quizLabels = [];
   List<String>? language = [];
   List<String> quizPath = [];
@@ -36,28 +34,27 @@ class AddQuestionState extends State<AddQuestion> {
   @override
   void initState() {
     super.initState();
-    getAppLanguage();
+    _initializeLanguageSettings();
+  }
+
+  @override
+  void dispose(){
+    _quizC.dispose();
+    _questionC.dispose();
+    _correctAnswerC.dispose();
+    _wrongAnswer1C.dispose();
+    _wrongAnswer2C.dispose();
+    _wrongAnswer3C.dispose();
+    _quetionDescriptionC.dispose();
+    super.dispose();
   }
 
 
-  Future<void> getAppLanguage() async {
-    List<String>? value = await SharedPreferencesManager.getStringList(SharedPreferencesKeys.userRoleKey);
+  Future<void> _initializeLanguageSettings() async {
+    final result = await getQuizLanguage();
     setState(() {
-      if (value != null && value.isNotEmpty) {
-        language = value;
-        if(value[0] == 'fa'){
-          quizPath = quizListConstantsAfRoutes;
-          quizLabels = quizListConstantsFa;
-        }
-        else if(value[0] == 'en'){
-          quizPath = quizListConstantsEnRoutes;
-          quizLabels = quizListConstantsEnRoutes;
-        }
-      } else {
-        language = ['fa', 'AF'];
-        quizPath = quizListConstantsAfRoutes;
-        quizLabels = quizListConstantsFa;
-      }
+      quizPath = result['quizPath'];
+      quizLabels = result['quizNames'];
     });
   }
 
@@ -123,6 +120,7 @@ class AddQuestionState extends State<AddQuestion> {
         || _wrongAnswer1C.text.trim().isEmpty
         || _wrongAnswer2C.text.trim().isEmpty
         || _wrongAnswer3C.text.trim().isEmpty
+        || selectedQuizIndex == null
     ){
       showCustomSnackbar('fill_all_input'.tr, false);
       return;
@@ -154,7 +152,6 @@ class AddQuestionState extends State<AddQuestion> {
     ).then((_) {
 
       showCustomSnackbar('question_added'.tr, true);
-      _quizC.clear();
       _questionC.clear();
       _correctAnswerC.clear();
       _wrongAnswer1C.clear();

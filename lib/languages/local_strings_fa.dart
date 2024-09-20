@@ -82,10 +82,16 @@ class LocalStringsFa extends Translations {
       'your_message_here' : 'پیام خود را اینجا بنویس ...',
       'do_have_account' : 'قبلا حساب باز کردی؟ ',
       'login_from_here' : 'از اینجا وارد شو ',
+      'reset_password': 'بازیابی رمز عبور',
+      'enter_your_email': 'ایمیل خود را وارد کنید',
+      'send_reset_link': 'ارسال لینک بازیابی',
+      'reset_link_sent': 'لینک بازیابی رمز عبور ارسال شد! ایمیل خود را بررسی کنید.',
+      'forgot_password': 'رمز عبور خود را فراموش کرده‌اید؟',
       'received_requests' : 'درخواست های دریافتی',
       'description' : 'توضیحات',
       'no_description' : 'توضیحات وجود ندارد ',
       'path': 'درخواست اضافه شدن به بازی',
+      'select' : 'انتخاب کنید',
 
 
 
@@ -124,6 +130,7 @@ class LocalStringsFa extends Translations {
       'your_changes_succed' : 'اطلاعات شما با موفقیت تغییر یافت',
       'account_succed_but_info_failed' : 'حساب شما ایجاد شده است، اما نام و نام خانوادگی شما ذخیره نشد. لطفاً از طریق گزینه ویرایش آن را اضافه کنید',
       'check_your_email' : 'لطفاً وارد ایمیل خود شوید و روی لینک تایید فشار بده',
+      'change_path' : 'مسیر را از زیر تغییر دهید',
 
       // Notifcation
       'question_added' : 'سوال شما با موفقیت ثبت شد',
@@ -137,7 +144,7 @@ class LocalStringsFa extends Translations {
       'friends' : 'دوست',
 
       // Buttons
-      'btn_chat_groups' : 'اتاق بحث',
+      'btn_chats' : 'اتاق بحث',
       'btn_home': 'خانه',
       'btn_cancel': 'لغو',
       'btn_create': 'ثبت کن',

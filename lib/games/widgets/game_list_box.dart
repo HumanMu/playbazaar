@@ -35,7 +35,8 @@ class GameListBoxState extends State<GameListBox> {
         margin: const EdgeInsets.all(3),
         height: 70,
         decoration: BoxDecoration(
-          color: Colors.blue,
+          color: Colors.red[600],
+          border: Border.all(color: Colors.black12),
           borderRadius: BorderRadius.circular(10),
         ),
         child: Center(

@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:playbazaar/controller/userController/auth_controller.dart';
 import '../../api/Authentication/auth_service.dart';
 import '../../api/firestore/firestore_user.dart';
+import '../../controller/user_controller/auth_controller.dart';
 import '../../helper/sharedpreferences.dart';
 import 'avatars/primary_avatar.dart';
 import 'list_tile.dart';
@@ -74,6 +74,7 @@ class SidebarDrawerState extends State<SidebarDrawer> {
             alignment: const Alignment(0, 0),
             child: Column(
               children: [
+                const SizedBox(height: 25),
                 const PrimaryAvatarImage(editing: false),
                 Text(
                   userName,

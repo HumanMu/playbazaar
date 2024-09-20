@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:playbazaar/games/games/quiz/screens/quiz_play_page.dart';
+import 'package:playbazaar/helper/sharedpreferences.dart';
 import '../../../api/Authentication/auth_service.dart';
-import '../../../helper/sharedpreferences.dart';
 import '../../../screens/widgets/sidebar_drawer.dart';
-import '../../constants/constants.dart';
 import '../../widgets/game_list_box.dart';
+import 'functions/quiz_language.dart';
 
 class QuizMainPage extends StatefulWidget {
   const QuizMainPage({super.key});
@@ -16,38 +16,35 @@ class QuizMainPage extends StatefulWidget {
 
 class _QuizMainPage extends State<QuizMainPage> {
   AuthService authService = AuthService();
+
   List<String>? language = [];
   List<String> quizPath = [];
   List<String> quizNames = [];
+  String userRole = "";
 
   int quizLength = 0;
 
   @override
   void initState() {
     super.initState();
-    getAppLanguage();
+    _initializeLanguageSettings();
+    _initializeUserRole();
   }
 
-  Future<void> getAppLanguage() async {
-    List<String>? value = await SharedPreferencesManager.getStringList(SharedPreferencesKeys.appLanguageKey);
+
+  Future<void> _initializeLanguageSettings() async {
+    final result = await getQuizLanguage();
     setState(() {
-      if (value != null && value.isNotEmpty) {
-        language = value;
-        if (value[0] == 'fa') {
-          quizPath = quizListConstantsAfRoutes;
-          quizLength = quizListConstantsAfRoutes.length;
-          quizNames = quizListConstantsFa;
-        } else if (value[0] == 'en') {
-          quizPath = quizListConstantsEnRoutes;
-          quizLength = quizListConstantsEnRoutes.length;
-          quizNames = quizListConstantsEnRoutes;
-        }
-      } else {
-        language = ['fa', 'AF'];
-        quizPath = quizListConstantsAfRoutes;
-        quizLength = quizListConstantsAfRoutes.length;
-        quizNames = quizListConstantsFa;
-      }
+      quizPath = result['quizPath'];
+      quizLength = result['quizLength'];
+      quizNames = result['quizNames'];
+    });
+  }
+  
+  Future<void> _initializeUserRole() async {
+    final role = await SharedPreferencesManager.getString(SharedPreferencesKeys.userRoleKey) ?? "normal";
+    setState(() {
+      userRole = role;
     });
   }
 
@@ -96,17 +93,17 @@ class _QuizMainPage extends State<QuizMainPage> {
               padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 3),
               child: Text("add_question_hint".tr),
             ),
-            Row(
-              children: [
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 0, left: 5, right: 5),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Row(
+                children: [
+                  Expanded(
                     child: ElevatedButton(
                       onPressed: () {
                         Get.toNamed('/addQuestion');
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
+                          backgroundColor: Colors.green,
                           shape: const RoundedRectangleBorder(
                               borderRadius: BorderRadius.all(Radius.circular(5))
                           )
@@ -114,25 +111,23 @@ class _QuizMainPage extends State<QuizMainPage> {
                       child: Text("btn_send_question".tr),
                     ),
                   ),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only( bottom: 0, left: 5, right: 0),
+                  const SizedBox(width: 4),
+                  userRole != "normal" && userRole != ""? Expanded(
                     child: ElevatedButton(
                       onPressed: () {
                         Get.toNamed('/questionReviewPage');
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
+                          backgroundColor: Colors.green,
                           shape: const RoundedRectangleBorder(
                               borderRadius: BorderRadius.all(Radius.circular(5))
                           )
                       ),
                       child: Text("btn_review_question".tr),
                     ),
-                  ),
-                ),
-              ],
+                  ) : const Text(""),
+                ],
+              ),
             )
           ],
         )

@@ -3,7 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../api/Authentication/auth_service.dart';
-import '../../controller/userController/account_controller.dart';
+import '../../controller/user_controller/account_controller.dart';
 import '../../utils/headerstack.dart';
 import '../../utils/show_custom_snackbar.dart';
 import '../widgets/text_boxes/text_widgets.dart';

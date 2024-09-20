@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:playbazaar/api/firestore/firestore_user.dart';
-import 'package:playbazaar/screens/main_screens/profile_page.dart';
 import 'package:playbazaar/utils/show_custom_snackbar.dart';
 import '../../helper/sharedpreferences.dart';
-import '../../languages/custom_language.dart';
 import '../../models/user_model.dart';
-import '../widgets/avatars/primary_avatar.dart';
-import '../widgets/header.dart';
+import '../../utils/headerstack.dart';
 import '../widgets/text_boxes/text_inputs.dart';
 
 
@@ -59,7 +56,6 @@ class _EditPage extends State<EditPage> {
 
   @override
   void dispose() {
-    // Dispose of the controllers to avoid memory leaks
     firstnameCon.dispose();
     lastnameCon.dispose();
     aboutCon.dispose();
@@ -83,79 +79,48 @@ class _EditPage extends State<EditPage> {
         SliverFillRemaining(
           hasScrollBody: false,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Stack(
-                children: [
-                  Opacity(
-                    opacity: 0.5,
-                    child: ClipPath(
-                      clipper: Header(),
-                      child: Container(
-                        color: Colors.limeAccent,
-                        height: 205,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const HeaderStack(),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child:Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'aboutme'.tr,
+                        style: const TextStyle(color: Colors.white, fontSize: 45),
                       ),
-                    ),
-                  ),
-                  ClipPath(
-                    clipper: Header(),
-                    child: Container(
-                      color: Colors.redAccent,
-                      height: 185,
-                      alignment: Alignment.centerLeft,
-                      child: const PrimaryAvatarImage(editing: false),
-                    ),
-                  ),
-                ],
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    alignment: Alignment.center,
-                    child: TextButton(
-                      onPressed: () {
-                        CustomLanguage().languageDialog(context);
-                      },
-                      child: Text(
-                        'language'.tr,
-                        style: const TextStyle(color: Colors.red),
+                      Form(
+                        autovalidateMode: AutovalidateMode.always,
+                        onChanged: () {
+                          setState(() {
+                            Form.of(primaryFocus!.context!).save();
+                          });
+                        },
+                        child: Column(
+                          children: [
+                            CustomTextFormField(controller: firstnameCon, labelText: 'name'.tr),
+                            CustomTextFormField(controller: lastnameCon, labelText: 'lastname'.tr),
+                            CustomTextFormField(controller: aboutCon, labelText: 'aboutme'.tr),
+                          ],
+                        ),
                       ),
-                    ),
+                      const SizedBox(height: 40),
+                      Container(
+                        margin: const EdgeInsets.fromLTRB(30, 10, 30, 10),
+                        height: 50,
+                        child: SizedBox(
+                          width: 80,
+                          height: 40,
+                          child: _saveButton(),
+                        ),
+                      ), // Save button
+                    ],
                   ),
-                  Text(
-                    'aboutme'.tr,
-                    style: const TextStyle(color: Colors.white, fontSize: 45),
-                  ),
-                  Form(
-                    autovalidateMode: AutovalidateMode.always,
-                    onChanged: () {
-                      setState(() {
-                        Form.of(primaryFocus!.context!).save();
-                      });
-                    },
-                    child: Column(
-                      children: [
-                        CustomTextFormField(controller: firstnameCon, labelText: 'name'.tr),
-                        CustomTextFormField(controller: lastnameCon, labelText: 'lastname'.tr),
-                        CustomTextFormField(controller: aboutCon, labelText: 'aboutme'.tr),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 40),
-                  Container(
-                    margin: const EdgeInsets.fromLTRB(30, 10, 30, 10),
-                    height: 50,
-                    child: SizedBox(
-                      width: 80,
-                      height: 40,
-                      child: _saveButton(),
-                    ),
-                  ), // Save button
-                ],
-              ),
-            ],
-          ),
+                ),
+              ],
+            ),
         ),
       ],
     );

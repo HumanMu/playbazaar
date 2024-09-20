@@ -11,9 +11,10 @@ import 'package:playbazaar/screens/main_screens/register_page.dart';
 import 'package:playbazaar/screens/secondary_screens/email_verification_page.dart';
 import 'package:playbazaar/screens/secondary_screens/policy_page.dart';
 import 'package:playbazaar/screens/secondary_screens/recieved_requests.dart';
+import 'package:playbazaar/screens/secondary_screens/reset_password_page.dart';
 import 'package:provider/provider.dart';
 import 'api/firestore/firestore_user.dart';
-import 'controller/userController/auth_controller.dart';
+import 'controller/user_controller/auth_controller.dart';
 import 'games/games/quiz/main_quiz_page.dart';
 import 'games/games/quiz/screens/review_question_page.dart';
 import 'languages/local_strings.dart';
@@ -59,7 +60,6 @@ class PlayBazaar extends StatelessWidget {
             //locale: const Locale('en', 'US'), // Default or dynamic locale
             locale: locale,
             initialRoute: '/profile',
-            // Initial route
             getPages: [
               GetPage(
                   name: '/login',
@@ -105,6 +105,10 @@ class PlayBazaar extends StatelessWidget {
               GetPage(
                   name: '/mainQuiz',
                   page: () => const QuizMainPage()
+              ),
+              GetPage(
+                  name: '/resetPassword',
+                  page: () => ResetPasswordPage()
               ),
             ],
           );

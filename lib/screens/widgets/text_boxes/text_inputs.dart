@@ -91,11 +91,11 @@ class CustomTextInputs extends StatelessWidget {
         ? Container(
           alignment: Alignment.centerRight,
           margin: const EdgeInsets.fromLTRB(30, 5, 30, 5),
-          height: 30,
+          height: 35,
           child: Row(
             children: [
               SizedBox(
-                width: 50,
+                width: 65,
                 child: Text(
                   description?? "",
                   style: const TextStyle(

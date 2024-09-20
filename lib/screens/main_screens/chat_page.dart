@@ -34,10 +34,16 @@ class _ChatPageState extends State<ChatPage> {
   String admin = "";
 
 
-    @override
+  @override
   void initState() {
     getChat();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    messageBox.dispose();
+    super.dispose();
   }
 
   getChat() {

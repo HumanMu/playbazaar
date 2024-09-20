@@ -235,7 +235,7 @@ class _ProfilePage extends State<ProfilePage> {
           MaterialPageRoute(builder: (context) => const HomePage()),
         );
       },
-      child: Text('btn_chat_groups'.tr),
+      child: Text('btn_chats'.tr),
     );
   }
 }

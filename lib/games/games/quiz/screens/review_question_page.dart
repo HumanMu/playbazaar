@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
+import 'package:playbazaar/games/games/quiz/widgets/drop_down_list_tile.dart';
 import '../../../../api/firestore/firestore_quiz.dart';
 import '../../../../helper/sharedpreferences.dart';
 import '../../../../utils/show_custom_snackbar.dart';
-import '../../../constants/constants.dart';
 import '../../models/question_models.dart';
+import '../functions/quiz_language.dart';
 
 class ReviewQuestionsPage extends StatefulWidget {
   const ReviewQuestionsPage({super.key});
@@ -21,16 +22,20 @@ class ReviewQuestionsPageState extends State<ReviewQuestionsPage> {
 
   int? selectedQuizIndex;
   List<String>? language = [];
-  List<String> quizPath = [];
+  List<String> quizPaths = [];
   List<String> quizLabels = [];
   String? _userRole = "";
 
   List<TextEditingController> wrongAnswerControllers = [];
+  final TextEditingController pathController = TextEditingController();
+  final TextEditingController questionController = TextEditingController();
+  final TextEditingController correctAnswerController = TextEditingController();
+  final TextEditingController descriptionController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    getAppLanguage();
+    _initializeLanguageSettings();
     getUserRole();
 
     _questionsStream = _firestore.collection('games').doc('quizz').collection('quetionRequest').snapshots();
@@ -39,9 +44,16 @@ class ReviewQuestionsPageState extends State<ReviewQuestionsPage> {
   @override
   void dispose() {
     _disposeControllers();
+    pathController.dispose();
+    questionController.dispose();
+    correctAnswerController.dispose();
+    descriptionController.dispose();
+    for (var controller in wrongAnswerControllers) {
+      controller.dispose();
+    }
+    wrongAnswerControllers.clear();
     super.dispose();
   }
-
   void _disposeControllers() {
     for (var controller in wrongAnswerControllers) {
       controller.dispose();
@@ -58,23 +70,11 @@ class ReviewQuestionsPageState extends State<ReviewQuestionsPage> {
     }
   }
 
-  Future<void> getAppLanguage() async {
-    List<String>? value = await SharedPreferencesManager.getStringList(SharedPreferencesKeys.appLanguageKey);
+  Future<void> _initializeLanguageSettings() async {
+    final result = await getQuizLanguage();
     setState(() {
-      if (value != null && value.isNotEmpty) {
-        language = value;
-        if (value[0] == 'fa') {
-          quizPath = quizListConstantsAfRoutes;
-          quizLabels = quizListConstantsFa;
-        } else if (value[0] == 'en') {
-          quizPath = quizListConstantsEnRoutes;
-          quizLabels = quizListConstantsEnRoutes;
-        }
-      } else {
-        language = ['fa', 'AF'];
-        quizPath = quizListConstantsAfRoutes;
-        quizLabels = quizListConstantsFa;
-      }
+      quizPaths = result['quizPath'];
+      quizLabels = result['quizNames'];
     });
   }
 
@@ -145,17 +145,23 @@ class ReviewQuestionsPageState extends State<ReviewQuestionsPage> {
           }
 
           final question = questions[0];
-          //print("QuestionId: ${question.id}");
 
-          TextEditingController pathController = TextEditingController(text: question['path']);
+          /*TextEditingController pathController = TextEditingController(text: question['path']);
           TextEditingController questionController = TextEditingController(text: question['question']);
           TextEditingController correctAnswerController = TextEditingController(text: question['correctAnswer']);
           TextEditingController descriptionController = TextEditingController(text: question['description'] ?? '');
 
-          // Initialize controllers for wrong answers
+          wrongAnswerControllers = (question['wrongAnswers'] as String).split(',').map((answer) {
+            return TextEditingController(text: answer.trim());
+          }).toList();*/
+          pathController.text = question['path'];
+          questionController.text = question['question'];
+          correctAnswerController.text = question['correctAnswer'];
+          descriptionController.text = question['description'] ?? '';
           wrongAnswerControllers = (question['wrongAnswers'] as String).split(',').map((answer) {
             return TextEditingController(text: answer.trim());
           }).toList();
+
 
           return SingleChildScrollView(
             child: Card(
@@ -165,6 +171,18 @@ class ReviewQuestionsPageState extends State<ReviewQuestionsPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    DropDownListTile(
+                      quizLabels: quizLabels,
+                      quizPaths: quizPaths,
+                      onQuizSelected: (int? selectedIndex) {
+                        //selectedIndex != null?  quizPaths[selectedIndex] : pathController.text = question['path'];
+                        if (selectedIndex != null) {
+                          pathController.text = quizPaths[selectedIndex];
+                        } else {
+                          pathController.clear();
+                        }
+                      },
+                    ),
                     TextFormField(
                       enabled: false,
                       controller: pathController,
