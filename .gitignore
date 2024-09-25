@@ -72,3 +72,4 @@ ios/Runner/GeneratedPluginRegistrant.*
 .flutter_plugins
 google-services.json
 .env
+key.properties

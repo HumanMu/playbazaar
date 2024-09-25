@@ -69,7 +69,7 @@ class _EmailVerificationState extends State<EmailVerificationPage> {
       });
       showCustomSnackbar('verification_email_sent'.tr, true);
     } catch (e) {
-      showCustomSnackbar('not_expected_result'.tr, false);
+      showCustomSnackbar('unexpected_result'.tr, false);
     }
   }
 

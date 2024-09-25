@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+
 class FirestoreGroups {
   final String? userId;
   FirestoreGroups({this.userId});
@@ -27,6 +28,7 @@ class FirestoreGroups {
       "recentMessageSender" : "",
       "groupPassword" : groupPassword != ""? groupPassword : "",
     });
+
 
     // Update group members
     await groupDocumentReference.update ({
@@ -74,7 +76,7 @@ class FirestoreGroups {
 
   // Returning search result
   searchByGroupName(String groupName) {
-    return groupCollection.where("groupName", isEqualTo: groupName).get();
+    return groupCollection.where("name", isEqualTo: groupName).get();
   }
 
   // Returning search result
@@ -83,7 +85,6 @@ class FirestoreGroups {
     return userCollection.where("firstname", isEqualTo: splitted[0]).get();
   }
 
-  // A function that checks if user pressed joined button to a custom group 
   Future <bool> checkIfUserJoined(
       String groupName, String groupId, String userName) async {
     DocumentReference udr = userCollection.doc(userId);
@@ -106,13 +107,11 @@ class FirestoreGroups {
     DocumentSnapshot ds = await udr.get();
     List<dynamic> groups = ds['groups'];
 
-    // Two possible formats for the group entry
     String groupEntry = "${groupId}_$groupName".trim();
     String adminGroupEntry = "${groupId}_${groupName}_".trim();
     String memberEntry = "${userId}_$userName".trim();
 
     if (groups.contains(groupEntry) || groups.contains(adminGroupEntry)) {
-      // Remove both possible entries from the user's group list
       await udr.update({
         "groups": FieldValue.arrayRemove([groupEntry, adminGroupEntry]),
       });
@@ -120,12 +119,10 @@ class FirestoreGroups {
         "members": FieldValue.arrayRemove([memberEntry])
       });
 
-      // Check the number of remaining members
       DocumentSnapshot groupSnapshot = await gdr.get();
       List<dynamic> members = groupSnapshot['members'];
 
       if (members.isEmpty) {
-        // If no members left, delete the group
         await gdr.delete();
       }
     } else {
@@ -136,8 +133,6 @@ class FirestoreGroups {
         "members": FieldValue.arrayUnion([memberEntry])
       });
     }
-
-    // Optionally fetch the document again to verify changes
     DocumentSnapshot updatedDs = await udr.get();
   }
 
@@ -153,7 +148,6 @@ class FirestoreGroups {
       "recentMessageSender": chatMessageData['sender'],
       "recentMessageTime" : chatMessageData['time'].toString(),
     });
-
   }
 
 

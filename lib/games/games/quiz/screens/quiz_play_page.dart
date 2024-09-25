@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:just_audio/just_audio.dart';
 import '../../../../api/firestore/firestore_quiz.dart';
 import '../../../../controller/game_controller/game_controller.dart';
@@ -21,6 +22,7 @@ class QuizPlayScreen extends StatefulWidget {
 }
 
 class _QuizPlayScreen extends State<QuizPlayScreen> {
+  //late GameController gameController;
   late AudioPlayer _player;
   bool isLoading = true;
   int answeredQuetions = 0;
@@ -38,6 +40,7 @@ class _QuizPlayScreen extends State<QuizPlayScreen> {
   @override
   void initState() {
     super.initState();
+    //gameController = GameController(widget.selectedQuiz);
     _player = AudioPlayer();
     _playSound();
     getQuestionsFromFirestore();
@@ -49,6 +52,72 @@ class _QuizPlayScreen extends State<QuizPlayScreen> {
     super.dispose();
   }
 
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        elevation: 0,
+        title: Text(widget.quizTitle,
+          style: const TextStyle(color: Colors.white, fontSize: 30),
+        ),
+        backgroundColor: Colors.red,
+      ),
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: questionData.isEmpty? Center(
+              child: Text('empty_quizz_message'.tr,style: const TextStyle(fontSize: 16)),
+            )
+                : Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      currentQuestion,
+                      style: GoogleFonts.actor(
+                        textStyle: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: currentAnswer.length,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: ElevatedButton(
+                              onPressed: (){
+                                _playSound();
+                                //_playSound();
+                                checkAnswer(index);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: getButtonColor(index),
+                              ),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(vertical: 10),
+                                child: Text(currentAnswer[index],
+                                  style: GoogleFonts.actor(textStyle: const TextStyle(fontSize: 17)),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    ElevatedButton(onPressed: nextQuestion,
+                      child: Text("btn_next".tr),
+                    )
+                ],
+              ),
+          ),
+    );
+  }
 
   void _playSound() async {
     try {
@@ -62,89 +131,27 @@ class _QuizPlayScreen extends State<QuizPlayScreen> {
   }
 
 
-  Future<void> getQuestionsFromFirestore() async {
-    try {
-      final questionResult = await FirestoreQuiz().getRandomQuizQuestions(
-          quizId: widget.selectedQuiz);
-      setState(() {
-        questionData = questionResult;
-        isLoading = false;
-        if (questionData.isNotEmpty) {
-          currentQuestion = questionData[selectedAnswer].question;
-          currentAnswer = questionData[selectedAnswer].wrongAnswers.split(',');
-          currentAnswer.add(questionData[selectedAnswer].correctAnswer);
+  void nextQuestion() {
+    if (selectedAnswerIndex != null) {
+      // Check if there's a next question
+      if (selectedAnswer < questionData.length - 1) {
+        setState(() {
+          selectedAnswer = selectedAnswer + 1;
+          final QuizQuestionModel nextQuestion = questionData[selectedAnswer];
+          currentQuestion = nextQuestion.question;
+          currentAnswer = nextQuestion.wrongAnswers.split(',');
+          currentAnswer.add(nextQuestion.correctAnswer);
           currentAnswer.shuffle(Random());
-        }
-      });
-      isLoading = false;
-    } catch (error) {
-      setState(() {
-        isLoading = false;
-      });
+          selectedAnswerIndex = null; // Reset selected answer index for the new question
+          isCorrect = null; // Reset the correct answer state
+          answeredQuetions++;
+        });
+      } else {
+        showResult();
+      }
+    } else {
+      showCustomSnackbar('pick_an_answer'.tr, false);
     }
-  }
-
-
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        elevation: 0,
-        title: Text(widget.quizTitle,
-          style: const TextStyle(color: Colors.white, fontSize: 30),
-        ),
-        backgroundColor: Colors.red,
-      ),
-      body: isLoading? const Center(child: CircularProgressIndicator()) : Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: questionData.isEmpty? Center(
-              child: Text('empty_quizz_message'.tr,style: const TextStyle(fontSize: 16)),
-            )
-              : Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    currentQuestion,
-                    style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: currentAnswer.length,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0),
-                          child: ElevatedButton(
-                            onPressed: (){
-                              _playSound();
-                              checkAnswer(index);
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: getButtonColor(index),
-                            ),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(vertical: 10),
-                              child: Text(currentAnswer[index],
-                                style: const TextStyle(fontSize: 17 ),
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                  ElevatedButton(onPressed: nextQuestion,
-                    child: Text("btn_next".tr),
-                  )
-                ],
-              ),
-          ),
-    );
   }
 
 
@@ -176,7 +183,7 @@ class _QuizPlayScreen extends State<QuizPlayScreen> {
               const SizedBox(height: 16.0),
               ConstrainedBox(
                 constraints: BoxConstraints(
-                  maxHeight: MediaQuery.of(context).size.height * 0.7, // Max height for the dialog content
+                  maxHeight: MediaQuery.of(context).size.height * 0.7,
                 ),
                 child: SingleChildScrollView(
                   child: Column(
@@ -191,7 +198,7 @@ class _QuizPlayScreen extends State<QuizPlayScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "${"question".tr} ${index + 1}: ${attempt.question}",
+                              "${"question_hint".tr} ${index + 1}: ${attempt.question}",
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16.0,
@@ -226,7 +233,7 @@ class _QuizPlayScreen extends State<QuizPlayScreen> {
                                 ),
                               ],
                             ) : const Text(""),
-                            const Divider(), // Optional divider between questions
+                            const Divider(),
                           ],
                         ),
                       );
@@ -234,14 +241,17 @@ class _QuizPlayScreen extends State<QuizPlayScreen> {
                   ),
                 ),
               ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: ElevatedButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: Text("btn_continue".tr,
-                    style: const TextStyle(
-                        fontSize: 20,
-                        color: Colors.green
+              Container(
+                margin: const EdgeInsets.only(top: 15),
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: ElevatedButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: Text("btn_continue".tr,
+                      style: const TextStyle(
+                          fontSize: 20,
+                          color: Colors.green
+                      ),
                     ),
                   ),
                 ),
@@ -253,35 +263,35 @@ class _QuizPlayScreen extends State<QuizPlayScreen> {
     );
   }
 
+
+  Future<void> getQuestionsFromFirestore() async {
+    try {
+      final questionResult = await FirestoreQuiz().getRandomQuizQuestions(
+          quizId: widget.selectedQuiz);
+      setState(() {
+        questionData = questionResult;
+        isLoading = false;
+        if (questionData.isNotEmpty) {
+          currentQuestion = questionData[selectedAnswer].question;
+          currentAnswer = questionData[selectedAnswer].wrongAnswers.split(',');
+          currentAnswer.add(questionData[selectedAnswer].correctAnswer);
+          currentAnswer.shuffle(Random());
+        }
+      });
+      isLoading = false;
+    } catch (error) {
+      setState(() {
+        isLoading= false;
+      });
+    }
+  }
+
   Future<void> loadQuizAttempts() async {
     final quizAttemptsData = await SharedPreferencesService().loadQuizAttempts();
     if (quizAttemptsData != null) {
       setState(() {
         quizAttempts = quizAttemptsData;
       });
-    }
-  }
-
-  void nextQuestion() {
-    if (selectedAnswerIndex != null) {
-      // Check if there's a next question
-      if (selectedAnswer < questionData.length - 1) {
-        setState(() {
-          selectedAnswer = selectedAnswer + 1;
-          final QuizQuestionModel nextQuestion = questionData[selectedAnswer];
-          currentQuestion = nextQuestion.question;
-          currentAnswer = nextQuestion.wrongAnswers.split(',');
-          currentAnswer.add(nextQuestion.correctAnswer);
-          currentAnswer.shuffle(Random());
-          selectedAnswerIndex = null; // Reset selected answer index for the new question
-          isCorrect = null; // Reset the correct answer state
-          answeredQuetions++;
-        });
-      } else {
-        showResult();
-      }
-    } else {
-      showCustomSnackbar('pick_an_answer'.tr, false);
     }
   }
 

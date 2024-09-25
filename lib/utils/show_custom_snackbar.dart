@@ -25,7 +25,7 @@ void showCustomSnackbar( String message, bool successful, {int? timing}) {
       message,
       style: const TextStyle(
         color: Colors.white,
-        fontSize: 15,
+        fontSize: 16,
       ),
     ),
     //icon: Icon(Icons.warning, color: Colors.white),

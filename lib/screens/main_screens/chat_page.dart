@@ -2,8 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../api/Firestore/firestore_groups.dart';
-import '../../api/firestore/firestore_user.dart';
+import 'package:playbazaar/controller/message_controller/message_controller.dart';
+import 'package:playbazaar/utils/show_custom_snackbar.dart';
+import '../../models/message_model.dart';
 import '../secondary_screens/chat_info.dart';
 import '../widgets/cards/message_tile.dart';
 import '../widgets/text_boxes/text_widgets.dart';
@@ -13,6 +14,7 @@ class ChatPage extends StatefulWidget {
   final String chatName;
   final String userName;
   final String? recieverId;
+
 
   const ChatPage({
     super.key,
@@ -28,15 +30,15 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
+  late final MessageController _messageController;
   final String? currentUserId = FirebaseAuth.instance.currentUser!.uid;
   TextEditingController messageBox = TextEditingController();
-  Stream <QuerySnapshot> ? chats;
   String admin = "";
 
 
   @override
   void initState() {
-    getChat();
+    _messageController = Get.put(MessageController(groupId: widget.chatId));
     super.initState();
   }
 
@@ -44,25 +46,6 @@ class _ChatPageState extends State<ChatPage> {
   void dispose() {
     messageBox.dispose();
     super.dispose();
-  }
-
-  getChat() {
-    widget.recieverId==null? FirestoreGroups().getChat(widget.chatId).then((val) {
-        setState(() {
-          chats = val;
-        });
-      }) : FirestoreUser(userId: currentUserId).getChat( widget.recieverId).then((val) {
-      setState(() {
-        chats = val;
-      });
-    });
-
-
-    FirestoreGroups(userId: currentUserId).getGroupAdmin(widget.chatId).then((val) {
-      setState(() {
-        admin = val;
-      });
-    });
   }
 
   @override
@@ -86,9 +69,11 @@ class _ChatPageState extends State<ChatPage> {
           ),
         ],
       ),
-      body: Stack(
-        children: <Widget>[
-          chatMessage(),
+      body: Column(
+        children: [
+          Expanded(
+            child: chatMessage(),
+          ),
           Container(
             alignment: Alignment.bottomCenter,
             width: MediaQuery.of(context).size.width,
@@ -123,7 +108,6 @@ class _ChatPageState extends State<ChatPage> {
                       decoration: BoxDecoration(
                         color: Colors.red,
                         borderRadius: BorderRadius.circular(15),
-                  
                       ),
                       child: const Center(
                         child: Icon(
@@ -142,39 +126,50 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-  chatMessage() {
-    return StreamBuilder(
-      stream: chats,
-      builder: (context, AsyncSnapshot snapshot) {
-        return snapshot.hasData 
-          ? ListView.builder(
-            itemCount: snapshot.data.docs.length,
-            itemBuilder: (context, index) {
-              return MessageTile(
-                message: snapshot.data.docs[index]['message'],
-                sender: snapshot.data.docs[index]['sender'],
-                sendByMe: widget.userName == snapshot.data.docs[index]['sender'],
-              );
-            },
-        ) : Container();
-      }
-    );
-  }
-
   sendMessage() {
-    if(messageBox.text.isNotEmpty) {
-      Map<String, dynamic> chatMessageMap = {
-        "message": messageBox.text,
-        "sender" : widget.userName,
-        "time" : DateTime.now().millisecondsSinceEpoch,
-      };
-      widget.recieverId == null?
-           FirestoreGroups().sendMessage( widget.chatId, chatMessageMap)
-          : FirestoreUser(userId:currentUserId).sendMessage(widget.recieverId, chatMessageMap);
-
+    final messageLength = messageBox.text.length;
+    if(messageLength > 1000) {
+      showCustomSnackbar(
+          "${"current_message_length".tr}: $messageLength "
+              "${"allowed_message_length".tr}", false, timing: 6
+      );
+      return;
     }
+    Message message = Message(
+        senderId: currentUserId!,
+        senderName: widget.userName,
+        text: messageBox.text,
+        timestamp: Timestamp.now(),
+        isSentByMe: true
+    );
+    MessageController(groupId: widget.chatId).sendMessageToGroup( message );
     setState(() {
       messageBox.clear();
     });
+
+  }
+
+
+  Widget chatMessage() {
+    _messageController.listenToMessages(widget.chatId);
+    return Obx(() {
+        if (_messageController.messages.isEmpty) {
+          return const Center(
+            child: Text(''),
+          );
+        }
+        return ListView.builder(
+          itemCount: _messageController.messages.length,
+          itemBuilder: (context, index) {
+            final message = _messageController.messages[index];
+            return MessageTile(
+              message: message.text,
+              sender: message.senderName,
+              sendByMe: message.senderId == currentUserId? true: false,
+            );
+          },
+        );
+      }
+    );
   }
 }

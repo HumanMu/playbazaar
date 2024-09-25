@@ -172,11 +172,11 @@ class _LoginPage extends State<LoginPage> {
           Get.offNamed('/profile');
 
         } else {
-          showCustomSnackbar("not_expected_result".tr, false);
+          showCustomSnackbar("unexpected_result".tr, false);
           return;
         }
       } catch (e) {
-        showCustomSnackbar('not_expected_result'.tr, false);
+        showCustomSnackbar('unexpected_result'.tr, false);
         return;
       } finally {
           setState(() {

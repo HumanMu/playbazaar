@@ -16,6 +16,7 @@ class LocalStringsAr extends Translations {
       'question_hint': 'سؤال',
       'add_question_title': 'إرسال السؤال',
       'pick_quiz_hint': 'إلى أي اختبار يجب إضافة هذا؟',
+      'your_answer': 'إجابتك',
       'correct_answer': 'الإجابة الصحيحة',
       'wrong_answers': 'الإجابات الخاطئة',
       'wrong_answer': 'إجابة خاطئة',
@@ -99,7 +100,7 @@ class LocalStringsAr extends Translations {
       'friend_notfound': 'لم يتم العثور على أي صديق!',
       'registration_succed': 'تم إنشاء حسابك بنجاح',
       'authentication_failed': 'فشل التحقق. حاول مرة أخرى من فضلك',
-      'not_expected_result': 'نتيجة غير متوقعة، حاول مرة أخرى',
+      'unexpected_result': 'نتيجة غير متوقعة، حاول مرة أخرى',
       'members_notfound': 'لم يتم العثور على أي أعضاء',
       'name_is_required': 'الاسم مطلوب',
       'approved_friend_request': 'تمت الإضافة إلى قائمة أصدقائك',
@@ -125,7 +126,9 @@ class LocalStringsAr extends Translations {
       'account_succed_but_info_failed': 'تم إنشاء حسابك، لكن لم يتم حفظ اسمك ولقبك. يرجى إضافتهما من خلال خيار التعديل',
       'check_your_inbox': 'يرجى تسجيل الدخول إلى بريدك الإلكتروني والضغط على رابط التحقق',
       'change_path' : 'غير المسار من الأسفل',
-
+      'error_while_sending_message': 'تعذر إرسال رسالتك. حاول مرة أخرى!',
+      'allowed_message_length' : 'يرجى تحديد رسالتك بأقل من 1000 حرف',
+      'current_message_length' : 'طول الرسالة الحالي',
 
 
       // Notifcation

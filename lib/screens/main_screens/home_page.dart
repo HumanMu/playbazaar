@@ -6,8 +6,8 @@ import 'package:get/get.dart';
 import '../../api/Authentication/auth_service.dart';
 import '../../api/Firestore/firestore_groups.dart';
 import '../../api/firestore/firestore_user.dart';
+import '../../controller/group_controller/group_controller.dart';
 import '../../helper/sharedpreferences.dart';
-import '../../utils/show_custom_snackbar.dart';
 import '../../utils/notfound.dart';
 import '../../utils/text_boxes/text_box_decoration.dart';
 import '../secondary_screens/search_page.dart';
@@ -24,6 +24,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   AuthService authService = AuthService();
+  //late final GroupController groupController;// controller
   final String? currentUserId = FirebaseAuth.instance.currentUser!.uid;
   String userName = "";
   String userEmail = "";
@@ -43,8 +44,12 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    _isLoading = true;
     getUserData();
     getFriends();
+    //groupController = GroupController();
+
+    _isLoading = false;
   }
 
   @override
@@ -82,6 +87,7 @@ class _HomePageState extends State<HomePage> {
     }
 
     userSnapshot = await FirestoreGroups(userId: currentUserId).getGroupsList();
+
   }
 
   getFriends() async {
@@ -90,6 +96,12 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    if(_isLoading){
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -143,7 +155,7 @@ class _HomePageState extends State<HomePage> {
                   groupId: getId(user[reverseIndex]),
                   groupName: getName(user[reverseIndex])[1].trim(),
                   admin: userName,
-                  password: getName(user[reverseIndex]).length > 2?  getName(user[reverseIndex])[2]: null,
+                  password: getName(user[reverseIndex]).length > 2?  getName(user[reverseIndex])[2]: "",
                 );
               },
             );
@@ -160,6 +172,8 @@ class _HomePageState extends State<HomePage> {
       },
     );
   }
+
+
 
   popUpDialog(BuildContext context) {
     showDialog(
@@ -186,7 +200,6 @@ class _HomePageState extends State<HomePage> {
                             controller: groupNameController,
                             onChanged: (val) {
                               groupName = val;
-                              setState(() {});
                             },
                             decoration: decoration("group_name_hint".tr),
                           ),
@@ -216,22 +229,13 @@ class _HomePageState extends State<HomePage> {
                   ElevatedButton(
                     onPressed: () async {
                       if (groupNameController.text != "") {
-                        setState(() {
-                          _isLoading = true;
-                        });
-                        FirestoreGroups(
-                                userId: FirebaseAuth.instance.currentUser!.uid)
-                            .createGroup(
-                          userName,
-                          FirebaseAuth.instance.currentUser!.uid,
-                          groupNameController.text,
-                          groupPassword,
-                        )
-                            .whenComplete(() {
-                          _isLoading = false;
-                        });
+                        GroupController().createNewGroup(
+                            userName,
+                            FirebaseAuth.instance.currentUser!.uid,
+                            groupName,
+                            groupPassword
+                        );
                         Navigator.of(context).pop();
-                        showCustomSnackbar("group_created".tr, true);
                       }
                     },
                     style:

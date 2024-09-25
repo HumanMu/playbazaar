@@ -23,7 +23,6 @@ class _MessageTileState extends State<MessageTile> {
       padding: const EdgeInsets.only(
         top: 4,
       ),
-      alignment: widget.sendByMe ? Alignment.centerLeft : Alignment.centerRight,
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 8),
         padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
@@ -39,33 +38,32 @@ class _MessageTileState extends State<MessageTile> {
                   topRight: Radius.circular(7),
                   bottomLeft: Radius.circular(7),
                 ),
-          color: widget.sendByMe ? Colors.green[100] : Colors.red[100],
+          color: widget.sendByMe ? Colors.green[50] : Colors.grey[10],
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment:
-              widget.sendByMe ? MainAxisAlignment.start : MainAxisAlignment.end,
-          children: [
-            Text(
-              widget.sender,
-              style: const TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.bold,
-                letterSpacing: -0.2,
+        child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                widget.sender,
+                style: const TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: -0.2,
+                ),
               ),
-            ),
-            Text(
-              widget.message,
-              maxLines: null,
-              overflow: TextOverflow.clip,
-              style: const TextStyle(
-                fontSize: 15,
-                color: Colors.black,
+              const Divider(endIndent: 10,),
+              Expanded(
+                child: Text(
+                  widget.message,
+                  style: const TextStyle(
+                    fontSize: 15,
+                    color: Colors.black,
+                  ),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-    );
+      );
   }
 }

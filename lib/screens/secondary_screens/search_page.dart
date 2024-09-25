@@ -170,7 +170,7 @@ class _SearchPageState extends State<SearchPage> {
           return widget.searchId=="group"? searchGroupTile(
             userName, 
             searchSnapshot!.docs[index]['groupId'],
-            searchSnapshot!.docs[index]['groupName'],
+            searchSnapshot!.docs[index]['name'],
             searchSnapshot!.docs[index]['admin'],
           ) : searchFriendTile(
             user!.uid,
@@ -184,7 +184,6 @@ class _SearchPageState extends State<SearchPage> {
 
   Widget searchFriendTile(String userId, String foreignId,
       String foreignName, String foreignLastname) {
-    // Check if user already is a friend
     friendshipCheck(userId, foreignId);
 
     if(userId == foreignId){

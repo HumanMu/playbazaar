@@ -168,7 +168,7 @@ class _EditPage extends State<EditPage> {
         showCustomSnackbar('your_changes_succed'.tr, true);
       }
       else{
-        showCustomSnackbar('not_expected_result'.tr, false);
+        showCustomSnackbar('unexpected_result'.tr, false);
       }       
     }
     else{

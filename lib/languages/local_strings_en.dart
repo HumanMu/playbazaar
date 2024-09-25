@@ -16,6 +16,7 @@ class LocalStringsEn extends Translations {
       'question_hint' : 'Question',
       'add_question_title' : 'Sending Question',
       'pick_quiz_hint' : 'Which quiz should this be added to?',
+      'your_answer': 'Your answer',
       'correct_answer' : 'Correct answer',
       'wrong_answers' : 'Wrong answers',
       'wrong_answer' : 'Wrong answer',
@@ -69,7 +70,7 @@ class LocalStringsEn extends Translations {
       'my_friends': 'My Friends',
       'request_friendship' : 'Friend request',
       'delete_friend': 'Delete',
-      'my_memberships' : "My memberships",
+      'my_memberships' : "Messages",
       'write_message_here': "Write your messages here ...",
       'search_friends' : 'Search for friends ...',
       'search_groups' : 'Search for groups ...',
@@ -105,7 +106,7 @@ class LocalStringsEn extends Translations {
       'friend_notfound': 'Could not find any friend!',
       'registration_succed': 'Your account has been created succesfully',
       'authentication_failed' : 'Authentication failed. Please try again',
-      'not_expected_result' : 'An unexpected result, try again please',
+      'unexpected_result' : 'An unexpected result, try again please',
       'members_notfound' : 'Could not find any members',
       'name_is_required' : 'Name is required',
       'approved_friend_request': 'Added to the list of your friend',
@@ -131,6 +132,9 @@ class LocalStringsEn extends Translations {
       'account_succed_but_info_failed': 'Your account has been created, but your first and last name could not be saved. Please add them through the edit option',
       'check_your_inbox' : 'Please log into your email and click on the verification link',
       'change_path' : 'Change the path below',
+      'error_while_sending_message': 'Could not send your message. Please try again!',
+      'allowed_message_length' : 'Please limit your message to under 1000 characters.',
+      'current_message_length' : 'Current message length',
 
 
 

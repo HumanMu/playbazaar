@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
 import '../../api/firestore/firestore_quiz.dart';
@@ -8,6 +9,7 @@ import '../../utils/show_custom_snackbar.dart';
 
 class GameController extends GetxController {
   final AudioPlayer _player = AudioPlayer();
+
   var isLoading = true.obs;
   var questionData = <QuizQuestionModel>[].obs;
   var currentQuestion = "".obs;
@@ -21,29 +23,49 @@ class GameController extends GetxController {
   GameController(this.quizId);
 
   @override
-  void onInit() {
+  void onInit() async {
     super.onInit();
-    playSound();
+    await playSound();
+    //playSound("button/ui_clicked.wav");
     getQuestionsFromFirestore(quizId);
+    isLoading.value = false;
+  }
+  Future<void> preloadSound(String soundPath) async {
+    try {
+      await _player.setAsset(soundPath);
+    } catch (e) {
+      showCustomSnackbar("Error preloading sound", false);
+    }
+  }
+
+
+  Future<void> playSound() async {
+    try {
+      await _player.setAsset('assets/sounds/button/ui_clicked.wav');
+      _player.play();
+    } catch (e) {
+      showCustomSnackbar("Error playing sound", false);
+    }
   }
 
   Future<void> getQuestionsFromFirestore(String quizId) async {
     try {
       final questionResult = await FirestoreQuiz().getRandomQuizQuestions(quizId: quizId);
       questionData.value = questionResult;
-      isLoading.value = false;
-
       if (questionData.isNotEmpty) {
         updateCurrentQuestion();
       }
     } catch (error) {
-      isLoading.value = false;
+      if (kDebugMode) {
+        print("An error occured");
+      }
     }
   }
 
   void updateCurrentQuestion() {
     currentQuestion.value = questionData[selectedAnswer.value].question;
-    currentAnswer.value = questionData[selectedAnswer.value].wrongAnswers.split(',')..add(questionData[selectedAnswer.value].correctAnswer);
+    currentAnswer.value = questionData[selectedAnswer.value]
+        .wrongAnswers.split(',')..add(questionData[selectedAnswer.value].correctAnswer);
     currentAnswer.shuffle(Random());
   }
 
@@ -81,14 +103,7 @@ class GameController extends GetxController {
     }
   }
 
-  void playSound() async {
-    try {
-      await _player.setAsset('assets/sounds/button/ui_clicked.wav');
-      _player.play();
-    } catch (e) {
-      showCustomSnackbar("Error playing sound", false);
-    }
-  }
+
 
 // Other methods...
 }

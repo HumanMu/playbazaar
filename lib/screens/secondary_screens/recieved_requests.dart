@@ -128,7 +128,7 @@ class _RecievedRequestsState extends State<RecievedRequests> {
           return const CircularProgressIndicator();
         }
         if(snapshot.hasError || !snapshot.hasData) {
-          return Text('not_expected_result'.tr);
+          return Text('unexpected_result'.tr);
         }
         if(snapshot.data!.size == 0){
           return const Center(child: Text(" "));

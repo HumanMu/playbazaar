@@ -37,6 +37,7 @@ class _GroupTileState extends State<CustomGroupTile> {
     return GestureDetector(
       onTap:() {
         groupPasswordController.text = "";
+        print("Group password: ${widget.password}");
         if(widget.password == ""){
           navigateToAnotherScreen(
               context, ChatPage(

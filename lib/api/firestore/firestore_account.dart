@@ -34,7 +34,7 @@ class FirestoreAccount {
       }
       rethrow;
     } catch (e) {
-      showCustomSnackbar('not_expected_result'.tr, false, timing: 5);
+      showCustomSnackbar('unexpected_result'.tr, false, timing: 5);
     }
   }
 

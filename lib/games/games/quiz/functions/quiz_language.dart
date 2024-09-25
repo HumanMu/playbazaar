@@ -27,9 +27,12 @@ Future<Map<String, dynamic>> getQuizLanguage() async {
         quizNames = quizListConstantsAr;
         break;
       case 'dk':
-        quizPath = quizListConstantsRoutesDk;
+        quizPath = quizListConstantsRoutesEn;
+        quizLength = quizListConstantsRoutesEn.length;
+        quizNames = quizListConstantsEn;
+        /*quizPath = quizListConstantsRoutesDk;
         quizLength = quizListConstantsRoutesDk.length;
-        quizNames = quizListConstantsDk;
+        quizNames = quizListConstantsDk;*/
         break;
       default:
         quizPath = quizListConstantsRoutesAf;

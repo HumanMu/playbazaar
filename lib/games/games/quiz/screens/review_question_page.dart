@@ -90,7 +90,7 @@ class ReviewQuestionsPageState extends State<ReviewQuestionsPage> {
       _removeCurrentQuestion(docId);
       showCustomSnackbar('question_added_to_quiz'.tr, true);
     } else {
-      showCustomSnackbar('not_expected_result'.tr, false);
+      showCustomSnackbar('unexpected_result'.tr, false);
     }
   }
 
@@ -110,7 +110,7 @@ class ReviewQuestionsPageState extends State<ReviewQuestionsPage> {
         }
       });
     }else{
-      showCustomSnackbar('not_expected_result'.tr, false);
+      showCustomSnackbar('unexpected_result'.tr, false);
     }
 
   }

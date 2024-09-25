@@ -36,7 +36,7 @@ class AccountController extends GetxController {
     } on FirebaseAuthException catch (e) {
       _handleFirebaseAuthException(e);
     } catch (e) {
-      showCustomSnackbar('not_expected_result'.tr, false);
+      showCustomSnackbar('unexpected_result'.tr, false);
     } finally {
       isLoading.value = false;
     }
@@ -61,7 +61,7 @@ class AccountController extends GetxController {
         showCustomSnackbar('invalid_email_format'.tr, false);
         break;
       default:
-        showCustomSnackbar('not_expected_result'.tr, false);
+        showCustomSnackbar('unexpected_result'.tr, false);
     }
   }
 
@@ -78,11 +78,11 @@ class AccountController extends GetxController {
         case 'user-not-found':
           showCustomSnackbar('user_not_found'.tr, false, timing: 5);
         case 'wrong-password':
-          showCustomSnackbar('not_expected_result'.tr, false, timing: 5);
+          showCustomSnackbar('unexpected_result'.tr, false, timing: 5);
         case 'too-many-requests':
           showCustomSnackbar('too_many_requests'.tr, false, timing: 5);
         default:
-          showCustomSnackbar('not_expected_result'.tr, false, timing: 5);
+          showCustomSnackbar('unexpected_result'.tr, false, timing: 5);
       }
     }
     return false;

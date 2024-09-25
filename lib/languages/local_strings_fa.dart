@@ -17,7 +17,7 @@ class LocalStringsFa extends Translations {
       'add_question_title': 'ارسال سؤال',
       'correct_answer_hint' : 'جواب درست',
       'pick_quiz_hint' : 'به کدام آزمون اضافه شود؟',
-      'question': 'سؤال',
+      'question': 'سؤال', // Remove this but be aware of it could be used
       'your_answer': 'جواب شما',
       'correct_answer': 'جواب درست',
       'wrong_answers' : 'جواب های اشتباه',
@@ -105,7 +105,7 @@ class LocalStringsFa extends Translations {
       'friend_notfound': 'دوستی یافت نشد!',
       'registration_succed': 'ثبت نام شما با موفقیت انجام شد',
       'authentication_failed' : 'حراز هویت ناموفق بود. لطفاً دوباره تلاش کنید',
-      'not_expected_result' : 'اتفاق غیر منتظره رخ داد, لطفا دوباره تلاش کن',
+      'unexpected_result' : 'اتفاق غیر منتظره رخ داد, لطفا دوباره تلاش کن',
       'members_notfound' : 'هیچ عضوی  پیدا نشد',
       'name_is_required' : 'وارد کردن نام ضروری است!',
       'approved_friend_request': 'درخواست دوستی شما پذیرفته شد ',
@@ -131,6 +131,9 @@ class LocalStringsFa extends Translations {
       'account_succed_but_info_failed' : 'حساب شما ایجاد شده است، اما نام و نام خانوادگی شما ذخیره نشد. لطفاً از طریق گزینه ویرایش آن را اضافه کنید',
       'check_your_email' : 'لطفاً وارد ایمیل خود شوید و روی لینک تایید فشار بده',
       'change_path' : 'مسیر را از زیر تغییر دهید',
+      'error_while_sending_message': 'پیام شما ارسال نشد. دوباره تلاش کنید!',
+      'allowed_message_length' : 'لطفاً پیام خود را به کمتر از ۱۰۰۰ کاراکتر محدود کنید',
+      'current_message_length' : 'طول فعلی پیام',
 
       // Notifcation
       'question_added' : 'سوال شما با موفقیت ثبت شد',
