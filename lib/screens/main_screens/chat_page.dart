@@ -31,6 +31,7 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   late final MessageController _messageController;
+  late final ScrollController _scrollController;
   final String? currentUserId = FirebaseAuth.instance.currentUser!.uid;
   TextEditingController messageBox = TextEditingController();
   String admin = "";
@@ -38,8 +39,13 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   void initState() {
-    _messageController = Get.put(MessageController(groupId: widget.chatId));
     super.initState();
+    _messageController = Get.put(MessageController(groupId: widget.chatId));
+    _scrollController = ScrollController();
+
+    // Listen to new messages and scroll to bottom when they arrive
+    _messageController.listenToMessages(widget.chatId);
+    ever(_messageController.messages, (_) => scrollToBottom());
   }
 
   @override
@@ -160,6 +166,7 @@ class _ChatPageState extends State<ChatPage> {
         }
         return ListView.builder(
           itemCount: _messageController.messages.length,
+          controller: _scrollController,
           itemBuilder: (context, index) {
             final message = _messageController.messages[index];
             return MessageTile(
@@ -171,5 +178,14 @@ class _ChatPageState extends State<ChatPage> {
         );
       }
     );
+  }
+  void scrollToBottom() {
+    if (_scrollController.hasClients) {
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    }
   }
 }
