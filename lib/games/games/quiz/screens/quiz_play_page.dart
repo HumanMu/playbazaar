@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:just_audio/just_audio.dart';
 import '../../../../api/firestore/firestore_quiz.dart';
-import '../../../../controller/game_controller/game_controller.dart';
 import '../../../../utils/show_custom_snackbar.dart';
 import '../../models/question_models.dart';
 import '../sharedpreferences/quiz.dart';
@@ -21,13 +20,15 @@ class QuizPlayScreen extends StatefulWidget {
 
 }
 
-class _QuizPlayScreen extends State<QuizPlayScreen> {
+class _QuizPlayScreen extends State<QuizPlayScreen>{
   //late GameController gameController;
   late AudioPlayer _player;
   bool isLoading = true;
   int answeredQuetions = 0;
   late List<QuizQuestionModel> questionData = [];
   List<QuizAttempt> quizAttempts = [];
+  bool showQuestionsDetailResult = false;
+
 
   List<String> currentAnswer = [];
   late String currentQuestion = "";
@@ -40,7 +41,6 @@ class _QuizPlayScreen extends State<QuizPlayScreen> {
   @override
   void initState() {
     super.initState();
-    //gameController = GameController(widget.selectedQuiz);
     _player = AudioPlayer();
     _playSound();
     getQuestionsFromFirestore();
@@ -52,6 +52,7 @@ class _QuizPlayScreen extends State<QuizPlayScreen> {
     super.dispose();
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,6 +63,12 @@ class _QuizPlayScreen extends State<QuizPlayScreen> {
           style: const TextStyle(color: Colors.white, fontSize: 30),
         ),
         backgroundColor: Colors.red,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -93,7 +100,6 @@ class _QuizPlayScreen extends State<QuizPlayScreen> {
                             child: ElevatedButton(
                               onPressed: (){
                                 _playSound();
-                                //_playSound();
                                 checkAnswer(index);
                               },
                               style: ElevatedButton.styleFrom(
@@ -101,8 +107,10 @@ class _QuizPlayScreen extends State<QuizPlayScreen> {
                               ),
                               child: Container(
                                 padding: const EdgeInsets.symmetric(vertical: 10),
-                                child: Text(currentAnswer[index],
-                                  style: GoogleFonts.actor(textStyle: const TextStyle(fontSize: 17)),
+                                  child: Text(currentAnswer[index],
+                                    style: GoogleFonts.actor(
+                                        textStyle: const TextStyle(fontSize: 17)
+                                    ),
                                 ),
                               ),
                             ),
@@ -111,8 +119,14 @@ class _QuizPlayScreen extends State<QuizPlayScreen> {
                       ),
                     ),
                     ElevatedButton(onPressed: nextQuestion,
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: selectedAnswerIndex != null
+                              ? Colors.green
+                              : Colors.white70
+                      ),
                       child: Text("btn_next".tr),
-                    )
+                    ),
+
                 ],
               ),
           ),
@@ -132,8 +146,7 @@ class _QuizPlayScreen extends State<QuizPlayScreen> {
 
 
   void nextQuestion() {
-    if (selectedAnswerIndex != null) {
-      // Check if there's a next question
+    if ( mounted && selectedAnswerIndex != null) {
       if (selectedAnswer < questionData.length - 1) {
         setState(() {
           selectedAnswer = selectedAnswer + 1;
@@ -159,8 +172,11 @@ class _QuizPlayScreen extends State<QuizPlayScreen> {
     if (quizAttempts.isEmpty) {
       return;
     }
+    //loadQuizAttempts();
+    int numberOfCorrectAnswers = quizAttempts.where((attempt) => attempt.isCorrect).length;
+    int numberOfWrongAnswers = quizAttempts.length - numberOfCorrectAnswers;
+    int points = numberOfCorrectAnswers * 3 - quizAttempts.where((attempt) => !attempt.isCorrect).length;
 
-    loadQuizAttempts();
 
     showDialog(
       context: context,
@@ -170,21 +186,60 @@ class _QuizPlayScreen extends State<QuizPlayScreen> {
           width: MediaQuery.of(context).size.width * 0.8, // 80% of screen width
           padding: const EdgeInsets.all(16.0),
           child: Column(
-            mainAxisSize: MainAxisSize.max, // Adjust to content height
+            mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                "game_result".tr,
-                style: const TextStyle(
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.bold,
+              Container(
+                margin: EdgeInsets.all(0),
+                alignment: Alignment.center,
+                child: Text("game_result".tr,
+                  style: const TextStyle(
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-              const SizedBox(height: 16.0),
-              ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxHeight: MediaQuery.of(context).size.height * 0.7,
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("${"correct_answers".tr}:    $numberOfCorrectAnswers"),
+                        Text("${"wrong_answers".tr}:    $numberOfWrongAnswers"),
+                      ],
+                    ),
+                  ),
+
+                  Expanded( // Use Expanded to make Columns take up available space
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("${"points_earned".tr}:   $points"),
+                        motivationResult(numberOfCorrectAnswers),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              const Divider(thickness: 12, color: Colors.blueGrey),
+              const SizedBox(height: 10),
+              Container(
+                margin: EdgeInsets.all(0),
+                alignment: Alignment.center,
+                child: Text("details".tr,
+                  style: const TextStyle(
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
+              ),
+              const SizedBox(height: 10),
+
+              Expanded(
                 child: SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -221,7 +276,8 @@ class _QuizPlayScreen extends State<QuizPlayScreen> {
                               ],
                             ),
                             const SizedBox(height: 4.0),
-                            attempt.isCorrect == false? Row(
+                            attempt.isCorrect == false
+                                ? Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text("${"correct_answer".tr}: "),
@@ -232,7 +288,8 @@ class _QuizPlayScreen extends State<QuizPlayScreen> {
                                   ),
                                 ),
                               ],
-                            ) : const Text(""),
+                            )
+                                : const Text(""),
                             const Divider(),
                           ],
                         ),
@@ -241,17 +298,18 @@ class _QuizPlayScreen extends State<QuizPlayScreen> {
                   ),
                 ),
               ),
-              Container(
-                margin: const EdgeInsets.only(top: 15),
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: ElevatedButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: Text("btn_continue".tr,
-                      style: const TextStyle(
-                          fontSize: 20,
-                          color: Colors.green
-                      ),
+
+              // Button should stay fixed at the bottom
+              const SizedBox(height: 10), // Add space between content and button
+              Align(
+                alignment: Alignment.center,
+                child: ElevatedButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text(
+                    "btn_continue".tr,
+                    style: const TextStyle(
+                      fontSize: 20,
+                      color: Colors.green,
                     ),
                   ),
                 ),
@@ -264,21 +322,28 @@ class _QuizPlayScreen extends State<QuizPlayScreen> {
   }
 
 
+
+
   Future<void> getQuestionsFromFirestore() async {
     try {
       final questionResult = await FirestoreQuiz().getRandomQuizQuestions(
           quizId: widget.selectedQuiz);
-      setState(() {
-        questionData = questionResult;
+      if(mounted) {
+        setState(() {
+          questionData = questionResult;
+          isLoading = false;
+          if (questionData.isNotEmpty) {
+            currentQuestion = questionData[selectedAnswer].question;
+            currentAnswer = questionData[selectedAnswer].wrongAnswers.split(',');
+            currentAnswer.add(questionData[selectedAnswer].correctAnswer);
+            currentAnswer.shuffle(Random());
+          }
+        });
         isLoading = false;
-        if (questionData.isNotEmpty) {
-          currentQuestion = questionData[selectedAnswer].question;
-          currentAnswer = questionData[selectedAnswer].wrongAnswers.split(',');
-          currentAnswer.add(questionData[selectedAnswer].correctAnswer);
-          currentAnswer.shuffle(Random());
-        }
-      });
-      isLoading = false;
+      }
+      else {
+        return;
+      }
     } catch (error) {
       setState(() {
         isLoading= false;
@@ -286,14 +351,63 @@ class _QuizPlayScreen extends State<QuizPlayScreen> {
     }
   }
 
-  Future<void> loadQuizAttempts() async {
-    final quizAttemptsData = await SharedPreferencesService().loadQuizAttempts();
-    if (quizAttemptsData != null) {
-      setState(() {
-        quizAttempts = quizAttemptsData;
-      });
+  Widget motivationResult(int correctAnswer) {
+    if (correctAnswer <= 3) {
+      return buildMotivationText("you_can_do_better", Icons.thumb_down_alt, Colors.red, 18);
+    } else if (correctAnswer <= 5) {
+      return buildMotivationText("not_bad", Icons.thumbs_up_down, Colors.orange, 18);
+    } else if (correctAnswer <= 8) {
+      return buildMotivationText("well_done", Icons.thumb_up, Colors.green, 22);
+    } else if (correctAnswer <= 10) {
+      return buildMotivationText("excellent", Icons.star, Colors.amber, 26);
+    } else {
+      return const SizedBox();
     }
   }
+
+  Widget buildMotivationText(String text, IconData icon, Color color, double fontSize) {
+    return Text.rich(
+      TextSpan(
+        children: [
+          TextSpan(
+            text: text.tr,
+            style: TextStyle(color: color, fontSize: fontSize, fontWeight: FontWeight.bold),
+          ),
+          WidgetSpan(
+            alignment: PlaceholderAlignment.middle,
+            child: Icon(icon, color: color, size: fontSize + 6),
+          ),
+        ],
+      ),
+    );
+  }
+
+
+
+
+  Widget motivationResult1(int correctAnswer) {
+    if(correctAnswer <= 3) {
+      return Text("you_can_do_better".tr,
+        style: TextStyle(color: Colors.red),
+      );
+    }
+    else if(correctAnswer <= 5) {
+      return Text("not_bad".tr);
+    }
+    else if(correctAnswer <= 8) {
+      return Text("well_done".tr,
+        style: TextStyle(color: Colors.green, fontSize: 18),
+      );
+    }
+    else if(correctAnswer <= 10){
+      return Text("excellent".tr,
+        style: TextStyle(color: Colors.green, fontSize: 30),);
+    }
+    else{
+      return Text("");
+    }
+  }
+
 
 
   void checkAnswer(int index) {
@@ -306,7 +420,7 @@ class _QuizPlayScreen extends State<QuizPlayScreen> {
             (attempt) => attempt.question == questionData[selectedAnswer].question
     );
 
-    if (!alreadyAnswered) {
+    if (mounted && !alreadyAnswered) {
       QuizAttempt attempt = QuizAttempt(
         question: questionData[selectedAnswer].question,
         userAnswer: currentAnswer[selectedAnswerIndex!],
@@ -314,21 +428,32 @@ class _QuizPlayScreen extends State<QuizPlayScreen> {
         isCorrect: isCorrect ?? false,
       );
       quizAttempts.add(attempt);
-      SharedPreferencesService().saveQuizAttempts(quizAttempts);
+      //SharedPreferencesService().saveQuizAttempts(quizAttempts);
     }
     else {
       return showCustomSnackbar("question_is_answered".tr, false);
     }
   }
 
+
   Color getButtonColor(int index) {
     if (selectedAnswerIndex != null) {
       final isThisAnswerCorrect = currentAnswer[index] == questionData[selectedAnswer].correctAnswer;
+
       final result = isThisAnswerCorrect ? Colors.green : Colors.red;
       return result;
     } else {
-      return Colors.blue; // Default color for unselected buttons
+      return Colors.white70;
     }
   }
+
+  /*Future<void> loadQuizAttempts() async {
+    final quizAttemptsData = await SharedPreferencesService().loadQuizAttempts();
+    if (mounted && quizAttemptsData != null) {
+      setState(() {
+        quizAttempts = quizAttemptsData;
+      });
+    }
+  }*/
 
 }

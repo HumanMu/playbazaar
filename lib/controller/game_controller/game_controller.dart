@@ -26,7 +26,6 @@ class GameController extends GetxController {
   void onInit() async {
     super.onInit();
     await playSound();
-    //playSound("button/ui_clicked.wav");
     getQuestionsFromFirestore(quizId);
     isLoading.value = false;
   }

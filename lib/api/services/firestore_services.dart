@@ -61,11 +61,9 @@ class FirestoreServices extends ChangeNotifier {
         return true;
       } else {
         return false;
-        throw Exception("No fields to update");
       }
     } catch (e) {
       return false;
-      throw Exception("Failed to edit user data: $e");
     }
   }
 

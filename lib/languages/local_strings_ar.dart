@@ -18,6 +18,7 @@ class LocalStringsAr extends Translations {
       'pick_quiz_hint': 'إلى أي اختبار يجب إضافة هذا؟',
       'your_answer': 'إجابتك',
       'correct_answer': 'الإجابة الصحيحة',
+      'correct_answers': 'الإجابات الصحيحة',
       'wrong_answers': 'الإجابات الخاطئة',
       'wrong_answer': 'إجابة خاطئة',
       'more_information_add_quiz': 'مزيد من المعلومات. على سبيل المثال، المجالات التي يُستخدم فيها...',
@@ -27,6 +28,13 @@ class LocalStringsAr extends Translations {
       'notification_title': 'بازار اللعب',
       'question_is_answered': 'لقد قدمت إجابة على هذا السؤال بالفعل',
       'pick_an_answer': 'يرجى اختيار إجابة قبل المتابعة',
+      'points_earned': 'النقاط المكتسبة',
+      'you_can_do_better': 'استهدف أعلى في المرة القادمة',
+      'not_bad': 'جهد جيد، استمر في التحسين',
+      'well_done': 'عمل جيد!',
+      'excellent': ' ممتاز!',
+
+
 
       //Personal information
       'aboutme': 'نبذة عني',
@@ -89,6 +97,7 @@ class LocalStringsAr extends Translations {
       'description': 'الوصف',
       'no_description': 'لا يوجد وصف',
       'path': 'طلب الإضافة إلى',
+      'details': 'التفاصيل',
       'select' : 'اختر',
 
       //Message

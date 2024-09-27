@@ -48,7 +48,7 @@ class _ProfilePage extends State<ProfilePage> {
       fetchData();
     }
     else{
-      navigateToLogin();
+      Get.offNamed('/home');
     }
   }
 
@@ -84,19 +84,6 @@ class _ProfilePage extends State<ProfilePage> {
     }
   }
 
-  void checkEmailVerification() async {
-    final email = authService.firebaseAuth.currentUser?.email;
-    if (email != null) {
-      isEmailVerified = authService.firebaseAuth.currentUser!.emailVerified;
-      setState(() {
-        // Trigger UI rebuild to show/hide EmailVerificationCountdown
-      });
-      if (!isEmailVerified) {
-        // Optionally, you could send a verification email here if needed
-      }
-    }
-  }
-
   fetchDataFromFirestore() async {
     final firestoreUser = Provider.of<FirestoreUser>(context, listen: false);
     String? email = authService.firebaseAuth.currentUser?.email;
@@ -108,13 +95,6 @@ class _ProfilePage extends State<ProfilePage> {
         isLoading = false;
       });
     }
-  }
-
-  navigateToLogin() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const HomePage())
-    );
   }
 
 

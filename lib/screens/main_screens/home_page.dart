@@ -47,8 +47,6 @@ class _HomePageState extends State<HomePage> {
     _isLoading = true;
     getUserData();
     getFriends();
-    //groupController = GroupController();
-
     _isLoading = false;
   }
 
@@ -149,8 +147,8 @@ class _HomePageState extends State<HomePage> {
               itemCount: snapshot.data['groups'].length,
               itemBuilder: (context, index) {
                 int reverseIndex = snapshot.data['groups'].length - index -1;
-
                 final user = snapshot.data['groups'];
+
                 return CustomGroupTile(
                   groupId: getId(user[reverseIndex]),
                   groupName: getName(user[reverseIndex])[1].trim(),

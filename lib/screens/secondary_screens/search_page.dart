@@ -3,13 +3,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
+import 'package:playbazaar/controller/group_controller/group_controller.dart';
+import 'package:playbazaar/models/DTO/membership_toggler_model.dart';
 import '../../api/Firestore/firestore_groups.dart';
 import '../../api/firestore/firestore_user.dart';
 import '../../api/services/notification_services.dart';
 import '../../helper/sharedpreferences.dart';
-import '../main_screens/chat_page.dart';
-import '../widgets/text_boxes/text_widgets.dart';
 
 class SearchPage extends StatefulWidget {
   final String searchId;
@@ -167,10 +166,13 @@ class _SearchPageState extends State<SearchPage> {
         shrinkWrap: true,
         itemCount: searchSnapshot!.docs.length,
         itemBuilder: (context, index) {
+          MembershipTogglerModel toggle = MembershipTogglerModel(
+              userName: userName,
+              groupId: searchSnapshot!.docs[index]['groupId'],
+              groupName: searchSnapshot!.docs[index]['name'],
+          );
           return widget.searchId=="group"? searchGroupTile(
-            userName, 
-            searchSnapshot!.docs[index]['groupId'],
-            searchSnapshot!.docs[index]['name'],
+            toggle,
             searchSnapshot!.docs[index]['admin'],
           ) : searchFriendTile(
             user!.uid,
@@ -231,28 +233,25 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
-  Widget searchGroupTile(String userName, String groupId, String groupName, String admin) {
-     // Check if user already is a member of the group
-    joinedGroupMembers(userName, groupId, groupName, admin);
+  Widget searchGroupTile(MembershipTogglerModel toggle, String admin) {
+    joinedGroupMembers(toggle, admin);
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       leading: CircleAvatar(
         radius: 25,
         backgroundColor: Colors.red,
-        child: Text(groupName.substring(0,1).toUpperCase(),
+        child: Text(toggle.groupName.substring(0,1).toUpperCase(),
           style: const TextStyle(
             color: Colors.white,
           ),
         ),
       ),
-      title: Text(groupName, style: const TextStyle(fontWeight: FontWeight.bold, )),
+      title: Text(toggle.groupName, style: const TextStyle(fontWeight: FontWeight.bold, )),
       subtitle: Text("group_admin".tr + getName(admin),
       ),
       trailing: InkWell(
         onTap: () async {
-          await FirestoreGroups(userId: user!.uid)
-          .toggleGroupMembership(groupId, userName, groupName);
-
+          await GroupController().toggleGroupMembership(toggle, FirebaseAuth.instance.currentUser!.uid);
           if(userIsAMemberOfTheGroup) {
             setState(() {
               userIsAMemberOfTheGroup = !userIsAMemberOfTheGroup;
@@ -261,13 +260,12 @@ class _SearchPageState extends State<SearchPage> {
               showSnackBar(context, "group_membershit_succed".tr, Colors.green);
             }
             Future.delayed(const Duration(seconds: 3), () {
-              navigateToAnotherScreen(context, ChatPage(
-                chatId: groupId,
-                chatName: groupName,
-                userName: userName,
-                //recieverId: "",
-              )
-              );
+              Get.toNamed('/chat', arguments: {
+                'chatId': toggle.groupId,
+                'chatName': toggle.groupName,
+                'userName': userName,
+                'recieverId': '',
+              });
             });
           }
           else {
@@ -305,15 +303,16 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
-  joinedGroupMembers(String userName, String groupId, String groupName, String admin) async {
-    await FirestoreGroups(userId: user!.uid)
-    .checkIfUserJoined(groupName, groupId, userName)
-    .then((val){
-      setState(() {
-        userIsAMemberOfTheGroup = val;
-      });
+  joinedGroupMembers(MembershipTogglerModel toggle,  String admin) async {
+    await GroupController().checkIfUserJoined(toggle)
+        .then((val){
+          setState(() {
+            userIsAMemberOfTheGroup = val;
+          });
+
     });
   }
+
 
   friendshipCheck(String userId, String foreignId) async {
     userId != foreignId? await FirestoreUser(userId: userId)

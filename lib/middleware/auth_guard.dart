@@ -16,7 +16,6 @@ class AuthGuard extends GetMiddleware {
       return const RouteSettings(name: '/emailVerification');
     }
 
-    // Allow access if signed in and email is verified
     return null;
   }
 }

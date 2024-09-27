@@ -18,6 +18,7 @@ class LocalStringsDa extends Translations {
       'pick_quiz_hint': 'Hvilket quiz skal dette tilføjes til?',
       'your_answer': 'Dit svar',
       'correct_answer': 'Korrekt svar',
+      'correct_answers': 'Korrekte svar',
       'wrong_answers': 'Forkerte svar',
       'wrong_answer': 'Forkert svar',
       'more_information_add_quiz': 'Mere information. For eksempel områder, hvor det bruges...',
@@ -27,6 +28,13 @@ class LocalStringsDa extends Translations {
       'notification_title': 'Play Bazaar',
       'question_is_answered': 'Du har allerede givet et svar på dette spørgsmål',
       'pick_an_answer': 'Vælg et svar før du fortsætter',
+      'points_earned': 'Optjente point',
+      'you_can_do_better': 'Sig højere næste gang',
+      'not_bad': 'God indsats, bliv ved med at forbedre dig',
+      'well_done': 'Godt gået!',
+      'excellent': 'Fremragende!',
+
+
 
       //Personal information
       'aboutme': 'Om mig ',
@@ -89,6 +97,8 @@ class LocalStringsDa extends Translations {
       'description': 'Beskrivelse',
       'no_description': 'Ingen beskrivelse',
       'path': 'Anmodning om at blive tilføjet til',
+      'details': 'Detaljer',
+      'select' : 'Vælg',
 
       //Message
       'leaving_group': 'Er du sikker på, at du vil forlade gruppen?',
@@ -128,7 +138,6 @@ class LocalStringsDa extends Translations {
       'error_while_sending_message' : 'Kunne ikke sende din besked. Prøv igen!',
       'allowed_message_length' : 'Venligst begræns din besked til under 1000 tegn',
       'current_message_length' : 'Nuværende beskedlængde',
-      'select' : 'Vælg',
 
 
 

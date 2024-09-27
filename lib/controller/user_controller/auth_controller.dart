@@ -68,7 +68,6 @@ class AuthController extends GetxController {
     }
   }
 
-  // Password Reset Method
   Future<void> sendPasswordResetEmail(String email) async {
     try {
       await _auth.sendPasswordResetEmail(email: email);
@@ -79,7 +78,6 @@ class AuthController extends GetxController {
   }
 
 
-  // logout
   Future logOutUser() async{
     try {
       await SharedPreferencesManager.setBool(SharedPreferencesKeys.userLoggedInKey, false);

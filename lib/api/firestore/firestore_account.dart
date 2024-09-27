@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import '../../utils/show_custom_snackbar.dart';
 
@@ -54,7 +55,7 @@ class FirestoreAccount {
       // Delete user authentication
       User? user = FirebaseAuth.instance.currentUser;
       if (user != null) {
-        final result = await user.delete();
+        await user.delete();
       }
 
     } catch (e) {
@@ -72,19 +73,17 @@ class FirestoreAccount {
           .get();
 
       for (final doc in querySnapshot.docs) {
-        final uid = doc.id; // Get the user's UID
-
-        // Delete the document
         await doc.reference.delete();
 
-        // Remove authentication
         final user = FirebaseAuth.instance.currentUser;
         if (user != null) {
           await user.delete();
         }
       }
     } catch (e) {
-      print('Error deleting forced accounts: $e');
+      if (kDebugMode) {
+        print('Error deleting forced accounts: $e');
+      }
     }
   }
 

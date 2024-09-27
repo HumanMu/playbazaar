@@ -1,9 +1,9 @@
 
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:playbazaar/games/games/quiz/screens/add_question.dart';
+import 'package:playbazaar/screens/main_screens/chat_page.dart';
 import 'package:playbazaar/screens/main_screens/edit_page.dart';
 import 'package:playbazaar/screens/main_screens/home_page.dart';
 import 'package:playbazaar/screens/main_screens/login_pages.dart';
@@ -15,7 +15,6 @@ import 'package:playbazaar/screens/secondary_screens/recieved_requests.dart';
 import 'package:playbazaar/screens/secondary_screens/reset_password_page.dart';
 import 'package:provider/provider.dart';
 import 'api/firestore/firestore_user.dart';
-import 'controller/group_controller/group_controller.dart';
 import 'controller/user_controller/auth_controller.dart';
 import 'games/games/quiz/main_quiz_page.dart';
 import 'games/games/quiz/screens/review_question_page.dart';
@@ -25,9 +24,7 @@ import 'middleware/auth_guard.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  //await dotenv.load(fileName: "../.env");
   Get.put(AuthController());
-  //Get.put(GroupController());
 
   runApp(
     ChangeNotifierProvider(
@@ -42,9 +39,7 @@ class PlayBazaar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Initialize AuthController globally
     final authController = Get.put(AuthController());
-
 
     return GetBuilder<AuthController>(
         init: authController,
@@ -114,6 +109,18 @@ class PlayBazaar extends StatelessWidget {
               GetPage(
                   name: '/resetPassword',
                   page: () => ResetPasswordPage()
+              ),
+              GetPage(
+                name: '/chat',
+                page: () {
+                  final args = Get.arguments as Map<String, dynamic>;
+                  return ChatPage(
+                    chatId: args['chatId'],
+                    chatName: args['chatName'],
+                    userName: args['userName'],
+                    recieverId: args['recieverId'],
+                  );
+                },
               ),
             ],
           );

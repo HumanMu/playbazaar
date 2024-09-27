@@ -18,16 +18,22 @@ class LocalStringsFa extends Translations {
       'correct_answer_hint' : 'جواب درست',
       'pick_quiz_hint' : 'به کدام آزمون اضافه شود؟',
       'question': 'سؤال', // Remove this but be aware of it could be used
-      'your_answer': 'جواب شما',
-      'correct_answer': 'جواب درست',
-      'wrong_answers' : 'جواب های اشتباه',
-      'wrong_answer' : 'جواب اشتباه',
+      'your_answer': 'پاسخ شما',
+      'correct_answer': 'پاسخ درست',
+      'correct_answers': 'پاسخ‌های صحیح',
+      'wrong_answers' : 'پاسخ های اشتباه',
+      'wrong_answer' : 'پاسخ اشتباه',
       'more_information_add_quiz' : 'اطلاعات بیشتر. مثلا مناطق که استفاده میشود ...',
       'enter_your_answer_here' : 'جواب خود را اینجا وارد کنید...',
       "game_result": "نتایج بازی",
       'notification_title' : 'بازار بازی',
       'question_is_answered' : 'شما قبلاً به این پرسش پاسخ داده‌اید',
       'pick_an_answer' : 'سؤال انتخواب نکردی ',
+      'points_earned': 'امتیازهای کسب شده',
+      'you_can_do_better': 'آرزوی نتیجه بهتر در دور بعدی',
+      'not_bad': 'تلاش خوبی بود، ادامه بده',
+      'well_done': 'بهترین نتیجه!',
+      'excellent': ' عالی!',
 
 
       //Personal information
@@ -91,6 +97,7 @@ class LocalStringsFa extends Translations {
       'description' : 'توضیحات',
       'no_description' : 'توضیحات وجود ندارد ',
       'path': 'درخواست اضافه شدن به بازی',
+      'details': 'جزئیات',
       'select' : 'انتخاب کنید',
 
 

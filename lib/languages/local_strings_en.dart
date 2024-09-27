@@ -18,6 +18,7 @@ class LocalStringsEn extends Translations {
       'pick_quiz_hint' : 'Which quiz should this be added to?',
       'your_answer': 'Your answer',
       'correct_answer' : 'Correct answer',
+      'correct_answers': 'Correct answers',
       'wrong_answers' : 'Wrong answers',
       'wrong_answer' : 'Wrong answer',
       'more_information_add_quiz' : 'More information. For example, areas where it is used...',
@@ -27,6 +28,11 @@ class LocalStringsEn extends Translations {
       'notification_title' : 'Play Bazaar',
       'question_is_answered' : 'You have already provided an answer to this question',
       'pick_an_answer' : 'Please select an answer before proceeding',
+      'points_earned': 'Earned points',
+      'you_can_do_better': 'Aim higher next time',
+      'not_bad': 'Good effort, keep improving',
+      'well_done': 'Well done!',
+      'excellent': 'Excellent!',
 
 
       //Personal information
@@ -92,8 +98,8 @@ class LocalStringsEn extends Translations {
       'description' : 'Description',
       'no_description' : 'No description',
       'path': 'Request to be added to',
+      'details': 'Details',
       'select' : 'Select',
-
 
 
 

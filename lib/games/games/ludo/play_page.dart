@@ -1,4 +1,5 @@
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -45,7 +46,9 @@ class _LudoWorldWarState extends State<LudoWorldWar> {
   }
 
   _handleNavigation(String? selectedPath, String title) {
-    print("Navigation Parameter: $selectedPath");
+    if (kDebugMode) {
+      print("Navigation Parameter: $selectedPath");
+    }
   }
 
 }

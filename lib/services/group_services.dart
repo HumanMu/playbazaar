@@ -1,10 +1,11 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../models/group_model.dart';
+import '../models/DTO/membership_toggler_model.dart';
 
-class GroupsServices {
+class GroupServices {
   final String? userId;
-  GroupsServices({this.userId});
+  GroupServices({this.userId});
 
   final CollectionReference userCollection
   = FirebaseFirestore.instance.collection("users");
@@ -63,7 +64,53 @@ class GroupsServices {
     return result;
   }
 
+  Future toggleGroupMembership( MembershipTogglerModel toggle) async {
+    DocumentReference udr = userCollection.doc(userId);
+    DocumentReference gdr = groupCollection.doc(toggle.groupId);
 
+    DocumentSnapshot ds = await udr.get();
+    List<dynamic> groups = ds['groups'];
+
+    String groupEntry = "${toggle.groupId}_${toggle.groupName}".trim();
+    String adminGroupEntry = "${toggle.groupId}_${toggle.groupName}_".trim();
+    String memberEntry = "${userId}_${toggle.userName}".trim();
+
+    if (groups.contains(groupEntry) || groups.contains(adminGroupEntry)) {
+      await udr.update({
+        "groups": FieldValue.arrayRemove([groupEntry, adminGroupEntry]),
+      });
+      await gdr.update({
+        "members": FieldValue.arrayRemove([memberEntry])
+      });
+
+      DocumentSnapshot groupSnapshot = await gdr.get();
+      List<dynamic> members = groupSnapshot['members'];
+
+      if (members.isEmpty) {
+        await gdr.delete();
+      }
+    } else {
+      await udr.update({
+        "groups": FieldValue.arrayUnion([groupEntry])
+      });
+      await gdr.update({
+        "members": FieldValue.arrayUnion([memberEntry])
+      });
+    }
+  }
+
+  Future <bool> checkIfUserJoined( MembershipTogglerModel toggle) async {
+    DocumentReference udr = userCollection.doc(userId);
+    DocumentSnapshot ds = await udr.get();
+
+    List<dynamic> groups = await ds['groups'];
+    if(groups.contains("${toggle.groupId}_${toggle.groupName}")) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
 
 
 

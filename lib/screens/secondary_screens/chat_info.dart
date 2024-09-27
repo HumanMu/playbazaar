@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
+import 'package:playbazaar/controller/group_controller/group_controller.dart';
+import 'package:playbazaar/models/DTO/membership_toggler_model.dart';
 import '../../api/Firestore/firestore_groups.dart';
-import '../main_screens/home_page.dart';
 
 class ChatInfo extends StatefulWidget {
   final String chatId;
@@ -73,16 +73,15 @@ class _ChatInfoState extends State<ChatInfo> {
                       ),
                       IconButton(
                         onPressed: () async {
-                          await FirestoreGroups(
-                              userId: FirebaseAuth.instance.currentUser!.uid)
-                          .toggleGroupMembership(
-                              widget.chatId,
-                              getName(widget.adminName),
-                              widget.chatName).whenComplete(() {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => const HomePage()),
-                                );
+                          MembershipTogglerModel toggle = MembershipTogglerModel(
+                              groupId: widget.chatId,
+                              userName: getName(widget.adminName),
+                              groupName: widget.chatName
+                          );
+                          await GroupController().toggleGroupMembership(toggle,
+                              FirebaseAuth.instance.currentUser!.uid )
+                              .whenComplete((){
+                                Get.offNamed('/home');
                           });
                         }, icon: const Icon(
                         Icons.done_outline, color: Colors.green)
@@ -97,55 +96,54 @@ class _ChatInfoState extends State<ChatInfo> {
       ),
       
       body: SingleChildScrollView(
-      child: Container(
-          padding: const EdgeInsets.all(20),
-          child: Column(children: [
-                Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(25),
-                    color: Theme.of(context).primaryColor.withOpacity(0.2),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      CircleAvatar(
-                        radius: 25,
-                        backgroundImage: const AssetImage('assets/icons/kingCrown.jpeg'),
-                        child: Text(
-                          widget.chatName.substring(0,1).toUpperCase(),
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w500,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 20,),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("group".tr + widget.chatName,
+        child: Container(
+            padding: const EdgeInsets.all(20),
+            child: Column(children: [
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(25),
+                      color: Theme.of(context).primaryColor.withOpacity(0.2),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        CircleAvatar(
+                          radius: 25,
+                          backgroundImage: const AssetImage('assets/icons/kingCrown.jpeg'),
+                          child: Text(
+                            widget.chatName.substring(0,1).toUpperCase(),
                             style: const TextStyle(
-                              fontWeight: FontWeight.bold,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white,
                             ),
                           ),
-                          const SizedBox(height: 5,),
-                          Text("group_admin".tr + getName(widget.adminName),
-                            //textAlign: TextAlign.right,
-                            //textDirection: TextDirection.rtl,
-                          ),
+                        ),
+                        const SizedBox(width: 20,),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("group".tr + widget.chatName,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 5,),
+                            Text("group_admin".tr + getName(widget.adminName),
+                              //textAlign: TextAlign.right,
+                              //textDirection: TextDirection.rtl,
+                            ),
 
-                        ],
-                      ),
-                     ],
+                          ],
+                        ),
+                       ],
+                    ),
                   ),
-                ),
-                memberList(),
-              ],
-            )
+                  memberList(),
+                ],
+              )
+          ),
         ),
-      )
-
     );
   }
 
