@@ -128,6 +128,12 @@ class SidebarDrawerState extends State<SidebarDrawer> {
               ),
               ListTileWidget(
                 iconColor: Colors.red,
+                title: "settings".tr,
+                icon: Icons.settings,
+                action: () => navigateTo('settings'),
+              ),
+              ListTileWidget(
+                iconColor: Colors.red,
                 title: "policy_title".tr,
                 icon: Icons.policy_outlined,
                 action: () => navigateTo('policy'),

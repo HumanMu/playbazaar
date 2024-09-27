@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:playbazaar/controller/settings_controller/settings_controller.dart';
 import '../../../../api/firestore/firestore_quiz.dart';
 import '../../../../utils/show_custom_snackbar.dart';
 import '../../models/question_models.dart';
-import '../sharedpreferences/quiz.dart';
 
 
 class QuizPlayScreen extends StatefulWidget {
@@ -21,6 +21,7 @@ class QuizPlayScreen extends StatefulWidget {
 }
 
 class _QuizPlayScreen extends State<QuizPlayScreen>{
+  final SettingsController settingsController = Get.find<SettingsController>();
   //late GameController gameController;
   late AudioPlayer _player;
   bool isLoading = true;
@@ -134,6 +135,10 @@ class _QuizPlayScreen extends State<QuizPlayScreen>{
   }
 
   void _playSound() async {
+    if(!settingsController.isButtonSoundsEnabled.value){
+      return;
+    }
+
     try {
       await _player.setAsset('assets/sounds/button/ui_clicked.wav');
       _player.play();
@@ -155,8 +160,8 @@ class _QuizPlayScreen extends State<QuizPlayScreen>{
           currentAnswer = nextQuestion.wrongAnswers.split(',');
           currentAnswer.add(nextQuestion.correctAnswer);
           currentAnswer.shuffle(Random());
-          selectedAnswerIndex = null; // Reset selected answer index for the new question
-          isCorrect = null; // Reset the correct answer state
+          selectedAnswerIndex = null;
+          isCorrect = null;
           answeredQuetions++;
         });
       } else {
@@ -357,9 +362,9 @@ class _QuizPlayScreen extends State<QuizPlayScreen>{
     } else if (correctAnswer <= 5) {
       return buildMotivationText("not_bad", Icons.thumbs_up_down, Colors.orange, 18);
     } else if (correctAnswer <= 8) {
-      return buildMotivationText("well_done", Icons.thumb_up, Colors.green, 22);
+      return buildMotivationText("well_done", Icons.thumb_up_alt, Colors.amber, 22);
     } else if (correctAnswer <= 10) {
-      return buildMotivationText("excellent", Icons.star, Colors.amber, 26);
+      return buildMotivationText("excellent", Icons.star, Colors.green, 26);
     } else {
       return const SizedBox();
     }

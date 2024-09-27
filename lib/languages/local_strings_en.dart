@@ -88,7 +88,6 @@ class LocalStringsEn extends Translations {
       'your_message_here' : 'Write your message here ...',
       'do_have_account' : 'Have an account? ',
       'login_from_here' : 'Login from here',
-
       'reset_password': 'Reset Password',
       'enter_your_email': 'Enter your email',
       'send_reset_link': 'Send Reset Link',
@@ -100,6 +99,8 @@ class LocalStringsEn extends Translations {
       'path': 'Request to be added to',
       'details': 'Details',
       'select' : 'Select',
+      'settings': 'Settings',
+      'button_sounds': 'Button sounds',
 
 
 

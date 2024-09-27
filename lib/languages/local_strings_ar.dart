@@ -99,6 +99,8 @@ class LocalStringsAr extends Translations {
       'path': 'طلب الإضافة إلى',
       'details': 'التفاصيل',
       'select' : 'اختر',
+      'settings': 'الإعدادات',
+      'button_sounds': 'أصوات الأزرار',
 
       //Message
       'leaving_group': 'هل أنت متأكد من مغادرة المجموعة؟',

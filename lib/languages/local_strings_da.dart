@@ -99,6 +99,9 @@ class LocalStringsDa extends Translations {
       'path': 'Anmodning om at blive tilføjet til',
       'details': 'Detaljer',
       'select' : 'Vælg',
+      'settings': 'Indstillinger',
+      'button_sounds': 'Knaplyde',
+
 
       //Message
       'leaving_group': 'Er du sikker på, at du vil forlade gruppen?',

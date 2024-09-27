@@ -61,4 +61,7 @@ class SharedPreferencesKeys {
   static const String userAboutMeKey = "USERABOUTMEKEY";
   static const String userPointKey = "USERPOINTKEY";
   static const String userRoleKey = "USERROLE";
+
+  // Settings
+  static const String buttonSounds = "BUTTONSOUNDS";
 }

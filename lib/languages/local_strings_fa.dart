@@ -99,7 +99,8 @@ class LocalStringsFa extends Translations {
       'path': 'درخواست اضافه شدن به بازی',
       'details': 'جزئیات',
       'select' : 'انتخاب کنید',
-
+      'settings': 'تنظیمات',
+      'button_sounds': 'صداهای دکمه',
 
 
 

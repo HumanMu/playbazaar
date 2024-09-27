@@ -141,6 +141,10 @@ class _ChatPageState extends State<ChatPage> {
       );
       return;
     }
+    if(messageBox.text.trim().isEmpty) {
+      return;
+    }
+
     Message message = Message(
         senderId: currentUserId!,
         senderName: widget.userName,
