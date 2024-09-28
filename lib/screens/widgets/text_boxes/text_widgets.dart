@@ -5,7 +5,7 @@ const textInputDecoration =  InputDecoration(
     
   hintTextDirection: TextDirection.rtl,
   labelStyle: TextStyle(
-    color: Colors.limeAccent,
+    color: Colors.grey,
   ),
   filled: true,
   // fillColor: Colors.amber,
@@ -31,7 +31,7 @@ Widget profileButton (context, buttonText, landingPage) {
           if (states.contains(WidgetState.pressed)) {
             return Colors.redAccent;
           } else {
-            return Colors.lime[800];
+            return Colors.black;
           }
         }),),
         

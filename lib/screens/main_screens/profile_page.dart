@@ -7,6 +7,7 @@ import '../../helper/sharedpreferences.dart';
 import '../../languages/custom_language.dart';
 import 'package:provider/provider.dart';
 import '../../utils/headerstack.dart';
+import '../widgets/sidebar_drawer.dart';
 import '../widgets/text_boxes/text_inputs.dart';
 import 'edit_page.dart';
 import 'home_page.dart';
@@ -109,7 +110,23 @@ class _ProfilePage extends State<ProfilePage> {
     }
 
     return Scaffold(
-      backgroundColor: Colors.black,
+      appBar: AppBar(
+        backgroundColor: Colors.red,
+        centerTitle: true,
+        title: Text(
+          "my_page".tr,
+          style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 25
+          ),
+        ),
+      ),
+      drawer: SidebarDrawer(
+        authService: authService,
+        parentContext: context,
+      ),
+      backgroundColor: Colors.white,
       body: CustomScrollView(
         scrollDirection: Axis.vertical,
         slivers: [
@@ -118,7 +135,10 @@ class _ProfilePage extends State<ProfilePage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const HeaderStack(),
+                Image.asset('assets/images/playbazaar_profile.png',
+                  height: 250,
+                  width: 250,
+                ),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -128,7 +148,19 @@ class _ProfilePage extends State<ProfilePage> {
                         onPressed: () {
                           CustomLanguage().languageDialog(context);
                         },
-                        child: Text('language'.tr, style: const TextStyle(color: Colors.red)),
+                        child: Row (
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text('language'.tr,
+                              style: const TextStyle(
+                                color: Colors.red,
+                                fontSize: 20,
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Icon(Icons.arrow_drop_down_circle_outlined, color: Colors.red),
+                          ],
+                        ),
                       ),
                     ),
                     Text(
@@ -163,14 +195,7 @@ class _ProfilePage extends State<ProfilePage> {
                     Container(
                       margin: const EdgeInsets.fromLTRB(30, 10, 30, 10),
                       height: 50,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          _editPage(),
-                          const SizedBox(width: 5),
-                          _goToChatRoom(),
-                        ],
-                      ),
+                      child: _editPage(),
                     ), // Edit and chatpage buttons
                   ],
                 ),
@@ -184,28 +209,32 @@ class _ProfilePage extends State<ProfilePage> {
 
 
   Widget _editPage() {
-    return ElevatedButton(
-      style: ButtonStyle(
-        backgroundColor: WidgetStateProperty.resolveWith((Set<WidgetState> states) {
-          final resultColor = states.contains(WidgetState.pressed) ? Colors.redAccent : Colors.lime[800];
-          return resultColor;
-        }),
+    return SizedBox(
+      width: double.infinity,  // Makes the button take the full width of the screen
+      child: ElevatedButton(
+        style: ButtonStyle(
+          shape: WidgetStateProperty.all(
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
+          ),
+          backgroundColor: WidgetStateProperty.resolveWith((Set<WidgetState> states) {
+            final resultColor = states.contains(WidgetState.pressed) ? Colors.redAccent : Colors.green;
+            return resultColor;
+          }),
+        ),
+        onPressed: () {
+          Get.toNamed('/edit');
+        },
+        child: Text('btn_edit'.tr),
       ),
-      onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const EditPage()),
-        );
-      },
-      child: Text('btn_edit'.tr),
     );
   }
 
-  Widget _goToChatRoom() {
+
+  /*Widget _goToChatRoom() {
     return ElevatedButton(
       style: ButtonStyle(
         backgroundColor: WidgetStateProperty.resolveWith((Set<WidgetState> states) {
-          final resultColor = states.contains(WidgetState.pressed) ? Colors.redAccent : Colors.lime[800];
+          final resultColor = states.contains(WidgetState.pressed) ? Colors.redAccent : Colors.green;
           return resultColor;
         }),
       ),
@@ -217,6 +246,6 @@ class _ProfilePage extends State<ProfilePage> {
       },
       child: Text('btn_chats'.tr),
     );
-  }
+  }*/
 }
 

@@ -14,6 +14,7 @@ import 'package:playbazaar/screens/secondary_screens/email_verification_page.dar
 import 'package:playbazaar/screens/secondary_screens/policy_page.dart';
 import 'package:playbazaar/screens/secondary_screens/recieved_requests.dart';
 import 'package:playbazaar/screens/secondary_screens/reset_password_page.dart';
+import 'package:playbazaar/screens/secondary_screens/search_page.dart';
 import 'package:playbazaar/screens/secondary_screens/settings.dart';
 import 'package:provider/provider.dart';
 import 'api/firestore/firestore_user.dart';
@@ -129,6 +130,15 @@ class PlayBazaar extends StatelessWidget {
                     GetPage(
                         name: '/settings',
                         page: () => Settings()
+                    ),
+                    GetPage(
+                      name: '/search',
+                      page: () {
+                        final args = Get.arguments as Map<String, dynamic>;
+                        return SearchPage(
+                          searchId: args['searchId'],
+                        );
+                      },
                     ),
                     GetPage(
                       name: '/chat',

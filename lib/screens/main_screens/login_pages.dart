@@ -59,10 +59,8 @@ class _LoginPage extends State<LoginPage> {
                                       labelText: "email".tr,
                                       prefixIcon: const Icon(
                                         Icons.email,
-                                        color:  Colors.lightGreen,
                                       ),
                                     ),
-                                    style: const TextStyle(color: Colors.lightGreen),
                                     onChanged: (val) {
                                       setState(() {
                                           email = val;
@@ -82,11 +80,8 @@ class _LoginPage extends State<LoginPage> {
                                       labelText: "password".tr,
                                       prefixIcon: const Icon(
                                         Icons.lock,
-                                        color:  Colors.lightGreen,
                                       ),
                                     ),
-                                    style: const TextStyle(
-                                      color: Colors.amberAccent),
                                       onChanged: (val) {
                                         setState(() {
                                           password = val;

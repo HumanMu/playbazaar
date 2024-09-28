@@ -65,7 +65,20 @@ class _EditPage extends State<EditPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      appBar: AppBar(
+        backgroundColor: Colors.red,
+        centerTitle: true,
+        title: Text(
+          "my_page".tr,
+          style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 25
+          ),
+        ),
+        automaticallyImplyLeading: false,
+      ),
+      backgroundColor: Colors.white,
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : _profileInformation(context),
@@ -81,7 +94,10 @@ class _EditPage extends State<EditPage> {
           child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const HeaderStack(),
+                Image.asset('assets/images/playbazaar_profile.png',
+                  height: 250,
+                  width: 250,
+                ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child:Column(
@@ -89,7 +105,7 @@ class _EditPage extends State<EditPage> {
                     children: [
                       Text(
                         'aboutme'.tr,
-                        style: const TextStyle(color: Colors.white, fontSize: 45),
+                        style: const TextStyle(color: Colors.black, fontSize: 45),
                       ),
                       Form(
                         autovalidateMode: AutovalidateMode.always,
@@ -110,11 +126,7 @@ class _EditPage extends State<EditPage> {
                       Container(
                         margin: const EdgeInsets.fromLTRB(30, 10, 30, 10),
                         height: 50,
-                        child: SizedBox(
-                          width: 80,
-                          height: 40,
-                          child: _saveButton(),
-                        ),
+                        child: _saveButton(),
                       ), // Save button
                     ],
                   ),
@@ -127,24 +139,27 @@ class _EditPage extends State<EditPage> {
   }
 
   Widget _saveButton() {
-    return ElevatedButton(
-      style: ButtonStyle(
-        shape: WidgetStateProperty.all(
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
+    return SizedBox(
+      width: double.infinity,
+        child: ElevatedButton(
+          style: ButtonStyle(
+            shape: WidgetStateProperty.all(
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
+            ),
+            backgroundColor:
+            WidgetStateProperty.resolveWith((Set<WidgetState> states) {
+              if (states.contains(WidgetState.pressed)) {
+                return Colors.redAccent;
+              } else {
+                return Colors.green;
+              }
+            }),
+          ),
+          onPressed: () {
+            saveUserData();
+          },
+          child: Text('btn_save'.tr),
         ),
-        backgroundColor:
-        WidgetStateProperty.resolveWith((Set<WidgetState> states) {
-          if (states.contains(WidgetState.pressed)) {
-            return Colors.redAccent;
-          } else {
-            return Colors.lime[800];
-          }
-        }),
-      ),
-      onPressed: () {
-        saveUserData();
-      },
-      child: Text('btn_save'.tr),
     );
   }
 

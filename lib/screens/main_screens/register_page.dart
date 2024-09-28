@@ -64,11 +64,8 @@ class _RegisterPage extends State<RegisterPage> {
                                     labelText: "name".tr,
                                     prefixIcon: const Icon(
                                       Icons.person,
-                                      color: Colors.lightGreen,
                                     ),
                                   ),
-                                  style:
-                                  const TextStyle(color: Colors.lightGreen),
                                   onChanged: (val) {
                                     setState(() {
                                       firstname = val;
@@ -88,11 +85,8 @@ class _RegisterPage extends State<RegisterPage> {
                                     labelText: "lastname".tr + "optional".tr,
                                     prefixIcon: const Icon(
                                       Icons.person,
-                                      color: Colors.lightGreen,
                                     ),
                                   ),
-                                  style:
-                                  const TextStyle(color: Colors.lightGreen),
                                   onChanged: (val) {
                                     setState(() {
                                       lastname = val;
@@ -106,11 +100,8 @@ class _RegisterPage extends State<RegisterPage> {
                                     labelText: "email".tr,
                                     prefixIcon: const Icon(
                                       Icons.email,
-                                      color: Colors.lightGreen,
                                     ),
                                   ),
-                                  style:
-                                  const TextStyle(color: Colors.lightGreen),
                                   onChanged: (val) {
                                     setState(() {
                                       email = val;
@@ -124,11 +115,8 @@ class _RegisterPage extends State<RegisterPage> {
                                     labelText: "password".tr,
                                     prefixIcon: const Icon(
                                       Icons.lock,
-                                      color: Colors.lightGreen,
                                     ),
                                   ),
-                                  style:
-                                  const TextStyle(color: Colors.lightGreen),
                                   onChanged: (val) {
                                     setState(() {
                                       password = val;
@@ -142,11 +130,8 @@ class _RegisterPage extends State<RegisterPage> {
                                     labelText: "re_password".tr,
                                     prefixIcon: const Icon(
                                       Icons.lock,
-                                      color: Colors.lightGreen,
                                     ),
                                   ),
-                                  style:
-                                  const TextStyle(color: Colors.lightGreen),
                                   onChanged: (val) {
                                     setState(() {
                                       password2 = val;

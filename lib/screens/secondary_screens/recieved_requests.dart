@@ -2,12 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:playbazaar/screens/secondary_screens/search_page.dart';
 import '../../api/firestore/firestore_user.dart';
 import '../../utils/show_custom_snackbar.dart';
 import '../widgets/cards/friends_list_tile.dart';
 import '../widgets/cards/recieved_requests_tile.dart';
-import '../widgets/text_boxes/text_widgets.dart';
 
 class RecievedRequests extends StatefulWidget {
   const RecievedRequests({super.key});
@@ -47,7 +45,7 @@ class _RecievedRequestsState extends State<RecievedRequests> {
         actions: [
           IconButton(
             onPressed: () {
-              navigateToAnotherScreen(context, const SearchPage(searchId:'friend'));
+              Get.toNamed('/search', arguments: 'friends');
             },icon: const Icon(Icons.search),
           ),
         ],
