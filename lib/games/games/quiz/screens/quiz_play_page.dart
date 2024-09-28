@@ -76,7 +76,9 @@ class _QuizPlayScreen extends State<QuizPlayScreen>{
           : Padding(
             padding: const EdgeInsets.all(16.0),
             child: questionData.isEmpty? Center(
-              child: Text('empty_quizz_message'.tr,style: const TextStyle(fontSize: 16)),
+              child: Text('empty_quizz_message'.tr,
+                  style: const TextStyle(fontSize: 16)
+              ),
             )
                 : Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -93,32 +95,53 @@ class _QuizPlayScreen extends State<QuizPlayScreen>{
                     ),
                     const SizedBox(height: 20),
                     Expanded(
-                      child: ListView.builder(
-                        itemCount: currentAnswer.length,
-                        itemBuilder: (context, index) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8.0),
-                            child: ElevatedButton(
-                              onPressed: (){
-                                _playSound();
-                                checkAnswer(index);
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: getButtonColor(index),
-                              ),
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(vertical: 10),
-                                  child: Text(currentAnswer[index],
-                                    style: GoogleFonts.actor(
-                                        textStyle: const TextStyle(fontSize: 17)
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Flexible(
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: currentAnswer.length,
+                              itemBuilder: (context, index) {
+                                return Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: 5.0),
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      _playSound();
+                                      checkAnswer(index);
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: getButtonColor(index),
                                     ),
-                                ),
-                              ),
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(vertical: 10),
+                                      child: Text(
+                                        currentAnswer[index],
+                                        style: GoogleFonts.actor(
+                                          textStyle: const TextStyle(fontSize: 17),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
                             ),
-                          );
-                        },
+                          ),
+                          isCorrect != null && isCorrect!? Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text("correct_answer".tr,
+                              style: TextStyle(color: Colors.green, fontSize: 30)),
+                          ) : Container(),
+                          isCorrect != null && !isCorrect!? Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text("${"wrong_answer".tr}  ",
+                                style: TextStyle(color: Colors.red, fontSize: 30)
+                            ),
+                          ) : Container(),
+                        ],
                       ),
                     ),
+
                     ElevatedButton(onPressed: nextQuestion,
                       style: ElevatedButton.styleFrom(
                           backgroundColor: selectedAnswerIndex != null
@@ -212,8 +235,8 @@ class _QuizPlayScreen extends State<QuizPlayScreen>{
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("${"correct_answers".tr}:    $numberOfCorrectAnswers"),
-                        Text("${"wrong_answers".tr}:    $numberOfWrongAnswers"),
+                        Text("${"correct_answers".tr}:  $numberOfCorrectAnswers"),
+                        Text("${"wrong_answers".tr}:  $numberOfWrongAnswers"),
                       ],
                     ),
                   ),
@@ -283,17 +306,17 @@ class _QuizPlayScreen extends State<QuizPlayScreen>{
                             const SizedBox(height: 4.0),
                             attempt.isCorrect == false
                                 ? Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text("${"correct_answer".tr}: "),
-                                Expanded(
-                                  child: Text(
-                                    attempt.correctAnswer,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              ],
-                            )
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text("${"correct_answer".tr}: "),
+                                    Expanded(
+                                      child: Text(
+                                        attempt.correctAnswer,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  ],
+                                )
                                 : const Text(""),
                             const Divider(),
                           ],
@@ -309,7 +332,10 @@ class _QuizPlayScreen extends State<QuizPlayScreen>{
               Align(
                 alignment: Alignment.center,
                 child: ElevatedButton(
-                  onPressed: () => Navigator.of(context).pop(),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    Get.offNamed('/mainQuiz');
+                  },
                   child: Text(
                     "btn_continue".tr,
                     style: const TextStyle(
@@ -325,8 +351,6 @@ class _QuizPlayScreen extends State<QuizPlayScreen>{
       ),
     );
   }
-
-
 
 
   Future<void> getQuestionsFromFirestore() async {
@@ -358,7 +382,7 @@ class _QuizPlayScreen extends State<QuizPlayScreen>{
 
   Widget motivationResult(int correctAnswer) {
     if (correctAnswer <= 3) {
-      return buildMotivationText("you_can_do_better", Icons.thumb_down_alt, Colors.red, 18);
+      return buildMotivationText("you_can_do_better", Icons.thumb_down_alt, Colors.red, 14);
     } else if (correctAnswer <= 5) {
       return buildMotivationText("not_bad", Icons.thumbs_up_down, Colors.orange, 18);
     } else if (correctAnswer <= 8) {
@@ -386,33 +410,6 @@ class _QuizPlayScreen extends State<QuizPlayScreen>{
       ),
     );
   }
-
-
-
-
-  Widget motivationResult1(int correctAnswer) {
-    if(correctAnswer <= 3) {
-      return Text("you_can_do_better".tr,
-        style: TextStyle(color: Colors.red),
-      );
-    }
-    else if(correctAnswer <= 5) {
-      return Text("not_bad".tr);
-    }
-    else if(correctAnswer <= 8) {
-      return Text("well_done".tr,
-        style: TextStyle(color: Colors.green, fontSize: 18),
-      );
-    }
-    else if(correctAnswer <= 10){
-      return Text("excellent".tr,
-        style: TextStyle(color: Colors.green, fontSize: 30),);
-    }
-    else{
-      return Text("");
-    }
-  }
-
 
 
   void checkAnswer(int index) {

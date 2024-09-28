@@ -33,6 +33,7 @@ class LocalStringsEn extends Translations {
       'not_bad': 'Good effort, keep improving',
       'well_done': 'Well done!',
       'excellent': 'Excellent!',
+      'correct' : 'Correct',
 
 
       //Personal information

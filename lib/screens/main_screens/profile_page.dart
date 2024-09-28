@@ -6,11 +6,8 @@ import '../../api/firestore/firestore_user.dart';
 import '../../helper/sharedpreferences.dart';
 import '../../languages/custom_language.dart';
 import 'package:provider/provider.dart';
-import '../../utils/headerstack.dart';
 import '../widgets/sidebar_drawer.dart';
 import '../widgets/text_boxes/text_inputs.dart';
-import 'edit_page.dart';
-import 'home_page.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
