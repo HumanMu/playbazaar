@@ -141,7 +141,8 @@ class LocalStringsEn extends Translations {
       'check_your_inbox' : 'Please log into your email and click on the verification link',
       'change_path' : 'Change the path below',
       'error_while_sending_message': 'Could not send your message. Please try again!',
-      'allowed_message_length' : 'Please limit your message to under 1000 characters.',
+      'allowed_message_length_1000' : 'Please limit your message to under 1000 characters.',
+      'allowed_message_length_300' : 'Please limit your message to under 300 characters.',
       'current_message_length' : 'Current message length',
 
 

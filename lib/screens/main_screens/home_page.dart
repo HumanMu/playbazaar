@@ -10,10 +10,9 @@ import '../../controller/group_controller/group_controller.dart';
 import '../../helper/sharedpreferences.dart';
 import '../../utils/notfound.dart';
 import '../../utils/text_boxes/text_box_decoration.dart';
-import '../secondary_screens/search_page.dart';
 import '../widgets/cards/custom_group_tile.dart';
 import '../widgets/sidebar_drawer.dart';
-import '../widgets/text_boxes/text_widgets.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -85,7 +84,6 @@ class _HomePageState extends State<HomePage> {
     }
 
     userSnapshot = await FirestoreGroups(userId: currentUserId).getGroupsList();
-
   }
 
   getFriends() async {
@@ -105,10 +103,9 @@ class _HomePageState extends State<HomePage> {
         actions: [
           IconButton(
             onPressed: () {
-              navigateToAnotherScreen(
-                  context, const SearchPage(searchId: 'group'));
+              Get.toNamed('/search', arguments: {'searchId': 'group'});
             },
-            icon: const Icon(Icons.search),
+            icon: const Icon(Icons.search, color: Colors.white,),
           ),
         ],
         backgroundColor: Colors.red,
@@ -141,7 +138,6 @@ class _HomePageState extends State<HomePage> {
       stream: userSnapshot,
       builder: (context, AsyncSnapshot snapshot) {
         if (snapshot.hasData && snapshot.data['groups'] != null) {
-          // If snapshot contain data og 'group'
           if (snapshot.data['groups'].length != 0) {
             return ListView.builder(
               itemCount: snapshot.data['groups'].length,

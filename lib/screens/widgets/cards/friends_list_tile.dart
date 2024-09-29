@@ -54,30 +54,38 @@ class _FriendsListTile extends State<FriendsListTile> {
         ));
       },
 
-      child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 20),
-        leading: CircleAvatar(
-          radius: 12,
-          backgroundColor: Colors.amber,
-          child: Text(
-            widget.firstname.substring(0, 1).toUpperCase(),
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: Colors.red,
-              fontWeight: FontWeight.w300,
+      child: Container(
+        color: Colors.white70,
+        child: ListTile(
+          contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+          leading: CircleAvatar(
+            radius: 25,
+            backgroundColor: Colors.red,
+            child: Text(
+              widget.firstname.substring(0, 1).toUpperCase(),
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 25,
+              ),
             ),
           ),
-        ),
-        title:Text("${widget.firstname} ${widget.lastname}",
-          textAlign: TextAlign.start,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
+          title:Text("${widget.firstname} ${widget.lastname}",
+            textAlign: TextAlign.start,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          subtitle: Row(
+            children: [
+              widget.availabilityState == "Online"
+              ?Text('online'.tr, style: const TextStyle(color: Colors.green, fontSize: 11))
+              :Text('offline'.tr, style: const TextStyle(color: Colors.black, fontSize: 12)),
+            ]
           ),
         ),
-        subtitle: widget.availabilityState == "Online"
-            ? Text('online'.tr, style: const TextStyle(color: Colors.green, fontSize: 11))
-            :Text('offline'.tr, style: const TextStyle(color: Colors.black, fontSize: 12)),
-      ),
+      )
     );
   }
 }

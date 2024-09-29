@@ -75,7 +75,6 @@ class _EditPage extends State<EditPage> {
               fontSize: 25
           ),
         ),
-        automaticallyImplyLeading: false,
       ),
       backgroundColor: Colors.white,
       body: isLoading
@@ -93,10 +92,10 @@ class _EditPage extends State<EditPage> {
           child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Image.asset('assets/images/playbazaar_profile.png',
-                  height: 250,
-                  width: 250,
-                ),
+                Flexible(child: Image.asset('assets/images/playbazaar_caffe.png',
+                  height: 300,
+                  width: 300,
+                ),),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child:Column(
@@ -117,11 +116,10 @@ class _EditPage extends State<EditPage> {
                           children: [
                             CustomTextFormField(controller: firstnameCon, labelText: 'name'.tr),
                             CustomTextFormField(controller: lastnameCon, labelText: 'lastname'.tr),
-                            CustomTextFormField(controller: aboutCon, labelText: 'aboutme'.tr),
+                            CustomTextFormField(controller: aboutCon, maxLine: 6, labelText: 'aboutme'.tr),
                           ],
                         ),
                       ),
-                      const SizedBox(height: 40),
                       Container(
                         margin: const EdgeInsets.fromLTRB(30, 10, 30, 10),
                         height: 50,
@@ -163,6 +161,14 @@ class _EditPage extends State<EditPage> {
   }
 
   Future<void> saveUserData() async {
+    int messageLength = aboutCon.text.length;
+    if(messageLength > 300){
+      showCustomSnackbar(
+          "${"current_message_length".tr}: $messageLength "
+              "${"allowed_message_length_300".tr}", false, timing: 6
+      );
+      return;
+    }
     if(
       firstnameCon.text.trim() != userProfileModel.firstName?.trim() 
       || lastnameCon.text.trim() != userProfileModel.lastName?.trim()

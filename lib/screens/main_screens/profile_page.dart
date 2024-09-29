@@ -126,18 +126,19 @@ class _ProfilePage extends State<ProfilePage> {
       backgroundColor: Colors.white,
       body: CustomScrollView(
         scrollDirection: Axis.vertical,
+        shrinkWrap: true,
         slivers: [
           SliverFillRemaining(
             hasScrollBody: false,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Image.asset('assets/images/playbazaar_profile.png',
-                  height: 250,
-                  width: 250,
+                Image.asset('assets/images/playbazaar_caffe.png',
+                  height: 300,
+                  width: 300,
                 ),
                 Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Container(
                       alignment: Alignment.center,
@@ -169,26 +170,21 @@ class _ProfilePage extends State<ProfilePage> {
                         CustomTextInputs(
                           description: "name".tr,
                           value: "${userProfileModel.firstName} ${userProfileModel.lastName}",
-                          edit: false,
                         ),
                         CustomTextInputs(
                           description: "email".tr,
                           value: userProfileModel.email,
-                          edit: false,
                         ),
                         CustomTextInputs(
                           description: "points".tr,
                           value: userProfileModel.userPoint.toString(),
-                          edit: false,
                         ),
                         CustomTextInputs(
                           description: "me".tr,
                           value: userProfileModel.aboutMe ?? "",
-                          edit: false,
-                        ),
+                        )
                       ],
                     ),
-                    const SizedBox(height: 40),
                     Container(
                       margin: const EdgeInsets.fromLTRB(30, 10, 30, 10),
                       height: 50,
@@ -226,23 +222,5 @@ class _ProfilePage extends State<ProfilePage> {
     );
   }
 
-
-  /*Widget _goToChatRoom() {
-    return ElevatedButton(
-      style: ButtonStyle(
-        backgroundColor: WidgetStateProperty.resolveWith((Set<WidgetState> states) {
-          final resultColor = states.contains(WidgetState.pressed) ? Colors.redAccent : Colors.green;
-          return resultColor;
-        }),
-      ),
-      onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const HomePage()),
-        );
-      },
-      child: Text('btn_chats'.tr),
-    );
-  }*/
 }
 

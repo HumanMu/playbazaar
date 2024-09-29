@@ -113,5 +113,10 @@ class GroupServices {
   }
 
 
+  Stream<DocumentSnapshot> getGroupMember(String groupId) {
+    return groupCollection.doc(groupId).snapshots();
+  }
+
+
 
 }

@@ -3,63 +3,51 @@ import 'package:flutter/material.dart';
 class CustomTextInputs extends StatelessWidget {
   final String? description;
   final String value;
-  final TextEditingController? textEditCon;
-  final bool edit;
   final Color? color;
 
   const CustomTextInputs({
     super.key,
     this.description,
     required this.value,
-    required this.edit,
-    this.textEditCon,
     this.color,
   });
 
   @override
   Widget build(BuildContext context) {
-    return _entryRow(description, value, textEditCon, edit);
+    return _entryRow(description, value);
   }
 
   Widget _entryRow(
-      String? description, String value, TextEditingController? textEditCon, bool edit) {
-    return edit == false
-        ? Container(
-          alignment: Alignment.centerRight,
-          margin: const EdgeInsets.fromLTRB(30, 5, 30, 5),
-          height: 35,
-          child: Row(
-            children: [
-              SizedBox(
-                width: 65,
-                child: Text(
-                  description?? "",
-                  style: TextStyle(
-                    color: color ?? Colors.black,
-                  ),
-                ),
+      String? description, String value) {
+    print("Text length: ${value?.length}");
+    return Container(
+      margin: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+      child: Row(
+        children: [
+          // Use Expanded to stretch the widget to fill available space
+          SizedBox(
+            width: 70,
+            child: Text(
+              description ?? "",
+              style: TextStyle(
+                color: color ?? Colors.black,
               ),
-              SizedBox(
-                child: Text(
-                  value.isNotEmpty? value : '',
-                  style: TextStyle(
-                    color: color ?? Colors.black,
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
-        )
-        : TextFormField(
-            controller: textEditCon,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0)),
+          // Also use Expanded for the value to take up the remaining space
+          Expanded(
+            child: Text(
+              value.isNotEmpty ? value : '',
+              style: TextStyle(
+                color: color ?? Colors.black,
+              ),
             ),
-            style: TextStyle(
-              color: color ?? Colors.black,
-            ),
-          );
+          ),
+        ],
+      ),
+    );
   }
+
 }
 
 
@@ -68,13 +56,15 @@ class CustomTextInputs extends StatelessWidget {
 class CustomTextFormField extends StatelessWidget {
   final TextEditingController controller;
   final String? labelText;
+  final int? maxLine;
 
-  const CustomTextFormField({super.key, required this.controller, this.labelText});
+  const CustomTextFormField({super.key, required this.controller, this.maxLine = 1, this.labelText});
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller, // Use the controller here
+      maxLines: maxLine,
       decoration: InputDecoration(
         labelText: labelText?? "",
       ),

@@ -32,11 +32,6 @@ class FirestoreGroups {
     return docSnap["admin"];
   }
 
-  // group member of a custom group
-  getGroupMember(groupId) {
-    return groupCollection.doc(groupId).snapshots();
-  }
-
   // Returning search result
   searchByGroupName(String groupName) {
     return groupCollection.where("name", isEqualTo: groupName).get();

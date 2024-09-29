@@ -5,9 +5,7 @@ import 'package:get/get.dart';
 import 'package:playbazaar/controller/message_controller/message_controller.dart';
 import 'package:playbazaar/utils/show_custom_snackbar.dart';
 import '../../models/message_model.dart';
-import '../secondary_screens/chat_info.dart';
 import '../widgets/cards/message_tile.dart';
-import '../widgets/text_boxes/text_widgets.dart';
 
 class ChatPage extends StatefulWidget {
   final String chatId;
@@ -65,13 +63,13 @@ class _ChatPageState extends State<ChatPage> {
         actions: [
           IconButton(
             onPressed: () {
-              navigateToAnotherScreen(context, ChatInfo(
-                chatId: widget.chatId,
-                chatName: widget.chatName,
-                adminName: admin,
-              ));
+              Get.toNamed('/chatinfo', arguments: {
+                'chatId': widget.chatId,
+                'chatName': widget.chatName,
+                'adminName': admin,
+              });
             },
-            icon: const Icon(Icons.info),
+            icon: const Icon(Icons.info, color: Colors.white70,),
           ),
         ],
       ),
@@ -137,7 +135,7 @@ class _ChatPageState extends State<ChatPage> {
     if(messageLength > 1000) {
       showCustomSnackbar(
           "${"current_message_length".tr}: $messageLength "
-              "${"allowed_message_length".tr}", false, timing: 6
+              "${"allowed_message_length_1000".tr}", false, timing: 6
       );
       return;
     }

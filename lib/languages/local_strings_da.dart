@@ -139,7 +139,8 @@ class LocalStringsDa extends Translations {
       'check_your_inbox': 'Log venligst ind på din e-mail og klik på bekræftelseslinket',
       'change_path' : 'Ændr stien nedenfor',
       'error_while_sending_message' : 'Kunne ikke sende din besked. Prøv igen!',
-      'allowed_message_length' : 'Venligst begræns din besked til under 1000 tegn',
+      'allowed_message_length_1000' : 'Venligst begræns din besked til under 1000 tegn',
+      'allowed_message_length_300' : 'Venligst begræns din besked til under 300 tegn',
       'current_message_length' : 'Nuværende beskedlængde',
 
 

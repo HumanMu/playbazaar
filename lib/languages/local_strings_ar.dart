@@ -139,6 +139,8 @@ class LocalStringsAr extends Translations {
       'change_path' : 'غير المسار من الأسفل',
       'error_while_sending_message': 'تعذر إرسال رسالتك. حاول مرة أخرى!',
       'allowed_message_length' : 'يرجى تحديد رسالتك بأقل من 1000 حرف',
+      'allowed_message_length_1000' : 'يرجى تحديد رسالتك بأقل من 1000 حرف',
+      'allowed_message_length_300' : 'يرجى تحديد رسالتك بأقل من 300 حرف',
       'current_message_length' : 'طول الرسالة الحالي',
 
 

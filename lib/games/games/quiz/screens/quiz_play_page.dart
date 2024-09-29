@@ -134,7 +134,7 @@ class _QuizPlayScreen extends State<QuizPlayScreen>{
                           ) : Container(),
                           isCorrect != null && !isCorrect!? Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Text("${"wrong_answer".tr}  ",
+                            child: Text("${"wrong_answer".tr} ",
                                 style: TextStyle(color: Colors.red, fontSize: 30)
                             ),
                           ) : Container(),

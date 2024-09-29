@@ -140,7 +140,8 @@ class LocalStringsFa extends Translations {
       'check_your_email' : 'لطفاً وارد ایمیل خود شوید و روی لینک تایید فشار بده',
       'change_path' : 'مسیر را از زیر تغییر دهید',
       'error_while_sending_message': 'پیام شما ارسال نشد. دوباره تلاش کنید!',
-      'allowed_message_length' : 'لطفاً پیام خود را به کمتر از ۱۰۰۰ کاراکتر محدود کنید',
+      'allowed_message_length_1000' : 'لطفاً پیام خود را به کمتر از ۱۰۰۰ کاراکتر محدود کنید',
+      'allowed_message_length_300' : 'لطفاً پیام خود را به کمتر از ۳۰۰ کاراکتر محدود کنید',
       'current_message_length' : 'طول فعلی پیام',
 
       // Notifcation

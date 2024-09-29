@@ -112,24 +112,29 @@ class FirestoreUser extends ChangeNotifier {
     }
   }
 
-  acceptFriendRequest(String friendId) async {
+  Future<bool> acceptFriendRequest(String friendId) async {
     DocumentReference docRef =  userCollection.doc(userId)
         .collection('friendRequests').doc(friendId);
     DocumentSnapshot docSnap = await docRef.get();
     DocumentReference docRefUser =  userCollection.doc(userId);
     DocumentReference docRefFriend =  userCollection.doc(friendId);
+    try {
+      if(docSnap.exists){
+        await FirestoreServices().saveFriend(userId!, friendId, 'friends');
+        await FirestoreServices().saveFriend(friendId, userId!, 'friends');
 
-    if(docSnap.exists){
-      await FirestoreServices().saveFriend(userId!, friendId, 'friends');
-      await FirestoreServices().saveFriend(friendId, userId!, 'friends');
-
-      await docRefUser.update({
-        "friendsId": FieldValue.arrayUnion([friendId])
-      });
-      await docRefFriend.update({
-        "friendsId": FieldValue.arrayUnion([userId])
-      });
-      docRef.delete();
+        await docRefUser.update({
+          "friendsId": FieldValue.arrayUnion([friendId])
+        });
+        await docRefFriend.update({
+          "friendsId": FieldValue.arrayUnion([userId])
+        });
+        docRef.delete();
+        return true;
+      }
+      return false;
+    }catch(e) {
+      return false;
     }
   }
 

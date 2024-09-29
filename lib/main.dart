@@ -10,6 +10,7 @@ import 'package:playbazaar/screens/main_screens/home_page.dart';
 import 'package:playbazaar/screens/main_screens/login_pages.dart';
 import 'package:playbazaar/screens/main_screens/profile_page.dart';
 import 'package:playbazaar/screens/main_screens/register_page.dart';
+import 'package:playbazaar/screens/secondary_screens/chat_info.dart';
 import 'package:playbazaar/screens/secondary_screens/email_verification_page.dart';
 import 'package:playbazaar/screens/secondary_screens/policy_page.dart';
 import 'package:playbazaar/screens/secondary_screens/recieved_requests.dart';
@@ -85,7 +86,7 @@ class PlayBazaar extends StatelessWidget {
                     GetPage(
                       name: '/profile',
                       page: () => const ProfilePage(),
-                      middlewares: [AuthGuard()], // Apply AuthGuard middleware
+                      middlewares: [AuthGuard()],
                     ),
                     GetPage(
                       name: '/emailVerification',
@@ -149,6 +150,17 @@ class PlayBazaar extends StatelessWidget {
                           chatName: args['chatName'],
                           userName: args['userName'],
                           recieverId: args['recieverId'],
+                        );
+                      },
+                    ),
+                    GetPage(
+                      name: '/chatinfo',
+                      page: () {
+                        final args = Get.arguments as Map<String, dynamic>;
+                        return ChatInfo(
+                          chatId: args['chatId'],
+                          chatName: args['chatName'],
+                          adminName: args['adminName'],
                         );
                       },
                     ),

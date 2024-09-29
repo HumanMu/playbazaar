@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:playbazaar/controller/group_controller/group_controller.dart';
 import 'package:playbazaar/models/DTO/membership_toggler_model.dart';
+import 'package:playbazaar/utils/show_custom_snackbar.dart';
 import '../../api/Firestore/firestore_groups.dart';
 import '../../api/firestore/firestore_user.dart';
 import '../../api/services/notification_services.dart';
@@ -166,20 +167,24 @@ class _SearchPageState extends State<SearchPage> {
         shrinkWrap: true,
         itemCount: searchSnapshot!.docs.length,
         itemBuilder: (context, index) {
-          MembershipTogglerModel toggle = MembershipTogglerModel(
+          if(widget.searchId == 'group') {
+            MembershipTogglerModel toggle = MembershipTogglerModel(
               userName: userName,
               groupId: searchSnapshot!.docs[index]['groupId'],
               groupName: searchSnapshot!.docs[index]['name'],
-          );
-          return widget.searchId=="group"? searchGroupTile(
-            toggle,
-            searchSnapshot!.docs[index]['admin'],
-          ) : searchFriendTile(
-            user!.uid,
-            searchSnapshot!.docs[index]['uid'],
-            searchSnapshot!.docs[index]['firstname'],
-            searchSnapshot!.docs[index]['lastname']
-          );
+            );
+            return searchGroupTile(
+              toggle,
+              searchSnapshot!.docs[index]['admin'],
+            );
+          } else{
+            return searchFriendTile(
+                user!.uid,
+                searchSnapshot!.docs[index]['uid'],
+                searchSnapshot!.docs[index]['firstname'],
+                searchSnapshot!.docs[index]['lastname']
+            );
+          }
         },
     ) : Container();
   }
@@ -246,19 +251,20 @@ class _SearchPageState extends State<SearchPage> {
           ),
         ),
       ),
-      title: Text(toggle.groupName, style: const TextStyle(fontWeight: FontWeight.bold, )),
+      title: Text(toggle.groupName,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold)
+      ),
       subtitle: Text("group_admin".tr + getName(admin),
       ),
       trailing: InkWell(
         onTap: () async {
           await GroupController().toggleGroupMembership(toggle, FirebaseAuth.instance.currentUser!.uid);
-          if(userIsAMemberOfTheGroup) {
+          if(mounted && userIsAMemberOfTheGroup) {
             setState(() {
               userIsAMemberOfTheGroup = !userIsAMemberOfTheGroup;
             });
-            if(mounted){
-              showSnackBar(context, "group_membershit_succed".tr, Colors.green);
-            }
+            showSnackBar(context, "group_membershit_succed".tr, Colors.green);
             Future.delayed(const Duration(seconds: 3), () {
               Get.toNamed('/chat', arguments: {
                 'chatId': toggle.groupId,
@@ -272,9 +278,7 @@ class _SearchPageState extends State<SearchPage> {
             setState(() {
               userIsAMemberOfTheGroup = !userIsAMemberOfTheGroup;
             });
-            if(mounted) {
-              showSnackBar(context, "leaving_group_succed".tr, Colors.red);
-            }
+            showCustomSnackbar("leaving_group_succed".tr, false);
           }
         },
         child: userIsAMemberOfTheGroup ? Container(
