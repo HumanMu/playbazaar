@@ -16,6 +16,7 @@ class MessageService {
         .doc(groupId)
         .collection('messages')
         .orderBy('timestamp')
+        .limit(10)
         .snapshots()
         .map((snapshot) => snapshot.docs
         .map((doc) => Message.fromMap(doc.data()))

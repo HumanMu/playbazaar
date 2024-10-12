@@ -5,8 +5,11 @@ class LocalStringsDa extends Translations {
   @override
   Map<String, Map<String, String>> get keys => {
     'dk_DK': {
-      //appName
+      //app related
       'app_name': 'Play Bazaar',
+      'notification_title': 'Play Bazaar',
+
+
 
       // Games
       'games': 'Spil',
@@ -25,7 +28,6 @@ class LocalStringsDa extends Translations {
       'enter_your_answer_here': 'Indtast dit svar her...',
       'quiz_list': 'Quiz Liste',
       "game_result": "Spilresultater",
-      'notification_title': 'Play Bazaar',
       'question_is_answered': 'Du har allerede givet et svar på dette spørgsmål',
       'pick_an_answer': 'Vælg et svar før du fortsætter',
       'points_earned': 'Optjente point',
@@ -46,7 +48,7 @@ class LocalStringsDa extends Translations {
       'password': 'Adgangskode',
       're_password': 'Gentag din adgangskode',
       'optional': ' \\(valgfri)',
-      'staus': 'Status ',
+      'status': 'Status ',
       'online': 'Online',
       'offline': 'Offline',
 
@@ -64,6 +66,14 @@ class LocalStringsDa extends Translations {
       'group': 'Gruppe: ',
       'group_created': 'Gruppen blev oprettet succesfuldt',
       'leaving': 'Forlader',
+      'number_of:members' : 'Antal medlemder',
+      'group_names_valid_size' : 'Gruppenavnet må ikke være tomt eller overstige 25 tegn',
+      'group_name_unvalid_characters' : 'Gruppenavnet må ikke indeholde tegnet \'_\'',
+      'private_group_is_selected': 'Du har valgt en privat gruppe, og en privat gruppe skal have et kodeord på mindst 4 tegn',
+      'you_became_a_member': 'Du er blevet medlem!',
+      'already_member': 'Allerede medlem',
+
+
 
       // Others
       'language': 'Languages',
@@ -97,19 +107,58 @@ class LocalStringsDa extends Translations {
       'description': 'Beskrivelse',
       'no_description': 'Ingen beskrivelse',
       'path': 'Anmodning om at blive tilføjet til',
+      'request_cancelled': 'Anmodning annulleret',
+      'request_sent': 'Anmodning er sendt',
+      'search_not_found': 'Kunne ikke finde nogen data med det søgeparameter',
       'details': 'Detaljer',
       'select' : 'Vælg',
+
+
+
+
+      // friends
+      'friends': 'Venner',
+
+      // Buttons
+      'btn_chats': 'Beskeder',
+      'btn_home': 'Hjem',
+      'btn_cancel': 'Annuller',
+      'btn_create': 'Opret',
+      'btn_login': 'Log ind',
+      'btn_membership_request': 'Anmod om medlemskab',
+      'btn_accept': 'Accepter',
+      'btn_leaving_group': 'Forlad gruppe',
+      'btn_edit': 'Rediger',
+      'btn_save': 'Gem',
+      'btn_next': 'Næste spørgsmål',
+      'btn_result': 'Se resultater',
+      'btn_send_question': 'Send spørgsmål',
+      'btn_send': 'Send',
+      'btn_continue': 'Fortsæt',
+      'btn_review_question': 'Gennemgå spørgsmål',
+      'btn_approve': 'Godkend',
+      'btn_reject': 'Afvis',
+      'btn_resent': 'Send e-mail igen',
+      'btn_sounds': 'Knaplyde',
+      'btn_awaiting_response': 'Venter på svar',
+      'btn_approve_request': 'Accepter anmodning',
+      'btn_cancel_request': 'Annuller anmodning',
+      'btn_request_friendship' : 'Send venneansmodning',
+      'btn_restart': 'Start forfra',
+
+      // Settings
       'settings': 'Indstillinger',
-      'button_sounds': 'Knaplyde',
 
 
       //Message
       'leaving_group': 'Er du sikker på, at du vil forlade gruppen?',
       'leaving_group_succed': 'Du har forladt gruppen succesfuldt',
-      'group_membershit_succed': 'Dit medlemskab blev godkendt',
+      'group_membership_succed': 'Dit medlemskab blev godkendt',
+      'leaving_group_failed' : 'Kunne ikke fjerne dig fra gruppen på grund af en fejl. Prøv venligst igen',
+      'group_membership_failed' : 'Kunne ikke tilføje dig til gruppen på grund af en fejl. Prøv venligst igen',
       'not_found_title': 'Du er ikke medlem af nogen grupper!',
       'not_found_message': 'For at oprette din egen gruppe, klik på knappen nedenfor, eller søg efter en gruppe',
-      'friend_notfound': 'Kunne ikke finde nogen ven!',
+      'friend_notfound': 'Kunne ikke finde en bruger med det givne navn!',
       'registration_succed': 'Din konto er oprettet succesfuldt',
       'authentication_failed': 'Godkendelse mislykkedes. Prøv venligst igen',
       'unexpected_result': 'Et uventet resultat, prøv venligst igen',
@@ -128,15 +177,17 @@ class LocalStringsDa extends Translations {
       'user_not_found': 'Ingen bruger fundet med disse legitimationsoplysninger. Kontroller venligst din e-mail og adgangskode!',
       'too_many_requests': 'For mange login-forsøg. Prøv igen senere!',
       'verification_email_sent': 'Bekræftelses-e-mail sendt!',
+      'reassign_text': 'Har du indtastet din e-mail forkert? Tryk på knappen nedenfor',
       'signed_as': 'Logget ind som',
       'verify_email_counter': 'Af sikkerhedsmæssige årsager, verificer venligst din e-mail inden for 24 timer. Manglende verifikation vil resultere i permanent sletning af din konto!',
+      'verify_email_title' : 'Bekræft din e-mail',
+      'check_your_inbox': 'Log venligst ind på din e-mail og klik på bekræftelseslinket',
       'account_removed_not_verifying_email': 'Din konto er blevet permanent slettet på grund af manglende verifikation af din e-mailadresse.',
       'account_removed_permanantly': 'Din konto er blevet permanent slettet',
       'relogin_to_delete_your_account': 'For at slette din konto, skal du logge ind igen.',
       'didnt_made_changes': 'Du har ikke foretaget nogen ændringer, der skal gemmes',
       'your_changes_succed': 'Dine oplysninger er ændret succesfuldt',
       'account_succed_but_info_failed': 'Din konto er oprettet, men dit fornavn og efternavn kunne ikke gemmes. Tilføj dem venligst via redigeringsmuligheden',
-      'check_your_inbox': 'Log venligst ind på din e-mail og klik på bekræftelseslinket',
       'change_path' : 'Ændr stien nedenfor',
       'error_while_sending_message' : 'Kunne ikke sende din besked. Prøv igen!',
       'allowed_message_length_1000' : 'Venligst begræns din besked til under 1000 tegn',
@@ -152,41 +203,23 @@ class LocalStringsDa extends Translations {
       'fill_all_input': 'Alle felter relateret til spørgsmål og svar skal udfyldes',
       'fill_all_input_title': 'Send Spørgsmål',
 
-      // friends
-      'friends': 'Venner',
 
-      // Buttons
-      'btn_chats': 'Beskeder',
-      'btn_home': 'Hjem',
-      'btn_cancel': 'Annuller',
-      'btn_create': 'Opret',
-      'btn_login': 'Log ind',
-      'btn_membershipt_request': 'Anmod om medlemskab',
-      'btn_accept': 'Accepter',
-      'btn_leaving_group': 'Forlad gruppe',
-      'btn_edit': 'Rediger',
-      'btn_save': 'Gem',
-      'btn_next': 'Næste spørgsmål',
-      'btn_result': 'Se resultater',
-      'btn_send_question': 'Send spørgsmål',
-      'btn_send': 'Send',
-      'btn_continue': 'Fortsæt',
-      'btn_review_question': 'Gennemgå spørgsmål',
-      'btn_approve': 'Godkend',
-      'btn_reject': 'Afvis',
-      'btn_resent': 'Send e-mail igen',
 
       // Policy
       'policy_title': 'Politik',
       'policy_introduction_title': 'Privatlivspolitik for Play Bazaar',
       'policy_introduction_description': 'Hos Play Bazaar prioriterer vi dit privatliv og er forpligtet til at sikre sikkerheden af dine personlige oplysninger. Denne privatlivspolitik beskriver, hvordan vi håndterer, opbevarer og beskytter dine data, når du bruger vores app.',
+
       'policy_info_collection_title': 'Information Indsamling og Opbevaring',
       'policy_info_collection_description': 'Når du bruger Play Bazaar-appen, kan vi indsamle visse personlige oplysninger, herunder men ikke begrænset til dit navn, e-mailadresse og andre relevante oplysninger, der er nødvendige for kontooprettelse og app-funktionalitet. Alle indsamlede oplysninger opbevares sikkert i vores database, som er hostet på Firestore, en cloud-lagringstjeneste ejet og drevet af Google.',
+
       'policy_data_security_and_thirdparty_title' : 'Databeskyttelse og Tredjepartsadgang',
       'policy_data_security_and_thirdparty_description_part1': 'Vi deler, sælger eller distribuerer ikke dine personlige oplysninger til tredjepartsvirksomheder. Dine data anvendes udelukkende til at give dig tjenester gennem Play Bazaar-appen.',
       'policy_data_security_and_thirdparty_description_part2': 'Selvom dine data opbevares i Firestore, som tilhører Google, giver dette ikke Google nogen rettigheder til at bruge dine personlige oplysninger til formål, der ikke er relateret til vores app. Google er ansvarlig for at opretholde sikkerheden af deres cloud-tjenester, og vi sikrer, at dine oplysninger er beskyttet i henhold til Googles strenge sikkerhedsforanstaltninger.',
+
       'policy_agreement_title' :  'Aftale om Politik',
-      'policy_agreement_description' : 'Ved at bruge Play Bazaar-appen anerkender og accepterer du denne privatlivspolitik. Vi opfordrer dig til at gennemgå denne politik regelmæssigt, da fortsat brug af appen indikerer din accept af eventuelle ændringer eller opdateringer.',
+      'policy_agreement_description': 'Ved at bruge Play Bazaar-appen anerkender og accepterer du denne privatlivspolitik. Firebase-servere, der er placeret i et europæisk land, bruges til databehandling. Vi opfordrer dig til regelmæssigt at gennemgå denne politik, da fortsat brug af appen indikerer din accept af eventuelle ændringer eller opdateringer.',
+
       'policy_updates_title': 'Politikopdateringer',
       'policy_updates_description' : 'Vi forbeholder os retten til at opdatere eller ændre denne privatlivspolitik til enhver tid. Eventuelle ændringer vil blive reflekteret på denne side, og din fortsatte brug af appen udgør din accept af sådanne ændringer.',
 

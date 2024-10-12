@@ -6,15 +6,15 @@ class Message {
   final String senderId;
   final String senderName;
   final String text;
-  final Timestamp timestamp;
   final bool isSentByMe;
+  final Timestamp timestamp;
 
   Message({
     required this.senderId,
     required this.senderName,
     required this.text,
-    required this.timestamp,
     required this.isSentByMe,
+    required this.timestamp,
   });
 
   // Convert Message object to a map
@@ -23,8 +23,8 @@ class Message {
       'senderId': senderId,
       'senderName': senderName,
       'text': text,
-      'timestamp': timestamp,
       'isSentByMe': isSentByMe,
+      'timestamp' : timestamp,
     };
   }
 
@@ -34,8 +34,8 @@ class Message {
       senderId: map['senderId'],
       senderName: map['senderName'],
       text: map['text'],
-      timestamp: map['timestamp'],
       isSentByMe: map['isSentByMe'],
+      timestamp : map['timestamp']
     );
   }
 }

@@ -19,7 +19,6 @@ class CustomTextInputs extends StatelessWidget {
 
   Widget _entryRow(
       String? description, String value) {
-    print("Text length: ${value?.length}");
     return Container(
       margin: const EdgeInsets.fromLTRB(10, 5, 10, 5),
       child: Row(
@@ -31,6 +30,7 @@ class CustomTextInputs extends StatelessWidget {
               description ?? "",
               style: TextStyle(
                 color: color ?? Colors.black,
+                fontWeight: FontWeight.bold
               ),
             ),
           ),

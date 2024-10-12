@@ -76,32 +76,3 @@ class _RecievedRequestsTileState extends State<RecievedRequestsTile> {
   }
 }
 
-/*
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-        child: ListTile(
-          tileColor: Colors.white,
-          leading: CircleAvatar(
-            radius: 25,
-            backgroundColor: Colors.red,
-            child: Text(
-              widget.fullname.substring(0, 1).toUpperCase(),
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w300,
-              ),
-            ),
-          ),
-          title: Text(widget.fullname,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          subtitle: Text("${"status".tr}${widget.availabilityState}",
-            style: const TextStyle(
-              fontSize: 15,
-            ),
-          ),
-        ),
-      );
- */

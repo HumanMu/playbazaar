@@ -1,11 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:playbazaar/models/user_model.dart';
 import '../../api/Authentication/auth_service.dart';
-import '../../api/firestore/firestore_user.dart';
+import '../../controller/user_controller/user_controller.dart';
 import '../../helper/sharedpreferences.dart';
 import '../../languages/custom_language.dart';
-import 'package:provider/provider.dart';
 import '../widgets/sidebar_drawer.dart';
 import '../widgets/text_boxes/text_inputs.dart';
 
@@ -17,10 +16,11 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePage extends State<ProfilePage> {
+  final userController = Get.find<UserController>();
   AuthService authService = AuthService();
   bool isSignedIn = false;
   bool isEmailVerified = false;
-  late UserProfileModel userProfileModel;
+  final user = FirebaseAuth.instance.currentUser;
   bool isLoading = true;
 
 
@@ -33,65 +33,19 @@ class _ProfilePage extends State<ProfilePage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    fetchData();
   }
 
 
   getUserLoggedInState() async {
     bool? val = await SharedPreferencesManager.getBool(SharedPreferencesKeys.userLoggedInKey);
-    if (val != null) {
+    if (user != null) {
       setState(() {
-        isSignedIn = val;
-      });
-      fetchData();
-    }
-    else{
-      Get.offNamed('/home');
-    }
-  }
-
-
-
-  void fetchData() async {
-    if(isSignedIn) {
-      final email = await SharedPreferencesManager.getString(SharedPreferencesKeys.userEmailKey);
-      final firstname = await SharedPreferencesManager.getString(SharedPreferencesKeys.userNameKey);
-      final lastname = await SharedPreferencesManager.getString(SharedPreferencesKeys.userLastNameKey);
-      final aboutme = await SharedPreferencesManager.getString(SharedPreferencesKeys.userAboutMeKey);
-      final userPoint = await SharedPreferencesManager.getInt(SharedPreferencesKeys.userPointKey) ?? 0;
-      fetchDataFromFirestore();
-
-      if(email != null) {
-        setState(() {
-          userProfileModel = UserProfileModel(
-              email: email,
-              firstName: firstname,
-              lastName: lastname,
-              aboutMe: aboutme,
-              userPoint: userPoint
-          );
-          isLoading = false;
-        });
-      }
-      else{
-        fetchDataFromFirestore();
-      }
-    }
-    else{
-      fetchDataFromFirestore();
-    }
-  }
-
-  fetchDataFromFirestore() async {
-    final firestoreUser = Provider.of<FirestoreUser>(context, listen: false);
-    String? email = authService.firebaseAuth.currentUser?.email;
-    if (email != null) {
-      await firestoreUser.getUserByEmail(email);
-
-      setState(() {
-        isEmailVerified = firestoreUser.isEmailVerified;
+        isSignedIn = true;
         isLoading = false;
       });
+    }
+    else{
+      Get.offNamed('/login');
     }
   }
 
@@ -124,79 +78,85 @@ class _ProfilePage extends State<ProfilePage> {
         parentContext: context,
       ),
       backgroundColor: Colors.white,
-      body: CustomScrollView(
-        scrollDirection: Axis.vertical,
-        shrinkWrap: true,
-        slivers: [
-          SliverFillRemaining(
-            hasScrollBody: false,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Image.asset('assets/images/playbazaar_caffe.png',
-                  height: 300,
-                  width: 300,
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Container(
-                      alignment: Alignment.center,
-                      child: TextButton(
-                        onPressed: () {
-                          CustomLanguage().languageDialog(context);
-                        },
-                        child: Row (
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text('language'.tr,
-                              style: const TextStyle(
-                                color: Colors.red,
-                                fontSize: 20,
+      body:
+      Obx(() {
+        if(userController.isLoading.value){
+          return Center(child: CircularProgressIndicator());
+        }
+        return CustomScrollView(
+          scrollDirection: Axis.vertical,
+          shrinkWrap: true,
+          slivers: [
+            SliverFillRemaining(
+              hasScrollBody: false,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Image.asset('assets/images/playbazaar_caffe.png',
+                    height: 300,
+                    width: 300,
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Container(
+                        alignment: Alignment.center,
+                        child: TextButton(
+                          onPressed: () {
+                            CustomLanguage().languageDialog(context);
+                          },
+                          child: Row (
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text('language'.tr,
+                                style: const TextStyle(
+                                  color: Colors.red,
+                                  fontSize: 20,
+                                ),
                               ),
-                            ),
-                            const SizedBox(width: 10),
-                            Icon(Icons.arrow_drop_down_circle_outlined, color: Colors.red),
-                          ],
+                              const SizedBox(width: 10),
+                              Icon(Icons.arrow_drop_down_circle_outlined, color: Colors.red),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    Text(
-                      'aboutme'.tr,
-                      style: const TextStyle(color: Colors.white, fontSize: 45),
-                    ),
-                    Column(
-                      children: [
-                        CustomTextInputs(
-                          description: "name".tr,
-                          value: "${userProfileModel.firstName} ${userProfileModel.lastName}",
-                        ),
-                        CustomTextInputs(
-                          description: "email".tr,
-                          value: userProfileModel.email,
-                        ),
-                        CustomTextInputs(
-                          description: "points".tr,
-                          value: userProfileModel.userPoint.toString(),
-                        ),
-                        CustomTextInputs(
-                          description: "me".tr,
-                          value: userProfileModel.aboutMe ?? "",
-                        )
-                      ],
-                    ),
-                    Container(
-                      margin: const EdgeInsets.fromLTRB(30, 10, 30, 10),
-                      height: 50,
-                      child: _editPage(),
-                    ), // Edit and chatpage buttons
-                  ],
-                ),
-              ],
+                      Text(
+                        'aboutme'.tr,
+                        style: const TextStyle(color: Colors.white, fontSize: 45),
+                      ),
+                      Column(
+                        children: [
+                          CustomTextInputs(
+                              description: "name".tr,
+                              value: user?.displayName ??"" //userProfileModel.fullname ??"",
+                          ),
+                          CustomTextInputs(
+                              description: "email".tr,
+                              value: user?.email ??"" //userProfileModel.email,
+                          ),
+                          CustomTextInputs(
+                              description: "points".tr,
+                              value: userController.userData.value?.userPoints.toString() ?? "0"
+                          ),
+                          CustomTextInputs(
+                              description: "me".tr,
+                              value: userController.userData.value?.aboutme ??""
+                          )
+                        ],
+                      ),
+                      Container(
+                        margin: const EdgeInsets.fromLTRB(30, 10, 30, 10),
+                        height: 50,
+                        child: _editPage(),
+                      ), // Edit and chatpage buttons
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
-      ),
+          ],
+        );
+      }),
     );
   }
 
@@ -223,4 +183,3 @@ class _ProfilePage extends State<ProfilePage> {
   }
 
 }
-

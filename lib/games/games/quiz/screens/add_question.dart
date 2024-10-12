@@ -66,9 +66,17 @@ class AddQuestionState extends State<AddQuestion> {
       appBar: AppBar(
         centerTitle: true,
         elevation: 0,
-        title: Text("add_question_title".tr),
+        title: Text("add_question_title".tr,
+          style: TextStyle(
+            color: Colors.white
+          ),
+        ),
         backgroundColor: Colors.red,
+        iconTheme: IconThemeData(
+          color: Colors.white
+        ),
       ),
+
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 5),
         child: Column(

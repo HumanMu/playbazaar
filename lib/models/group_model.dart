@@ -1,21 +1,23 @@
 class GroupModel {
   String name;
   String groupIcon;
-  String admin;
+  String creatorId;
   List<String> members;
   String groupId;
   String recentMessage;
   String recentMessageSender;
+  bool isPublic;
   String groupPassword;
 
   GroupModel({
     required this.name,
     required this.groupIcon,
-    required this.admin,
+    required this.creatorId,
     required this.members,
     required this.groupId,
     required this.recentMessage,
     required this.recentMessageSender,
+    required this.isPublic,
     required this.groupPassword,
   });
 
@@ -24,11 +26,12 @@ class GroupModel {
     return GroupModel(
       name: map['name'] ?? '',
       groupIcon: map['groupIcon'] ?? '',
-      admin: map['admin'] ?? '',
+      creatorId: map['creatorId'] ?? '',
       members: List<String>.from(map['members'] ?? []),
       groupId: map['groupId'] ?? '',
       recentMessage: map['recentMessage'] ?? '',
       recentMessageSender: map['recentMessageSender'] ?? '',
+      isPublic: map['isPublic'],
       groupPassword: map['groupPassword'] ?? '',
     );
   }
@@ -38,11 +41,12 @@ class GroupModel {
     return {
       'name': name,
       'groupIcon': groupIcon,
-      'admin': admin,
+      'creatorId': creatorId,
       'members': members,
       'groupId': groupId,
       'recentMessage': recentMessage,
       'recentMessageSender': recentMessageSender,
+      'isPublic' : isPublic,
       'groupPassword': groupPassword,
     };
   }

@@ -26,7 +26,7 @@ class _PrimaryAvatarState extends State<PrimaryAvatarImage> {
 
   @override
   Widget build(BuildContext context) {
-    bool editingState = widget.editing? true : false;
+    //bool editingState = widget.editing? true : false;
 
     return AvatarGlow(
       startDelay: const Duration(milliseconds: 2000),

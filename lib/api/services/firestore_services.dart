@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:playbazaar/functions/enum_converter.dart';
 import '../../constants/constants.dart';
 import '../../models/user_model.dart';
 import '../repositories/user_repository.dart';
@@ -13,37 +14,39 @@ class FirestoreServices extends ChangeNotifier {
   = FirebaseFirestore.instance.collection("friends");
 
   final FirestoreRepository _repository = FirestoreRepository();
-  late UserModel _singleUser;
-  final List<UserModel> _userList = [];
+  late UserModel singleUser;
+  final List<UserModel> userList = [];
 
 
-  Future<bool> createUser(
-      String firstname,
-      String lastname,
-      String email,
-      String userId,
-      ) async {
+  Future<bool> createUser(String fullname, String email, String userId) async {
     try {
-      await userCollection.doc(userId).set({
-        "uid": userId,
-        "email": email,
-        "firstname": firstname,
-        "lastname": lastname,
-        "userpoints": 0,
-        "aboutme": "",
-        "avatarImage": "",
-        "timestamp": Timestamp.now(),
-        "groups": [],
-        "friendsId": [],
-        "availabilityState": '',
-        "accountCondition" : AccountCondition.good.toString().split('.').last,
-        'role': UserRole.normal.toString().split('.').last,
-      });
+      UserModel newUser = UserModel(
+        uid: userId,
+        fullname: fullname.toLowerCase(),
+        email: email.toLowerCase(),
+        coins: 0,
+        userPoints: 0,
+        aboutme: "",
+        avatarImage: "",
+        timestamp: Timestamp.now(),
+        lastUpdated: Timestamp.now(),
+        availabilityState: '',
+        accountCondition: AccountCondition.good,
+        role: UserRole.normal,
+        groupsId: [],
+      );
+
+      // Use the toJson method to set data in Firestore
+      await userCollection.doc(userId).set(newUser.toJson());
       return true;
     } catch (e) {
+      if (kDebugMode) {
+        print("Error creating user: $e");
+      }
       return false;
     }
   }
+
 
 
   Future<bool> editUserData( UserProfileModel upm, String userId ) async {
@@ -51,8 +54,7 @@ class FirestoreServices extends ChangeNotifier {
       Map<String, dynamic> updateData = {};
 
       // Add fields to update only if they are provided (non-null)
-      if (upm.firstName != null) updateData['firstname'] = upm.firstName;
-      if (upm.lastName != null) updateData['lastname'] = upm.lastName;
+      if (upm.fullname != null) updateData['fullname'] = upm.fullname;
       if (upm.aboutMe != null) updateData['aboutme'] = upm.aboutMe;
 
       // Check if there's something to update
@@ -77,9 +79,8 @@ class FirestoreServices extends ChangeNotifier {
     await userCollection.doc(userId).collection(collectionName)
         .doc(friendId).set({
       'uid': friendId,
-      'firstname': friendDoc['firstname'],
+      'fullname': friendDoc['fullname'],
       'email': friendDoc['email'],
-      'lastname': friendDoc['lastname'],
       'avatarImage': friendDoc['avatarImage'],
       'timestamp': Timestamp.now(),
       'availabilityState': friendDoc['availabilityState'],
@@ -94,24 +95,23 @@ class FirestoreServices extends ChangeNotifier {
       QuerySnapshot snapshot = await _repository.getUserData(email);
       if (snapshot.docs.isNotEmpty) {
         userList = snapshot.docs.map((doc) {
-          String roleString = doc['role'] ?? 'normal';
-          UserRole role = UserRole.values.firstWhere(
-                (e) => e.toString().split('.').last == roleString,
-            orElse: () => UserRole.normal,
-          );
+
+          UserRole ur = string2UserRole(doc['role']);
+          AccountCondition ac = string2AccountCondition(doc['accountCondition']);
 
           return UserModel(
-            userId: doc['uid'],
+            uid: doc['uid'],
             email: doc['email'],
-            firstname: doc['firstname'],
-            lastname: doc['lastname'],
+            coins: doc['coins'],
+            fullname: doc['fullname'],
             userPoints: doc['userpoints'],
             aboutme: doc['aboutme'],
             avatarImage: doc['avatarImage'],
             timestamp: doc['timestamp'],
             availabilityState: doc['availabilityState'],
-            accountCondition: doc['accountCondition'],
-            role: role,
+            accountCondition: ac,
+            groupsId: doc['groupsId'] ?? [],
+            role: ur,
           );
         }).toList();
       }
@@ -129,24 +129,31 @@ class FirestoreServices extends ChangeNotifier {
   Future getUserById(String id) async {
     QuerySnapshot snapshot = await _repository.getUserById(id);
     if (snapshot.docs.isNotEmpty) {
-      _singleUser = snapshot.docs.map((doc) {
+      singleUser = snapshot.docs.map((doc) {
         String roleString = doc['role'] ?? 'normal';
         UserRole role = UserRole.values.firstWhere(
               (e) => e.toString().split('.').last == roleString,
           orElse: () => UserRole.normal,
         );
 
+        String accountConditionString = doc['role'] ?? 'good';
+        AccountCondition accountCondition = AccountCondition.values.firstWhere(
+              (e) => e.toString().split('.').last == accountConditionString,
+          orElse: () => AccountCondition.good,
+        );
+
         return UserModel(
-          userId: doc['uid'],
+          uid: doc['uid'],
           email: doc['email'],
-          firstname: doc['firstname'],
-          lastname: doc['lastname'],
+          coins: doc['coins'],
+          fullname: doc['fullname'],
           userPoints: doc['userpoints'],
           aboutme: doc['aboutme'],
           avatarImage: doc['avatarImage'],
           timestamp: doc['timestamp'],
           availabilityState: doc['availabilityState'],
-          accountCondition: doc['accountCondition'],
+          accountCondition: accountCondition,
+          groupsId: doc['groupsId'] ?? [],
           role: role,
         );
       }).single;

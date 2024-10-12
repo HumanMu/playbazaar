@@ -19,6 +19,11 @@ class SharedPreferencesManager {
     await prefs.setInt(key, value);
   }
 
+  static Future<void> setInt(String key, int value) async {
+    final prefs = await _prefs;
+    await prefs.setInt(key, value);
+  }
+
 
   // Set a list of strings
   static Future<void> setStringList(String key, List<String> value) async {
@@ -61,6 +66,7 @@ class SharedPreferencesKeys {
   static const String userAboutMeKey = "USERABOUTMEKEY";
   static const String userPointKey = "USERPOINTKEY";
   static const String userRoleKey = "USERROLE";
+  static const String userCoinsKey = "USERCOINSKEY";
 
   // Settings
   static const String buttonSounds = "BUTTONSOUNDS";

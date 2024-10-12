@@ -42,7 +42,7 @@ class AuthService {
 
   // register
   Future<User?> registerUserWithEmailAndPassword(
-      String firstname, String lastname, String email, String password) async{
+      String fullname, String email, String password) async{
     try {
       UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: email,
@@ -52,7 +52,7 @@ class AuthService {
       User? user = userCredential.user;
 
       if(user != null) {
-        await  FirestoreUser(userId: user.uid ).createUser(firstname, lastname, email);
+        await  FirestoreUser(userId: user.uid ).createUser(fullname,  email);
         user.sendEmailVerification().then((value) => showCustomSnackbar('verification_email_sent'.tr, true, timing: 7));
       }
 

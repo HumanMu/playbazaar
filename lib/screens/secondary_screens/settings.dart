@@ -28,9 +28,16 @@ class _SettingsState extends State<Settings> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("settings".tr),
+        title: Text("settings".tr,
+          style: TextStyle(
+            color: Colors.white
+          ),
+        ),
         centerTitle: true,
         backgroundColor: Colors.red,
+        iconTheme: IconThemeData(
+          color: Colors.white
+        ),
       ),
       body: Container(
         padding: EdgeInsets.all(25),
@@ -40,7 +47,7 @@ class _SettingsState extends State<Settings> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text("button_sounds".tr),
+                  Text("btn_sounds".tr),
                   Obx(() => Switch(
                     value: settingsController.isButtonSoundsEnabled.value,
                     onChanged: (value) {

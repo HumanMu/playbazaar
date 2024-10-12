@@ -86,6 +86,9 @@ class AuthController extends GetxController {
       await SharedPreferencesManager.setString(SharedPreferencesKeys.userEmailKey, "");
       await SharedPreferencesManager.setString(SharedPreferencesKeys.userAboutMeKey, "");
       await SharedPreferencesManager.setString(SharedPreferencesKeys.userRoleKey,"");
+      await SharedPreferencesManager.setDouble(SharedPreferencesKeys.userPointKey, 0);
+      await SharedPreferencesManager.setInt(SharedPreferencesKeys.userCoinsKey, 0);
+
       await FirebaseAuth.instance.signOut();
       isSignedIn.value = false;
       isEmailVerified.value = false;

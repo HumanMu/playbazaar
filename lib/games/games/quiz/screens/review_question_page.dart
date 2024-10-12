@@ -24,7 +24,7 @@ class ReviewQuestionsPageState extends State<ReviewQuestionsPage> {
   List<String>? language = [];
   List<String> quizPaths = [];
   List<String> quizLabels = [];
-  String? _userRole = "";
+  String? userRole = "";
 
   List<TextEditingController> wrongAnswerControllers = [];
   final TextEditingController pathController = TextEditingController();
@@ -65,7 +65,7 @@ class ReviewQuestionsPageState extends State<ReviewQuestionsPage> {
     final value = await SharedPreferencesManager.getString(SharedPreferencesKeys.userRoleKey);
     if (value != null && value != "") {
       setState(() {
-        _userRole = value;
+        userRole = value;
       });
     }
   }
@@ -119,9 +119,16 @@ class ReviewQuestionsPageState extends State<ReviewQuestionsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("btn_review_question".tr),
+        title: Text("btn_review_question".tr,
+          style: TextStyle(
+            color: Colors.white
+          ),
+        ),
         backgroundColor: Colors.red,
         centerTitle: true,
+        iconTheme: IconThemeData(
+          color: Colors.white
+        ),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: _questionsStream,

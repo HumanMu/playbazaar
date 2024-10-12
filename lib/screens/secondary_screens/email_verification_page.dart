@@ -20,19 +20,19 @@ class _EmailVerificationState extends State<EmailVerificationPage> {
   bool canResend = false;
   Timer? resendTimer;
   Timer? emailCheckTimer;
-  int resendCooldown = 30; // Cooldown in seconds for resend button
+  int resendCooldown = 30;
 
   @override
   void initState() {
     super.initState();
-    startVerificationCheck(); // Start email verification check
-    startResendCooldown(); // Start cooldown for resend button
+    startVerificationCheck();
+    startResendCooldown();
   }
 
   @override
   void dispose() {
     resendTimer?.cancel();
-    emailCheckTimer?.cancel(); // Cancel the email check timer
+    emailCheckTimer?.cancel();
     super.dispose();
   }
 
@@ -41,13 +41,12 @@ class _EmailVerificationState extends State<EmailVerificationPage> {
       await authController.checkAndUpdateEmailVerificationStatus();
       if (authController.isEmailVerified.value) {
         timer.cancel(); // Stop the timer once email is verified
-        Get.offAllNamed('/profile'); // Navigate to profile page
+        Get.offAllNamed('/profile');
       }
     });
   }
 
   void startResendCooldown() {
-    // Start cooldown timer for resend button
     resendTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
         resendCooldown--;
@@ -76,22 +75,39 @@ class _EmailVerificationState extends State<EmailVerificationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Text('email_verification_intro'.tr),
-            Text('signed_as'.tr),
-            Text(FirebaseAuth.instance.currentUser!.email.toString()),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: canResend ? sendEmailVerification : null,
-              child: Text(canResend ? 'btn_resent'.tr : '${'btn_resent'.tr} ($resendCooldown)'),
+      body: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 20),
+        child: Center(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Text("verify_email_title".tr, style: TextStyle(fontSize: 30)),
+                Text('email_verification_intro'.tr),
+                Text('signed_as'.tr),
+                Text(FirebaseAuth.instance.currentUser!.email.toString()),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: canResend ? sendEmailVerification : null,
+                  child: Text(canResend ? 'btn_resent'.tr : '${'btn_resent'.tr} ($resendCooldown)'),
+                ),
+                const SizedBox(height: 10),
+                Text('check_your_inbox'.tr),
+                const SizedBox(height: 30),
+                const Divider(),
+                Text("reassign_text".tr),
+                TextButton(
+                  child: Text('btn_restart'.tr),
+                  onPressed: () {
+                    resendTimer?.cancel();
+                    emailCheckTimer?.cancel();
+                    Get.offAllNamed('/register');
+                  },
+                ),
+              ],
             ),
-            const SizedBox(height: 10),
-            Text('check_your_inbox'.tr),
-          ],
+          ),
         ),
       ),
     );

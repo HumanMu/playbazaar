@@ -7,6 +7,8 @@ class LocalStringsEn extends Translations {
     'en_US': {
       //appName
       'app_name' : 'Play Bazaar',
+      'notification_title' : 'Play Bazaar',
+
 
       // Games
       'games' : 'Games',
@@ -25,7 +27,6 @@ class LocalStringsEn extends Translations {
       'enter_your_answer_here' : 'Enter your answer here...',
       'quiz_list' : 'Quiz List',
       'game_result': 'Game Results',
-      'notification_title' : 'Play Bazaar',
       'question_is_answered' : 'You have already provided an answer to this question',
       'pick_an_answer' : 'Please select an answer before proceeding',
       'points_earned': 'Earned points',
@@ -46,7 +47,7 @@ class LocalStringsEn extends Translations {
       'password': 'Password',
       're_password' : 'Re-enter your password',
       'optional' : ' \\(optional)',
-      'staus' : 'Status  ',
+      'status' : 'Status  ',
       'online' : 'Online',
       'offline' : 'Offline',
 
@@ -64,6 +65,12 @@ class LocalStringsEn extends Translations {
       'group': 'Group: ',
       'group_created' : 'Group created succesfully',
       'leaving' : 'Leaving',
+      'number_of_members': 'Number of members',
+      'group_names_valid_size' : 'The group name must not be empty or exceed 25 characters',
+      'group_name_unvalid_characters' : 'The group name must not contain the character \'_\'',
+      'private_group_is_selected' : 'You have selected a private group, and a private group must have a password of at least 4 characters',
+      'you_became_a_member': 'You have become a member',
+      'already_member': 'Already a member',
 
 
       // Others
@@ -98,20 +105,56 @@ class LocalStringsEn extends Translations {
       'description' : 'Description',
       'no_description' : 'No description',
       'path': 'Request to be added to',
+      'request_cancelled': 'Request cancelled',
+      'request_sent': 'Request has been sent',
+      'search_not_found': 'Could not find any data matching that search parameter',
       'details': 'Details',
       'select' : 'Select',
+
+
+      // friends
+      'friends' : 'Friends',
+
+      // Buttons
+      'btn_chats' : 'Messages',
+      'btn_home': 'Home',
+      'btn_cancel': 'Cancel',
+      'btn_create': 'Create',
+      'btn_login' : 'Login',
+      'btn_membership_request' : 'Request Membership',
+      'btn_accept' : 'Accept',
+      'btn_leaving_group': 'Leave group',
+      'btn_edit' : 'Edit',
+      'btn_save' : 'Save',
+      'btn_next' : 'Next Question',
+      'btn_result' : 'View Results',
+      'btn_send_question' : 'Send Questions',
+      'btn_send' : 'Send',
+      'btn_continue' : 'Continue',
+      'btn_review_question' : 'Review Question',
+      'btn_approve' : 'Approve',
+      'btn_reject' : 'Reject',
+      'btn_resent' : 'Resent Email',
+      'btn_sounds': 'Button sounds',
+      'btn_awaiting_response': 'Awaiting response',
+      'btn_approve_request': 'Approve request',
+      'btn_cancel_request': 'Cancel request',
+      'btn_request_friendship' : 'Add friend',
+      'btn_restart': 'Restart',
+
+
+      // Settings
       'settings': 'Settings',
-      'button_sounds': 'Button sounds',
-
-
 
       //Message
       'leaving_group': 'Are you sure about leaving the group?',
       'leaving_group_succed' : 'You left the group succesfully',
-      'group_membershit_succed' : 'Your membershipt approved',
+      'group_membership_succed' : 'Your membershipt approved',
+      'leaving_group_failed' : 'Unable to remove you from the group due to an error. Please try again',
+      'group_membership_failed' : 'Unable to add you to the group due to an error. Please try again',
       'not_found_title': 'Your are not a member of any group!',
       'not_found_message': 'For creating your own group, click the button bellow, or search for a group',
-      'friend_notfound': 'Could not find any friend!',
+      'friend_notfound': 'Could not find a user with the given name!',
       'registration_succed': 'Your account has been created succesfully',
       'authentication_failed' : 'Authentication failed. Please try again',
       'unexpected_result' : 'An unexpected result, try again please',
@@ -130,15 +173,17 @@ class LocalStringsEn extends Translations {
       'user_not_found' : 'No user found with these credentials. Please check your email and password!',
       'too_many_requests': 'Too many login attempts. Please try again later!',
       'verification_email_sent': 'Verification email sent!',
+      'reassign_text': 'Did you enter your email incorrectly? Click the button below',
       'signed_as' : 'Signed as',
       'verify_email_counter' : 'For security reasons, please verify your email within 24 hours. Failure to do so will result in the permanent deletion of your account!',
+      'verify_email_title' : 'Verify your email',
+      'check_your_inbox' : 'Please log into your email and click on the verification link',
       'account_removed_not_verifying_email': 'Your account has been permanently deleted due to the failure to verify your email address.',
       'account_removed_permanantly' : 'Your account has been permanently deleted',
       'relogin_to_delete_your_account' : 'To delete your account, please reauthenticate by signing in again.',
       'didnt_made_changes' : 'You have not made any changes to be saved',
       'your_changes_succed' : 'Your information has been changed successfully',
       'account_succed_but_info_failed': 'Your account has been created, but your first and last name could not be saved. Please add them through the edit option',
-      'check_your_inbox' : 'Please log into your email and click on the verification link',
       'change_path' : 'Change the path below',
       'error_while_sending_message': 'Could not send your message. Please try again!',
       'allowed_message_length_1000' : 'Please limit your message to under 1000 characters.',
@@ -156,55 +201,31 @@ class LocalStringsEn extends Translations {
       'fill_all_input_title': 'Sending Question',
 
 
-      // friends
-      'friends' : 'Friends',
-
-      // Buttons
-      'btn_chats' : 'Messages',
-      'btn_home': 'Home',
-      'btn_cancel': 'Cancel',
-      'btn_create': 'Create',
-      'btn_login' : 'Login',
-      'btn_membershipt_request' : 'Request Membership',
-      'btn_accept' : 'Accept',
-      'btn_leaving_group': 'Leave group',
-      'btn_edit' : 'Edit',
-      'btn_save' : 'Save',
-      'btn_next' : 'Next Question',
-      'btn_result' : 'View Results',
-      'btn_send_question' : 'Send Questions',
-      'btn_send' : 'Send',
-      'btn_continue' : 'Continue',
-      'btn_review_question' : 'Review Question',
-      'btn_approve' : 'Approve',
-      'btn_reject' : 'Reject',
-      'btn_resent' : 'Resent Email',
-
-
-
-
-
       //  Policy
       'policy_title': 'Policy',
       'policy_introduction_title': 'Privacy Policy for Play Bazaar',
-      'policy_introduction_description': 'Hos Play Bazaar prioriterer vi dit privatliv og er forpligtet til at sikre sikkerheden af dine personlige oplysninger. Denne privatlivspolitik beskriver, hvordan vi håndterer, opbevarer og beskytter dine data, når du bruger vores app.',
-      'policy_info_collection_title': 'Information Indsamling og Opbevaring',
-      'policy_info_collection_description': 'Når du bruger Play Bazaar-appen, kan vi indsamle visse personlige oplysninger, herunder men ikke begrænset til dit navn, e-mailadresse og andre relevante oplysninger, der er nødvendige for kontooprettelse og app-funktionalitet. Alle indsamlede oplysninger opbevares sikkert i vores database, som er hostet på Firestore, en cloud-lagringstjeneste ejet og drevet af Google.',
-      'policy_data_security_and_thirdparty_title' : 'Databeskyttelse og Tredjepartsadgang',
-      'policy_data_security_and_thirdparty_description_part1': 'Vi deler, sælger eller distribuerer ikke dine personlige oplysninger til tredjepartsvirksomheder. Dine data anvendes udelukkende til at give dig tjenester gennem Play Bazaar-appen.',
-      'policy_data_security_and_thirdparty_description_part2': 'Selvom dine data opbevares i Firestore, som tilhører Google, giver dette ikke Google nogen rettigheder til at bruge dine personlige oplysninger til formål, der ikke er relateret til vores app. Google er ansvarlig for at opretholde sikkerheden af deres cloud-tjenester, og vi sikrer, at dine oplysninger er beskyttet i henhold til Googles strenge sikkerhedsforanstaltninger.',
-      'policy_agreement_title' :  'Aftale om Politik',
-      'policy_agreement_description' : 'Ved at bruge Play Bazaar-appen anerkender og accepterer du denne privatlivspolitik. Vi opfordrer dig til at gennemgå denne politik regelmæssigt, da fortsat brug af appen indikerer din accept af eventuelle ændringer eller opdateringer.',
-      'policy_updates_title': 'Politikopdateringer',
-      'policy_updates_description' : 'Vi forbeholder os retten til at opdatere eller ændre denne privatlivspolitik til enhver tid. Eventuelle ændringer vil blive reflekteret på denne side, og din fortsatte brug af appen udgør din accept af sådanne ændringer.',
+      'policy_introduction_description': 'At Play Bazaar, we prioritize your privacy and are committed to ensuring the security of your personal information. This privacy policy outlines how we handle, store, and protect your data when you use our app.',
+
+      'policy_info_collection_title': 'Information Collection and Storage',
+      'policy_info_collection_description': 'When using the Play Bazaar app, we may collect certain personal information, including but not limited to your name, email address, and other relevant information necessary for account creation and app functionality. All collected information is securely stored in our database, which is hosted on Firestore, a cloud storage service owned and operated by Google.',
+
+      'policy_data_security_and_thirdparty_title' : 'Data Security and Third-Party Access',
+      'policy_data_security_and_thirdparty_description_part1': 'We do not share, sell, or distribute your personal information to third-party companies. Your data is used solely to provide services to you through the Play Bazaar app.',
+      'policy_data_security_and_thirdparty_description_part2': 'While your data is stored on Firestore, owned by Google, this does not grant Google any rights to use your personal information for purposes unrelated to our app. Google is responsible for maintaining the security of its cloud services, and we ensure that your information is protected in accordance with Google’s strict security measures.',
+
+      'policy_agreement_title' :  'Policy Agreement',
+      'policy_agreement_description' : 'By using the Play Bazaar app, you acknowledge and accept this privacy policy. We encourage you to review this policy regularly, as continued use of the app indicates your acceptance of any changes or updates.',
+
+      'policy_updates_title': 'Policy Updates',
+      'policy_updates_description' : 'We reserve the right to update or modify this privacy policy at any time. Any changes will be reflected on this page, and your continued use of the app constitutes your acceptance of such changes.',
 
       // contact us
-      'contact_us_title' : 'Kontakt os',
-      'contact_us_description' : 'Hvis du har spørgsmål eller bekymringer vedrørende denne privatlivspolitik, bedes du kontakte os på kh.techn@gmail.com',
+      'contact_us_title' : 'Contact Us',
+      'contact_us_description' : 'If you have any questions or concerns regarding this privacy policy, please contact us at kh.techn@gmail.com',
 
       // Long message
-      'empty_quizz_message' : 'Dette spil mangler i øjeblikket ord, og vi har brug for din hjælp. Gå venligst tilbage til den forrige side og tryk på knappen \'Indsend Spørgsmål\' nederst på siden for at sende os de ord, du gerne vil have tilføjet til spillet. Tak for din venlighed og indsats.',
-      'email_verification_intro' : 'Velkommen til Play Bazaar! En e-mailbekræftelse er sendt til din e-mail. Bekræft venligst din e-mail for at fuldføre processen. Vi verificerer hver medlem i Play Bazaar for at sikre, at vores platform forbliver et sikkert sted, hvor hver bruger er en reel person.'
+      'empty_quizz_message' : 'This game currently lacks words, and we need your help. Please return to the previous page and press the \'Submit Questions\' button at the bottom of the page to send us the words you would like added to the game. Thank you for your kindness and effort.',
+      'email_verification_intro' : 'Welcome to Play Bazaar! A verification email has been sent to your email. Please confirm your email to complete the process. We verify every member at Play Bazaar to ensure our platform remains a safe place where every user is a real person.'
     }
   };
 

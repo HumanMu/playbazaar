@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:playbazaar/controller/message_controller/message_controller.dart';
+import 'package:playbazaar/functions/string_cases.dart';
 import 'package:playbazaar/utils/show_custom_snackbar.dart';
 import '../../models/message_model.dart';
 import '../widgets/cards/message_tile.dart';
@@ -28,8 +29,9 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
-  late final MessageController _messageController;
-  late final ScrollController _scrollController;
+  late MessageController _messageController;
+  late ScrollController _scrollController;
+  String currentUserName = FirebaseAuth.instance.currentUser?.displayName ?? "";
   final String? currentUserId = FirebaseAuth.instance.currentUser!.uid;
   TextEditingController messageBox = TextEditingController();
   String admin = "";
@@ -38,10 +40,10 @@ class _ChatPageState extends State<ChatPage> {
   @override
   void initState() {
     super.initState();
-    _messageController = Get.put(MessageController(groupId: widget.chatId));
+    Get.create(() => MessageController(groupId: widget.chatId));
+    _messageController = Get.find<MessageController>();
     _scrollController = ScrollController();
 
-    // Listen to new messages and scroll to bottom when they arrive
     _messageController.listenToMessages(widget.chatId);
     ever(_messageController.messages, (_) => scrollToBottom());
   }
@@ -49,6 +51,7 @@ class _ChatPageState extends State<ChatPage> {
   @override
   void dispose() {
     messageBox.dispose();
+    Get.delete<MessageController>();
     super.dispose();
   }
 
@@ -58,7 +61,9 @@ class _ChatPageState extends State<ChatPage> {
       appBar: AppBar(
         centerTitle: true,
         elevation: 0,
-        title: Text(widget.chatName),
+        title: Text(capitalizeFirstLetter(widget.chatName),
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor: Colors.red,
         actions: [
           IconButton(
@@ -72,6 +77,9 @@ class _ChatPageState extends State<ChatPage> {
             icon: const Icon(Icons.info, color: Colors.white70,),
           ),
         ],
+        iconTheme: IconThemeData(
+          color: Colors.white
+        ),
       ),
       body: Column(
         children: [
@@ -145,10 +153,10 @@ class _ChatPageState extends State<ChatPage> {
 
     Message message = Message(
         senderId: currentUserId!,
-        senderName: widget.userName,
+        senderName: splitBySpace(currentUserName)[0],
         text: messageBox.text,
+        isSentByMe: true,
         timestamp: Timestamp.now(),
-        isSentByMe: true
     );
     MessageController(groupId: widget.chatId).sendMessageToGroup( message );
     setState(() {

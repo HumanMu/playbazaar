@@ -25,18 +25,14 @@ class _QuizPlayScreen extends State<QuizPlayScreen>{
   //late GameController gameController;
   late AudioPlayer _player;
   bool isLoading = true;
-  int answeredQuetions = 0;
   late List<QuizQuestionModel> questionData = [];
   List<QuizAttempt> quizAttempts = [];
   bool showQuestionsDetailResult = false;
-
-
   List<String> currentAnswer = [];
   late String currentQuestion = "";
   late int selectedAnswer = 0;
   int? selectedAnswerIndex;
   bool? isCorrect;
-  String? errorMessage;
 
 
   @override
@@ -130,12 +126,12 @@ class _QuizPlayScreen extends State<QuizPlayScreen>{
                           isCorrect != null && isCorrect!? Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text("correct_answer".tr,
-                              style: TextStyle(color: Colors.green, fontSize: 30)),
+                              style: TextStyle(color: Colors.green, fontSize: 20)),
                           ) : Container(),
                           isCorrect != null && !isCorrect!? Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text("${"wrong_answer".tr} ",
-                                style: TextStyle(color: Colors.red, fontSize: 30)
+                                style: TextStyle(color: Colors.red, fontSize: 20)
                             ),
                           ) : Container(),
                         ],
@@ -157,27 +153,12 @@ class _QuizPlayScreen extends State<QuizPlayScreen>{
     );
   }
 
-  void _playSound() async {
-    if(!settingsController.isButtonSoundsEnabled.value){
-      return;
-    }
-
-    try {
-      await _player.setAsset('assets/sounds/button/ui_clicked.wav');
-      _player.play();
-    } catch (e) {
-      if (kDebugMode) {
-        print("Error playing sound: $e");
-      }
-    }
-  }
-
 
   void nextQuestion() {
-    if ( mounted && selectedAnswerIndex != null) {
+    if (mounted && selectedAnswerIndex != null) {
       if (selectedAnswer < questionData.length - 1) {
         setState(() {
-          selectedAnswer = selectedAnswer + 1;
+          selectedAnswer++;
           final QuizQuestionModel nextQuestion = questionData[selectedAnswer];
           currentQuestion = nextQuestion.question;
           currentAnswer = nextQuestion.wrongAnswers.split(',');
@@ -185,7 +166,6 @@ class _QuizPlayScreen extends State<QuizPlayScreen>{
           currentAnswer.shuffle(Random());
           selectedAnswerIndex = null;
           isCorrect = null;
-          answeredQuetions++;
         });
       } else {
         showResult();
@@ -196,11 +176,76 @@ class _QuizPlayScreen extends State<QuizPlayScreen>{
   }
 
 
+
+  Future<void> getQuestionsFromFirestore() async {
+    try {
+      final questionResult = await FirestoreQuiz().getRandomQuizQuestions(
+          quizId: widget.selectedQuiz);
+      if(mounted) {
+        setState(() {
+          questionData = questionResult;
+          isLoading = false;
+          if (questionData.isNotEmpty) {
+            currentQuestion = questionData[selectedAnswer].question;
+            currentAnswer = questionData[selectedAnswer].wrongAnswers.split(',');
+            currentAnswer.add(questionData[selectedAnswer].correctAnswer);
+            currentAnswer.shuffle(Random());
+          }
+        });
+        isLoading = false;
+      }
+      else {
+        return;
+      }
+    } catch (error) {
+      setState(() {
+        isLoading= false;
+      });
+    }
+  }
+
+
+
+  Color getButtonColor(int index) {
+    if (selectedAnswerIndex != null && selectedAnswer < questionData.length && index < currentAnswer.length) {
+      final isThisAnswerCorrect = currentAnswer[index] == questionData[selectedAnswer].correctAnswer;
+
+      final result = isThisAnswerCorrect ? Colors.green : Colors.red;
+      return result;
+    } else {
+      return Colors.white70;
+    }
+  }
+
+
+  void checkAnswer(int index) {
+    setState(() {
+      selectedAnswerIndex = index;
+      isCorrect = currentAnswer[index] == questionData[selectedAnswer].correctAnswer;
+    });
+
+    bool alreadyAnswered = quizAttempts.any(
+            (attempt) => attempt.question == questionData[selectedAnswer].question
+    );
+
+    if (!alreadyAnswered) {
+      QuizAttempt attempt = QuizAttempt(
+        question: questionData[selectedAnswer].question,
+        userAnswer: currentAnswer[selectedAnswerIndex!],
+        correctAnswer: questionData[selectedAnswer].correctAnswer,
+        isCorrect: isCorrect ?? false,
+      );
+      quizAttempts.add(attempt);
+    }
+    else {
+      return showCustomSnackbar("question_is_answered".tr, false);
+    }
+  }
+
   void showResult() async {
     if (quizAttempts.isEmpty) {
       return;
     }
-    //loadQuizAttempts();
     int numberOfCorrectAnswers = quizAttempts.where((attempt) => attempt.isCorrect).length;
     int numberOfWrongAnswers = quizAttempts.length - numberOfCorrectAnswers;
     int points = numberOfCorrectAnswers * 3 - quizAttempts.where((attempt) => !attempt.isCorrect).length;
@@ -266,7 +311,6 @@ class _QuizPlayScreen extends State<QuizPlayScreen>{
                 ),
               ),
               const SizedBox(height: 10),
-
               Expanded(
                 child: SingleChildScrollView(
                   child: Column(
@@ -333,6 +377,7 @@ class _QuizPlayScreen extends State<QuizPlayScreen>{
                 alignment: Alignment.center,
                 child: ElevatedButton(
                   onPressed: () {
+                    endQuiz();
                     Navigator.of(context).pop();
                     Get.offNamed('/mainQuiz');
                   },
@@ -353,32 +398,17 @@ class _QuizPlayScreen extends State<QuizPlayScreen>{
   }
 
 
-  Future<void> getQuestionsFromFirestore() async {
-    try {
-      final questionResult = await FirestoreQuiz().getRandomQuizQuestions(
-          quizId: widget.selectedQuiz);
-      if(mounted) {
-        setState(() {
-          questionData = questionResult;
-          isLoading = false;
-          if (questionData.isNotEmpty) {
-            currentQuestion = questionData[selectedAnswer].question;
-            currentAnswer = questionData[selectedAnswer].wrongAnswers.split(',');
-            currentAnswer.add(questionData[selectedAnswer].correctAnswer);
-            currentAnswer.shuffle(Random());
-          }
-        });
-        isLoading = false;
-      }
-      else {
-        return;
-      }
-    } catch (error) {
-      setState(() {
-        isLoading= false;
-      });
-    }
+
+  void endQuiz() {
+    setState(() {
+      questionData = [];
+      quizAttempts = [];
+      currentAnswer = [];
+      currentQuestion = "";
+      selectedAnswer = 0;
+    });
   }
+
 
   Widget motivationResult(int correctAnswer) {
     if (correctAnswer <= 3) {
@@ -393,6 +423,7 @@ class _QuizPlayScreen extends State<QuizPlayScreen>{
       return const SizedBox();
     }
   }
+
 
   Widget buildMotivationText(String text, IconData icon, Color color, double fontSize) {
     return Text.rich(
@@ -412,50 +443,19 @@ class _QuizPlayScreen extends State<QuizPlayScreen>{
   }
 
 
-  void checkAnswer(int index) {
-    setState(() {
-      selectedAnswerIndex = index;
-      isCorrect = currentAnswer[index] == questionData[selectedAnswer].correctAnswer;
-    });
-
-    bool alreadyAnswered = quizAttempts.any(
-            (attempt) => attempt.question == questionData[selectedAnswer].question
-    );
-
-    if (mounted && !alreadyAnswered) {
-      QuizAttempt attempt = QuizAttempt(
-        question: questionData[selectedAnswer].question,
-        userAnswer: currentAnswer[selectedAnswerIndex!],
-        correctAnswer: questionData[selectedAnswer].correctAnswer,
-        isCorrect: isCorrect ?? false,
-      );
-      quizAttempts.add(attempt);
-      //SharedPreferencesService().saveQuizAttempts(quizAttempts);
+  void _playSound() async {
+    if(!settingsController.isButtonSoundsEnabled.value){
+      return;
     }
-    else {
-      return showCustomSnackbar("question_is_answered".tr, false);
+
+    try {
+      await _player.setAsset('assets/sounds/button/ui_clicked.wav');
+      _player.play();
+    } catch (e) {
+      if (kDebugMode) {
+        print("Error playing sound: $e");
+      }
     }
   }
-
-
-  Color getButtonColor(int index) {
-    if (selectedAnswerIndex != null) {
-      final isThisAnswerCorrect = currentAnswer[index] == questionData[selectedAnswer].correctAnswer;
-
-      final result = isThisAnswerCorrect ? Colors.green : Colors.red;
-      return result;
-    } else {
-      return Colors.white70;
-    }
-  }
-
-  /*Future<void> loadQuizAttempts() async {
-    final quizAttemptsData = await SharedPreferencesService().loadQuizAttempts();
-    if (mounted && quizAttemptsData != null) {
-      setState(() {
-        quizAttempts = quizAttemptsData;
-      });
-    }
-  }*/
 
 }

@@ -1,13 +1,15 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_switch/flutter_advanced_switch.dart';
 import 'package:get/get.dart';
+import 'package:playbazaar/models/DTO/add_user_to_group_dto.dart';
+import 'package:playbazaar/models/DTO/create_group_dto.dart';
+import 'package:playbazaar/screens/widgets/dialogs/accept_result_dialog.dart';
 import '../../api/Authentication/auth_service.dart';
-import '../../api/Firestore/firestore_groups.dart';
-import '../../api/firestore/firestore_user.dart';
+import '../../constants/constants.dart';
 import '../../controller/group_controller/group_controller.dart';
-import '../../helper/sharedpreferences.dart';
+import '../../controller/user_controller/user_controller.dart';
+import '../../functions/string_cases.dart';
 import '../../utils/notfound.dart';
 import '../../utils/text_boxes/text_box_decoration.dart';
 import '../widgets/cards/custom_group_tile.dart';
@@ -23,76 +25,30 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   AuthService authService = AuthService();
-  //late final GroupController groupController;// controller
   final String? currentUserId = FirebaseAuth.instance.currentUser!.uid;
-  String userName = "";
-  String userEmail = "";
-  Stream? userSnapshot;
-  Stream<DocumentSnapshot>? userFriends;
-  Stream? friendsRequests;
-  bool newFriendRequest = false;
-  bool _isLoading = false;
-  String groupName = "";
-  String? groupPassword = "";
+  final userController = Get.find<UserController>();
   final groupNameController = TextEditingController();
   final groupPasswordController = TextEditingController();
-  bool theme = false;
-  final _controller = ValueNotifier<bool>(false);
-  bool value = false;
+  final _popUpDialogController = ValueNotifier<bool>(false);
+  String groupName = "";
+  String? groupPassword = "";
+  late bool privateToggler = false;
+  String userName = "";
 
-  @override
-  void initState() {
-    super.initState();
-    _isLoading = true;
-    getUserData();
-    getFriends();
-    _isLoading = false;
-  }
 
   @override
   void dispose() {
+    _popUpDialogController.removeListener(() {});
+    _popUpDialogController.dispose();
     groupNameController.dispose();
     groupPasswordController.dispose();
-    _controller.dispose();
     super.dispose();
   }
 
-  String getId(String res) {
-    return res.substring(0, res.indexOf("_"));
-  }
-
-  List<String> getName(String group) {
-    var parts = group.split('_');
-    //String result = parts[1].trim();
-    return parts;
-  }
-
-  getUserData() async {
-    final name = await SharedPreferencesManager.getString(
-        SharedPreferencesKeys.userNameKey);
-    if (name != null && name != "") {
-      setState(() {
-        userName = name;
-      });
-    }
-    final email = await SharedPreferencesManager.getString(
-        SharedPreferencesKeys.userEmailKey);
-    if (email != null && email != "") {
-      setState(() {
-        userEmail = email;
-      });
-    }
-
-    userSnapshot = await FirestoreGroups(userId: currentUserId).getGroupsList();
-  }
-
-  getFriends() async {
-    userFriends = await FirestoreUser(userId: currentUserId).getFriendList();
-  }
 
   @override
   Widget build(BuildContext context) {
-    if(_isLoading){
+    if(userController.isLoading.value){
       return const Center(
         child: CircularProgressIndicator(),
       );
@@ -113,60 +69,60 @@ class _HomePageState extends State<HomePage> {
         title: Text(
           "my_memberships".tr,
           style: const TextStyle(
-              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 25),
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 25
+          ),
+        ),
+        iconTheme: IconThemeData(
+          color: Colors.white
         ),
       ),
       drawer: SidebarDrawer(
         authService: authService,
         parentContext: context,
       ),
+
       body: groupList(),
+
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          popUpDialog(context);
-        },
+        onPressed: () { popUpDialog(context); },
         elevation: 0,
         backgroundColor: Colors.green,
-        child: const Icon(Icons.add, color: Colors.red, size: 30),
+        child: const Icon(
+            Icons.add,
+            color: Colors.white,
+            size: 40
+        ),
       ),
     );
   }
 
+  Widget groupList() {
+    return Obx(() {
+      final groupsId = userController.userData.value?.groupsId;
 
-  groupList() {
-    return StreamBuilder(
-      stream: userSnapshot,
-      builder: (context, AsyncSnapshot snapshot) {
-        if (snapshot.hasData && snapshot.data['groups'] != null) {
-          if (snapshot.data['groups'].length != 0) {
-            return ListView.builder(
-              itemCount: snapshot.data['groups'].length,
-              itemBuilder: (context, index) {
-                int reverseIndex = snapshot.data['groups'].length - index -1;
-                final user = snapshot.data['groups'];
+      if (groupsId == null || groupsId.isEmpty) {
+        return Center(
+          child: notFound("not_found_title".tr, "not_found_message".tr),
+        );
+      }
 
-                return CustomGroupTile(
-                  groupId: getId(user[reverseIndex]),
-                  groupName: getName(user[reverseIndex])[1].trim(),
-                  admin: userName,
-                  password: getName(user[reverseIndex]).length > 2?  getName(user[reverseIndex])[2]: "",
-                );
-              },
-            );
-          } else {
-            return notFound("not_found_title".tr, "not_found_message".tr);
-          }
-        } else {
-          return const Center(
-            child: CircularProgressIndicator(
-              color: Colors.red,
-            ),
+      return ListView.builder(
+        itemCount: groupsId.length,
+        itemBuilder: (context, index) {
+          final groupId = groupsId[index];
+          final groupInfo = splitByUnderscore(groupId);
+          return CustomGroupTile(
+            groupId: splitByUnderscore(groupId)[0],
+            groupName: groupInfo.length > 1 ? groupInfo[1].trim() : '',
+            admin: splitByUnderscore(groupId)[1],
+            password: groupInfo.length > 2 ? groupInfo[2] : '',
           );
-        }
-      },
-    );
+        },
+      );
+    });
   }
-
 
 
   popUpDialog(BuildContext context) {
@@ -175,17 +131,20 @@ class _HomePageState extends State<HomePage> {
         context: context,
         builder: (context) {
           return StatefulBuilder(builder: ((context, setState) {
-            _controller.addListener(() {
-              setState(() {
-                value = _controller.value;
-              });
+            _popUpDialogController.addListener(() {
+              if (mounted) {
+                setState(() {
+                  privateToggler = _popUpDialogController.value;
+                });
+              }
             });
+
             return AlertDialog(
                 title: Text("create_group_title".tr),
                 content: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    _isLoading == true
+                    userController.isLoading.value == true
                         ? const Center(
                             child: CircularProgressIndicator(
                             color: Colors.red,
@@ -197,9 +156,9 @@ class _HomePageState extends State<HomePage> {
                             },
                             decoration: decoration("group_name_hint".tr),
                           ),
-                    privatePublicToggler(_controller),
+                    privatePublicToggler(_popUpDialogController),
                     Visibility(
-                      visible: value,
+                      visible: privateToggler,
                       child: TextField(
                         controller: groupPasswordController,
                         onChanged: (val) {
@@ -221,17 +180,7 @@ class _HomePageState extends State<HomePage> {
                     child: Text("btn_cancel".tr),
                   ),
                   ElevatedButton(
-                    onPressed: () async {
-                      if (groupNameController.text != "") {
-                        GroupController().createNewGroup(
-                            userName,
-                            FirebaseAuth.instance.currentUser!.uid,
-                            groupName,
-                            groupPassword
-                        );
-                        Navigator.of(context).pop();
-                      }
-                    },
+                    onPressed: () => createGroup(),
                     style:
                         ElevatedButton.styleFrom(backgroundColor: Colors.green),
                     child: Text("btn_create".tr),
@@ -266,5 +215,44 @@ class _HomePageState extends State<HomePage> {
             }),
       ),
     );
+  }
+
+
+  void createGroup() async {
+      if(groupNameController.text.trim() =="" || groupNameController.text.trim().length > 25){
+        acceptResultDialog(context, "", "group_names_valid_size".tr);
+        return;
+      }
+      if(groupNameController.text.trim().contains("_")){
+        acceptResultDialog(context, "", "group_name_unvalid_characters".tr);
+        return;
+      }
+      if(privateToggler && groupPasswordController.text.trim().length < 4){
+        acceptResultDialog(context, "", "private_group_is_selected".tr);
+        return;
+      }
+      CreateGroupDto newGroup = CreateGroupDto(
+          creatorId: FirebaseAuth.instance.currentUser!.uid,
+          groupName: groupName,
+          avatarImage: "",
+          isPublic: privateToggler,
+          groupPassword: groupPassword,
+
+      );
+      AddUserToGroupDto creator = AddUserToGroupDto(
+          userName: userName,
+          avatarImage: FirebaseAuth.instance.currentUser?.photoURL ?? "",
+          userRole: GroupUserRole.isCreator,
+      );
+      await GroupController().createNewGroup(newGroup, creator);
+
+      popDialog();
+  }
+
+  void popDialog() {
+    groupPasswordController.text = "";
+    groupNameController.text = "";
+    privateToggler = false;
+    Navigator.of(context).pop();
   }
 }

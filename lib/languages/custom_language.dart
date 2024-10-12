@@ -50,7 +50,7 @@ class CustomLanguage extends StatelessWidget {
           backgroundColor: Colors.white,
           title: Text('choose_language'.tr),
           content: SizedBox(
-            width: double.maxFinite,
+            width: double.minPositive,
             child: ListView.separated(
               itemCount: locale.length,
               shrinkWrap: true,

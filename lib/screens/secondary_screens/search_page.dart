@@ -4,12 +4,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:playbazaar/controller/group_controller/group_controller.dart';
-import 'package:playbazaar/models/DTO/membership_toggler_model.dart';
-import 'package:playbazaar/utils/show_custom_snackbar.dart';
+import 'package:playbazaar/controller/user_controller/user_controller.dart';
+import 'package:playbazaar/functions/string_cases.dart';
+import 'package:playbazaar/screens/widgets/tiles/search_friend_tile.dart';
 import '../../api/Firestore/firestore_groups.dart';
-import '../../api/firestore/firestore_user.dart';
-import '../../api/services/notification_services.dart';
-import '../../helper/sharedpreferences.dart';
+import '../../models/DTO/add_group_member.dart';
+import '../../models/DTO/search_friend_dto.dart';
 
 class SearchPage extends StatefulWidget {
   final String searchId;
@@ -20,10 +20,11 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
+  final UserController userController = Get.find<UserController>();
+  late GroupController groupController;
   TextEditingController searchController = TextEditingController();
   bool isLoading = false;
   QuerySnapshot? searchSnapshot;
-  String userName = "";
   User? user;
   bool hasUserSearched = false;
   bool userIsAMemberOfTheGroup = false;
@@ -32,22 +33,20 @@ class _SearchPageState extends State<SearchPage> {
   @override
   void initState() {
     super.initState();
-    getCurrentUserIdAndName();
+    Get.put(GroupController());
+    //Get.create(() => GroupController());
+    //groupController = Get.find<GroupController>();
   }
 
-  Future<void> getCurrentUserIdAndName() async {
-    final value = await SharedPreferencesManager.getString(SharedPreferencesKeys.userNameKey);
-    if(value != null && value != "") {
-      setState(() {
-        userName = value;
-      });
-    }
-    else {
-      userName = "";
-    }
-
-    user = FirebaseAuth.instance.currentUser;
+  @override
+  void dispose() {
+    searchController.dispose();
+    Get.delete<GroupController>();
+    super.dispose();
   }
+
+
+
   String getName(String ind) {
     return ind.substring(ind.indexOf("_") + 1);
   }
@@ -55,10 +54,10 @@ class _SearchPageState extends State<SearchPage> {
     return res.substring(0, res.indexOf("_"));
   }
 
-
   @override
   Widget build(BuildContext context) {
-    final searchId = widget.searchId =="group" ?  "search_groups".tr
+    final searchId = widget.searchId =="group"
+        ? "search_groups".tr
         : 'search_friends'.tr;
 
     return Scaffold(
@@ -72,6 +71,9 @@ class _SearchPageState extends State<SearchPage> {
             fontWeight: FontWeight.bold,
             fontSize: 25,
           ),
+        ),
+        iconTheme: IconThemeData(
+          color: Colors.white
         ),
       ),
       body: SingleChildScrollView(
@@ -122,10 +124,15 @@ class _SearchPageState extends State<SearchPage> {
               ],
             ),
           ),
-          isLoading? Center(
-            child: CircularProgressIndicator(
-              color: Theme.of(context).primaryColor ),
-          ) : searchedResultList(),
+          Obx(() {
+            if (userController.isLoading.value) {
+              return Center(child: CircularProgressIndicator());
+            } else if (widget.searchId == "group") {
+              return searchedGroupList();
+            } else {
+              return searchedFriendList();
+            }
+          }),
         ],
         ),
       ),
@@ -133,9 +140,9 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   initiateSearch(searchId) async {
-    if(searchController.text.isNotEmpty) {
+    if(searchController.text.trim().isNotEmpty) {
       setState(() { isLoading = true; });
-      if(searchId = widget.searchId =="group") {
+      if( widget.searchId =="group") {
         await FirestoreGroups()
             .searchByGroupName(searchController.text)
             .then((snapshot) {
@@ -147,184 +154,132 @@ class _SearchPageState extends State<SearchPage> {
         });
       }
       else{
-         await FirestoreGroups()  // Search for a user
-          .searchByUserName(searchController.text)
-          .then((snapshot) {
-            setState(() {
-              searchSnapshot = snapshot;
-              isLoading = false;
-              hasUserSearched = true;
-            });
-          });
+        await userController.searchUserByName(searchController.text.trim());
+        setState(() {
+          isLoading = false;
+          hasUserSearched = true;
+        });
       }
     }
   }
 
+  searchedFriendList() {
+    return hasUserSearched
+        ? userController.searchedUsersList.isEmpty
+        ? Center(child: Text("search_not_found".tr))
+        : ListView.builder(
+          shrinkWrap: true,
+          itemCount: userController.searchedUsersList.length,
+          itemBuilder: (context, index) {
+            final searched = userController.searchedUsersList[index];
+            String friendStatus = "NoRequest";
 
-  searchedResultList() {
-    return hasUserSearched 
-      ? ListView.builder(
-        shrinkWrap: true,
-        itemCount: searchSnapshot!.docs.length,
-        itemBuilder: (context, index) {
-          if(widget.searchId == 'group') {
-            MembershipTogglerModel toggle = MembershipTogglerModel(
-              userName: userName,
-              groupId: searchSnapshot!.docs[index]['groupId'],
-              groupName: searchSnapshot!.docs[index]['name'],
+            // Reactive data access
+            if (userController.friendList.any((friend) => friend['uid'] == searched['uid'])) {
+              friendStatus = "Friend";
+            } else if (userController.sentFriendRequests.any((request) => request['uid'] == searched['uid'])) {
+              friendStatus = "WaitingAnswer";
+            } else if (userController.recievedFriendRequests.any((request) => request['uid'] == searched['uid'])) {
+              friendStatus = "ReceivedRequest";
+            }
+
+            SearchFriendDto searchedResult = SearchFriendDto(
+              userId: FirebaseAuth.instance.currentUser!.uid,
+              foreignId: searched['uid'],
+              fullname: searched['fullname'],
+              requestStatus: friendStatus,
             );
-            return searchGroupTile(
-              toggle,
-              searchSnapshot!.docs[index]['admin'],
+
+            return SearchFriendTile(searchData: searchedResult, index: index);
+          },
+        ): Container();
+  }
+
+  searchedGroupList() {
+    return hasUserSearched
+      ? searchSnapshot!.docs.isEmpty
+      ? Center(child: Text("search_not_found".tr))
+      : ListView.builder(
+          shrinkWrap: true,
+          itemCount: searchSnapshot!.docs.length,
+          itemBuilder: (context, index) {
+            var searchedGroup = searchSnapshot!.docs[index];
+            final currentGroupsId = userController.userData.value?.groupsId ?? [];
+
+            bool isMember = currentGroupsId.any((groupIdName) {
+              String id = groupIdName.split('_').first;
+              return id == searchedGroup['groupId'];
+            });
+            bool isPublic = searchedGroup['isPublic'];
+
+            AddGroupMemberDto addGroup = AddGroupMemberDto(
+              groupId: searchedGroup['groupId'],
+              groupName: capitalizeFirstLetter(searchedGroup['name']),
+              userName: searchedGroup['creatorId'],
             );
-          } else{
-            return searchFriendTile(
-                user!.uid,
-                searchSnapshot!.docs[index]['uid'],
-                searchSnapshot!.docs[index]['firstname'],
-                searchSnapshot!.docs[index]['lastname']
-            );
+            return searchGroupTile(addGroup, isMember, isPublic);
           }
-        },
     ) : Container();
   }
 
-  Widget searchFriendTile(String userId, String foreignId,
-      String foreignName, String foreignLastname) {
-    friendshipCheck(userId, foreignId);
 
-    if(userId == foreignId){
-      return const Text("");
-    }
-    // Show the founded users
+  Widget searchGroupTile(AddGroupMemberDto addGroup, bool isMember, isPublic) {
     return ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      leading: CircleAvatar(
-        radius: 25,
-        backgroundColor: Colors.red,
-        child: Text(foreignName.substring(0,1).toUpperCase(),
-          style: const TextStyle(
-            color: Colors.white,
-          ),
+        contentPadding: const EdgeInsets.symmetric(
+            horizontal: 10,
+            vertical: 5
         ),
-      ),
-      title: Text("$foreignName $foreignLastname", style: const TextStyle(fontWeight: FontWeight.bold )),
-      trailing: InkWell(
-        onTap: () async {
-          await FirestoreUser(userId: user!.uid)
-              .sendFriendRequest(user!.uid, foreignId);
-        },
-        child: friendShipStatus =="WaitingAnswer"  || friendShipStatus == "TheyAreFriends"? Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: Colors.lightGreen,
-            border: Border.all(color: Colors.white, width: 1),
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          child: friendShipStatus =="TheyAreFriends"? Text('friends'.tr) : Text('delete_friend'.tr,
-            style: const TextStyle(color: Colors.white),
-          ),
-        ) : Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Colors.red,
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              child: Text('request_friendship'.tr,
-                style: const TextStyle( color: Colors.white ),
-              ),
-        ),
-      ),
-    );
-  }
-
-  Widget searchGroupTile(MembershipTogglerModel toggle, String admin) {
-    joinedGroupMembers(toggle, admin);
-    return ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      leading: CircleAvatar(
-        radius: 25,
-        backgroundColor: Colors.red,
-        child: Text(toggle.groupName.substring(0,1).toUpperCase(),
-          style: const TextStyle(
-            color: Colors.white,
-          ),
-        ),
-      ),
-      title: Text(toggle.groupName,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold)
-      ),
-      subtitle: Text("group_admin".tr + getName(admin),
-      ),
-      trailing: InkWell(
-        onTap: () async {
-          await GroupController().toggleGroupMembership(toggle, FirebaseAuth.instance.currentUser!.uid);
-          if(mounted && userIsAMemberOfTheGroup) {
-            setState(() {
-              userIsAMemberOfTheGroup = !userIsAMemberOfTheGroup;
-            });
-            showSnackBar(context, "group_membershit_succed".tr, Colors.green);
-            Future.delayed(const Duration(seconds: 3), () {
-              Get.toNamed('/chat', arguments: {
-                'chatId': toggle.groupId,
-                'chatName': toggle.groupName,
-                'userName': userName,
-                'recieverId': '',
-              });
-            });
-          }
-          else {
-            setState(() {
-              userIsAMemberOfTheGroup = !userIsAMemberOfTheGroup;
-            });
-            showCustomSnackbar("leaving_group_succed".tr, false);
-          }
-        },
-        child: userIsAMemberOfTheGroup ? Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: Colors.lightGreen,
-            border: Border.all(color: Colors.white, width: 1),
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          child: Text("btn_leaving_group".tr,
-            style: const TextStyle(color: Colors.white),
-          ),
-        )
-        : Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: Colors.red,
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          child: Text("btn_membershipt_request".tr  , style: const TextStyle(
+        leading: CircleAvatar(
+          radius: 25,
+          backgroundColor: Colors.red,
+          child: Text(addGroup.groupName.substring(0, 1).toUpperCase(),
+            style: const TextStyle(
               color: Colors.white,
             ),
           ),
         ),
-      ),
-    );
+        title: Text(
+          addGroup.groupName,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold
+          )
+        ),
+        subtitle: isPublic
+            ? Text("${"group".tr}: ${"public".tr}")
+            : Text("${"group".tr}: ${"private".tr}"),
+        trailing: InkWell(
+          onTap: () async {
+            if(!isMember){
+              await addGroupMember(addGroup);
+              setState(() {
+                isMember = true;
+              });
+            }
+          },
+          child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: isMember
+                    ? Colors.white
+                    : Colors.red
+              ),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20,
+                vertical: 10
+              ),
+              child: Text(
+                isMember
+                    ? "already_member".tr
+                    : "btn_membership_request".tr,
+                style: const TextStyle(color: Colors.black),
+              ),
+          ),
+        ),
+      );
   }
 
-  joinedGroupMembers(MembershipTogglerModel toggle,  String admin) async {
-    await GroupController().checkIfUserJoined(toggle)
-        .then((val){
-          setState(() {
-            userIsAMemberOfTheGroup = val;
-          });
-
-    });
+  Future<void> addGroupMember(AddGroupMemberDto addGroup) async{
+    await GroupController().addGroupMember(addGroup);
   }
 
-
-  friendshipCheck(String userId, String foreignId) async {
-    userId != foreignId? await FirestoreUser(userId: userId)
-      .checkIfUserAlreadyFriends( userId,foreignId)
-      .then((val){
-        setState(() {
-          friendShipStatus = val;
-        });
-    }) : "";
-  }
 }

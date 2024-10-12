@@ -1,7 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:playbazaar/api/firestore/firestore_user.dart';
 import 'package:playbazaar/utils/show_custom_snackbar.dart';
+import '../../api/Authentication/auth_service.dart';
 import '../../helper/sharedpreferences.dart';
 import '../../models/user_model.dart';
 import '../widgets/text_boxes/text_inputs.dart';
@@ -16,9 +18,9 @@ class EditPage extends StatefulWidget {
 }
 
 class _EditPage extends State<EditPage> {
+  AuthService authService = AuthService();
   late UserProfileModel userProfileModel;
-  late TextEditingController firstnameCon;
-  late TextEditingController lastnameCon;
+  late TextEditingController fullnameCon;
   late TextEditingController aboutCon;
   bool isLoading = true;
 
@@ -30,23 +32,21 @@ class _EditPage extends State<EditPage> {
 
   void fetchData() async {
     final email = await SharedPreferencesManager.getString(SharedPreferencesKeys.userEmailKey) ?? "";
-    final firstname = await SharedPreferencesManager.getString(SharedPreferencesKeys.userNameKey) ?? "";
-    final lastname = await SharedPreferencesManager.getString(SharedPreferencesKeys.userLastNameKey) ?? "";
+    //final firstname = await SharedPreferencesManager.getString(SharedPreferencesKeys.userNameKey) ?? "";
+    //final lastname = await SharedPreferencesManager.getString(SharedPreferencesKeys.userLastNameKey) ?? "";
     final aboutme = await SharedPreferencesManager.getString(SharedPreferencesKeys.userAboutMeKey) ?? "";
     final userPoint = await SharedPreferencesManager.getInt(SharedPreferencesKeys.userPointKey) ?? 0;
 
     setState(() {
       userProfileModel = UserProfileModel(
           email: email,
-          firstName: firstname,
-          lastName: lastname,
+          fullname: authService.firebaseAuth.currentUser?.displayName,
           aboutMe: aboutme,
           userPoint: userPoint
       );
 
       // Initialize the TextEditingControllers with user data
-      firstnameCon = TextEditingController(text: userProfileModel.firstName);
-      lastnameCon = TextEditingController(text: userProfileModel.lastName);
+      fullnameCon = TextEditingController(text: userProfileModel.fullname);
       aboutCon = TextEditingController(text: userProfileModel.aboutMe);
 
       isLoading = false;
@@ -55,8 +55,7 @@ class _EditPage extends State<EditPage> {
 
   @override
   void dispose() {
-    firstnameCon.dispose();
-    lastnameCon.dispose();
+    fullnameCon.dispose();
     aboutCon.dispose();
     super.dispose();
   }
@@ -74,6 +73,9 @@ class _EditPage extends State<EditPage> {
               fontWeight: FontWeight.bold,
               fontSize: 25
           ),
+        ),
+        iconTheme: IconThemeData(
+          color: Colors.white
         ),
       ),
       backgroundColor: Colors.white,
@@ -114,17 +116,16 @@ class _EditPage extends State<EditPage> {
                         },
                         child: Column(
                           children: [
-                            CustomTextFormField(controller: firstnameCon, labelText: 'name'.tr),
-                            CustomTextFormField(controller: lastnameCon, labelText: 'lastname'.tr),
+                            CustomTextFormField(controller: fullnameCon, labelText: 'name'.tr),
                             CustomTextFormField(controller: aboutCon, maxLine: 6, labelText: 'aboutme'.tr),
                           ],
                         ),
                       ),
                       Container(
-                        margin: const EdgeInsets.fromLTRB(30, 10, 30, 10),
+                        margin: const EdgeInsets.fromLTRB(0, 10, 0, 10),
                         height: 50,
                         child: _saveButton(),
-                      ), // Save button
+                      ),
                     ],
                   ),
                 ),
@@ -170,22 +171,30 @@ class _EditPage extends State<EditPage> {
       return;
     }
     if(
-      firstnameCon.text.trim() != userProfileModel.firstName?.trim() 
-      || lastnameCon.text.trim() != userProfileModel.lastName?.trim()
+      fullnameCon.text.trim() != userProfileModel.fullname?.trim()
       || aboutCon.text.trim() != userProfileModel.aboutMe?.trim()
     ) {
       UserProfileModel editedData = UserProfileModel(
         email: userProfileModel.email,
-        firstName: firstnameCon.text.trim(),
-        lastName: lastnameCon.text.trim(),
+        fullname: fullnameCon.text.trim().toLowerCase(),
         aboutMe: aboutCon.text.trim(),
       );
       bool result = await FirestoreUser().editUserData(editedData);
       if(result) {
-        await SharedPreferencesManager.setString(SharedPreferencesKeys.userNameKey, firstnameCon.text.trim());
-        await SharedPreferencesManager.setString(SharedPreferencesKeys.userLastNameKey, lastnameCon.text.trim());
-        await SharedPreferencesManager.setString(SharedPreferencesKeys.userAboutMeKey, aboutCon.text.trim());
-        showCustomSnackbar('your_changes_succed'.tr, true);
+        try {
+          final user = FirebaseAuth.instance.currentUser!;
+          await user.updateProfile(
+            displayName: fullnameCon.text.trim(),
+            photoURL: "",
+          );
+          await SharedPreferencesManager.setString(SharedPreferencesKeys.userNameKey, fullnameCon.text.trim());
+          await SharedPreferencesManager.setString(SharedPreferencesKeys.userAboutMeKey, aboutCon.text.trim());
+          showCustomSnackbar('your_changes_succed'.tr, true);
+
+        } catch (e) {
+          showCustomSnackbar('unexpected_result'.tr, false);
+          return;
+        }
       }
       else{
         showCustomSnackbar('unexpected_result'.tr, false);
@@ -194,7 +203,6 @@ class _EditPage extends State<EditPage> {
     else{
       showCustomSnackbar('didnt_made_changes'.tr, false);
     }
-
     Get.offNamed('/profile');
   }
 }

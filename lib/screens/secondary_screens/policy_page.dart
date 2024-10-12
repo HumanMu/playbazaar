@@ -35,10 +35,16 @@ class PolicyPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("policy_title".tr),
+        title: Text("policy_title".tr,
+          style: TextStyle(
+            color: Colors.white
+          ),
+        ),
         centerTitle: true,
         backgroundColor: Colors.red,
-
+        iconTheme: IconThemeData(
+          color: Colors.white
+        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),

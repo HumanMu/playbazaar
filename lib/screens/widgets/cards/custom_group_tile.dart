@@ -1,10 +1,9 @@
 import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:playbazaar/functions/string_cases.dart';
 import '../../../utils/text_boxes/text_box_decoration.dart';
-import '../../main_screens/chat_page.dart';
 import '../dialogs/accept_result_dialog.dart';
-import '../text_boxes/text_widgets.dart';
 
 
 class CustomGroupTile extends StatefulWidget {
@@ -12,7 +11,6 @@ class CustomGroupTile extends StatefulWidget {
   final String groupId;
   final String groupName;
   final String? password;
-
 
   const CustomGroupTile({super.key,
     required this.groupId,
@@ -37,22 +35,23 @@ class _GroupTileState extends State<CustomGroupTile> {
     return GestureDetector(
       onTap:() {
         groupPasswordController.text = "";
-        print("Group password: ${widget.password}");
         if(widget.password == ""){
-          navigateToAnotherScreen(
-              context, ChatPage(
-              chatId: widget.groupId,
-              chatName: widget.groupName,
-              userName: widget.admin
-          )
-          );
+          Get.toNamed('/chat', arguments: {
+            'chatId': widget.groupId,
+            'chatName': widget.groupName,
+            'userName': widget.admin,
+          });
         }else{
           _dialogBuilder(context);
         }
       },
 
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+        margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 8),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: Colors.white,
+        ),
         child: ListTile(
           leading: CircleAvatar(
             radius: 25,
@@ -66,12 +65,14 @@ class _GroupTileState extends State<CustomGroupTile> {
               ),
             ),
           ),
-          title: Text(widget.groupName,
+          title: Text(capitalizeFirstLetter(widget.groupName),
             style: const TextStyle(
               fontWeight: FontWeight.bold,
             ),
           ),
-          subtitle: Text("${"group_admin".tr}  ${widget.admin}",
+          subtitle: Text(widget.password?.trim() == ""
+              ? "${"group".tr}: ${"public".tr}"
+              : "${"group".tr}: ${"private".tr}",
             style: const TextStyle(
               fontSize: 15,
             ),
@@ -127,14 +128,14 @@ class _GroupTileState extends State<CustomGroupTile> {
                 Navigator.of(context).pop();
                 bool result = identifyPassword(enteredPassword);
                 if(result == true){
-                  navigateToAnotherScreen( context, ChatPage(
-                      chatId: widget.groupId,
-                      chatName: widget.groupName,
-                      userName: widget.admin
-                  ));
+                  Get.toNamed('/chat', arguments: {
+                    'chatId': widget.groupId,
+                    'chatName': widget.groupName,
+                    'userName': widget.admin,
+                  });
                 }
                 else{
-                  acceptResultDialog(context, " ", 'wrong_group_password'.tr);
+                  acceptResultDialog(context, "", 'wrong_group_password'.tr);
                 }
               },
             ),

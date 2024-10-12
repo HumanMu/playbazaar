@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
 
-Widget _entryRow(String description, String value) {
+Widget entryRow(String description, String value) {
   return Container(
     alignment: Alignment.centerRight,
     margin: const EdgeInsets.fromLTRB(30, 5, 30, 5),

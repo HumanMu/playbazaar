@@ -1,12 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:email_validator/email_validator.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../api/Authentication/auth_service.dart';
-import '../../api/Firestore/firestore_groups.dart';
-import '../../helper/sharedpreferences.dart';
+import '../../controller/user_controller/account_controller.dart';
 import '../../languages/custom_language.dart';
 import '../../utils/headerstack.dart';
 import '../../utils/show_custom_snackbar.dart';
@@ -20,170 +17,150 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPage extends State<LoginPage> {
+  final AccountController accountController = Get.put(AccountController());
   final formKey = GlobalKey<FormState>();
   AuthService authService = AuthService();
   String name = "";
   String email = "";
   String password = "";
-  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
       backgroundColor: Colors.black,
-      body: _isLoading
+      body: Obx(() {
+        return accountController.isLoading.value
           ? const Center(
             child: CircularProgressIndicator(color: Colors.red))
           : CustomScrollView(
-              scrollDirection: Axis.vertical,
-              slivers: [
-                SliverFillRemaining(
-                  hasScrollBody: false,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const HeaderStack(),
-                      Container(
-                        padding: const EdgeInsets.all(20.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Form(
-                              key: formKey,
-                              child: Column(
-                                children: [
-                                  TextFormField(
-                                    decoration: textInputDecoration.copyWith(
-                                      labelText: "email".tr,
-                                      prefixIcon: const Icon(
-                                        Icons.email,
-                                      ),
-                                    ),
-                                    onChanged: (val) {
-                                      setState(() {
-                                          email = val;
-                                        }
-                                      );
-                                    } ,
-                                    validator: (val) {
-                                      bool isValid = EmailValidator.validate(email);
-                                      return isValid ? null : "not_valid_email".tr;
-                                    },
-
-                                  ),
-                                  const SizedBox(height: 10,),
-                                  TextFormField(
-                                    obscureText: true,
-                                    decoration: textInputDecoration.copyWith(
-                                      labelText: "password".tr,
-                                      prefixIcon: const Icon(
-                                        Icons.lock,
-                                      ),
-                                    ),
-                                      onChanged: (val) {
-                                        setState(() {
-                                          password = val;
-                                        }
-                                      );
-                                    } ,
-
-                                  ),
-                                  TextButton(
-                                    onPressed: () {
-                                      Get.toNamed('/resetPassword');
-                                    },
-                                    child: Text('forgot_password'.tr),
-                                  ),
-                                  const SizedBox(height: 10),
-                                  _submitButton(),
-                                  const SizedBox(height: 15),
-                                  Container(
-                                      alignment: Alignment.center,
-                                      child: TextButton(
-                                        onPressed: () { CustomLanguage().languageDialog(context); },
-                                        child: Text('language'.tr, style: const TextStyle(color: Colors.red)),
-                                      )
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(bottom: 10),
-                        child: RichText(
-                          text: TextSpan(
-                              text: "not_have_account".tr,
-                              style: const TextStyle(
-                                color: Colors.white,
-                              ),
+            scrollDirection: Axis.vertical,
+            slivers: [
+              SliverFillRemaining(
+                hasScrollBody: false,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const HeaderStack(),
+                    Container(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Form(
+                            key: formKey,
+                            child: Column(
                               children: [
-                                TextSpan(
-                                    text: 'make_account_here'.tr,
-                                    style: const TextStyle(
-                                      color: Colors.redAccent,
-                                      fontWeight: FontWeight.bold,
+                                TextFormField(
+                                  decoration: textInputDecoration.copyWith(
+                                    labelText: "email".tr,
+                                    prefixIcon: const Icon(
+                                      Icons.email,
                                     ),
-                                    recognizer: TapGestureRecognizer() ..onTap = () {
-                                      Get.offNamed('/register');
-                                      /*navigateAndReplaceScreen(context,
-                                          const RegisterPage()
-                                      );*/ //_navigateAndReplaceCurrentScreen(context, const RegisterPage());
-                                    }),
-                              ]),
-                        ),
+                                  ),
+                                  onChanged: (val) {
+                                    setState(() {
+                                      email = val;
+                                    }
+                                    );
+                                  },
+                                  validator: (val) {
+                                    bool isValid = EmailValidator.validate(email);
+                                    return isValid ? null : "not_valid_email".tr;
+                                  },
+
+                                ),
+                                const SizedBox(height: 10,),
+                                TextFormField(
+                                  obscureText: true,
+                                  decoration: textInputDecoration.copyWith(
+                                    labelText: "password".tr,
+                                    prefixIcon: const Icon(
+                                      Icons.lock,
+                                    ),
+                                  ),
+                                  onChanged: (val) {
+                                    setState(() {
+                                      password = val;
+                                    }
+                                    );
+                                  },
+
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    Get.toNamed('/resetPassword');
+                                  },
+                                  child: Text('forgot_password'.tr),
+                                ),
+                                const SizedBox(height: 10),
+                                _submitButton(),
+                                const SizedBox(height: 15),
+                                Container(
+                                    alignment: Alignment.center,
+                                    child: TextButton(
+                                      onPressed: () {
+                                        CustomLanguage().languageDialog(context);
+                                      },
+                                      child: Text('language'.tr,
+                                          style: const TextStyle(
+                                              color: Colors.red)),
+                                    )
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 10),
+                      child: RichText(
+                        text: TextSpan(
+                            text: "not_have_account".tr,
+                            style: const TextStyle(
+                              color: Colors.white,
+                            ),
+                            children: [
+                              TextSpan(
+                                  text: 'make_account_here'.tr,
+                                  style: const TextStyle(
+                                    color: Colors.redAccent,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      Get.offNamed('/register');
+                                    }),
+                            ]),
+                      ),
+                    ),
+                  ],
                 ),
+              ),
             ],
-        ),
+          );
+        }),
     );
   }
 
 
   loginUser() async {
     if (formKey.currentState!.validate()) {
-      setState(() {
-        _isLoading = true;
-      });
-
       try {
-        final result = await authService.loginUserWithEmailAndPassword(email, password);
+        await accountController.loginUserWithEmailAndPassword(email, password);
 
-        if (result) {
-          final email = FirebaseAuth.instance.currentUser!.email.toString();
-          QuerySnapshot snapshot = await FirestoreGroups(userId: FirebaseAuth.instance.currentUser!.uid).getUserByEmail(email);
-          await SharedPreferencesManager.setBool(SharedPreferencesKeys.userLoggedInKey, true);
-          await SharedPreferencesManager.setString(SharedPreferencesKeys.userEmailKey, email);
-          await SharedPreferencesManager.setString(SharedPreferencesKeys.userNameKey, snapshot.docs[0]['firstname']);
-          await SharedPreferencesManager.setString(SharedPreferencesKeys.userLastNameKey, snapshot.docs[0]['lastname']);
-          await SharedPreferencesManager.setString(SharedPreferencesKeys.userRoleKey,snapshot.docs[0]['role']);
-          await SharedPreferencesManager.setDouble(SharedPreferencesKeys.userPointKey,snapshot.docs[0]['userpoints']);
-
-          Get.offNamed('/profile');
-
-        } else {
-          showCustomSnackbar("unexpected_result".tr, false);
-          return;
-        }
       } catch (e) {
         showCustomSnackbar('unexpected_result'.tr, false);
         return;
-      } finally {
-          setState(() {
-            _isLoading = false;
-          });
       }
     }
   }
 
 
 
-  Widget _submitButton() {
+  _submitButton() {
     return Container(
       height: 55,
       width: double.infinity,
@@ -194,7 +171,7 @@ class _LoginPage extends State<LoginPage> {
         ),
       ),
       child: ElevatedButton(
-        onPressed: loginUser, 
+        onPressed: loginUser,
         style: ButtonStyle(
           shape: WidgetStateProperty.all(RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
@@ -209,7 +186,10 @@ class _LoginPage extends State<LoginPage> {
             }
           )),
           child: Text('btn_login'.tr,
-            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),)
+            style: const TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold)
+          ),
         ),
     );
   }

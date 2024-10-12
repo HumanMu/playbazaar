@@ -16,8 +16,7 @@ class FirestoreGroups {
 
   // Retriving user data
   Future getUserByEmail( String email) async {
-    QuerySnapshot snapshot = await userCollection.where(
-        "email", isEqualTo: email).get();
+    QuerySnapshot snapshot = await userCollection.where("email", isEqualTo: email).get();
     return snapshot;
   }
 
@@ -33,9 +32,14 @@ class FirestoreGroups {
   }
 
   // Returning search result
-  searchByGroupName(String groupName) {
-    return groupCollection.where("name", isEqualTo: groupName).get();
+  searchByGroupName(String groupName) async {
+    final searchKey = groupName.toLowerCase();
+    return await groupCollection
+        .where("name", isGreaterThanOrEqualTo: searchKey)
+        .where("name", isLessThanOrEqualTo: '$searchKey\uf8ff')
+        .get();
   }
+
 
   // Returning search result
   searchByUserName(String username) {

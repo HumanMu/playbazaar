@@ -19,7 +19,6 @@ class _RegisterPage extends State<RegisterPage> {
   final AccountController accountController = Get.put(AccountController());
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   AuthService authService = AuthService();
-  bool isLoading = false;
   String firstname = "";
   String lastname = "";
   String email = "";
@@ -187,9 +186,9 @@ class _RegisterPage extends State<RegisterPage> {
         onPressed: () {
           bool result = _verifyRegistrationInfo();
           if (result ) {
+            String fullname = "$firstname $lastname";
             accountController.registerUser(
-                firstname,
-                lastname,
+                fullname,
                 email,
                 password
             );

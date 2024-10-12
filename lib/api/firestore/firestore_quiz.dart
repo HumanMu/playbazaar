@@ -8,7 +8,7 @@ import '../../games/games/models/question_models.dart';
 class FirestoreQuiz {
   final String? userId;
   FirestoreQuiz({this.userId});
-  final _db = FirebaseFirestore.instance;
+  final db = FirebaseFirestore.instance;
 
   // reference to the firestore collection
   final CollectionReference quizReference

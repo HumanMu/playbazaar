@@ -6,7 +6,7 @@ import '../../api/firestore/firestore_user.dart';
 import '../../controller/user_controller/auth_controller.dart';
 import '../../helper/sharedpreferences.dart';
 import 'avatars/primary_avatar.dart';
-import 'list_tile.dart';
+import 'tiles/list_tile.dart';
 
 class SidebarDrawer extends StatefulWidget {
   final BuildContext parentContext;
@@ -94,7 +94,7 @@ class SidebarDrawerState extends State<SidebarDrawer> {
                 icon: Icons.group,
                 length: friendRequestLength,
                 hasFriends: true,
-                action: ()=> navigateTo('reciviedRequests'),
+                action: ()=> navigateTo('friendsList'),
               ),
               ListTileWidget(
                 iconColor: Colors.red,

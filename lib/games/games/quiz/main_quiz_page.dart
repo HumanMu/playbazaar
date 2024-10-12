@@ -56,7 +56,14 @@ class _QuizMainPage extends State<QuizMainPage> {
         centerTitle: true,
         title: Text("quiz_list".tr,
           style: const TextStyle(
-              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 25),
+              color: Colors.white,
+              fontWeight:
+              FontWeight.bold,
+              fontSize: 25
+          ),
+        ),
+        iconTheme: IconThemeData(
+          color: Colors.white
         ),
       ),
 

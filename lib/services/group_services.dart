@@ -1,7 +1,12 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import '../../models/group_model.dart';
-import '../models/DTO/membership_toggler_model.dart';
+import '../functions/string_cases.dart';
+import '../models/DTO/add_user_to_group_dto.dart';
+import '../models/DTO/create_group_dto.dart';
+import '../models/DTO/add_group_member.dart';
 
 class GroupServices {
   final String? userId;
@@ -11,35 +16,48 @@ class GroupServices {
   = FirebaseFirestore.instance.collection("users");
   final CollectionReference groupCollection
   = FirebaseFirestore.instance.collection("groups");
+  final currentUser = FirebaseAuth.instance.currentUser;
 
 
-  Future createGroup(String userName, String adminId, String groupName,
-      String? groupPassword) async {
+  Future createGroup(CreateGroupDto group, AddUserToGroupDto creator) async {
+
     GroupModel newGroup = GroupModel(
-      name: groupName,
+      name: group.groupName.toLowerCase(),
       groupIcon: "",
-      admin: "${adminId}_$userName",
+      creatorId: "${group.creatorId}_${currentUser?.displayName}",
       members: [],
       groupId: "",
       recentMessage: "",
       recentMessageSender: "",
-      groupPassword: groupPassword ?? "",
+      isPublic: group.isPublic,
+      groupPassword: group.groupPassword ?? ""
     );
 
-    // Add the group to Firestore
-    DocumentReference groupDocumentReference = await groupCollection.add(
-        newGroup.toMap());
+    try{
+      // Add the group to Firestore
+      DocumentReference gdr = await groupCollection.add(newGroup.toMap());
 
-    await groupDocumentReference.update({
-      "members": FieldValue.arrayUnion(["${userId}_$userName"]),
-      "groupId": groupDocumentReference.id
-    });
+      await gdr.update({
+        "members": FieldValue.arrayUnion(["${currentUser?.uid}_${currentUser?.displayName}"]),
+        "groupId": gdr.id
+      });
 
-    DocumentReference userDocumentReference = userCollection.doc(userId);
-    return await userDocumentReference.update({
-      "groups": FieldValue.arrayUnion(
-          (["${groupDocumentReference.id}_${groupName}_$groupPassword"]))
-    });
+      DocumentReference udr = userCollection.doc(currentUser?.uid);
+      late String groupMember;
+
+      group.isPublic
+          ? groupMember = "${gdr.id}_${group.groupName}_${group.groupPassword}"
+          : groupMember = "${gdr.id}_${group.groupName}";
+
+      return await udr.update({
+        "groupsId": FieldValue.arrayUnion([groupMember])
+      });
+    }catch(e){
+      if (kDebugMode) {
+        print("Failed to add the group");
+      }
+      return null;
+    }
   }
 
 
@@ -59,64 +77,81 @@ class GroupServices {
     }).toList();
   }
 
-  getGroupsList() {
-    final result = userCollection.doc(userId).snapshots();
-    return result;
+  getGroupsById(String id) {
+    return groupCollection.doc(id).get();
   }
 
-  Future toggleGroupMembership( MembershipTogglerModel toggle) async {
-    DocumentReference udr = userCollection.doc(userId);
-    DocumentReference gdr = groupCollection.doc(toggle.groupId);
+  Future<bool> addGroupMember(AddGroupMemberDto toggle) async {
+    try{
+      final currentUser = FirebaseAuth.instance.currentUser;
+      DocumentReference gdr = groupCollection.doc(toggle.groupId);
+      DocumentReference udr = userCollection.doc(currentUser?.uid);
 
-    DocumentSnapshot ds = await udr.get();
-    List<dynamic> groups = ds['groups'];
-
-    String groupEntry = "${toggle.groupId}_${toggle.groupName}".trim();
-    String adminGroupEntry = "${toggle.groupId}_${toggle.groupName}_".trim();
-    String memberEntry = "${userId}_${toggle.userName}".trim();
-
-    if (groups.contains(groupEntry) || groups.contains(adminGroupEntry)) {
       await udr.update({
-        "groups": FieldValue.arrayRemove([groupEntry, adminGroupEntry]),
+        "groupsId": FieldValue.arrayUnion(["${gdr.id}_${toggle.groupName}"])
       });
+
       await gdr.update({
-        "members": FieldValue.arrayRemove([memberEntry])
+        "members": FieldValue.arrayUnion(["${currentUser?.uid}_${currentUser?.displayName}"])
       });
-
-      DocumentSnapshot groupSnapshot = await gdr.get();
-      List<dynamic> members = groupSnapshot['members'];
-
-      if (members.isEmpty) {
-        await gdr.delete();
-      }
-    } else {
-      await udr.update({
-        "groups": FieldValue.arrayUnion([groupEntry])
-      });
-      await gdr.update({
-        "members": FieldValue.arrayUnion([memberEntry])
-      });
-    }
-  }
-
-  Future <bool> checkIfUserJoined( MembershipTogglerModel toggle) async {
-    DocumentReference udr = userCollection.doc(userId);
-    DocumentSnapshot ds = await udr.get();
-
-    List<dynamic> groups = await ds['groups'];
-    if(groups.contains("${toggle.groupId}_${toggle.groupName}")) {
       return true;
-    }
-    else {
+
+    }catch(e){
+      if (kDebugMode) {
+        print("Error trying to add group to user group list - service: $e");
+      }
       return false;
     }
   }
 
 
-  Stream<DocumentSnapshot> getGroupMember(String groupId) {
-    return groupCollection.doc(groupId).snapshots();
+  Future<bool> removeGroupFromUser(AddGroupMemberDto addMember) async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    DocumentReference udr = userCollection.doc(currentUser?.uid);
+    String adminGroupEntry = "${addMember.groupId}_${addMember.groupName}_".trim();
+
+    try {
+      DocumentSnapshot userDoc = await udr.get();
+      List<dynamic> userGroups = userDoc['groupsId'];
+
+      // Check if group document exists
+      String? matchedGroupId;
+      List<String> recievedGroupId = splitByUnderscore(addMember.groupId);
+
+      for (var g in userGroups) {
+        String id = splitByUnderscore(g)[0];
+        if (id == recievedGroupId[0]) {
+          matchedGroupId = g;
+        }
+      }
+
+      await udr.update({
+        "groupsId": FieldValue.arrayRemove([matchedGroupId, adminGroupEntry]),
+      });
+
+      String memberEntry = "${currentUser?.uid}_${addMember.userName}".trim();
+      List<String> groupId = splitByUnderscore(addMember.groupId);
+      DocumentReference gdr = groupCollection.doc(groupId[0]);
+      DocumentSnapshot groupDoc = await gdr.get();
+      List<dynamic> members = groupDoc['members'];
+
+
+      await gdr.update({
+        "members": FieldValue.arrayRemove([memberEntry]),
+      });
+
+      // Check if the group has no members left
+      if (members.isEmpty) {
+        await gdr.delete();
+      }
+      return true;
+    }
+    catch(e){
+      if (kDebugMode) {
+        print("Error trying to group from user grouplist - service");
+      }
+      return false;
+    }
   }
-
-
 
 }

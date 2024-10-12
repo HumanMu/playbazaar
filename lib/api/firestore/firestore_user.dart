@@ -43,10 +43,9 @@ class FirestoreUser extends ChangeNotifier {
   }
 
   // Saving user data
-  Future<bool> createUser(String firstname, String lastname, String email ) async{
+  Future<bool> createUser(String fullname, String email ) async{
     return await FirestoreServices().createUser(
-        firstname,
-        lastname,
+        fullname,
         email,
       FirebaseAuth.instance.currentUser!.uid);
   }
@@ -61,33 +60,11 @@ class FirestoreUser extends ChangeNotifier {
 
 
 
-  Future<void> getUserById(String id) async {
-    _singleUser = await FirestoreServices().getUserById(id);
-    notifyListeners();
-  }
-
   Future<void> getUserByEmail(String? email) async {
     _userList = await FirestoreServices().getUserByEmail(email);
     notifyListeners();
   }
 
-
-  Future<String?> checkIfUserAlreadyFriends(
-      String userId, String foreignId) async {
-    final udr = await userCollection
-        .doc(userId).collection('friends').doc(foreignId).get();
-    final friendRequest = await userCollection
-        .doc(foreignId).collection('friendRequests').doc(userId).get();
-    if(udr.exists) {
-      return "TheyAreFriends";
-    }
-    else if (friendRequest.exists) {
-      return "WaitingAnswer";
-    }
-    else {
-      return "NotFriends";
-    }
-  }
 
   getOnlineState(String availabilityState) async{
     return await _db.collection('users').doc(userId).update({
@@ -95,55 +72,15 @@ class FirestoreUser extends ChangeNotifier {
     });
   }
 
-  getFriendList() {
-    return userCollection.doc(userId).snapshots(); // Firestore don't know the length of a collection, so therefor return mother collection
-  }
 
-  getFriendRequests() {
-    return userCollection.doc(userId).snapshots();
-  }
 
-  declineFriendRequests(String friendId) async {
-    DocumentReference docRef =  userCollection.doc(userId)
-        .collection('friendRequests').doc(friendId);
-    DocumentSnapshot docSnap = await docRef.get();
-    if(docSnap.exists){
-      docRef.delete();
-    }
-  }
 
-  Future<bool> acceptFriendRequest(String friendId) async {
-    DocumentReference docRef =  userCollection.doc(userId)
-        .collection('friendRequests').doc(friendId);
-    DocumentSnapshot docSnap = await docRef.get();
-    DocumentReference docRefUser =  userCollection.doc(userId);
-    DocumentReference docRefFriend =  userCollection.doc(friendId);
-    try {
-      if(docSnap.exists){
-        await FirestoreServices().saveFriend(userId!, friendId, 'friends');
-        await FirestoreServices().saveFriend(friendId, userId!, 'friends');
-
-        await docRefUser.update({
-          "friendsId": FieldValue.arrayUnion([friendId])
-        });
-        await docRefFriend.update({
-          "friendsId": FieldValue.arrayUnion([userId])
-        });
-        docRef.delete();
-        return true;
-      }
-      return false;
-    }catch(e) {
-      return false;
-    }
-  }
 
   Future sendFriendRequest( String userId, String friendId) async {
     DocumentReference userDocRef =
     userCollection.doc(friendId).collection('friendRequests').doc(userId);
     DocumentSnapshot docSnap = await userDocRef.get();
 
-    // If already sent, remove it
     if(docSnap.exists) {
       await userDocRef.delete();
     }

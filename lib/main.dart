@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:playbazaar/controller/settings_controller/settings_controller.dart';
+import 'package:playbazaar/controller/user_controller/user_controller.dart';
 import 'package:playbazaar/games/games/quiz/screens/add_question.dart';
 import 'package:playbazaar/screens/main_screens/chat_page.dart';
 import 'package:playbazaar/screens/main_screens/edit_page.dart';
@@ -13,10 +14,11 @@ import 'package:playbazaar/screens/main_screens/register_page.dart';
 import 'package:playbazaar/screens/secondary_screens/chat_info.dart';
 import 'package:playbazaar/screens/secondary_screens/email_verification_page.dart';
 import 'package:playbazaar/screens/secondary_screens/policy_page.dart';
-import 'package:playbazaar/screens/secondary_screens/recieved_requests.dart';
+import 'package:playbazaar/screens/secondary_screens/friends_list.dart';
 import 'package:playbazaar/screens/secondary_screens/reset_password_page.dart';
 import 'package:playbazaar/screens/secondary_screens/search_page.dart';
 import 'package:playbazaar/screens/secondary_screens/settings.dart';
+import 'package:playbazaar/services/user_services.dart';
 import 'package:provider/provider.dart';
 import 'api/firestore/firestore_user.dart';
 import 'controller/user_controller/auth_controller.dart';
@@ -28,8 +30,12 @@ import 'middleware/auth_guard.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  Get.put(AuthController());
-  Get.put(SettingsController());
+  Get.put(AuthController(), permanent: true);
+  Get.put(SettingsController(), permanent: true);
+  Get.put(UserServices(), permanent: true);
+  Get.put(UserController(), permanent: true);
+
+
 
   runApp(
     ChangeNotifierProvider(
@@ -44,8 +50,9 @@ class PlayBazaar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final authController = Get.put(AuthController());
-    final settingsController = Get.put(SettingsController());
+    final authController = Get.find<AuthController>();
+    final settingsController = Get.find<SettingsController>();
+    final userController = Get.find<UserController>();
 
     return GetBuilder<AuthController>(
         init: authController,
@@ -58,6 +65,15 @@ class PlayBazaar extends StatelessWidget {
               ),
             );
           }
+          if(!userController.isInitialized.value){
+            return const MaterialApp(
+              debugShowCheckedModeBanner: false,
+              home: Scaffold(
+                body: Center(child: CircularProgressIndicator()),
+              ),
+            );
+          }
+
           return GetBuilder<SettingsController>(
               init: settingsController,
               builder: (settingsController) {
@@ -109,8 +125,8 @@ class PlayBazaar extends StatelessWidget {
                       page: () => const PolicyPage(),
                     ),
                     GetPage(
-                        name: '/reciviedRequests',
-                        page: () => const RecievedRequests()
+                        name: '/friendsList',
+                        page: () => const FriendsList()
                     ),
                     GetPage(
                         name: '/questionReviewPage',

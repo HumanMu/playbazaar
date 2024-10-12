@@ -3,13 +3,14 @@ import '../../services/group_services.dart';
 
 class GroupInfoController extends GetxController {
   final GroupServices groupServices = Get.put(GroupServices());
+
   var isLoading = false.obs;
   var groupMembers = [].obs;
 
 
 
 
-  void getMember(String groupId) async {
+  /*void getMember(String groupId) async {
     isLoading.value = true;
     Stream memberStream = groupServices.getGroupMember(groupId);
 
@@ -20,5 +21,7 @@ class GroupInfoController extends GetxController {
     });
 
     isLoading.value = false;
-  }
+  }*/
+
+
 }
