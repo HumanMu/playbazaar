@@ -50,6 +50,7 @@ packages/
 .packages
 pubspec.lock
 .metadata
+/node_modules
 
 #IDE-specific files:
 .vscode/
