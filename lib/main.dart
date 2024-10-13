@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:playbazaar/controller/settings_controller/settings_controller.dart';
 import 'package:playbazaar/controller/user_controller/user_controller.dart';
 import 'package:playbazaar/games/games/quiz/screens/add_question.dart';
@@ -29,6 +30,11 @@ import 'middleware/auth_guard.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  var devices = [""];
+  await MobileAds.instance.initialize(); // admob
+  RequestConfiguration requestConfiguration = RequestConfiguration(
+    testDeviceIds: devices
+  ); // find test device id : https://www.youtube.com/watch?v=03FsQQUsj7I
   await Firebase.initializeApp();
   Get.put(AuthController(), permanent: true);
   Get.put(SettingsController(), permanent: true);

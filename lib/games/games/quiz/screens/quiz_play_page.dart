@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:playbazaar/controller/settings_controller/settings_controller.dart';
 import '../../../../api/firestore/firestore_quiz.dart';
@@ -33,10 +34,10 @@ class _QuizPlayScreen extends State<QuizPlayScreen>{
   int? selectedAnswerIndex;
   bool? isCorrect;
 
-
   @override
   void initState() {
     super.initState();
+    initBannedAd();
     _player = AudioPlayer();
     _playSound();
     getQuestionsFromFirestore();
@@ -46,6 +47,28 @@ class _QuizPlayScreen extends State<QuizPlayScreen>{
   void dispose() {
     _player.dispose();
     super.dispose();
+  }
+
+  late BannerAd bannerAd;
+  bool isAdLoaded = false;
+  var adUnit = ""; //"ca-app-pub-3940256099942544/9214589741"; // This is a test id, and replace it with your own in admob.google.com login with human-gmail
+  initBannedAd() {
+    bannerAd = BannerAd(
+      size: AdSize.banner,
+      adUnitId: adUnit,
+      listener: BannerAdListener(
+          onAdLoaded: (ad) {
+            setState(() {
+              isAdLoaded = true;
+            });
+          },
+          onAdFailedToLoad: (ad, error) {
+            ad.dispose();
+          }),
+      request: const AdRequest(),
+    );
+
+    bannerAd.load();
   }
 
 
@@ -78,6 +101,12 @@ class _QuizPlayScreen extends State<QuizPlayScreen>{
                 : Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    isAdLoaded
+                      ? SizedBox()
+                      : SizedBox(
+                      height: AdSize.banner.height.toDouble(),
+                      width: AdSize.banner.width.toDouble(),
+                    ),
                     Text(
                       currentQuestion,
                       style: GoogleFonts.actor(
