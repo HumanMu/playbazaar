@@ -61,7 +61,7 @@ class _LoginPage extends State<LoginPage> {
                                   ),
                                   onChanged: (val) {
                                     setState(() {
-                                      email = val;
+                                      email = val.toLowerCase();
                                     }
                                     );
                                   },

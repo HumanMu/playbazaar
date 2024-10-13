@@ -66,7 +66,7 @@ class _ChatPageState extends State<ChatPage> {
         ),
         backgroundColor: Colors.red,
         actions: [
-          IconButton(
+          widget.recieverId == null? IconButton(
             onPressed: () {
               Get.toNamed('/chatinfo', arguments: {
                 'chatId': widget.chatId,
@@ -74,9 +74,10 @@ class _ChatPageState extends State<ChatPage> {
                 'adminName': admin,
               });
             },
-            icon: const Icon(Icons.info, color: Colors.white70,),
-          ),
-        ],
+            icon: const Icon(Icons.info, color: Colors.white70),
+          ) : IconButton(onPressed: null,
+              icon: const Icon(Icons.info_outline, color: Colors.red)
+          )],
         iconTheme: IconThemeData(
           color: Colors.white
         ),
@@ -188,6 +189,10 @@ class _ChatPageState extends State<ChatPage> {
         );
       }
     );
+  }
+
+  void returnNull () {
+    return;
   }
   void scrollToBottom() {
     if (_scrollController.hasClients) {

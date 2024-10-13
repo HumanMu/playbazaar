@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:playbazaar/games/games/quiz/screens/quiz_play_page.dart';
-import 'package:playbazaar/helper/sharedpreferences.dart';
+import 'package:playbazaar/helper/sharedpreferences/sharedpreferences.dart';
 import '../../../api/Authentication/auth_service.dart';
 import '../../../screens/widgets/sidebar_drawer.dart';
 import '../../widgets/game_list_box.dart';

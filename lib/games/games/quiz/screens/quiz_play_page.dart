@@ -22,7 +22,6 @@ class QuizPlayScreen extends StatefulWidget {
 
 class _QuizPlayScreen extends State<QuizPlayScreen>{
   final SettingsController settingsController = Get.find<SettingsController>();
-  //late GameController gameController;
   late AudioPlayer _player;
   bool isLoading = true;
   late List<QuizQuestionModel> questionData = [];

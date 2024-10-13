@@ -1,6 +1,6 @@
 
 import 'package:get/get.dart';
-import '../../helper/sharedpreferences.dart';
+import '../../helper/sharedpreferences/sharedpreferences.dart';
 
 class SettingsController extends GetxController {
   var isInitialized = false.obs;

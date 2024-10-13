@@ -50,6 +50,7 @@ dependencies:
   firebase_messaging: ^15.1.3
   string_similarity: ^2.1.1
   cupertino_icons: ^1.0.8 # for ios style icons and fonts
+  google_mobile_ads: ^5.2.0
 
 
 

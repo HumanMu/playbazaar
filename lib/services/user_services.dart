@@ -35,7 +35,7 @@ class UserServices extends GetxService {
       // Saving to friends collection
       await friendDocRef.set({
         'uid': currentUserId,
-        'fullname': firebaseAuth.currentUser?.displayName ??  "",
+        'fullname': firebaseAuth.currentUser?.displayName?.toLowerCase() ??  "",
         'avatarImage': firebaseAuth.currentUser?.photoURL ?? "",
         'friendshipStatus': 'good',
       });
@@ -103,20 +103,25 @@ class UserServices extends GetxService {
     String ui = firebaseAuth.currentUser!.uid;
     DocumentReference userDocRef =  userCollection.doc(ui).collection('receivedFriendRequests').doc(friendId);
     DocumentReference friendDocRef =  userCollection.doc(friendId).collection('sentFriendRequests').doc(ui);
-    DocumentSnapshot friendDocSnap = await friendDocRef.get();
-    DocumentSnapshot userDocsnap = await userDocRef.get();
 
     try {
-      if(userDocsnap.exists && friendDocSnap.exists){
-        await userCollection.doc(ui).collection('friends').doc(friendId)
-          .set(userDocsnap.data() as Map<String, dynamic>);
-        await userCollection.doc(friendId).collection('friends').doc(ui)
-            .set(userDocsnap.data() as Map<String, dynamic>);
+      DocumentSnapshot userRequestSnapshot = await userDocRef.get();
+      DocumentSnapshot friendRequestSnapshot = await friendDocRef.get();
+
+      if (userRequestSnapshot.exists && friendRequestSnapshot.exists) {
+        Map<String, dynamic> userData = userRequestSnapshot.data() as Map<String, dynamic>;
+        Map<String, dynamic> friendData = friendRequestSnapshot.data() as Map<String, dynamic>;
+
+        await userCollection.doc(ui).collection('friends').doc(friendId).set(userData);
+        await userCollection.doc(friendId).collection('friends').doc(ui).set(friendData);
 
         await userDocRef.delete();
         await friendDocRef.delete();
+
+        return true;
       }
-      return false;
+      return false;// Request documents not found
+
     }catch(e) {
       return false;
     }

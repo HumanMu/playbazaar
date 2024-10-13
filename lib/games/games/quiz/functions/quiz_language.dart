@@ -1,5 +1,5 @@
 
-import '../../../../helper/sharedpreferences.dart';
+import '../../../../helper/sharedpreferences/sharedpreferences.dart';
 import '../../../constants/constants.dart';
 
 Future<Map<String, dynamic>> getQuizLanguage() async {

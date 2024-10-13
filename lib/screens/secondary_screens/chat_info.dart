@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:playbazaar/controller/group_controller/group_controller.dart';
 import 'package:playbazaar/functions/string_cases.dart';
-import 'package:playbazaar/helper/sharedpreferences.dart';
+import 'package:playbazaar/helper/sharedpreferences/sharedpreferences.dart';
 import 'package:playbazaar/models/DTO/group_detail_dto.dart';
 import 'package:playbazaar/models/DTO/add_group_member.dart';
 import '../../controller/group_controller/group_info_controller.dart';
@@ -44,6 +44,15 @@ class _ChatInfoState extends State<ChatInfo> {
     initData();
   }
 
+  @override
+  void dispose() {
+    Get.delete<GroupInfoController>();
+    Get.delete<GroupController>();
+    super.dispose();
+
+
+  }
+
   void initData() async{
     userName = await SharedPreferencesManager.getString(SharedPreferencesKeys.userNameKey) ?? "";
     docSnap = await groupController.getGroupById(widget.chatId);
@@ -67,12 +76,6 @@ class _ChatInfoState extends State<ChatInfo> {
     return ind.substring(ind.indexOf("_") + 1);
   }
 
-  @override
-  void dispose() {
-    Get.delete<GroupInfoController>();
-    Get.delete<GroupController>();
-    super.dispose();
-  }
 
 
   @override

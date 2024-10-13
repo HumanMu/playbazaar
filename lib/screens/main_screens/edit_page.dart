@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:playbazaar/api/firestore/firestore_user.dart';
 import 'package:playbazaar/utils/show_custom_snackbar.dart';
 import '../../api/Authentication/auth_service.dart';
-import '../../helper/sharedpreferences.dart';
+import '../../helper/sharedpreferences/sharedpreferences.dart';
 import '../../models/user_model.dart';
 import '../widgets/text_boxes/text_inputs.dart';
 

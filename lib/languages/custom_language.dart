@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../helper/sharedpreferences.dart';
+import '../helper/sharedpreferences/sharedpreferences.dart';
 
 class CustomLanguage extends StatelessWidget {
   CustomLanguage({super.key});

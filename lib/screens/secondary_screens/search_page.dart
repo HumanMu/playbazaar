@@ -80,7 +80,10 @@ class _SearchPageState extends State<SearchPage> {
         child: Column(children: [
           Container(
             color: Colors.red,
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15 ),
+            padding: const EdgeInsets.symmetric(
+                vertical: 10,
+                horizontal: 15
+            ),
             child: Row(
               children: [
                 Expanded( // Search field

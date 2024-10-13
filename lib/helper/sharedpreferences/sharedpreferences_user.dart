@@ -1,6 +1,6 @@
 import 'package:encrypt/encrypt.dart' as encrypt;
 import 'package:shared_preferences/shared_preferences.dart';
-import '../constants/constants.dart';
+import '../../constants/constants.dart';
 
 class SharedPreferencesFunctions {
   static Future<void> saveUserRole(UserRole role) async {

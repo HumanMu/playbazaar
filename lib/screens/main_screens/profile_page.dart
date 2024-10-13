@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../api/Authentication/auth_service.dart';
 import '../../controller/user_controller/user_controller.dart';
-import '../../helper/sharedpreferences.dart';
+import '../../helper/sharedpreferences/sharedpreferences.dart';
 import '../../languages/custom_language.dart';
 import '../widgets/sidebar_drawer.dart';
 import '../widgets/text_boxes/text_inputs.dart';
@@ -72,6 +72,7 @@ class _ProfilePage extends State<ProfilePage> {
               fontSize: 25
           ),
         ),
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       drawer: SidebarDrawer(
         authService: authService,

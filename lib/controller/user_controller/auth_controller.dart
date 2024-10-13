@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../api/firestore/firestore_user.dart';
-import '../../helper/sharedpreferences.dart';
+import '../../helper/sharedpreferences/sharedpreferences.dart';
 import '../../utils/show_custom_snackbar.dart';
 
 class AuthController extends GetxController {

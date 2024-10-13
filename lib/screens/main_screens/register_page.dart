@@ -103,7 +103,7 @@ class _RegisterPage extends State<RegisterPage> {
                                   ),
                                   onChanged: (val) {
                                     setState(() {
-                                      email = val;
+                                      email = val.toLowerCase();
                                     });
                                   },
                                 ),

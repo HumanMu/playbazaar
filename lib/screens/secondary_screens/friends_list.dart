@@ -62,13 +62,13 @@ class _FriendsList extends State<FriendsList> {
       body: Material(
         color: Colors.white10,
         child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              readFriendRequestsList(),
-              friendList(),
-            ],
-          ),
-      )
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            readFriendRequestsList(),
+            friendList(),
+          ],
+        ),
+      ),
     );
   }
 
@@ -120,7 +120,7 @@ class _FriendsList extends State<FriendsList> {
         return Center(child: CircularProgressIndicator());
       }
       if (userController.recievedFriendRequests.isEmpty) {
-        return Center(child: Text(""));
+        return Container();
       }
       return Flexible(
           child: ListView.builder(

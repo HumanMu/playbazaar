@@ -35,7 +35,7 @@ class _GroupTileState extends State<CustomGroupTile> {
     return GestureDetector(
       onTap:() {
         groupPasswordController.text = "";
-        if(widget.password == ""){
+        if(widget.password == null){
           Get.toNamed('/chat', arguments: {
             'chatId': widget.groupId,
             'chatName': widget.groupName,
@@ -70,7 +70,7 @@ class _GroupTileState extends State<CustomGroupTile> {
               fontWeight: FontWeight.bold,
             ),
           ),
-          subtitle: Text(widget.password?.trim() == ""
+          subtitle: Text(widget.password?.trim() == null
               ? "${"group".tr}: ${"public".tr}"
               : "${"group".tr}: ${"private".tr}",
             style: const TextStyle(

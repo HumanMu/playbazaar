@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import '../../api/Authentication/auth_service.dart';
 import '../../api/firestore/firestore_user.dart';
 import '../../controller/user_controller/auth_controller.dart';
-import '../../helper/sharedpreferences.dart';
+import '../../helper/sharedpreferences/sharedpreferences.dart';
 import 'avatars/primary_avatar.dart';
 import 'tiles/list_tile.dart';
 

@@ -117,7 +117,7 @@ class _HomePageState extends State<HomePage> {
             groupId: splitByUnderscore(groupId)[0],
             groupName: groupInfo.length > 1 ? groupInfo[1].trim() : '',
             admin: splitByUnderscore(groupId)[1],
-            password: groupInfo.length > 2 ? groupInfo[2] : '',
+            password: groupInfo.length > 2 ? groupInfo[2] : null,
           );
         },
       );
@@ -140,10 +140,16 @@ class _HomePageState extends State<HomePage> {
             });
 
             return AlertDialog(
-                title: Text("create_group_title".tr),
                 content: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    Text("creating_group_title".tr,
+                        style: TextStyle(
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold
+                        )
+                    ),
+                    Text("creating_group_description".tr),
                     userController.isLoading.value == true
                         ? const Center(
                             child: CircularProgressIndicator(
