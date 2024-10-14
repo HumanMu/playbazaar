@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:playbazaar/controller/user_controller/user_controller.dart';
-import '../widgets/cards/friends_list_tile.dart';
+import '../widgets/tiles/friends_list_tile.dart';
 import '../widgets/cards/recieved_requests_tile.dart';
 
 class FriendsList extends StatefulWidget {

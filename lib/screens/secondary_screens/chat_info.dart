@@ -8,6 +8,7 @@ import 'package:playbazaar/helper/sharedpreferences/sharedpreferences.dart';
 import 'package:playbazaar/models/DTO/group_detail_dto.dart';
 import 'package:playbazaar/models/DTO/add_group_member.dart';
 import '../../controller/group_controller/group_info_controller.dart';
+import '../widgets/dialogs/leaving_group_dialog.dart';
 
 class ChatInfo extends StatefulWidget {
   final String chatId;
@@ -101,45 +102,7 @@ class _ChatInfoState extends State<ChatInfo> {
         actions: [
           IconButton(
             onPressed: () {
-              showDialog(
-                  barrierDismissible: false,
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog(
-                      title: Text("leaving".tr),
-                      content: Text("leaving_group".tr),
-                      actions: [
-                        IconButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          icon: const Icon(
-                            Icons.cancel_presentation,
-                            color: Colors.red
-                          ),
-                        ),
-                        IconButton(
-                            onPressed: () async {
-                              AddGroupMemberDto toggle = AddGroupMemberDto(
-                                groupId: widget.chatId,
-                                userName: userName,
-                                groupName: widget.chatName,
-                              );
-                              await GroupController().removeGroupFromUser(
-                                toggle,
-                                FirebaseAuth.instance.currentUser!.uid)
-                                .whenComplete(() {
-                                Get.offNamed('/home');
-                              });
-                            },
-                            icon: const Icon(
-                              Icons.done_outline,
-                              color: Colors.green
-                            )
-                          ),
-                      ],);
-                  }
-              );
+              leavingGroupDialog(_handleLeaveGroup);
             },
             icon: const Icon(
               Icons.logout_outlined,
@@ -148,6 +111,8 @@ class _ChatInfoState extends State<ChatInfo> {
           ),
         ],
       ),
+
+
 
       body: SingleChildScrollView(
         child: Container(
@@ -239,5 +204,20 @@ class _ChatInfoState extends State<ChatInfo> {
       );
   }
 
+  Future<void> _handleLeaveGroup() async {
+    if (!mounted) return;
 
+    AddGroupMemberDto memberDto = AddGroupMemberDto(
+      groupId: widget.chatId,
+      userName: widget.adminName,
+      groupName: widget.chatName,
+    );
+
+    groupController.removeGroupFromUser(
+        memberDto,
+        FirebaseAuth.instance.currentUser!.uid)
+        .whenComplete(() {
+      Get.offNamed('/home');
+    });
+  }
 }

@@ -1,9 +1,14 @@
 import 'dart:core';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:playbazaar/controller/group_controller/group_controller.dart';
 import 'package:playbazaar/functions/string_cases.dart';
+import '../../../models/DTO/add_group_member.dart';
+import '../../../utils/show_custom_snackbar.dart';
 import '../../../utils/text_boxes/text_box_decoration.dart';
 import '../dialogs/accept_result_dialog.dart';
+import '../dialogs/leaving_group_dialog.dart';
 
 
 class CustomGroupTile extends StatefulWidget {
@@ -25,6 +30,7 @@ class CustomGroupTile extends StatefulWidget {
 }
 
 class _GroupTileState extends State<CustomGroupTile> {
+  final groupController = Get.find<GroupController>();
   String onlineStatus = "";
   bool isLoading = false;
   final groupPasswordController = TextEditingController();
@@ -77,6 +83,12 @@ class _GroupTileState extends State<CustomGroupTile> {
               fontSize: 15,
             ),
           ),
+          trailing: IconButton(
+            icon: Icon(Icons.more_vert),
+            onPressed: (){
+              leavingGroupDialog(_handleLeaveGroup);
+            }
+          ),
         ),
       ),
     );
@@ -86,6 +98,24 @@ class _GroupTileState extends State<CustomGroupTile> {
     bool result = enteredPassword == widget.password ? true: false;
     return result;
   }
+
+  Future<void> _handleLeaveGroup() async {
+    if (!mounted) return;
+
+    AddGroupMemberDto memberDto = AddGroupMemberDto(
+      groupId: widget.groupId,
+      userName: widget.admin,
+      groupName: widget.groupName,
+    );
+
+    groupController.removeGroupFromUser(
+        memberDto,
+        FirebaseAuth.instance.currentUser!.uid)
+        .whenComplete(() {
+      Get.offNamed('/home');
+    });
+  }
+
 
   Future<void> _dialogBuilder(BuildContext context) {
     return showDialog<void>(

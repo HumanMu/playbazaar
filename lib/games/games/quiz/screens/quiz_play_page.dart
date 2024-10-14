@@ -51,7 +51,7 @@ class _QuizPlayScreen extends State<QuizPlayScreen>{
 
   late BannerAd bannerAd;
   bool isAdLoaded = false;
-  var adUnit = ""; //"ca-app-pub-3940256099942544/9214589741"; // This is a test id, and replace it with your own in admob.google.com login with human-gmail
+  var adUnit = "ca-app-pub-3940256099942544/9214589741"; // This is a test id, and replace it with your own in admob.google.com login with human-gmail
   initBannedAd() {
     bannerAd = BannerAd(
       size: AdSize.banner,

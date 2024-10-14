@@ -125,7 +125,7 @@ class LocalStringsEn extends Translations {
       'btn_login' : 'Login',
       'btn_membership_request' : 'Request Membership',
       'btn_accept' : 'Accept',
-      'btn_leaving_group': 'Leave group',
+      'btn_leaving_group': 'Leaving group',
       'btn_edit' : 'Edit',
       'btn_save' : 'Save',
       'btn_next' : 'Next Question',

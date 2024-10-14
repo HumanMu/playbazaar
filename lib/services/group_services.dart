@@ -129,7 +129,7 @@ class GroupServices {
         "groupsId": FieldValue.arrayRemove([matchedGroupId, adminGroupEntry]),
       });
 
-      String memberEntry = "${currentUser?.uid}_${addMember.userName}".trim();
+      String memberEntry = "${currentUser?.uid}_${currentUser?.displayName}".trim();
       List<String> groupId = splitByUnderscore(addMember.groupId);
       DocumentReference gdr = groupCollection.doc(groupId[0]);
       DocumentSnapshot groupDoc = await gdr.get();

@@ -129,7 +129,7 @@ class LocalStringsDa extends Translations {
       'btn_login': 'Log ind',
       'btn_membership_request': 'Anmod om medlemskab',
       'btn_accept': 'Accepter',
-      'btn_leaving_group': 'Forlad gruppe',
+      'btn_leaving_group': 'Forlader gruppe',
       'btn_edit': 'Rediger',
       'btn_save': 'Gem',
       'btn_next': 'Næste spørgsmål',
