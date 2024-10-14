@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:playbazaar/controller/message_controller/message_controller.dart';
 import 'package:playbazaar/functions/string_cases.dart';
 import 'package:playbazaar/utils/show_custom_snackbar.dart';
+import '../../admob/banner_ad.dart';
 import '../../models/message_model.dart';
 import '../widgets/cards/message_tile.dart';
 
@@ -84,6 +85,12 @@ class _ChatPageState extends State<ChatPage> {
       ),
       body: Column(
         children: [
+          Container(
+            padding: EdgeInsets.all(3),
+            color: Colors.teal[900],
+            width: MediaQuery.of(context).size.width,
+            child: BannerAdWidget(),  // The BannerAd widget
+          ),
           Expanded(
             child: chatMessage(),
           ),

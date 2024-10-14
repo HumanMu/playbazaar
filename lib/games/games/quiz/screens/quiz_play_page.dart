@@ -3,8 +3,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:playbazaar/admob/banner_ad.dart';
 import 'package:playbazaar/controller/settings_controller/settings_controller.dart';
 import '../../../../api/firestore/firestore_quiz.dart';
 import '../../../../utils/show_custom_snackbar.dart';
@@ -37,7 +37,6 @@ class _QuizPlayScreen extends State<QuizPlayScreen>{
   @override
   void initState() {
     super.initState();
-    initBannedAd();
     _player = AudioPlayer();
     _playSound();
     getQuestionsFromFirestore();
@@ -49,27 +48,6 @@ class _QuizPlayScreen extends State<QuizPlayScreen>{
     super.dispose();
   }
 
-  late BannerAd bannerAd;
-  bool isAdLoaded = false;
-  var adUnit = "ca-app-pub-3940256099942544/9214589741"; // This is a test id, and replace it with your own in admob.google.com login with human-gmail
-  initBannedAd() {
-    bannerAd = BannerAd(
-      size: AdSize.banner,
-      adUnitId: adUnit,
-      listener: BannerAdListener(
-          onAdLoaded: (ad) {
-            setState(() {
-              isAdLoaded = true;
-            });
-          },
-          onAdFailedToLoad: (ad, error) {
-            ad.dispose();
-          }),
-      request: const AdRequest(),
-    );
-
-    bannerAd.load();
-  }
 
 
   @override
@@ -78,106 +56,117 @@ class _QuizPlayScreen extends State<QuizPlayScreen>{
       appBar: AppBar(
         centerTitle: true,
         elevation: 0,
-        title: Text(widget.quizTitle,
+        title: Text(
+          widget.quizTitle,
           style: const TextStyle(color: Colors.white, fontSize: 30),
         ),
         backgroundColor: Colors.red,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
             Navigator.of(context).pop();
           },
         ),
       ),
       body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: questionData.isEmpty? Center(
-              child: Text('empty_quizz_message'.tr,
-                  style: const TextStyle(fontSize: 16)
-              ),
-            )
-                : Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    isAdLoaded
-                      ? SizedBox()
-                      : SizedBox(
-                      height: AdSize.banner.height.toDouble(),
-                      width: AdSize.banner.width.toDouble(),
+        ? const Center(child: CircularProgressIndicator())
+        : Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Container(
+              padding: EdgeInsets.all(3),
+              color: Colors.teal[900],
+              width: MediaQuery.of(context).size.width,
+              child: BannerAdWidget(),  // The BannerAd widget
+            ),
+            const SizedBox(height: 30),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 20), // This padding is only for the quiz content
+                child: questionData.isEmpty
+                  ? Center(
+                    child: Text(
+                      'empty_quizz_message'.tr,
+                      style: const TextStyle(fontSize: 16),
                     ),
-                    Text(
-                      currentQuestion,
-                      style: GoogleFonts.actor(
-                        textStyle: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          fontStyle: FontStyle.italic,
+                  )
+                  : Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        currentQuestion,
+                        style: GoogleFonts.actor(
+                          textStyle: const TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            fontStyle: FontStyle.italic,
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 20),
-                    Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Flexible(
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: currentAnswer.length,
-                              itemBuilder: (context, index) {
-                                return Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 5.0),
-                                  child: ElevatedButton(
-                                    onPressed: () {
-                                      _playSound();
-                                      checkAnswer(index);
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: getButtonColor(index),
-                                    ),
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(vertical: 10),
-                                      child: Text(
-                                        currentAnswer[index],
-                                        style: GoogleFonts.actor(
-                                          textStyle: const TextStyle(fontSize: 17),
-                                        ),
-                                      ),
+                      const SizedBox(height: 20),
+                      Expanded(
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: currentAnswer.length,
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 5.0),
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  _playSound();
+                                  checkAnswer(index);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: getButtonColor(index),
+                                ),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(vertical: 10),
+                                  child: Text(
+                                    currentAnswer[index],
+                                    style: GoogleFonts.actor(
+                                      textStyle: const TextStyle(fontSize: 17),
                                     ),
                                   ),
-                                );
-                              },
-                            ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                      isCorrect != null && isCorrect!
+                        ? Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            "correct_answer".tr,
+                            style: const TextStyle(color: Colors.green, fontSize: 20),
                           ),
-                          isCorrect != null && isCorrect!? Padding(
+                        )
+                        : Container(),
+                          isCorrect != null && !isCorrect!
+                          ? Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Text("correct_answer".tr,
-                              style: TextStyle(color: Colors.green, fontSize: 20)),
-                          ) : Container(),
-                          isCorrect != null && !isCorrect!? Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text("${"wrong_answer".tr} ",
-                                style: TextStyle(color: Colors.red, fontSize: 20)
-                            ),
-                          ) : Container(),
-                        ],
-                      ),
-                    ),
-
-                    ElevatedButton(onPressed: nextQuestion,
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: selectedAnswerIndex != null
-                              ? Colors.green
-                              : Colors.white70
-                      ),
-                      child: Text("btn_next".tr),
-                    ),
-
-                ],
+                            child: Text(
+                            "${"wrong_answer".tr} ",
+                            style: const TextStyle(color: Colors.red, fontSize: 20),
+                          ),
+                         )
+                          : Container(),
+                    ],
+                  ),
               ),
-          ),
+            ),
+            Container(
+              margin: EdgeInsets.only(bottom: 20),
+              child: ElevatedButton(
+                onPressed: nextQuestion,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: selectedAnswerIndex != null ? Colors.green : Colors.white70,
+                ),
+                child: Text("btn_next".tr),
+              ),
+            )
+          ],
+        ),
     );
   }
 

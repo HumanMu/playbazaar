@@ -1,4 +1,6 @@
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -31,7 +33,7 @@ import 'middleware/auth_guard.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   var devices = [""];
-  await MobileAds.instance.initialize(); // admob
+  unawaited(MobileAds.instance.initialize());
   RequestConfiguration requestConfiguration = RequestConfiguration(
     testDeviceIds: devices
   ); // find test device id : https://www.youtube.com/watch?v=03FsQQUsj7I

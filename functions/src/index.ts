@@ -12,8 +12,8 @@ export const updateFriendInfo = functions.firestore
         const displayName = updatedUserData?.displayName;
         const photoURL = updatedUserData?.photoURL;
 
-        const snapshot = await admin.firestore().collectionGroup('friendsCollection')
-            .where('friendId', '==', userId)
+        const snapshot = await admin.firestore().collectionGroup('friends')
+            .where('uid', '==', userId)
             .get();
 
         const batch = admin.firestore().batch();
