@@ -120,6 +120,8 @@ class LocalStringsDa extends Translations {
 
       // friends
       'friends': 'Venner',
+      'empty_friend_list': 'Du har endnu ingen venner',
+
 
       // Buttons
       'btn_chats': 'Beskeder',
@@ -166,9 +168,9 @@ class LocalStringsDa extends Translations {
       'unexpected_result': 'Et uventet resultat, prøv venligst igen',
       'members_notfound': 'Kunne ikke finde nogen medlemmer',
       'name_is_required': 'Navn er påkrævet',
-      'approved_friend_request': 'Tilføjet til din venliste',
+      'approved_friend_request': 'Tilføjet til din venneliste',
       'declined_friend_request': 'Afslået venneanmodning',
-      'removed_from_friends': 'Fjernet fra din venliste',
+      'removed_from_friends': 'blev fjernet fra din venneliste',
       'something_went_wrong': 'Noget gik galt, prøv venligst igen',
       'wrong_group_password': 'Den angivne adgangskode var ugyldig',
       'email_exist': 'Den indtastede e-mail er allerede brugt. Hvis du har glemt din adgangskode, bedes du anmode om en ny!',

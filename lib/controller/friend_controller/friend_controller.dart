@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import '../../services/user_services.dart';
 import '../../utils/show_custom_snackbar.dart';
 
-class FriendController extends GetxController {
+/*class FriendController extends GetxController {
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   final UserServices userServices = Get.find<UserServices>();
   RxBool isLoading = false.obs;
@@ -21,7 +21,7 @@ class FriendController extends GetxController {
     isLoading.value = true;
     firebaseAuth.authStateChanges().listen((user) {
       if (user != null) {
-        //getFriendRequests(user.uid);
+        getFriendRequests(user.uid);
         getFriendList(user.uid);
       }
     });
@@ -31,7 +31,7 @@ class FriendController extends GetxController {
   }
 
 
-  /*Future<void> getFriendRequests(String userId) async {
+  Future<void> getFriendRequests(String userId) async {
     isLoading.value = true;
     try {
       final querySnapshot = await UserServices(userId: userId).getFriendRequests();
@@ -46,7 +46,7 @@ class FriendController extends GetxController {
       }
     }
     isLoading.value = false;
-  }*/
+  }
 
 
 
@@ -120,4 +120,4 @@ class FriendController extends GetxController {
     }
   }
 
-}
+}*/

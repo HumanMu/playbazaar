@@ -27,7 +27,6 @@ class GroupController extends GetxController {
   Future<DocumentSnapshot> getGroupById(String groupId) async {
     String splittedGroupId = splitByUnderscore(groupId)[0];
     return await GroupServices(userId: userId).getGroupsById(splittedGroupId);
-
   }
 
 

@@ -177,14 +177,14 @@ class _SearchPageState extends State<SearchPage> {
             final searched = userController.searchedUsersList[index];
             String friendStatus = "NoRequest";
 
-            // Reactive data access
-            if (userController.friendList.any((friend) => friend['uid'] == searched['uid'])) {
+            if (userController.friendList.any((friend) => friend.uid == searched['uid'])) {
               friendStatus = "Friend";
-            } else if (userController.sentFriendRequests.any((request) => request['uid'] == searched['uid'])) {
+            } else if (userController.sentFriendRequests.any((request) => request.uid == searched['uid'])) {
               friendStatus = "WaitingAnswer";
-            } else if (userController.recievedFriendRequests.any((request) => request['uid'] == searched['uid'])) {
+            } else if (userController.receivedFriendRequests.any((request) => request.uid == searched['uid'])) {
               friendStatus = "ReceivedRequest";
             }
+
 
             SearchFriendDto searchedResult = SearchFriendDto(
               userId: FirebaseAuth.instance.currentUser!.uid,

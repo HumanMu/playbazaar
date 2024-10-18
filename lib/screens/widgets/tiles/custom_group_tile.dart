@@ -30,7 +30,7 @@ class CustomGroupTile extends StatefulWidget {
 }
 
 class _GroupTileState extends State<CustomGroupTile> {
-  final groupController = Get.find<GroupController>();
+  final GroupController groupController = Get.put(GroupController());
   String onlineStatus = "";
   bool isLoading = false;
   final groupPasswordController = TextEditingController();
@@ -42,7 +42,7 @@ class _GroupTileState extends State<CustomGroupTile> {
       onTap:() {
         groupPasswordController.text = "";
         if(widget.password == null){
-          Get.toNamed('/chat', arguments: {
+          Get.toNamed('/group_chat', arguments: {
             'chatId': widget.groupId,
             'chatName': widget.groupName,
             'userName': widget.admin,

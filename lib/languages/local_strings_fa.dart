@@ -114,8 +114,9 @@ class LocalStringsFa extends Translations {
       'select' : 'انتخاب کنید',
 
 
-      // unclickble buttons
+      // Friends
       'friends' : 'دوست',
+      'empty_friend_list': 'شما هنوز دوستی ندارید',
 
 
       // Buttons
@@ -168,7 +169,7 @@ class LocalStringsFa extends Translations {
       'name_is_required' : 'وارد کردن نام ضروری است!',
       'approved_friend_request': 'درخواست دوستی شما پذیرفته شد ',
       'declined_friend_request' : 'درخواست دستی شما را رد کرد',
-      'removed_from_friends' : 'با موفقیت از لیست دوستان شما حذف شد ',
+      'removed_from_friends' : 'از لیست دوستان شما حذف شد',
       'something_went_wrong' : 'خطایی رخ داد, لطفا دوباره تلاش کنید',
       'wrong_group_password' : 'رمز را که وارد کردید اشتباه بود!',
       'email_exist' : 'ایمیل وارد شده قبلا استفاده شده. اگر رمز ورود خود را فراموش کرده اید درخواست رمزجدید نمایید لطفا!',

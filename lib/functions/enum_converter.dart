@@ -28,6 +28,10 @@ FriendshipStatus string2FriendshipState(String s) {
   return condition;
 }
 
+String friendShipState2String(FriendshipStatus state) {
+  return state.toString().split('.').last;
+}
+
 String groupUserRole2String(GroupUserRole state) {
   return state.toString().split('.').last;
 }

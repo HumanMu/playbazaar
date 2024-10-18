@@ -2,35 +2,33 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:playbazaar/controller/message_controller/message_controller.dart';
+import 'package:playbazaar/controller/message_controller/group_message_controller.dart';
 import 'package:playbazaar/functions/string_cases.dart';
 import 'package:playbazaar/utils/show_custom_snackbar.dart';
 import '../../admob/banner_ad.dart';
-import '../../models/message_model.dart';
+import '../../models/group_message.dart';
 import '../widgets/cards/message_tile.dart';
 
-class ChatPage extends StatefulWidget {
+class GroupChatPage extends StatefulWidget {
   final String chatId;
   final String chatName;
   final String userName;
-  final String? recieverId;
 
 
-  const ChatPage({
+  const GroupChatPage({
     super.key,
     required this.chatId,
     required this.chatName,
     required this.userName,
-    this.recieverId,
 
   });
 
   @override
-  State<ChatPage> createState() => _ChatPageState();
+  State<GroupChatPage> createState() => _GroupChatPageState();
 }
 
-class _ChatPageState extends State<ChatPage> {
-  late MessageController _messageController;
+class _GroupChatPageState extends State<GroupChatPage> {
+  late GroupMessageController _messageController;
   late ScrollController _scrollController;
   String currentUserName = FirebaseAuth.instance.currentUser?.displayName ?? "";
   final String? currentUserId = FirebaseAuth.instance.currentUser!.uid;
@@ -41,8 +39,8 @@ class _ChatPageState extends State<ChatPage> {
   @override
   void initState() {
     super.initState();
-    Get.create(() => MessageController(groupId: widget.chatId));
-    _messageController = Get.find<MessageController>();
+    Get.create(() => GroupMessageController(groupId: widget.chatId));
+    _messageController = Get.find<GroupMessageController>();
     _scrollController = ScrollController();
 
     _messageController.listenToMessages(widget.chatId);
@@ -52,7 +50,7 @@ class _ChatPageState extends State<ChatPage> {
   @override
   void dispose() {
     messageBox.dispose();
-    Get.delete<MessageController>();
+    Get.delete<GroupMessageController>();
     super.dispose();
   }
 
@@ -67,7 +65,7 @@ class _ChatPageState extends State<ChatPage> {
         ),
         backgroundColor: Colors.red,
         actions: [
-          widget.recieverId == null? IconButton(
+          IconButton(
             onPressed: () {
               Get.toNamed('/chatinfo', arguments: {
                 'chatId': widget.chatId,
@@ -76,9 +74,8 @@ class _ChatPageState extends State<ChatPage> {
               });
             },
             icon: const Icon(Icons.info, color: Colors.white70),
-          ) : IconButton(onPressed: null,
-              icon: const Icon(Icons.info_outline, color: Colors.red)
-          )],
+          )
+        ],
         iconTheme: IconThemeData(
           color: Colors.white
         ),
@@ -120,7 +117,7 @@ class _ChatPageState extends State<ChatPage> {
                   const SizedBox(width: 12),
                   GestureDetector(
                     onTap: () {
-                      sendMessage();
+                        sendGroupMessage();
                     },
                     child: Container(
                       height: 40,
@@ -146,61 +143,48 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-  sendMessage() {
-    final messageLength = messageBox.text.length;
-    if(messageLength > 1000) {
-      showCustomSnackbar(
-          "${"current_message_length".tr}: $messageLength "
-              "${"allowed_message_length_1000".tr}", false, timing: 6
+  Widget chatMessage() {
+    _messageController.listenToMessages(widget.chatId);
+    return Obx(() {
+      if (_messageController.messages.isEmpty) {
+        return const Center(
+          child: Text(''),
+        );
+      }
+      return ListView.builder(
+        itemCount: _messageController.messages.length,
+        controller: _scrollController,
+        itemBuilder: (context, index) {
+          final message = _messageController.messages[index];
+          return MessageTile(
+            message: message.text,
+            sender: message.senderName,
+            sendByMe: message.senderId == currentUserId? true: false,
+          );
+        },
       );
-      return;
     }
-    if(messageBox.text.trim().isEmpty) {
-      return;
-    }
+    );
+  }
 
-    Message message = Message(
+
+  sendGroupMessage() {
+    if(isMessageLengthAllowed()){
+      GroupMessage message = GroupMessage(
         senderId: currentUserId!,
         senderName: splitBySpace(currentUserName)[0],
         text: messageBox.text,
         isSentByMe: true,
         timestamp: Timestamp.now(),
-    );
-    MessageController(groupId: widget.chatId).sendMessageToGroup( message );
-    setState(() {
-      messageBox.clear();
-    });
-
+      );
+      GroupMessageController(groupId: widget.chatId).sendMessageToGroup( message );
+      setState(() {
+        messageBox.clear();
+      });
+    }
   }
 
 
-  Widget chatMessage() {
-    _messageController.listenToMessages(widget.chatId);
-    return Obx(() {
-        if (_messageController.messages.isEmpty) {
-          return const Center(
-            child: Text(''),
-          );
-        }
-        return ListView.builder(
-          itemCount: _messageController.messages.length,
-          controller: _scrollController,
-          itemBuilder: (context, index) {
-            final message = _messageController.messages[index];
-            return MessageTile(
-              message: message.text,
-              sender: message.senderName,
-              sendByMe: message.senderId == currentUserId? true: false,
-            );
-          },
-        );
-      }
-    );
-  }
-
-  void returnNull () {
-    return;
-  }
   void scrollToBottom() {
     if (_scrollController.hasClients) {
       _scrollController.animateTo(
@@ -210,4 +194,22 @@ class _ChatPageState extends State<ChatPage> {
       );
     }
   }
+
+
+  bool isMessageLengthAllowed() {
+    final messageLength = messageBox.text.length;
+    if (messageLength > 1000) {
+      showCustomSnackbar(
+          "${"current_message_length".tr}: $messageLength "
+          "${"allowed_message_length_1000".tr}", false, timing: 6
+      );
+      return false;
+    }
+
+    if(messageBox.text.trim().isEmpty) {
+      return false;
+    }
+    return true;
+  }
+
 }

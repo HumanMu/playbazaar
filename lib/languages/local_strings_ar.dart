@@ -119,6 +119,7 @@ class LocalStringsAr extends Translations {
 
       // friends
       'friends': 'الأصدقاء',
+      'empty_friend_list': 'ليس لديك أي أصدقاء بعد',
 
       // Buttons
       'btn_chats': 'الرسائل',
@@ -166,7 +167,7 @@ class LocalStringsAr extends Translations {
       'name_is_required': 'الاسم مطلوب',
       'approved_friend_request': 'تمت الإضافة إلى قائمة أصدقائك',
       'declined_friend_request': 'تم رفض طلب الصداقة',
-      'removed_from_friends': 'تمت إزالته من قائمة أصدقائك',
+      'removed_from_friends': 'تمت إزالته من قائمة الأصدقاء الخاصة بك',
       'something_went_wrong': 'حدث خطأ ما، حاول مرة أخرى من فضلك',
       'wrong_group_password': 'كلمة المرور المقدمة غير صحيحة',
       'email_exist': 'البريد الإلكتروني المدخل مستخدم بالفعل. إذا نسيت كلمة المرور، يرجى طلب كلمة مرور جديدة!',

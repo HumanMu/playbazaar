@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
-import '../models/message_model.dart';
+import '../models/group_message.dart';
 
 class MessageService {
   final String? userId;
@@ -10,7 +10,7 @@ class MessageService {
   final CollectionReference groupCollection
   = FirebaseFirestore.instance.collection("groups");
 
-  Stream<List<Message>> getMessages(String groupId) {
+  Stream<List<GroupMessage>> getMessages(String groupId) {
     return _firestore
         .collection('groups')
         .doc(groupId)
@@ -19,12 +19,12 @@ class MessageService {
         .limit(10)
         .snapshots()
         .map((snapshot) => snapshot.docs
-        .map((doc) => Message.fromMap(doc.data()))
+        .map((doc) => GroupMessage.fromMap(doc.data()))
         .toList());
   }
 
 
-  Future<void> sendMessageToGroup(String groupId, Message message) async {
+  Future<void> sendMessageToGroup(String groupId, GroupMessage message) async {
     try {
       await groupCollection.doc(groupId).collection('messages').add(message.toMap());
     } catch (e) {
@@ -33,4 +33,5 @@ class MessageService {
       }
     }
   }
+
 }

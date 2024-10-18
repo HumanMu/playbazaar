@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:playbazaar/controller/user_controller/user_controller.dart';
+import 'package:playbazaar/functions/string_cases.dart';
 import 'package:playbazaar/utils/show_custom_snackbar.dart';
 
 class FriendsListTile extends StatefulWidget {
   final String friendId;
-  final String fullame;
+  final String fullname;
   final Function()? onTap;
   final String? availabilityState;
 
   const FriendsListTile({
     super.key,
     required this.friendId,
-    required this.fullame,
+    required this.fullname,
     this.onTap,
     this.availabilityState,
   });
@@ -21,6 +23,7 @@ class FriendsListTile extends StatefulWidget {
 }
 
 class _FriendsListTile extends State<FriendsListTile> {
+  final UserController userController = Get.find<UserController>();
   String currentUserName = "";
 
   void _showMenu(BuildContext context) {
@@ -34,7 +37,7 @@ class _FriendsListTile extends State<FriendsListTile> {
             children: [
               ListTile(
                 leading: const Icon(Icons.delete),
-                title: Text("${"delete_friendship".tr}: ${widget.fullame}"),
+                title: Text("${"delete_friendship".tr}: ${widget.fullname}"),
                 onTap: () {
                   // Handle delete friendship logic here
                   Navigator.pop(context); // Close the menu
@@ -49,8 +52,14 @@ class _FriendsListTile extends State<FriendsListTile> {
     );
   }
 
-  void _deleteFriendship() {
-    showCustomSnackbar("Success ${widget.fullame} has been removed from your friends", true);
+  void _deleteFriendship() async {
+    bool deleteResult = await userController.removeFriendById(widget.friendId);
+    if(deleteResult){
+      showCustomSnackbar("${widget.fullname} ${"removed_from_friends".tr}", true);
+    }
+    else{
+      showCustomSnackbar("unexpected_result".tr, false);
+    }
   }
 
   @override
@@ -66,7 +75,7 @@ class _FriendsListTile extends State<FriendsListTile> {
             radius: 20,
             backgroundColor: Colors.red,
             child: Text(
-              widget.fullame.substring(0, 1).toUpperCase(),
+              widget.fullname.substring(0, 1).toUpperCase(),
               textAlign: TextAlign.center,
               style: const TextStyle(
                 color: Colors.white,
@@ -76,7 +85,7 @@ class _FriendsListTile extends State<FriendsListTile> {
             ),
           ),
           title: Text(
-            widget.fullame,
+            capitalizeFullname(widget.fullname),
             textAlign: TextAlign.start,
             style: const TextStyle(
               fontWeight: FontWeight.bold,

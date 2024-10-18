@@ -80,7 +80,7 @@ class _FriendsList extends State<FriendsList> {
       }
       if (userController.friendList.isEmpty) {
         return Center(
-          child: Text("search_not_found".tr),
+          child: Text("empty_friend_list".tr),
         );
       }
 
@@ -92,10 +92,11 @@ class _FriendsList extends State<FriendsList> {
             itemBuilder: (context, index) {
               var friend = userController.friendList[index];
               return FriendsListTile(
-                friendId: friend['uid'],
-                fullame: friend['fullname'],
-                onTap : () => goToChat(friend['uid'], friend['fullname']),
+                friendId: friend.uid,
+                fullname: friend.fullname,
+                onTap : () => goToChat(friend.uid, friend.fullname),
                 availabilityState: '',
+
               );
             },
           ),
@@ -103,14 +104,17 @@ class _FriendsList extends State<FriendsList> {
     });
   }
 
-  goToChat(String friendId, String recieverName) {
+  goToChat(String friendId, String recieverName) async {
     String username = FirebaseAuth.instance.currentUser?.displayName ?? "";
-    Get.toNamed('/chat', arguments: {
-      'chatId' : friendId,
-      'chatName' : recieverName,
-      'userName' : username,
-      'recieverId' : friendId
-    });
+    final result  = await userController.getASingleFriendById(friendId);
+    if(result != null){
+      Get.toNamed('/private_chat', arguments: {
+        'chatId' : result.chatId,
+        'chatName' : recieverName,
+        'userName' : username,
+        'recieverId' : friendId
+      });
+    }
   }
 
 
@@ -119,14 +123,14 @@ class _FriendsList extends State<FriendsList> {
       if (userController.isLoading.value) {
         return Center(child: CircularProgressIndicator());
       }
-      if (userController.recievedFriendRequests.isEmpty) {
+      if (userController.receivedFriendRequests.isEmpty) {
         return Container();
       }
       return Flexible(
           child: ListView.builder(
-            itemCount: userController.recievedFriendRequests.length,
+            itemCount: userController.receivedFriendRequests.length,
             itemBuilder: (context, index) {
-              var friend = userController.recievedFriendRequests[index];
+              var friend = userController.receivedFriendRequests[index];
 
               return RecievedRequestsTile(
                 fullname: friend.fullname,

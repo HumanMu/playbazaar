@@ -1,16 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
-import 'package:playbazaar/services/message_services.dart';
-import '../../models/message_model.dart';
+import 'package:playbazaar/services/group_message_services.dart';
+import '../../models/group_message.dart';
 import '../../utils/show_custom_snackbar.dart';
 
-class MessageController extends GetxController {
+class GroupMessageController extends GetxController {
   final CollectionReference colRef = FirebaseFirestore.instance.collection('groups');
   final String groupId;
   final MessageService _messageService = MessageService();
-  var messages = <Message>[].obs;
+  var messages = <GroupMessage>[].obs;
 
-  MessageController({required this.groupId});
+  GroupMessageController({required this.groupId});
 
   @override
   void onInit() {
@@ -25,7 +25,7 @@ class MessageController extends GetxController {
     });
   }
 
-  Future<void> sendMessageToGroup( Message message) async {
+  Future<void> sendMessageToGroup( GroupMessage message) async {
     try {
       await MessageService().sendMessageToGroup(groupId, message);
     }catch(e) {

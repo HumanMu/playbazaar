@@ -74,7 +74,7 @@ class _QuizPlayScreen extends State<QuizPlayScreen>{
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Container(
-              padding: EdgeInsets.all(3),
+              padding: EdgeInsets.symmetric(vertical: 5),
               color: Colors.teal[900],
               width: MediaQuery.of(context).size.width,
               child: BannerAdWidget(),  // The BannerAd widget

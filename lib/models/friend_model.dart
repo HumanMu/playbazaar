@@ -7,22 +7,24 @@ class FriendModel {
   String uid;
   String fullname;
   String avatarImage;
+  String chatId;
   FriendshipStatus friendshipStatus;
 
   FriendModel({
     required this.uid,
     required this.fullname,
     required this.avatarImage,
+    required this.chatId,
     required this.friendshipStatus,
   });
 
-  // Method to convert FriendModel to Map
   Map<String, dynamic> toMap() {
     return {
       'uid': uid,
       'fullname': fullname,
       'avatarImage': avatarImage,
-      'friendshipStatus': friendshipStatus.toString(),
+      'friendshipStatus': friendShipState2String(FriendshipStatus.good),
+      'chatId': chatId,
     };
   }
 
@@ -34,6 +36,7 @@ class FriendModel {
       fullname: user['fullname'],
       avatarImage: user['avatarImage'],
       friendshipStatus: friendStat,
+      chatId: user['chatId'] ?? "",
     );
   }
 }

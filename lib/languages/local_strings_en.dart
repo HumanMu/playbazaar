@@ -116,6 +116,7 @@ class LocalStringsEn extends Translations {
 
       // friends
       'friends' : 'Friends',
+      'empty_friend_list': 'You don’t have any friends yet',
 
       // Buttons
       'btn_chats' : 'Messages',
@@ -164,7 +165,7 @@ class LocalStringsEn extends Translations {
       'name_is_required' : 'Name is required',
       'approved_friend_request': 'Added to the list of your friend',
       'declined_friend_request' : 'Declined friend request',
-      'removed_from_friends' : 'Removed from your friend list',
+      'removed_from_friends' : 'was removed from your friends list',
       'something_went_wrong' : 'Something went wrong, try again please',
       'wrong_group_password' : 'The password provided was invalid',
       'email_exist' : 'The email entered has already been used. If you have forgotten your password, please request a new one!',

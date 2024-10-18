@@ -8,10 +8,11 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:playbazaar/controller/settings_controller/settings_controller.dart';
 import 'package:playbazaar/controller/user_controller/user_controller.dart';
 import 'package:playbazaar/games/games/quiz/screens/add_question.dart';
-import 'package:playbazaar/screens/main_screens/chat_page.dart';
+import 'package:playbazaar/screens/main_screens/group_chat_page.dart';
 import 'package:playbazaar/screens/main_screens/edit_page.dart';
 import 'package:playbazaar/screens/main_screens/home_page.dart';
 import 'package:playbazaar/screens/main_screens/login_pages.dart';
+import 'package:playbazaar/screens/main_screens/private_chat_page.dart';
 import 'package:playbazaar/screens/main_screens/profile_page.dart';
 import 'package:playbazaar/screens/main_screens/register_page.dart';
 import 'package:playbazaar/screens/secondary_screens/chat_info.dart';
@@ -21,6 +22,7 @@ import 'package:playbazaar/screens/secondary_screens/friends_list.dart';
 import 'package:playbazaar/screens/secondary_screens/reset_password_page.dart';
 import 'package:playbazaar/screens/secondary_screens/search_page.dart';
 import 'package:playbazaar/screens/secondary_screens/settings.dart';
+import 'package:playbazaar/services/private_message_service.dart';
 import 'package:playbazaar/services/user_services.dart';
 import 'package:provider/provider.dart';
 import 'api/firestore/firestore_user.dart';
@@ -41,8 +43,8 @@ Future<void> main() async {
   Get.put(AuthController(), permanent: true);
   Get.put(SettingsController(), permanent: true);
   Get.put(UserServices(), permanent: true);
+  Get.put(PrivateMessageService(), permanent: true);
   Get.put(UserController(), permanent: true);
-
 
 
   runApp(
@@ -166,10 +168,21 @@ class PlayBazaar extends StatelessWidget {
                       },
                     ),
                     GetPage(
-                      name: '/chat',
+                      name: '/group_chat',
                       page: () {
                         final args = Get.arguments as Map<String, dynamic>;
-                        return ChatPage(
+                        return GroupChatPage(
+                          chatId: args['chatId'],
+                          chatName: args['chatName'],
+                          userName: args['userName'],
+                        );
+                      },
+                    ),
+                    GetPage(
+                      name: '/private_chat',
+                      page: () {
+                        final args = Get.arguments as Map<String, dynamic>;
+                        return PrivateChatPage(
                           chatId: args['chatId'],
                           chatName: args['chatName'],
                           userName: args['userName'],

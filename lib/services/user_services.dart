@@ -13,11 +13,90 @@ class UserServices extends GetxService {
   UserServices({this.userId});
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   final CollectionReference userCollection = FirebaseFirestore.instance.collection("users");
-  static UserServices get to => Get.find<UserServices>();
+  final CollectionReference privateMessageCollection = FirebaseFirestore.instance.collection("privateMessages");
+  //static UserServices get to => Get.find<UserServices>();
   DocumentSnapshot? lastDocument;
+
+
+  /*RxList<FriendModel> friendList = <FriendModel>[].obs;
+  RxList<FriendModel> receivedFriendRequests = <FriendModel>[].obs;
+  RxList<FriendModel> sentFriendRequests = <FriendModel>[].obs;
+
+  // Stream to get the friend list and store it reactively
+  Stream<void> listenToFriendList(String uid) {
+    return userCollection.doc(uid)
+        .collection('friends')
+        .snapshots()
+        .map((snapshot) {
+          friendList.assignAll(
+              snapshot.docs.map((doc) => FriendModel.fromFirestore(doc)).toList());
+    });
+  }
+
+  Future<void> fetchFriendList(String uid) async {
+    final snapshot = await userCollection.doc(uid).collection('friends').get();
+    friendList.assignAll(snapshot.docs.map((doc) => FriendModel.fromFirestore(doc)).toList());
+  }
+
+
+  // Stream to get the received friend requests and store them reactively
+  Stream<void> listenToReceivedFriendRequests(String uid) {
+    print("Entered the listen recieved friends");
+    return userCollection.doc(uid)
+        .collection('receivedFriendRequests')
+        .snapshots()
+        .handleError((error) => print("Error retrieving friends requests: $error"))
+        .map((snapshot) {
+      print("Retrieving recieved friend requests: ${snapshot.docs.length}");
+      receivedFriendRequests.assignAll(snapshot.docs.map((doc) => FriendModel.fromFirestore(doc)).toList());
+    });
+  }
+
+  // Stream to get the sent friend requests and store them reactively
+  Stream<void> listenToSentFriendRequests(String userId) {
+    return userCollection.doc(userId).collection('sentFriendRequests').snapshots().map((snapshot) {
+      print("Retrieving sent friend requests: $snapshot");
+
+      sentFriendRequests.assignAll(snapshot.docs.map((doc) => FriendModel.fromFirestore(doc)).toList());
+    });
+  }*/
+
+
+
 
   Future<QuerySnapshot<Map<String, dynamic>>> getFriendList() {
     return userCollection.doc(userId).collection('friends').get();
+  }
+
+
+  Stream<List<FriendModel>> getRecievedFriendRequests(String userId) {
+    return userCollection
+        .doc(userId)
+        .collection('receivedFriendRequests')
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+        .map((doc) => FriendModel.fromFirestore(doc))
+        .toList());
+  }
+
+  Stream<List<FriendModel>> getSentFriendRequests(String userId) {
+    return userCollection
+        .doc(userId)
+        .collection('sentFriendRequests')
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+        .map((doc) => FriendModel.fromFirestore(doc))
+        .toList());
+  }
+
+
+  Future<QuerySnapshot> searchByUserName(String username, {int limit = 10}) async {
+    String searchKey = username.toLowerCase();
+    return await userCollection
+        .where("fullname", isGreaterThanOrEqualTo: searchKey)
+        .where("fullname", isLessThanOrEqualTo: '$searchKey\uf8ff')// For prefix search
+        .limit(limit)
+        .get();
   }
 
   Future<bool> sendFriendRequest( FriendModel request) async {
@@ -48,6 +127,41 @@ class UserServices extends GetxService {
     }
   }
 
+
+  Future<FriendModel?> acceptFriendRequest(String chatId, String friendId) async {
+    String ui = firebaseAuth.currentUser!.uid;
+    DocumentReference userDocRef =  userCollection.doc(ui).collection('receivedFriendRequests').doc(friendId);
+    DocumentReference friendDocRef =  userCollection.doc(friendId).collection('sentFriendRequests').doc(ui);
+
+    try {
+      DocumentSnapshot userRequestSnapshot = await userDocRef.get();
+      DocumentSnapshot friendRequestSnapshot = await friendDocRef.get();
+
+      if (userRequestSnapshot.exists && friendRequestSnapshot.exists) {
+        Map<String, dynamic> userData = userRequestSnapshot.data() as Map<String, dynamic>;
+        Map<String, dynamic> friendData = friendRequestSnapshot.data() as Map<String, dynamic>;
+
+        // Add/update the chatId in both user and friend's data
+        userData['chatId'] = chatId;
+        friendData['chatId'] = chatId;
+
+        await userCollection.doc(ui).collection('friends').doc(friendId).set(userData);
+        await userCollection.doc(friendId).collection('friends').doc(ui).set(friendData);
+
+
+        await userDocRef.delete();
+        await friendDocRef.delete();
+
+        return FriendModel.fromFirestore(friendRequestSnapshot as DocumentSnapshot<Map<String, dynamic>>);
+      }
+
+      return null;
+
+    }catch(e) {
+      return null;
+    }
+  }
+
   Future<bool> cancelFriendshipRequest(String friendId) async {
     String currentUserId = firebaseAuth.currentUser!.uid;
     DocumentReference friendDocRef = userCollection.doc(friendId).collection("receivedFriendRequests").doc(currentUserId);
@@ -66,67 +180,6 @@ class UserServices extends GetxService {
     }
   }
 
-  Stream<List<FriendModel>> getRecievedFriendRequests(String userId) {
-    return userCollection
-        .doc(userId)
-        .collection('receivedFriendRequests')
-        .snapshots()
-        .map((snapshot) => snapshot.docs
-        .map((doc) => FriendModel.fromFirestore(doc))
-        .toList());
-  }
-
-  Stream<List<FriendModel>> getSentFriendRequests(String userId) {
-    return userCollection
-        .doc(userId)
-        .collection('sentFriendRequests')
-        .snapshots()
-        .map((snapshot) => snapshot.docs
-        .map((doc) => FriendModel.fromFirestore(doc))
-        .toList());
-  }
-
-
-  Future<QuerySnapshot> searchByUserName(String username, {int limit = 10}) async {
-    String searchKey = username.toLowerCase();
-
-    // Perform a range query to find names that start with the searchKey
-    return await userCollection
-        .where("fullname", isGreaterThanOrEqualTo: searchKey)
-        .where("fullname", isLessThanOrEqualTo: '$searchKey\uf8ff')// For prefix search
-        .limit(limit)
-        .get();
-  }
-
-
-  Future<bool> acceptFriendRequest(String friendId) async {
-    String ui = firebaseAuth.currentUser!.uid;
-    DocumentReference userDocRef =  userCollection.doc(ui).collection('receivedFriendRequests').doc(friendId);
-    DocumentReference friendDocRef =  userCollection.doc(friendId).collection('sentFriendRequests').doc(ui);
-
-    try {
-      DocumentSnapshot userRequestSnapshot = await userDocRef.get();
-      DocumentSnapshot friendRequestSnapshot = await friendDocRef.get();
-
-      if (userRequestSnapshot.exists && friendRequestSnapshot.exists) {
-        Map<String, dynamic> userData = userRequestSnapshot.data() as Map<String, dynamic>;
-        Map<String, dynamic> friendData = friendRequestSnapshot.data() as Map<String, dynamic>;
-
-        await userCollection.doc(ui).collection('friends').doc(friendId).set(userData);
-        await userCollection.doc(friendId).collection('friends').doc(ui).set(friendData);
-
-        await userDocRef.delete();
-        await friendDocRef.delete();
-
-        return true;
-      }
-      return false;// Request documents not found
-
-    }catch(e) {
-      return false;
-    }
-  }
-
   Future<bool>declineFriendRequests(String friendId) async {
     String ui = firebaseAuth.currentUser!.uid;
     DocumentReference userDocRef =  userCollection.doc(ui).collection('receivedFriendRequests').doc(friendId);
@@ -141,6 +194,22 @@ class UserServices extends GetxService {
         }
         return false;
       }
+  }
+
+  Future<bool>removeFriendById(String friendId) async {
+    String ui = firebaseAuth.currentUser!.uid;
+    DocumentReference userDocRef =  userCollection.doc(ui).collection('friends').doc(friendId);
+    DocumentReference friendDocRef =  userCollection.doc(friendId).collection('friends').doc(ui);
+    try{
+      await userDocRef.delete();
+      await friendDocRef.delete();
+      return true;
+    }catch(e){
+      if (kDebugMode) {
+        print("Error declining friend request: $e");
+      }
+      return false;
+    }
   }
 
 
@@ -173,6 +242,19 @@ class UserServices extends GetxService {
         return null;
       }
     });
+  }
+
+  Future<FriendModel?> getASingleFriendById(String currentUserId, String friendId) async {
+    CollectionReference friendListRef = userCollection.doc(currentUserId).collection('friends');
+    DocumentReference friendDoc = friendListRef.doc(friendId);
+
+    try{
+      final friendResult = await friendDoc.get();
+      return FriendModel.fromFirestore(friendResult as DocumentSnapshot<Map<String, dynamic>>);
+    }
+    catch(e){
+      return null;
+    }
   }
 
 
