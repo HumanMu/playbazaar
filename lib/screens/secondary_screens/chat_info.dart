@@ -14,11 +14,13 @@ class ChatInfo extends StatefulWidget {
   final String chatId;
   final String chatName;
   final String adminName;
+  final bool isPublic;
 
   const ChatInfo({ super.key,
     required this.chatId,
     required this.chatName,
-    required this.adminName
+    required this.adminName,
+    required this.isPublic,
   });
 
   @override
@@ -211,6 +213,8 @@ class _ChatInfoState extends State<ChatInfo> {
       groupId: widget.chatId,
       userName: widget.adminName,
       groupName: widget.chatName,
+      isPublic: widget.isPublic,
+
     );
 
     groupController.removeGroupFromUser(

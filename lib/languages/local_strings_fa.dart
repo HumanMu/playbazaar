@@ -72,7 +72,8 @@ class LocalStringsFa extends Translations {
       'private_group_is_selected': 'شما یک گروه خصوصی انتخاب کرده‌اید، و یک گروه خصوصی باید رمز عبوری حداقل با ۴ کاراکتر داشته باشد',
       'you_became_a_member': 'شما عضو شدید',
       'already_member': 'قبلاً عضو شده‌اید',
-
+      'not_group_member': 'شما عضو این گروه نیستید',
+      'group_not_found': 'گروه پیدا نشد',
 
 
       // Others

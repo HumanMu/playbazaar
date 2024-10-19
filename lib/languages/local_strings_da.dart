@@ -73,6 +73,8 @@ class LocalStringsDa extends Translations {
       'private_group_is_selected': 'Du har valgt en privat gruppe, og en privat gruppe skal have et kodeord på mindst 4 tegn',
       'you_became_a_member': 'Du er blevet medlem!',
       'already_member': 'Allerede medlem',
+      'not_group_member': 'Du er ikke medlem af denne gruppe',
+      'group_not_found': 'Kunne ikke finde gruppen',
 
 
 

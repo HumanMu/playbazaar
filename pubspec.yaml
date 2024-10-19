@@ -51,6 +51,7 @@ dependencies:
   string_similarity: ^2.1.1
   cupertino_icons: ^1.0.8 # for ios style icons and fonts
   google_mobile_ads: ^5.2.0
+  flutter_secure_storage: ^9.2.2
 
 
 
@@ -86,6 +87,7 @@ flutter:
     - assets/sounds/
     - assets/sounds/button/
     - assets/sounds/end_game/
+    - assets/config/.env
 
 
   # For details regarding fonts from package dependencies,

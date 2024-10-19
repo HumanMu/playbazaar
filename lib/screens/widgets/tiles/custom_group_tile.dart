@@ -4,8 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:playbazaar/controller/group_controller/group_controller.dart';
 import 'package:playbazaar/functions/string_cases.dart';
+import 'package:playbazaar/helper/encryption/encrypt_string.dart';
+import 'package:playbazaar/helper/sharedpreferences/sharedpreferences.dart';
+import 'package:playbazaar/models/group_model.dart';
+import 'package:playbazaar/utils/show_custom_snackbar.dart';
 import '../../../models/DTO/add_group_member.dart';
-import '../../../utils/show_custom_snackbar.dart';
 import '../../../utils/text_boxes/text_box_decoration.dart';
 import '../dialogs/accept_result_dialog.dart';
 import '../dialogs/leaving_group_dialog.dart';
@@ -15,13 +18,13 @@ class CustomGroupTile extends StatefulWidget {
   final String admin;
   final String groupId;
   final String groupName;
-  final String? password;
+  final bool isPublic;
 
   const CustomGroupTile({super.key,
     required this.groupId,
     required this.groupName, 
     required this.admin,
-    this.password
+    required this.isPublic,
 
   });
 
@@ -31,24 +34,85 @@ class CustomGroupTile extends StatefulWidget {
 
 class _GroupTileState extends State<CustomGroupTile> {
   final GroupController groupController = Get.put(GroupController());
+  final String currentUserId = FirebaseAuth.instance.currentUser!.uid;
   String onlineStatus = "";
   bool isLoading = false;
   final groupPasswordController = TextEditingController();
   String enteredPassword = "";
+  late GroupModel requestedGroup;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+
+  @override
+  void dispose() {
+    groupPasswordController.dispose();
+    super.dispose();
+  }
+
+
+  Future<void> retreiveTheGroup() async {
+    setState(() {
+      isLoading = true;
+    });
+    final groupResult = await groupController.getGroupById(widget.groupId);
+
+    setState(() {
+      requestedGroup = GroupModel.fromMap(groupResult.data() as Map<String, dynamic>);
+      isLoading = false;
+    });
+  }
+
+  bool canAccessTheGroup() {
+    if (requestedGroup.members.isNotEmpty && isGroupMember(requestedGroup.members)) {
+      _dialogBuilder(context);
+      return true;
+    } else {
+      showCustomSnackbar("not_group_member".tr, false);
+      return false;
+    }
+  }
+  
+  bool isGroupMember(List<String> members) {
+    for(String member in members){
+      String memberId = splitByUnderscore(member)[0];
+      if(memberId == currentUserId){
+        return true;
+      }
+    }
+    return false;
+  }
+
+  void navigateToGroupChat() {
+    Get.toNamed('/group_chat', arguments: {
+      'chatId': widget.groupId,
+      'chatName': widget.groupName,
+      'userName': widget.admin,
+    });
+  }
+
+  bool isPublic() {
+    return requestedGroup.isPublic? true : false;
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
+    if(isLoading){
+      return Center(child: CircularProgressIndicator());
+    }
     return GestureDetector(
-      onTap:() {
+      onTap:() async {
+        await retreiveTheGroup();
         groupPasswordController.text = "";
-        if(widget.password == null){
-          Get.toNamed('/group_chat', arguments: {
-            'chatId': widget.groupId,
-            'chatName': widget.groupName,
-            'userName': widget.admin,
-          });
-        }else{
-          _dialogBuilder(context);
+        if(isPublic()){
+          navigateToGroupChat();
+        }else {
+          canAccessTheGroup();
         }
       },
 
@@ -76,7 +140,7 @@ class _GroupTileState extends State<CustomGroupTile> {
               fontWeight: FontWeight.bold,
             ),
           ),
-          subtitle: Text(widget.password?.trim() == null
+          subtitle: Text(widget.isPublic
               ? "${"group".tr}: ${"public".tr}"
               : "${"group".tr}: ${"private".tr}",
             style: const TextStyle(
@@ -94,28 +158,6 @@ class _GroupTileState extends State<CustomGroupTile> {
     );
   }
 
-  bool identifyPassword(enteredPassword) {
-    bool result = enteredPassword == widget.password ? true: false;
-    return result;
-  }
-
-  Future<void> _handleLeaveGroup() async {
-    if (!mounted) return;
-
-    AddGroupMemberDto memberDto = AddGroupMemberDto(
-      groupId: widget.groupId,
-      userName: widget.admin,
-      groupName: widget.groupName,
-    );
-
-    groupController.removeGroupFromUser(
-        memberDto,
-        FirebaseAuth.instance.currentUser!.uid)
-        .whenComplete(() {
-      Get.offNamed('/home');
-    });
-  }
-
 
   Future<void> _dialogBuilder(BuildContext context) {
     return showDialog<void>(
@@ -129,7 +171,6 @@ class _GroupTileState extends State<CustomGroupTile> {
             controller: groupPasswordController,
             onChanged: (val) {
               enteredPassword = val;
-              setState(() {});
             },
             decoration: decoration(title),
           ),
@@ -156,23 +197,44 @@ class _GroupTileState extends State<CustomGroupTile> {
               child: Text('btn_login'.tr),
               onPressed: () {
                 Navigator.of(context).pop();
-                bool result = identifyPassword(enteredPassword);
-                if(result == true){
-                  Get.toNamed('/chat', arguments: {
-                    'chatId': widget.groupId,
-                    'chatName': widget.groupName,
-                    'userName': widget.admin,
-                  });
-                }
-                else{
-                  acceptResultDialog(context, "", 'wrong_group_password'.tr);
-                }
+                identifyPassword();
               },
             ),
           ],
         );
       },
     );
+  }
+
+  void identifyPassword() async {
+    try {
+      String decryptedPas = await EncryptionHelper.decryptPassword(requestedGroup.groupPassword);
+
+      bool result = groupPasswordController.text == decryptedPas;
+      result ? navigateToGroupChat() : showErrorDialog();
+    } catch (e) {
+      showErrorDialog();
+    }
+  }
+
+  void showErrorDialog(){
+    acceptResultDialog(context, "", 'wrong_group_password'.tr);
+  }
+
+  Future<void> _handleLeaveGroup() async {
+    AddGroupMemberDto memberDto = AddGroupMemberDto(
+        groupId: widget.groupId,
+        userName: widget.admin,
+        groupName: widget.groupName,
+        isPublic: widget.isPublic
+    );
+
+    groupController.removeGroupFromUser(
+        memberDto,
+        FirebaseAuth.instance.currentUser!.uid)
+        .whenComplete(() {
+      Get.offNamed('/home');
+    });
   }
 
 }

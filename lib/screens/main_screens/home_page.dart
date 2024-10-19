@@ -10,6 +10,7 @@ import '../../constants/constants.dart';
 import '../../controller/group_controller/group_controller.dart';
 import '../../controller/user_controller/user_controller.dart';
 import '../../functions/string_cases.dart';
+import '../../helper/encryption/encrypt_string.dart';
 import '../../utils/notfound.dart';
 import '../../utils/text_boxes/text_box_decoration.dart';
 import '../widgets/tiles/custom_group_tile.dart';
@@ -38,7 +39,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void dispose() {
-    _popUpDialogController.removeListener(() {});
     _popUpDialogController.dispose();
     groupNameController.dispose();
     groupPasswordController.dispose();
@@ -117,7 +117,7 @@ class _HomePageState extends State<HomePage> {
             groupId: splitByUnderscore(groupId)[0],
             groupName: groupInfo.length > 1 ? groupInfo[1].trim() : '',
             admin: splitByUnderscore(groupId)[1],
-            password: groupInfo.length > 2 ? groupInfo[2] : null,
+            isPublic: groupInfo[2]=='true'? true : false,
           );
         },
       );
@@ -132,11 +132,9 @@ class _HomePageState extends State<HomePage> {
         builder: (context) {
           return StatefulBuilder(builder: ((context, setState) {
             _popUpDialogController.addListener(() {
-              if (mounted) {
                 setState(() {
                   privateToggler = _popUpDialogController.value;
                 });
-              }
             });
 
             return AlertDialog(
@@ -167,6 +165,7 @@ class _HomePageState extends State<HomePage> {
                       visible: privateToggler,
                       child: TextField(
                         controller: groupPasswordController,
+                        obscureText: true,
                         onChanged: (val) {
                           groupPassword = val;
                         },
@@ -178,6 +177,8 @@ class _HomePageState extends State<HomePage> {
                 actions: [
                   ElevatedButton(
                     onPressed: () {
+                      groupPasswordController.text = "";
+                      groupNameController.text = "";
                       Navigator.of(context).pop();
                     },
                     style: ElevatedButton.styleFrom(
@@ -225,35 +226,44 @@ class _HomePageState extends State<HomePage> {
 
 
   void createGroup() async {
-      if(groupNameController.text.trim() =="" || groupNameController.text.trim().length > 25){
-        acceptResultDialog(context, "", "group_names_valid_size".tr);
-        return;
-      }
-      if(groupNameController.text.trim().contains("_")){
-        acceptResultDialog(context, "", "group_name_unvalid_characters".tr);
-        return;
-      }
-      if(privateToggler && groupPasswordController.text.trim().length < 4){
+    String encryptedPassword = "";
+
+    if (groupNameController.text.trim().isEmpty || groupNameController.text.trim().length > 25) {
+      acceptResultDialog(context, "", "group_names_valid_size".tr);
+      return;
+    }
+
+    if (groupNameController.text.trim().contains("_")) {
+      acceptResultDialog(context, "", "group_name_unvalid_characters".tr);
+      return;
+    }
+
+    if (privateToggler) {
+      if (groupPasswordController.text.trim().length < 4) {
         acceptResultDialog(context, "", "private_group_is_selected".tr);
         return;
       }
-      CreateGroupDto newGroup = CreateGroupDto(
-          creatorId: FirebaseAuth.instance.currentUser!.uid,
-          groupName: groupName,
-          avatarImage: "",
-          isPublic: privateToggler,
-          groupPassword: groupPassword,
 
-      );
-      AddUserToGroupDto creator = AddUserToGroupDto(
-          userName: userName,
-          avatarImage: FirebaseAuth.instance.currentUser?.photoURL ?? "",
-          userRole: GroupUserRole.isCreator,
-      );
-      await GroupController().createNewGroup(newGroup, creator);
+      encryptedPassword = await EncryptionHelper.encryptPassword(groupPasswordController.text);
+    }
+    CreateGroupDto newGroup = CreateGroupDto(
+      creatorId: FirebaseAuth.instance.currentUser!.uid,
+      groupName: groupName,
+      avatarImage: "",
+      isPublic: !privateToggler,
+      groupPassword: encryptedPassword,
+    );
 
-      popDialog();
+    AddUserToGroupDto creator = AddUserToGroupDto(
+      userName: userName,
+      avatarImage: FirebaseAuth.instance.currentUser?.photoURL ?? "",
+      userRole: GroupUserRole.isCreator,
+    );
+    await GroupController().createNewGroup(newGroup, creator);
+
+    popDialog();
   }
+
 
 
 

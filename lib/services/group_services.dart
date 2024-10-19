@@ -43,11 +43,7 @@ class GroupServices {
       });
 
       DocumentReference udr = userCollection.doc(currentUser?.uid);
-      late String groupMember;
-
-      group.isPublic
-          ? groupMember = "${gdr.id}_${group.groupName}_${group.groupPassword}"
-          : groupMember = "${gdr.id}_${group.groupName}";
+      String groupMember = "${gdr.id}_${group.groupName}_${group.isPublic}";
 
       return await udr.update({
         "groupsId": FieldValue.arrayUnion([groupMember])
@@ -88,7 +84,7 @@ class GroupServices {
       DocumentReference udr = userCollection.doc(currentUser?.uid);
 
       await udr.update({
-        "groupsId": FieldValue.arrayUnion(["${gdr.id}_${toggle.groupName}"])
+        "groupsId": FieldValue.arrayUnion(["${gdr.id}_${toggle.groupName}_${toggle.isPublic}"])
       });
 
       await gdr.update({

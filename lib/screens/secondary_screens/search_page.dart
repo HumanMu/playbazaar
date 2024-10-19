@@ -219,6 +219,7 @@ class _SearchPageState extends State<SearchPage> {
               groupId: searchedGroup['groupId'],
               groupName: capitalizeFirstLetter(searchedGroup['name']),
               userName: searchedGroup['creatorId'],
+              isPublic: searchedGroup['isPublic']
             );
             return searchGroupTile(addGroup, isMember, isPublic);
           }

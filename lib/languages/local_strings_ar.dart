@@ -72,7 +72,8 @@ class LocalStringsAr extends Translations {
       'private_group_is_selected' : 'لقد اخترت مجموعة خاصة، ويجب أن تحتوي المجموعة الخاصة على كلمة مرور لا تقل عن 4 أحرف',
       'you_became_a_member': 'لقد أصبحت عضوًا',
       'already_member': 'عضو بالفعل',
-
+      'not_group_member': 'أنت لست عضوًا في هذه المجموعة',
+      'group_not_found': 'تعذّر العثور على المجموعة',
 
 
       // Others

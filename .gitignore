@@ -72,5 +72,5 @@ ios/Runner/GeneratedPluginRegistrant.*
 .flutter_secret
 .flutter_plugins
 google-services.json
-.env
+assets/config/.env
 key.properties

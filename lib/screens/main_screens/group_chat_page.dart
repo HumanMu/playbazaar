@@ -89,7 +89,7 @@ class _GroupChatPageState extends State<GroupChatPage> {
             child: BannerAdWidget(),  // The BannerAd widget
           ),
           Expanded(
-            child: chatMessage(),
+            child: showMessages(),
           ),
           Container(
             alignment: Alignment.bottomCenter,
@@ -143,7 +143,7 @@ class _GroupChatPageState extends State<GroupChatPage> {
     );
   }
 
-  Widget chatMessage() {
+  Widget showMessages() {
     _messageController.listenToMessages(widget.chatId);
     return Obx(() {
       if (_messageController.messages.isEmpty) {

@@ -72,6 +72,8 @@ class LocalStringsEn extends Translations {
       'private_group_is_selected' : 'You have selected a private group, and a private group must have a password of at least 4 characters',
       'you_became_a_member': 'You have become a member',
       'already_member': 'Already a member',
+      'not_group_member': 'You are not a member of this group',
+      'group_not_found': 'The group could not be found',
 
 
       // Others

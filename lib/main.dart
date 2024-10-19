@@ -2,6 +2,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -29,11 +30,18 @@ import 'api/firestore/firestore_user.dart';
 import 'controller/user_controller/auth_controller.dart';
 import 'games/games/quiz/main_quiz_page.dart';
 import 'games/games/quiz/screens/review_question_page.dart';
+import 'helper/encryption/secure_key_storage.dart';
 import 'languages/local_strings.dart';
 import 'middleware/auth_guard.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: "assets/config/.env");
+  SecureKeyStorage secureStorage = SecureKeyStorage();
+  String key = dotenv.env['AES_KEY'] ?? '';
+  String iv = dotenv.env['AES_IV'] ?? '';
+  await secureStorage.storeKeys(key, iv);
+  
   var devices = [""];
   unawaited(MobileAds.instance.initialize());
   RequestConfiguration requestConfiguration = RequestConfiguration(
@@ -198,6 +206,7 @@ class PlayBazaar extends StatelessWidget {
                           chatId: args['chatId'],
                           chatName: args['chatName'],
                           adminName: args['adminName'],
+                          isPublic: args['isPublic'],
                         );
                       },
                     ),
