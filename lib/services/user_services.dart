@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
+import 'package:playbazaar/controller/user_controller/user_controller.dart';
 import '../constants/constants.dart';
 import '../functions/enum_converter.dart';
 import '../models/friend_model.dart';
@@ -100,7 +101,9 @@ class UserServices extends GetxService {
   }
 
   Future<bool> sendFriendRequest( FriendModel request) async {
+    final userController = Get.find<UserController>();
     String currentUserId = firebaseAuth.currentUser!.uid;
+
     if(currentUserId == ""){
       if (kDebugMode) {
         print("Current user not found");
@@ -117,6 +120,7 @@ class UserServices extends GetxService {
         'fullname': firebaseAuth.currentUser?.displayName?.toLowerCase() ??  "",
         'avatarImage': firebaseAuth.currentUser?.photoURL ?? "",
         'friendshipStatus': 'good',
+        'fcmToken': userController.userData.value?.fcmToken,
       });
       return true;
     }catch(e){
@@ -213,8 +217,21 @@ class UserServices extends GetxService {
   }
 
 
-
   Stream<UserModel?> getUserById(String userId) {
+    return userCollection.doc(userId).snapshots().map((doc) {
+      if (doc.exists) {
+        return UserModel.fromFirestore(doc);
+      } else {
+        if (kDebugMode) {
+          print("Document does not exist");
+        }
+        return null;
+      }
+    });
+  }
+
+
+  /*Stream<UserModel?> getUserById(String userId) {
     return userCollection.doc(userId).snapshots().map((doc) {
       if (doc.exists) {
         AccountCondition accountCondition = string2AccountCondition(doc['accountCondition']);
@@ -242,7 +259,7 @@ class UserServices extends GetxService {
         return null;
       }
     });
-  }
+  }*/
 
   Future<FriendModel?> getASingleFriendById(String currentUserId, String friendId) async {
     CollectionReference friendListRef = userCollection.doc(currentUserId).collection('friends');

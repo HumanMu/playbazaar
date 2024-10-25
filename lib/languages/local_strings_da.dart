@@ -220,7 +220,7 @@ class LocalStringsDa extends Translations {
       'policy_info_collection_description': 'Når du bruger Play Bazaar-appen, kan vi indsamle visse personlige oplysninger, herunder men ikke begrænset til dit navn, e-mailadresse og andre relevante oplysninger, der er nødvendige for kontooprettelse og app-funktionalitet. Alle indsamlede oplysninger opbevares sikkert i vores database, som er hostet på Firestore, en cloud-lagringstjeneste ejet og drevet af Google.',
 
       'policy_data_security_and_thirdparty_title' : 'Databeskyttelse og Tredjepartsadgang',
-      'policy_data_security_and_thirdparty_description_part1': 'Vi deler, sælger eller distribuerer ikke dine personlige oplysninger til tredjepartsvirksomheder. Dine data anvendes udelukkende til at give dig tjenester gennem Play Bazaar-appen.',
+      'policy_data_security_and_thirdparty_description_part1': 'Vi deler, sælger eller distribuerer ikke dine personlige oplysninger med nogen tredjepart. Dine oplysninger bruges kun til at levere tjenester gennem PlayBazaar-appen. Dine data gemmes på Firebases servere i Frankfurt, Tyskland.',
       'policy_data_security_and_thirdparty_description_part2': 'Selvom dine data opbevares i Firestore, som tilhører Google, giver dette ikke Google nogen rettigheder til at bruge dine personlige oplysninger til formål, der ikke er relateret til vores app. Google er ansvarlig for at opretholde sikkerheden af deres cloud-tjenester, og vi sikrer, at dine oplysninger er beskyttet i henhold til Googles strenge sikkerhedsforanstaltninger.',
 
       'policy_agreement_title' :  'Aftale om Politik',

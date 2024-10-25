@@ -1,6 +1,7 @@
 
 import 'dart:async';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
@@ -34,8 +35,17 @@ import 'helper/encryption/secure_key_storage.dart';
 import 'languages/local_strings.dart';
 import 'middleware/auth_guard.dart';
 
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  // Ensure Firebase is initialized
+  await Firebase.initializeApp();
+  print('Handling background message: ${message.notification?.title}');
+}
+
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
   await dotenv.load(fileName: "assets/config/.env");
   SecureKeyStorage secureStorage = SecureKeyStorage();
   String key = dotenv.env['AES_KEY'] ?? '';
@@ -47,12 +57,27 @@ Future<void> main() async {
   RequestConfiguration requestConfiguration = RequestConfiguration(
     testDeviceIds: devices
   ); // find test device id : https://www.youtube.com/watch?v=03FsQQUsj7I
-  await Firebase.initializeApp();
+
+
+  /*FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+  // Check if the app was launched by a notification (from a terminated state)
+  RemoteMessage? initialMessage = await FirebaseMessaging.instance.getInitialMessage();
+  if (initialMessage != null) {
+    // Handle the notification that opened the app
+    print('App opened from notification: ${initialMessage.notification?.title}');
+  }
+
+  await FirebaseMessaging.instance.getInitialMessage();
+  Get.put(NotificationController(), permanent: true);*/
+
+
   Get.put(AuthController(), permanent: true);
   Get.put(SettingsController(), permanent: true);
   Get.put(UserServices(), permanent: true);
   Get.put(PrivateMessageService(), permanent: true);
   Get.put(UserController(), permanent: true);
+
 
 
   runApp(

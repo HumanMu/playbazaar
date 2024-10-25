@@ -38,6 +38,8 @@ class UserController extends GetxController {
         listenToFriendRequests();
         listenToSentRequests();
         getFriendList(user.uid);
+        //Get.put(NotificationController());
+
 
         /*userServices.listenToFriendList(user.uid);
         userServices.listenToReceivedFriendRequests(user.uid);

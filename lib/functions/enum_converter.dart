@@ -8,6 +8,10 @@ UserRole string2UserRole(String s) {
   return role;
 }
 
+String userRole2String(UserRole ur){
+  return ur.toString().split('.').last;
+}
+
 AccountCondition string2AccountCondition(String s) {
   AccountCondition condition = AccountCondition.values.firstWhere(
         (e) => e.toString().split('.').last == s,

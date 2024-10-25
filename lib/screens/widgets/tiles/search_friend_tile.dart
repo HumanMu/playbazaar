@@ -73,7 +73,8 @@ class _SearchFriendTileState extends State<SearchFriendTile> {
             fullname: widget.searchData.fullname,
             avatarImage: "",
             friendshipStatus: FriendshipStatus.good,
-            chatId: ''
+            chatId: '',
+            fcmToken: widget.searchData.fcmToken,
           );
 
           await userController.sendFriendRequest(friendRequest, widget.index);
