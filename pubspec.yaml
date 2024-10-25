@@ -52,6 +52,8 @@ dependencies:
   cupertino_icons: ^1.0.8 # for ios style icons and fonts
   google_mobile_ads: ^5.2.0
   flutter_secure_storage: ^9.2.2
+  googleapis: ^13.2.0
+  googleapis_auth: ^1.6.0
 
 
 

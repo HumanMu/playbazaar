@@ -1,6 +1,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../constants/constants.dart';
+import '../functions/enum_converter.dart';
 
 
 class UserModel {
@@ -17,6 +18,7 @@ class UserModel {
   Timestamp? lastUpdated;
   String? availabilityState;
   List<String>? groupsId;
+  String? fcmToken;
 
   UserModel({
     required this.uid,
@@ -32,20 +34,13 @@ class UserModel {
     this.timestamp,
     this.availabilityState,
     this.groupsId,
+    this.fcmToken
   });
 
   factory UserModel.fromFirestore(DocumentSnapshot snapshot) {
     String roleString = snapshot.get('role') as String? ?? 'normal';
-    UserRole role = UserRole.values.firstWhere(
-          (e) => e.toString().split('.').last == roleString,
-      orElse: () => UserRole.normal,
-    );
-
     String conditiontring = snapshot.get('accountCondition') as String? ?? 'good';
-    AccountCondition condition = AccountCondition.values.firstWhere(
-          (e) => e.toString().split('.').last == conditiontring,
-      orElse: () => AccountCondition.good,
-    );
+
 
     return UserModel(
       uid: snapshot.get('uid') as String,
@@ -57,10 +52,11 @@ class UserModel {
       avatarImage: snapshot.get('avatarImage') as String?,
       timestamp: snapshot.get('timestamp') as Timestamp?,
       lastUpdated: snapshot.get('lastUpdated') as Timestamp?,
-      availabilityState: snapshot.get('availabilityStatus') as String?,
-      accountCondition: condition,
+      availabilityState: snapshot.get('availabilityState') as String?,
+      accountCondition: string2AccountCondition(conditiontring),
       groupsId: List<String>.from(snapshot.get('groupsId') ?? []),
-      role: role,
+      role: string2UserRole(roleString),
+      fcmToken: snapshot.get('fcmToken')
     );
   }
 
@@ -79,6 +75,7 @@ class UserModel {
       'accountCondition': accountCondition.name,
       'role': role.name,
       'groupsId': groupsId,
+      'fcmToken': fcmToken
     };
   }
 }

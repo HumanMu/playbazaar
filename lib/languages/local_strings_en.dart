@@ -215,7 +215,7 @@ class LocalStringsEn extends Translations {
       'policy_info_collection_description': 'When using the Play Bazaar app, we may collect certain personal information, including but not limited to your name, email address, and other relevant information necessary for account creation and app functionality. All collected information is securely stored in our database, which is hosted on Firestore, a cloud storage service owned and operated by Google.',
 
       'policy_data_security_and_thirdparty_title' : 'Data Security and Third-Party Access',
-      'policy_data_security_and_thirdparty_description_part1': 'We do not share, sell, or distribute your personal information to third-party companies. Your data is used solely to provide services to you through the Play Bazaar app.',
+      'policy_data_security_and_thirdparty_description_part1': 'We do not share, sell, or distribute your personal information with any third parties. Your information is used only to provide services through the PlayBazaar app. Your data is stored on Firebase servers in Frankfurt, Germany.',
       'policy_data_security_and_thirdparty_description_part2': 'While your data is stored on Firestore, owned by Google, this does not grant Google any rights to use your personal information for purposes unrelated to our app. Google is responsible for maintaining the security of its cloud services, and we ensure that your information is protected in accordance with Google’s strict security measures.',
 
       'policy_agreement_title' :  'Policy Agreement',

@@ -9,6 +9,7 @@ class FriendModel {
   String avatarImage;
   String chatId;
   FriendshipStatus friendshipStatus;
+  String? fcmToken;
 
   FriendModel({
     required this.uid,
@@ -16,6 +17,7 @@ class FriendModel {
     required this.avatarImage,
     required this.chatId,
     required this.friendshipStatus,
+    this.fcmToken,
   });
 
   Map<String, dynamic> toMap() {
@@ -25,6 +27,7 @@ class FriendModel {
       'avatarImage': avatarImage,
       'friendshipStatus': friendShipState2String(FriendshipStatus.good),
       'chatId': chatId,
+      'fcmToken': fcmToken
     };
   }
 
@@ -37,6 +40,7 @@ class FriendModel {
       avatarImage: user['avatarImage'],
       friendshipStatus: friendStat,
       chatId: user['chatId'] ?? "",
+      fcmToken: 'fcmToken',
     );
   }
 }

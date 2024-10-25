@@ -191,6 +191,7 @@ class _SearchPageState extends State<SearchPage> {
               foreignId: searched['uid'],
               fullname: searched['fullname'],
               requestStatus: friendStatus,
+              fcmToken: searched['fcmToken']
             );
 
             return SearchFriendTile(searchData: searchedResult, index: index);
