@@ -75,3 +75,7 @@ google-services.json
 assets/config/.env
 push_notification_key.dart
 key.properties
+
+# cloud functions
+functions/package.json
+Wrote push-notification/.eslintrc.js

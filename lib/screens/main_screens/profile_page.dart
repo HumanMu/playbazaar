@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../api/Authentication/auth_service.dart';
 import '../../controller/user_controller/user_controller.dart';
-import '../../helper/sharedpreferences/sharedpreferences.dart';
 import '../../languages/custom_language.dart';
 import '../widgets/sidebar_drawer.dart';
 import '../widgets/text_boxes/text_inputs.dart';
@@ -37,7 +36,6 @@ class _ProfilePage extends State<ProfilePage> {
 
 
   getUserLoggedInState() async {
-    bool? val = await SharedPreferencesManager.getBool(SharedPreferencesKeys.userLoggedInKey);
     if (user != null) {
       setState(() {
         isSignedIn = true;
@@ -129,11 +127,11 @@ class _ProfilePage extends State<ProfilePage> {
                         children: [
                           CustomTextInputs(
                               description: "name".tr,
-                              value: user?.displayName ??"" //userProfileModel.fullname ??"",
+                              value: user?.displayName ??""
                           ),
                           CustomTextInputs(
                               description: "email".tr,
-                              value: user?.email ??"" //userProfileModel.email,
+                              value: user?.email ??""
                           ),
                           CustomTextInputs(
                               description: "points".tr,

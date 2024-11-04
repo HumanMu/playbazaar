@@ -2,11 +2,14 @@ import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../api/services/firestore_services.dart';
 import '../../utils/show_custom_snackbar.dart';
+import '../../helper/sharedpreferences/sharedpreferences.dart';
 
 
 class AccountController extends GetxController {
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   RxBool isLoading = false.obs;
+
+
 
   Future<bool> registerUser(String fullname, String email, String password) async {
     isLoading.value = true;
@@ -61,6 +64,8 @@ class AccountController extends GetxController {
       );
 
       if (userCredential.user != null) {
+        //bool permissionResult = await _deviceTokenService.requestLocationPermission();
+        await SharedPreferencesManager.setBool(SharedPreferencesKeys.userLoggedInKey, true);
         Get.offNamed('/profile');
       }
 

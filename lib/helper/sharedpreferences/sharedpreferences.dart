@@ -67,7 +67,11 @@ class SharedPreferencesKeys {
   static const String userPointKey = "USERPOINTKEY";
   static const String userRoleKey = "USERROLE";
   static const String userCoinsKey = "USERCOINSKEY";
+  static const String friendRequestNotificationsKey = "FRIENDREQUESTNOTIFICATIONS";
+  static const String messageNotificationsKey = "MESSAGENOTIFICATIONKEY";
+  static const String playBazaarNotificationsKey = "PLAYBAZAARNOTIFICATIONSKEY";
 
   // Settings
   static const String buttonSounds = "BUTTONSOUNDS";
 }
+

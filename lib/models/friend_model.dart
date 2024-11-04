@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:playbazaar/functions/enum_converter.dart';
 
-import '../constants/constants.dart';
+import '../constants/enums.dart';
 
 class FriendModel {
   String uid;
@@ -9,7 +9,6 @@ class FriendModel {
   String avatarImage;
   String chatId;
   FriendshipStatus friendshipStatus;
-  String? fcmToken;
 
   FriendModel({
     required this.uid,
@@ -17,7 +16,6 @@ class FriendModel {
     required this.avatarImage,
     required this.chatId,
     required this.friendshipStatus,
-    this.fcmToken,
   });
 
   Map<String, dynamic> toMap() {
@@ -27,7 +25,6 @@ class FriendModel {
       'avatarImage': avatarImage,
       'friendshipStatus': friendShipState2String(FriendshipStatus.good),
       'chatId': chatId,
-      'fcmToken': fcmToken
     };
   }
 
@@ -40,7 +37,6 @@ class FriendModel {
       avatarImage: user['avatarImage'],
       friendshipStatus: friendStat,
       chatId: user['chatId'] ?? "",
-      fcmToken: 'fcmToken',
     );
   }
 }

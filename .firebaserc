@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "play-bazaar-3b575"
-  }
+    "default": "play-bazaar-142bc"
+  },
+  "targets": {},
+  "etags": {}
 }

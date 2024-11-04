@@ -116,13 +116,16 @@ class LocalStringsDa extends Translations {
       'search_not_found': 'Kunne ikke finde nogen data med det søgeparameter',
       'details': 'Detaljer',
       'select' : 'Vælg',
-
+      'sounds': 'Lyde',
 
 
 
       // friends
       'friends': 'Venner',
       'empty_friend_list': 'Du har endnu ingen venner',
+      'friend_request': 'Venneanmodning',
+      'friends_messages': 'Besked fra venner',
+
 
 
       // Buttons
@@ -156,6 +159,17 @@ class LocalStringsDa extends Translations {
       'settings': 'Indstillinger',
 
 
+      // Notifcation - generall
+      'notification': 'Notifikation',
+      'notifications': 'Notifikationer',
+      'question_added': 'Dit spørgsmål blev tilføjet succesfuldt',
+      'question_added_to_quiz': 'Spørgsmål tilføjet succesfuldt',
+      'quetion_added_title': 'Succesfuld',
+      'fill_all_input': 'Alle felter relateret til spørgsmål og svar skal udfyldes',
+      'fill_all_input_title': 'Send Spørgsmål',
+
+
+
       //Message
       'leaving_group': 'Er du sikker på, at du vil forlade gruppen?',
       'leaving_group_succed': 'Du har forladt gruppen succesfuldt',
@@ -172,6 +186,8 @@ class LocalStringsDa extends Translations {
       'name_is_required': 'Navn er påkrævet',
       'approved_friend_request': 'Tilføjet til din venneliste',
       'declined_friend_request': 'Afslået venneanmodning',
+      'received_friend_request_body': 'Du har modtaget en venneanmodning fra',
+      'received_friend_request_title': 'Ny venneanmodning',
       'removed_from_friends': 'blev fjernet fra din venneliste',
       'something_went_wrong': 'Noget gik galt, prøv venligst igen',
       'wrong_group_password': 'Den angivne adgangskode var ugyldig',
@@ -199,15 +215,8 @@ class LocalStringsDa extends Translations {
       'allowed_message_length_1000' : 'Venligst begræns din besked til under 1000 tegn',
       'allowed_message_length_300' : 'Venligst begræns din besked til under 300 tegn',
       'current_message_length' : 'Nuværende beskedlængde',
-
-
-
-      // Notifcation
-      'question_added': 'Dit spørgsmål blev tilføjet succesfuldt',
-      'question_added_to_quiz': 'Spørgsmål tilføjet succesfuldt',
-      'quetion_added_title': 'Succesfuld',
-      'fill_all_input': 'Alle felter relateret til spørgsmål og svar skal udfyldes',
-      'fill_all_input_title': 'Send Spørgsmål',
+      'chat_creation_failed': 'Oprettelse af chat mislykkedes',
+      'failed_to_accept_friend_request': 'Kunne ikke acceptere venneanmodning',
 
 
 

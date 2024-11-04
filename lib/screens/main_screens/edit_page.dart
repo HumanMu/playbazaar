@@ -2,10 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:playbazaar/api/firestore/firestore_user.dart';
+import 'package:playbazaar/controller/user_controller/user_controller.dart';
 import 'package:playbazaar/utils/show_custom_snackbar.dart';
 import '../../api/Authentication/auth_service.dart';
-import '../../helper/sharedpreferences/sharedpreferences.dart';
-import '../../models/user_model.dart';
+import '../../models/DTO/user_profile_dto.dart';
 import '../widgets/text_boxes/text_inputs.dart';
 
 
@@ -18,6 +18,7 @@ class EditPage extends StatefulWidget {
 }
 
 class _EditPage extends State<EditPage> {
+  final UserController userController = Get.find<UserController>();
   AuthService authService = AuthService();
   late UserProfileModel userProfileModel;
   late TextEditingController fullnameCon;
@@ -31,21 +32,14 @@ class _EditPage extends State<EditPage> {
   }
 
   void fetchData() async {
-    final email = await SharedPreferencesManager.getString(SharedPreferencesKeys.userEmailKey) ?? "";
-    //final firstname = await SharedPreferencesManager.getString(SharedPreferencesKeys.userNameKey) ?? "";
-    //final lastname = await SharedPreferencesManager.getString(SharedPreferencesKeys.userLastNameKey) ?? "";
-    final aboutme = await SharedPreferencesManager.getString(SharedPreferencesKeys.userAboutMeKey) ?? "";
-    final userPoint = await SharedPreferencesManager.getInt(SharedPreferencesKeys.userPointKey) ?? 0;
-
     setState(() {
       userProfileModel = UserProfileModel(
-          email: email,
+          email: userController.userData.value!.email,
           fullname: authService.firebaseAuth.currentUser?.displayName,
-          aboutMe: aboutme,
-          userPoint: userPoint
+          aboutMe: userController.userData.value?.aboutme,
+          userPoint: userController.userData.value?.userPoints,
       );
 
-      // Initialize the TextEditingControllers with user data
       fullnameCon = TextEditingController(text: userProfileModel.fullname);
       aboutCon = TextEditingController(text: userProfileModel.aboutMe);
 
@@ -187,8 +181,6 @@ class _EditPage extends State<EditPage> {
             displayName: fullnameCon.text.trim(),
             photoURL: "",
           );
-          await SharedPreferencesManager.setString(SharedPreferencesKeys.userNameKey, fullnameCon.text.trim());
-          await SharedPreferencesManager.setString(SharedPreferencesKeys.userAboutMeKey, aboutCon.text.trim());
           showCustomSnackbar('your_changes_succed'.tr, true);
 
         } catch (e) {

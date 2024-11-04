@@ -4,7 +4,6 @@ import '../../../constants/constants.dart';
 
 Future<Map<String, dynamic>> getQuizLanguage() async {
   List<String>? value = await SharedPreferencesManager.getStringList(SharedPreferencesKeys.appLanguageKey);
-
   List<String> quizPath;
   int quizLength;
   List<String> quizNames;
@@ -51,4 +50,6 @@ Future<Map<String, dynamic>> getQuizLanguage() async {
     'quizNames': quizNames,
   };
 }
+
+
 

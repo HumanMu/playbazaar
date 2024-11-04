@@ -4,6 +4,8 @@ import '../../api/firestore/firestore_user.dart';
 import '../../helper/sharedpreferences/sharedpreferences.dart';
 import '../../utils/show_custom_snackbar.dart';
 
+
+
 class AuthController extends GetxController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   var isSignedIn = false.obs;
@@ -81,14 +83,6 @@ class AuthController extends GetxController {
   Future logOutUser() async{
     try {
       await SharedPreferencesManager.setBool(SharedPreferencesKeys.userLoggedInKey, false);
-      await SharedPreferencesManager.setString(SharedPreferencesKeys.userNameKey, "");
-      await SharedPreferencesManager.setString(SharedPreferencesKeys.userLastNameKey, "");
-      await SharedPreferencesManager.setString(SharedPreferencesKeys.userEmailKey, "");
-      await SharedPreferencesManager.setString(SharedPreferencesKeys.userAboutMeKey, "");
-      await SharedPreferencesManager.setString(SharedPreferencesKeys.userRoleKey,"");
-      await SharedPreferencesManager.setDouble(SharedPreferencesKeys.userPointKey, 0);
-      await SharedPreferencesManager.setInt(SharedPreferencesKeys.userCoinsKey, 0);
-
       await FirebaseAuth.instance.signOut();
       isSignedIn.value = false;
       isEmailVerified.value = false;

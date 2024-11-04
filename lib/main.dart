@@ -1,7 +1,6 @@
 
 import 'dart:async';
-
-import 'package:firebase_messaging/firebase_messaging.dart';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
@@ -23,7 +22,7 @@ import 'package:playbazaar/screens/secondary_screens/policy_page.dart';
 import 'package:playbazaar/screens/secondary_screens/friends_list.dart';
 import 'package:playbazaar/screens/secondary_screens/reset_password_page.dart';
 import 'package:playbazaar/screens/secondary_screens/search_page.dart';
-import 'package:playbazaar/screens/secondary_screens/settings.dart';
+import 'package:playbazaar/screens/secondary_screens/settings_page.dart';
 import 'package:playbazaar/services/private_message_service.dart';
 import 'package:playbazaar/services/user_services.dart';
 import 'package:provider/provider.dart';
@@ -34,51 +33,43 @@ import 'games/games/quiz/screens/review_question_page.dart';
 import 'helper/encryption/secure_key_storage.dart';
 import 'languages/local_strings.dart';
 import 'middleware/auth_guard.dart';
-
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  // Ensure Firebase is initialized
-  await Firebase.initializeApp();
-  print('Handling background message: ${message.notification?.title}');
-}
+import 'package:playbazaar/services/push_notification_service/push_notification_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  final notificationService = NotificationService();
+  await notificationService.init();
+
 
   await dotenv.load(fileName: "assets/config/.env");
   SecureKeyStorage secureStorage = SecureKeyStorage();
   String key = dotenv.env['AES_KEY'] ?? '';
   String iv = dotenv.env['AES_IV'] ?? '';
   await secureStorage.storeKeys(key, iv);
-  
+
+
+  if(Platform.isAndroid){
+    /*SystemChrome.setEnabledSystemUIMode(
+      SystemUiMode.manual,
+      overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
+    );*/
+
+  }
   var devices = [""];
   unawaited(MobileAds.instance.initialize());
   RequestConfiguration requestConfiguration = RequestConfiguration(
-    testDeviceIds: devices
-  ); // find test device id : https://www.youtube.com/watch?v=03FsQQUsj7I
-
-
-  /*FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-
-  // Check if the app was launched by a notification (from a terminated state)
-  RemoteMessage? initialMessage = await FirebaseMessaging.instance.getInitialMessage();
-  if (initialMessage != null) {
-    // Handle the notification that opened the app
-    print('App opened from notification: ${initialMessage.notification?.title}');
-  }
-
-  await FirebaseMessaging.instance.getInitialMessage();
-  Get.put(NotificationController(), permanent: true);*/
-
+      testDeviceIds: devices
+  );
 
   Get.put(AuthController(), permanent: true);
   Get.put(SettingsController(), permanent: true);
   Get.put(UserServices(), permanent: true);
   Get.put(PrivateMessageService(), permanent: true);
   Get.put(UserController(), permanent: true);
-
-
 
   runApp(
     ChangeNotifierProvider(
@@ -88,8 +79,40 @@ Future<void> main() async {
   );
 }
 
-class PlayBazaar extends StatelessWidget {
+class PlayBazaar extends StatefulWidget {
   const PlayBazaar({super.key});
+
+  @override
+  State<PlayBazaar> createState() => _PlayBazaarState();
+}
+
+class _PlayBazaarState extends State<PlayBazaar> {
+  String? _initialRoute;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkNotificationLaunch();
+  }
+
+  Future<void> _checkNotificationLaunch() async {
+    // First check if app was launched from notification
+    final notificationAppLaunch = await FlutterLocalNotificationsPlugin()
+        .getNotificationAppLaunchDetails();
+
+    // Only proceed if app was launched from notification
+    if (notificationAppLaunch != null &&
+        notificationAppLaunch.didNotificationLaunchApp) {
+      final prefs = await SharedPreferences.getInstance();
+      final pendingRoute = prefs.getString('pending_notification_route');
+      if (pendingRoute != null) {
+        setState(() {
+          _initialRoute = pendingRoute;
+        });
+        await prefs.remove('pending_notification_route');
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -100,15 +123,9 @@ class PlayBazaar extends StatelessWidget {
     return GetBuilder<AuthController>(
         init: authController,
         builder: (controller) {
-          if (!controller.isInitialized.value || controller.language.isEmpty) {
-            return const MaterialApp(
-              debugShowCheckedModeBanner: false,
-              home: Scaffold(
-                body: Center(child: CircularProgressIndicator()),
-              ),
-            );
-          }
-          if(!userController.isInitialized.value){
+          if (!controller.isInitialized.value ||
+              controller.language.isEmpty ||
+              !userController.isInitialized.value) {
             return const MaterialApp(
               debugShowCheckedModeBanner: false,
               home: Scaffold(
@@ -130,13 +147,15 @@ class PlayBazaar extends StatelessWidget {
                 }
 
                 final locale = Locale(
-                    controller.language[0], controller.language[1]);
-
+                    controller.language[0],
+                    controller.language[1]
+                );
                 return GetMaterialApp(
                   debugShowCheckedModeBanner: false,
                   translations: LocalStrings(),
                   locale: locale,
-                  initialRoute: '/profile',
+                  initialRoute: _initialRoute ?? '/profile',
+
                   getPages: [
                     GetPage(
                         name: '/login',
@@ -189,7 +208,7 @@ class PlayBazaar extends StatelessWidget {
                     ),
                     GetPage(
                         name: '/settings',
-                        page: () => Settings()
+                        page: () => SettingsPage()
                     ),
                     GetPage(
                       name: '/search',
@@ -236,9 +255,17 @@ class PlayBazaar extends StatelessWidget {
                       },
                     ),
                   ],
+                  navigatorKey: Get.key,
+                  onReady: () {
+                    // Clear any stored routes to prevent unwanted navigation like notification navigation
+                    SharedPreferences.getInstance().then((prefs) {
+                      prefs.remove('pending_notification_route');
+                    });
+                  },
                 );
               }
           );
         });
   }
 }
+

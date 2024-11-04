@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../api/Authentication/auth_service.dart';
-import '../../api/firestore/firestore_user.dart';
 import '../../controller/user_controller/auth_controller.dart';
 import '../../helper/sharedpreferences/sharedpreferences.dart';
 import 'avatars/primary_avatar.dart';
@@ -31,7 +30,7 @@ class SidebarDrawerState extends State<SidebarDrawer> {
   @override
   void initState() {
     super.initState();
-    getFriendRequestsLength();
+    //getFriendRequestsLength();
   }
 
   getUserData() async {
@@ -56,10 +55,10 @@ class SidebarDrawerState extends State<SidebarDrawer> {
     Get.offAllNamed('/login');
   }
 
-  getFriendRequestsLength() async {
+  /*getFriendRequestsLength() async {
     friendRequestLength =
         await FirestoreUser(userId: currentUserId).getFriendRequestsLength();
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -92,8 +91,6 @@ class SidebarDrawerState extends State<SidebarDrawer> {
                 iconColor: Colors.red,
                 title: "my_friends".tr,
                 icon: Icons.group,
-                length: friendRequestLength,
-                hasFriends: true,
                 action: ()=> navigateTo('friendsList'),
               ),
               ListTileWidget(

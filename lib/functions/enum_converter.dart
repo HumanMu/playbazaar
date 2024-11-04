@@ -1,4 +1,4 @@
-import '../constants/constants.dart';
+import '../constants/enums.dart';
 
 UserRole string2UserRole(String s) {
   UserRole role = UserRole.values.firstWhere(

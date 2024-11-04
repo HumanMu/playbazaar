@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:playbazaar/constants/constants.dart';
+import 'package:playbazaar/constants/enums.dart';
 import 'package:playbazaar/controller/user_controller/user_controller.dart';
 import '../../../functions/string_cases.dart';
 import '../../../models/DTO/search_friend_dto.dart';
@@ -74,7 +74,6 @@ class _SearchFriendTileState extends State<SearchFriendTile> {
             avatarImage: "",
             friendshipStatus: FriendshipStatus.good,
             chatId: '',
-            fcmToken: widget.searchData.fcmToken,
           );
 
           await userController.sendFriendRequest(friendRequest, widget.index);

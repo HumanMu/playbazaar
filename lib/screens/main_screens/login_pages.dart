@@ -18,6 +18,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPage extends State<LoginPage> {
   final AccountController accountController = Get.put(AccountController());
+
   final formKey = GlobalKey<FormState>();
   AuthService authService = AuthService();
   String name = "";

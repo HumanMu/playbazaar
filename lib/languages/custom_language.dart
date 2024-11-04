@@ -28,7 +28,6 @@ class CustomLanguage extends StatelessWidget {
   }
 
   Future<void> saveLanguage(Locale locale) async {
-    //await SharedPreferencesFunctions.setAppLanguageSP([locale.languageCode, locale.countryCode ?? '']);
     await SharedPreferencesManager.setStringList(
         SharedPreferencesKeys.appLanguageKey,
         [locale.languageCode, locale.countryCode ?? '']

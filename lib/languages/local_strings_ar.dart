@@ -110,17 +110,22 @@ class LocalStringsAr extends Translations {
       'no_description': 'لا يوجد وصف',
       'path': 'طلب الإضافة إلى',
       'request_cancelled': 'تم إلغاء الطلب',
+      'search_not_found': 'تعذّر العثور على أي بيانات تطابق معلمة البحث هذه',
       'details': 'التفاصيل',
       'select' : 'اختر',
+      'sounds': 'أصوات',
+
       'awaiting_response': 'في انتظار الرد',
       'approve_request': 'قبول الطلب',
       'request_sent': 'تم إرسال الطلب',
-      'search_not_found': 'تعذّر العثور على أي بيانات تطابق معلمة البحث هذه',
 
 
       // friends
       'friends': 'الأصدقاء',
       'empty_friend_list': 'ليس لديك أي أصدقاء بعد',
+      'friend_request': 'طلب صداقة',
+      'friends_messages': 'رسالة من الأصدقاء',
+
 
       // Buttons
       'btn_chats': 'الرسائل',
@@ -152,6 +157,17 @@ class LocalStringsAr extends Translations {
       'settings': 'الإعدادات',
 
 
+
+      // Notifcation - generall
+      'notification': 'اعلان',
+      'notifications': 'الإشعارات',
+      'question_added': 'تم إضافة سؤالك بنجاح',
+      'question_added_to_quiz': 'تم إضافة السؤال بنجاح',
+      'quetion_added_title': 'ناجح',
+      'fill_all_input': 'يجب ملء جميع الحقول المتعلقة بالأسئلة والأجوبة',
+      'fill_all_input_title': 'إرسال السؤال',
+
+
       //Message
       'leaving_group': 'هل أنت متأكد من مغادرة المجموعة؟',
       'leaving_group_succed': 'لقد غادرت المجموعة بنجاح',
@@ -168,6 +184,8 @@ class LocalStringsAr extends Translations {
       'name_is_required': 'الاسم مطلوب',
       'approved_friend_request': 'تمت الإضافة إلى قائمة أصدقائك',
       'declined_friend_request': 'تم رفض طلب الصداقة',
+      'received_friend_request_body': 'لقد تلقيت طلب صداقة من',
+      'received_friend_request_title': 'طلب صداقة جديد',
       'removed_from_friends': 'تمت إزالته من قائمة الأصدقاء الخاصة بك',
       'something_went_wrong': 'حدث خطأ ما، حاول مرة أخرى من فضلك',
       'wrong_group_password': 'كلمة المرور المقدمة غير صحيحة',
@@ -196,14 +214,8 @@ class LocalStringsAr extends Translations {
       'allowed_message_length_1000' : 'يرجى تحديد رسالتك بأقل من 1000 حرف',
       'allowed_message_length_300' : 'يرجى تحديد رسالتك بأقل من 300 حرف',
       'current_message_length' : 'طول الرسالة الحالي',
-
-
-      // Notifcation
-      'question_added': 'تم إضافة سؤالك بنجاح',
-      'question_added_to_quiz': 'تم إضافة السؤال بنجاح',
-      'quetion_added_title': 'ناجح',
-      'fill_all_input': 'يجب ملء جميع الحقول المتعلقة بالأسئلة والأجوبة',
-      'fill_all_input_title': 'إرسال السؤال',
+      'chat_creation_failed': 'فشل في إنشاء المحادثة',
+      'failed_to_accept_friend_request': 'فشل في قبول طلب الصداقة',
 
 
 

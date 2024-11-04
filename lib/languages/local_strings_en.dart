@@ -114,11 +114,14 @@ class LocalStringsEn extends Translations {
       'search_not_found': 'Could not find any data matching that search parameter',
       'details': 'Details',
       'select' : 'Select',
+      'sounds': 'Sounds',
 
 
       // friends
       'friends' : 'Friends',
       'empty_friend_list': 'You don’t have any friends yet',
+      'friend_request': 'Friend request',
+      'friends_messages': 'Message from friends',
 
       // Buttons
       'btn_chats' : 'Messages',
@@ -151,6 +154,18 @@ class LocalStringsEn extends Translations {
       // Settings
       'settings': 'Settings',
 
+
+      // Notifcation
+      'notification': 'Notification',
+      'notifications': 'Notifications',
+      'question_added' : 'Your question added successfully',
+      'question_added_to_quiz': 'Question added successfully',
+      'quetion_added_title': 'Successful',
+      'fill_all_input' : 'All fields related to the questions and answers must be filled out',
+      'fill_all_input_title': 'Sending Question',
+
+
+
       //Message
       'leaving_group': 'Are you sure about leaving the group?',
       'leaving_group_succed' : 'You left the group succesfully',
@@ -167,6 +182,8 @@ class LocalStringsEn extends Translations {
       'name_is_required' : 'Name is required',
       'approved_friend_request': 'Added to the list of your friend',
       'declined_friend_request' : 'Declined friend request',
+      'received_friend_request_body': 'You have received a friend request from',
+      'received_friend_request_title': 'New friend request',
       'removed_from_friends' : 'was removed from your friends list',
       'something_went_wrong' : 'Something went wrong, try again please',
       'wrong_group_password' : 'The password provided was invalid',
@@ -194,16 +211,10 @@ class LocalStringsEn extends Translations {
       'allowed_message_length_1000' : 'Please limit your message to under 1000 characters.',
       'allowed_message_length_300' : 'Please limit your message to under 300 characters.',
       'current_message_length' : 'Current message length',
+      'chat_creation_failed': 'Chat creation failed',
+      'failed_to_accept_friend_request': 'Failed to accept friend request',
 
 
-
-
-      // Notifcation
-      'question_added' : 'Your question added successfully',
-      'question_added_to_quiz': 'Question added successfully',
-      'quetion_added_title': 'Successful',
-      'fill_all_input' : 'All fields related to the questions and answers must be filled out',
-      'fill_all_input_title': 'Sending Question',
 
 
       //  Policy

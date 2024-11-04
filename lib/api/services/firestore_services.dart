@@ -1,9 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
-import 'package:playbazaar/functions/enum_converter.dart';
-import '../../constants/constants.dart';
+import '../../constants/enums.dart';
 import '../../models/user_model.dart';
-import '../repositories/user_repository.dart';
+import 'package:playbazaar/models/DTO/user_profile_dto.dart';
 
 class FirestoreServices extends ChangeNotifier {
   final CollectionReference userCollection
@@ -13,7 +12,6 @@ class FirestoreServices extends ChangeNotifier {
   final CollectionReference friendsCollection
   = FirebaseFirestore.instance.collection("friends");
 
-  final FirestoreRepository _repository = FirestoreRepository();
   late UserModel singleUser;
   final List<UserModel> userList = [];
 
@@ -68,100 +66,6 @@ class FirestoreServices extends ChangeNotifier {
       return false;
     }
   }
-
-
-
-
-  saveFriend(String userId, String friendId, String collectionName) async {
-    DocumentReference friendDocRef = userCollection.doc(friendId);
-    DocumentSnapshot friendDoc = await friendDocRef.get();
-
-    await userCollection.doc(userId).collection(collectionName)
-        .doc(friendId).set({
-      'uid': friendId,
-      'fullname': friendDoc['fullname'],
-      'email': friendDoc['email'],
-      'avatarImage': friendDoc['avatarImage'],
-      'timestamp': Timestamp.now(),
-      'availabilityState': friendDoc['availabilityState'],
-    });
-  }
-
-
-  Future<List<UserModel>> getUserByEmail(String? email) async {
-    List<UserModel> userList = [];
-
-    try {
-      QuerySnapshot snapshot = await _repository.getUserData(email);
-      if (snapshot.docs.isNotEmpty) {
-        userList = snapshot.docs.map((doc) {
-
-          UserRole ur = string2UserRole(doc['role']);
-          AccountCondition ac = string2AccountCondition(doc['accountCondition']);
-
-          return UserModel(
-            uid: doc['uid'],
-            email: doc['email'],
-            coins: doc['coins'],
-            fullname: doc['fullname'],
-            userPoints: doc['userpoints'],
-            aboutme: doc['aboutme'],
-            avatarImage: doc['avatarImage'],
-            timestamp: doc['timestamp'],
-            availabilityState: doc['availabilityState'],
-            accountCondition: ac,
-            groupsId: doc['groupsId'] ?? [],
-            role: ur,
-          );
-        }).toList();
-      }
-    } catch (e) {
-      if (kDebugMode) {
-        print("Error fetching user by email: $e");
-      }
-    }
-
-    return userList;
-  }
-
-
-
-  Future getUserById(String id) async {
-    QuerySnapshot snapshot = await _repository.getUserById(id);
-    if (snapshot.docs.isNotEmpty) {
-      singleUser = snapshot.docs.map((doc) {
-        String roleString = doc['role'] ?? 'normal';
-        UserRole role = UserRole.values.firstWhere(
-              (e) => e.toString().split('.').last == roleString,
-          orElse: () => UserRole.normal,
-        );
-
-        String accountConditionString = doc['role'] ?? 'good';
-        AccountCondition accountCondition = AccountCondition.values.firstWhere(
-              (e) => e.toString().split('.').last == accountConditionString,
-          orElse: () => AccountCondition.good,
-        );
-
-        return UserModel(
-          uid: doc['uid'],
-          email: doc['email'],
-          coins: doc['coins'],
-          fullname: doc['fullname'],
-          userPoints: doc['userpoints'],
-          aboutme: doc['aboutme'],
-          avatarImage: doc['avatarImage'],
-          timestamp: doc['timestamp'],
-          availabilityState: doc['availabilityState'],
-          accountCondition: accountCondition,
-          groupsId: doc['groupsId'] ?? [],
-          role: role,
-        );
-      }).single;
-    } else {
-      return;
-    }
-  }
-
 
 
 }

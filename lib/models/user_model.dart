@@ -1,6 +1,6 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../constants/constants.dart';
+import '../constants/enums.dart';
 import '../functions/enum_converter.dart';
 
 
@@ -18,7 +18,6 @@ class UserModel {
   Timestamp? lastUpdated;
   String? availabilityState;
   List<String>? groupsId;
-  String? fcmToken;
 
   UserModel({
     required this.uid,
@@ -34,7 +33,6 @@ class UserModel {
     this.timestamp,
     this.availabilityState,
     this.groupsId,
-    this.fcmToken
   });
 
   factory UserModel.fromFirestore(DocumentSnapshot snapshot) {
@@ -56,7 +54,6 @@ class UserModel {
       accountCondition: string2AccountCondition(conditiontring),
       groupsId: List<String>.from(snapshot.get('groupsId') ?? []),
       role: string2UserRole(roleString),
-      fcmToken: snapshot.get('fcmToken')
     );
   }
 
@@ -75,25 +72,12 @@ class UserModel {
       'accountCondition': accountCondition.name,
       'role': role.name,
       'groupsId': groupsId,
-      'fcmToken': fcmToken
     };
   }
 }
 
 
-class UserProfileModel {
-  final String email;
-  final String? fullname;
-  final String? aboutMe;
-  final int? userPoint;
 
-  UserProfileModel({
-    required this.email,
-    this.fullname,
-    this.aboutMe,
-    this.userPoint,
-  });
-}
 
 
 

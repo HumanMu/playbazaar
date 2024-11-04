@@ -113,6 +113,7 @@ class UserController extends GetxController {
         bool isFriend = friendList.any((friend) => friend.uid == searchedUserId);
         bool hasReceivedRequest = receivedFriendRequests.any((request) => request.uid == searchedUserId);
 
+
         // Assign friendship or request status based on the conditions
         user['friendStatus'] = isFriend
             ? "TheyAreFriends"

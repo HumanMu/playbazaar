@@ -6,7 +6,7 @@ import 'package:playbazaar/models/DTO/add_user_to_group_dto.dart';
 import 'package:playbazaar/models/DTO/create_group_dto.dart';
 import 'package:playbazaar/screens/widgets/dialogs/accept_result_dialog.dart';
 import '../../api/Authentication/auth_service.dart';
-import '../../constants/constants.dart';
+import '../../constants/enums.dart';
 import '../../controller/group_controller/group_controller.dart';
 import '../../controller/user_controller/user_controller.dart';
 import '../../functions/string_cases.dart';

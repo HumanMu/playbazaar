@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+import 'package:playbazaar/models/DTO/user_profile_dto.dart';
 import '../../models/user_model.dart';
 import '../services/firestore_services.dart';
 
@@ -13,12 +13,12 @@ class FirestoreUser extends ChangeNotifier {
   FirestoreUser({this.userId});
   final _db = FirebaseFirestore.instance;
 
-  List<UserModel> _userList = [];
+  //List<UserModel> _userList = [];
   late UserModel _singleUser;
   late bool _isEmailVerified = false;
   bool get isEmailVerified => _isEmailVerified;
 
-  List<UserModel> get multiUser => _userList;
+  //List<UserModel> get multiUser => _userList;
   UserModel get singleUser => _singleUser;
 
   // reference to the firestore collection
@@ -60,10 +60,10 @@ class FirestoreUser extends ChangeNotifier {
 
 
 
-  Future<void> getUserByEmail(String? email) async {
+  /*Future<void> getUserByEmail(String? email) async {
     _userList = await FirestoreServices().getUserByEmail(email);
     notifyListeners();
-  }
+  }*/
 
 
   getOnlineState(String availabilityState) async{
@@ -76,7 +76,7 @@ class FirestoreUser extends ChangeNotifier {
 
 
 
-  Future sendFriendRequest( String userId, String friendId) async {
+  /*Future sendFriendRequest( String userId, String friendId) async {
     DocumentReference userDocRef =
     userCollection.doc(friendId).collection('friendRequests').doc(userId);
     DocumentSnapshot docSnap = await userDocRef.get();
@@ -108,6 +108,6 @@ class FirestoreUser extends ChangeNotifier {
         .collection('massages').add(chatMessageData);
     await userCollection.doc(recieverId).collection('friends').doc(userId)
         .collection('massages').add(chatMessageData);
-  }
+  }*/
 
 }

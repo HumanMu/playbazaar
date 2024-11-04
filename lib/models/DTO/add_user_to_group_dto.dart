@@ -1,4 +1,4 @@
-import '../../constants/constants.dart';
+import '../../constants/enums.dart';
 import '../../functions/enum_converter.dart';
 
 class AddUserToGroupDto {

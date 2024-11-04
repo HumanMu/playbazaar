@@ -113,11 +113,14 @@ class LocalStringsFa extends Translations {
       'search_not_found': 'داده‌ای با این پارامتر جستجو یافت نشد',
       'details': 'جزئیات',
       'select' : 'انتخاب کنید',
+      'sounds': 'صداها',
 
 
       // Friends
       'friends' : 'دوست',
       'empty_friend_list': 'شما هنوز دوستی ندارید',
+      'friend_request': 'درخواست دوستی',
+      'friends_messages': 'پیام از طرف دوستان',
 
 
       // Buttons
@@ -154,6 +157,16 @@ class LocalStringsFa extends Translations {
       'settings': 'تنظیمات',
 
 
+      // Notifcation - generall
+      'notification': 'پیام',
+      'notifications' : 'پیامک ها',
+      'question_added' : 'سوال شما با موفقیت ثبت شد',
+      'question_added_to_quiz' : 'سوال با موفقیت ثبت شد',
+      'quetion_added_title': 'موفقیت',
+      'fill_all_input' : 'خانه که مربوط به سوال و جواب ها هست باید پر شود',
+      'fill_all_input_title': 'فرستادن سؤال',
+
+
       // Message
       'leaving_group': 'مطمئن هستی از اینکه گروه را ترک میکنی؟',
       'leaving_group_succed' : 'با موفقیت از گروه خارج شدی',
@@ -170,6 +183,8 @@ class LocalStringsFa extends Translations {
       'name_is_required' : 'وارد کردن نام ضروری است!',
       'approved_friend_request': 'درخواست دوستی شما پذیرفته شد ',
       'declined_friend_request' : 'درخواست دستی شما را رد کرد',
+      'received_friend_request_body': 'دریافت درخواست جدید از طرف',
+      'received_friend_request_title': 'درخواست دوستی جدید',
       'removed_from_friends' : 'از لیست دوستان شما حذف شد',
       'something_went_wrong' : 'خطایی رخ داد, لطفا دوباره تلاش کنید',
       'wrong_group_password' : 'رمز را که وارد کردید اشتباه بود!',
@@ -197,13 +212,8 @@ class LocalStringsFa extends Translations {
       'allowed_message_length_1000' : 'لطفاً پیام خود را به کمتر از ۱۰۰۰ کاراکتر محدود کنید',
       'allowed_message_length_300' : 'لطفاً پیام خود را به کمتر از ۳۰۰ کاراکتر محدود کنید',
       'current_message_length' : 'طول فعلی پیام',
-
-      // Notifcation
-      'question_added' : 'سوال شما با موفقیت ثبت شد',
-      'question_added_to_quiz' : 'سوال با موفقیت ثبت شد',
-      'quetion_added_title': 'موفقیت',
-      'fill_all_input' : 'خانه که مربوط به سوال و جواب ها هست باید پر شود',
-      'fill_all_input_title': 'فرستادن سؤال',
+      'chat_creation_failed': 'ایجاد چت ناموفق بود',
+      'failed_to_accept_friend_request': 'قبول درخواست دوستی ناموفق بود',
 
 
 

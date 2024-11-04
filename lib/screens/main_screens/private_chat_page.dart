@@ -7,6 +7,7 @@ import 'package:playbazaar/utils/show_custom_snackbar.dart';
 import '../../admob/banner_ad.dart';
 import '../../models/private_message_model.dart';
 import '../widgets/cards/message_tile.dart';
+import 'package:playbazaar/services/push_notification_service/push_notification_service.dart';
 
 class PrivateChatPage extends StatefulWidget {
   final String chatId;
@@ -42,18 +43,21 @@ class _PrivateChatPageState extends State<PrivateChatPage> {
     super.initState();
     Get.create(() => PrivateMessageController());
     controller = Get.find<PrivateMessageController>();
-
     _scrollController = ScrollController();
     controller.loadMessages(widget.chatId);
     ever(controller.messages, (_) => scrollToBottom());
+    NotificationService().activeChatWithUser(widget.recieverId);
   }
 
   @override
   void dispose() {
     messageBox.dispose();
     Get.delete<PrivateMessageController>();
+    NotificationService().endChat();
     super.dispose();
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -148,7 +152,7 @@ class _PrivateChatPageState extends State<PrivateChatPage> {
           return MessageTile(
             message: message.text,
             sender: message.senderName,
-            sendByMe: message.senderId == currentUserId? true: false,
+            sendByMe: message.recipientId == currentUserId? true: false,
           );
         },
       );
@@ -161,8 +165,8 @@ class _PrivateChatPageState extends State<PrivateChatPage> {
   sendPrivateMessage() {
       if(isMessageLengthAllowed()){
         PrivateMessage newMessage = PrivateMessage(
-            messageId: '',
             senderId: currentUserId!,
+            recipientId: widget.recieverId,
             senderName: splitBySpace(currentUserName)[0],
             text: messageBox.text,
             timestamp: DateTime.now(),
