@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:playbazaar/services/push_notification_service/device_service.dart';
 import '../../api/services/firestore_services.dart';
 import '../../utils/show_custom_snackbar.dart';
 import '../../helper/sharedpreferences/sharedpreferences.dart';
@@ -7,6 +8,7 @@ import '../../helper/sharedpreferences/sharedpreferences.dart';
 
 class AccountController extends GetxController {
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+
   RxBool isLoading = false.obs;
 
 
@@ -37,11 +39,12 @@ class AccountController extends GetxController {
       }
 
       await user.sendEmailVerification();
+      await DeviceService().registerDevice();
+
       showCustomSnackbar('verification_email_sent'.tr, true, timing: 7);
       Get.offAllNamed('/emailVerification');
       showCustomSnackbar("registration_succed".tr, true);
       return true;
-
     } on FirebaseAuthException catch (e) {
       _handleFirebaseAuthException(e);
       return false;
@@ -66,6 +69,7 @@ class AccountController extends GetxController {
       if (userCredential.user != null) {
         //bool permissionResult = await _deviceTokenService.requestLocationPermission();
         await SharedPreferencesManager.setBool(SharedPreferencesKeys.userLoggedInKey, true);
+        await DeviceService().handleDeviceNotificationOnLogin();
         Get.offNamed('/profile');
       }
 

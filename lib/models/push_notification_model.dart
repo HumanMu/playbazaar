@@ -2,15 +2,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PushNotificationModel {
-  String? fcmToken;
-  String deviceId;
-  bool fcmFriendRequest;
-  bool fcmNewMessages;
-  bool fcmPlayBazaar;
-  Timestamp? lastUpdate;
+  final String? fcmToken;
+  final bool isActive; // The specifikke enhed
+  final String deviceId;
+  final bool fcmFriendRequest;
+  final bool fcmNewMessages;
+  final bool fcmPlayBazaar;
+  final Timestamp? lastUpdate;
 
   PushNotificationModel({
     this.fcmToken,
+    required this.isActive,
     required this.deviceId,
     required this.fcmFriendRequest,
     required this.fcmNewMessages,
@@ -21,17 +23,19 @@ class PushNotificationModel {
   Map<String, dynamic> toFirestore() {
     return {
       'fcmToken': fcmToken,
+      'isActive' : isActive,
       'deviceId': deviceId,
       'fcmFriendRequest': fcmFriendRequest,
       'fcmNewMessages' : fcmNewMessages,
       'fcmPlayBazaar' : fcmPlayBazaar,
-      'lastLoginTime': lastUpdate,
+      'lastUpdate': lastUpdate,
     };
   }
 
   factory PushNotificationModel.fromFirestore(Map<String, dynamic> map) {
     return PushNotificationModel(
       fcmToken: map['fcmToken'] as String?,
+      isActive: map['isActive'] as bool,
       deviceId: map['deviceId'] as String,
       fcmFriendRequest: map['fcmFriendRequest'] as bool,
       fcmNewMessages: map['fcmNewMessages'] as bool,

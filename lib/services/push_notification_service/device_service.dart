@@ -15,33 +15,94 @@ class DeviceService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final DeviceInfoPlugin _deviceInfo = DeviceInfoPlugin();
   CollectionReference userCollection = FirebaseFirestore.instance.collection('users');
-
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
   Future<void> registerDevice() async {
-    String? userId = FirebaseAuth.instance.currentUser?.uid;
-    String? fcmToken = await FirebaseMessaging.instance.getToken();
-    DeviceInfo? deviceInfo = await getDeviceInfo(); // Use package like device_info_plus
+    try {
+      String? userId = FirebaseAuth.instance.currentUser?.uid;
+      String? fcmToken = await _firebaseMessaging.getToken();
+      DeviceInfo deviceInfo = await getDeviceInfo();
 
+      if (userId == null) {
+        if(kDebugMode) {
+          print('Unable to register device: missing userId or fcmToken');
+        }
+        return;
+      }
 
-    PushNotificationModel device = PushNotificationModel(
+      PushNotificationModel device = PushNotificationModel(
         fcmToken: fcmToken,
         deviceId: deviceInfo.deviceId,
         fcmFriendRequest: true,
         fcmNewMessages: true,
         fcmPlayBazaar: true,
+        isActive: true,  // Add this field
         lastUpdate: Timestamp.now(),
-    );
+      );
 
-
-    if (userId != null && fcmToken != null) {
       await _firestore
           .collection('users')
           .doc(userId)
           .collection('devices')
           .doc(deviceInfo.deviceId)
-          .set(device.toFirestore());
+          .set(device.toFirestore(), SetOptions(merge: true));
+    } catch (e) {
+      if(kDebugMode){
+        print('Error in registerDevice - device service: $e');
+      }
     }
   }
+
+  // Call this method after successful login
+  Future<void> handleDeviceNotificationOnLogin() async {
+    try {
+      // 1. Request notification permission
+      bool hasPermission = await requestNotificationPermission();
+      if (!hasPermission) {
+        return;
+      }
+
+      // 2. Register the device
+      await registerDevice();
+
+      // 3. Set up FCM token refresh listener
+      _setupTokenRefreshListener();
+    } catch (e) {
+      if(kDebugMode){
+        print('Error in handleLogin: $e');
+      }
+    }
+  }
+
+  // Call this method during logout
+  Future<void> handleDeviceNotificationOnLogout() async {
+    try {
+      String? userId = FirebaseAuth.instance.currentUser?.uid;
+      DeviceInfo deviceInfo = await getDeviceInfo();
+
+      if (userId != null) {
+        // Mark the device as inactive and clear FCM token
+        await _firestore
+            .collection('users')
+            .doc(userId)
+            .collection('devices')
+            .doc(deviceInfo.deviceId)
+            .update({
+          'fcmToken': null,
+          'isActive': false,
+          'lastUpdate': Timestamp.now(),
+        });
+      }
+
+      // Delete the FCM token from Firebase Messaging
+      await _firebaseMessaging.deleteToken();
+    } catch (e) {
+      if(kDebugMode){
+        print('Error in handleLogout: $e');
+      }
+    }
+  }
+
 
   // Mark device as inactive on logout
   Future<bool> updateDeviceNotificationSetting(PushNotificationPermissionDto permissions) async {
@@ -51,6 +112,7 @@ class DeviceService {
 
     PushNotificationModel device = PushNotificationModel(
       fcmToken: fcmToken,
+      isActive: true,
       deviceId: deviceInfo.deviceId,
       fcmFriendRequest: permissions.friendRequest,
       fcmNewMessages: permissions.message,
@@ -81,6 +143,32 @@ class DeviceService {
       }
     }
     return false;
+  }
+
+  // Set up token refresh listener
+  void _setupTokenRefreshListener() {
+    _firebaseMessaging.onTokenRefresh.listen((String token) async {
+      try {
+        String? userId = FirebaseAuth.instance.currentUser?.uid;
+        DeviceInfo deviceInfo = await getDeviceInfo();
+
+        if (userId != null) {
+          await _firestore
+              .collection('users')
+              .doc(userId)
+              .collection('devices')
+              .doc(deviceInfo.deviceId)
+              .update({
+            'fcmToken': token,
+            'lastUpdate': Timestamp.now(),
+          });
+        }
+      } catch (e) {
+        if(kDebugMode){
+          print('Error in refresh listner: $e');
+        }
+      }
+    });
   }
 
 
@@ -138,6 +226,7 @@ class DeviceService {
     }
     return false;
   }
+
 
 
   void dispose() {

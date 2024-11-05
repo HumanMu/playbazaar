@@ -21,6 +21,8 @@ exports.privateMessagesNotifications = onDocumentCreated(
             const devicesSnapshot = await getFirestore()
                 .collection(`users/${recipientId}/devices`)
                 .where('fcmNewMessages', '==', true)
+                .where('isActive', '==', true)  // Add this condition
+                .where('fcmToken', '!=', null)  // Ensure token exists
                 .get();
 
             if (devicesSnapshot.empty) {
@@ -44,6 +46,7 @@ exports.privateMessagesNotifications = onDocumentCreated(
                 data: {
                     body: messageContent,
                     senderId: senderId,
+                    senderName: senderName,
                     channelId: 'new_message',
                     route: '/friendsList',
                     timestamp: Date.now().toString(),
