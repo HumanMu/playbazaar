@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
@@ -13,18 +15,16 @@ class UserController extends GetxController {
   final PrivateMessageService messageController = Get.find<PrivateMessageService>();
   late String currentUserId;
 
-  RxBool isLoading = false.obs;
+  final RxBool isLoading = false.obs;
   RxBool isInitialized = false.obs;
   RxString friendShipStatus = "".obs;
-  //var friendList = [].obs;
-  //var recievedFriendRequests = [].obs;
-  //var sentFriendRequests = [].obs;
-  RxList<FriendModel> friendList = <FriendModel>[].obs;
+  final RxList<FriendModel> friendList = <FriendModel>[].obs;
   RxList<FriendModel> receivedFriendRequests = <FriendModel>[].obs;
   RxList<FriendModel> sentFriendRequests = <FriendModel>[].obs;
-
   Rxn<UserModel> userData = Rxn<UserModel>();
   RxList<Map<String, dynamic>> searchedUsersList = <Map<String, dynamic>>[].obs;
+  final RxList<FriendModel> friends = <FriendModel>[].obs;
+  StreamSubscription? _friendsSubscription;
 
   @override
   void onInit() {
@@ -35,24 +35,15 @@ class UserController extends GetxController {
       if (user != null) {
         currentUserId = firebaseAuth.currentUser!.uid;
         listenToUserChanges(user.uid);
-        listenToFriendRequests();
+        listenToFriendRequests(); // if not working, that is because of you are not passing the userId
         listenToSentRequests();
-        getFriendList(user.uid);
-        //Get.put(NotificationController());
-
-
-        /*userServices.listenToFriendList(user.uid);
-        userServices.listenToReceivedFriendRequests(user.uid);
-        userServices.listenToSentFriendRequests(user.uid);*/
+        _initFriendsListener(user.uid);
       } else {
         clearUser();
       }
       isLoading.value = false;
       isInitialized.value = true;
     });
-
-
-
   }
 
   void clearUser() {
@@ -62,11 +53,6 @@ class UserController extends GetxController {
   void listenToUserChanges(String userId) {
     userData.bindStream(userServices.getUserById(userId));
   }
-
-  /*List<FriendModel> get friendList => userServices.friendList;
-  List<FriendModel> get receivedFriendRequests => userServices.receivedFriendRequests;
-  List<FriendModel> get sentFriendRequests => userServices.sentFriendRequests;
-    */
 
   void listenToFriendRequests() {
     userServices.getRecievedFriendRequests(firebaseAuth.currentUser!.uid).listen((requests) {
@@ -81,7 +67,23 @@ class UserController extends GetxController {
     sentFriendRequests.refresh();
   }
 
-  Future<void> getFriendList(String userId) async {
+
+  void _initFriendsListener(String userId) {
+    _friendsSubscription?.cancel();
+    _friendsSubscription = userServices
+        .listenToFriends(userId)
+        .listen(
+            (friends) {
+          friendList.assignAll(friends);
+        },
+        onError: (error) {
+          print('Error fetching friends: $error');
+        }
+    );
+  }
+
+
+  /*Future<void> getFriendList(String userId) async {
     isLoading.value = true;
     try {
       final querySnapshot = await UserServices(userId: userId).getFriendList();
@@ -96,7 +98,7 @@ class UserController extends GetxController {
       }
     }
     isLoading.value = false;
-  }
+  }*/
 
   Future<void> searchUserByName(String username) async {
     try {
@@ -156,8 +158,7 @@ class UserController extends GetxController {
       }
 
       final result = await UserServices().acceptFriendRequest(chatId, friendId);
-      if (result != null) {
-        friendList.add(result);
+      if (result) {
         showCustomSnackbar("approved_friend_request".tr, true);
       } else {
         showCustomSnackbar("failed_to_accept_friend_request".tr, false);

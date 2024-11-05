@@ -16,6 +16,16 @@ class UserServices extends GetxService {
   DocumentSnapshot? lastDocument;
 
 
+  Stream<List<FriendModel>> listenToFriends(String userId) { // Not used yet
+    return userCollection
+        .doc(userId)
+        .collection('friends')
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+        .map((doc) => FriendModel.fromFirestore(doc))
+        .toList());
+  }
+
   Future<QuerySnapshot<Map<String, dynamic>>> getFriendList() {
     return userCollection.doc(userId).collection('friends').get();
   }
@@ -35,16 +45,6 @@ class UserServices extends GetxService {
     return userCollection
         .doc(userId)
         .collection('sentFriendRequests')
-        .snapshots()
-        .map((snapshot) => snapshot.docs
-        .map((doc) => FriendModel.fromFirestore(doc))
-        .toList());
-  }
-
-  Stream<List<FriendModel>> getFriends(String userId) { // Not used yet
-    return userCollection
-        .doc(userId)
-        .collection('friends')
         .snapshots()
         .map((snapshot) => snapshot.docs
         .map((doc) => FriendModel.fromFirestore(doc))
@@ -91,7 +91,7 @@ class UserServices extends GetxService {
   }
 
 
-  Future<FriendModel?> acceptFriendRequest(String chatId, String friendId) async {
+  Future<bool> acceptFriendRequest(String chatId, String friendId) async {
     String ui = firebaseAuth.currentUser!.uid;
     DocumentReference userDocRef =  userCollection.doc(ui).collection('receivedFriendRequests').doc(friendId);
     DocumentReference friendDocRef =  userCollection.doc(friendId).collection('sentFriendRequests').doc(ui);
@@ -115,13 +115,13 @@ class UserServices extends GetxService {
         await userDocRef.delete();
         await friendDocRef.delete();
 
-        return FriendModel.fromFirestore(friendRequestSnapshot as DocumentSnapshot<Map<String, dynamic>>);
+        return true;
       }
 
-      return null;
+      return false;
 
     }catch(e) {
-      return null;
+      return false;
     }
   }
 
