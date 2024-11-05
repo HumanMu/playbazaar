@@ -183,15 +183,16 @@ class _RegisterPage extends State<RegisterPage> {
         border: Border.all(),
       ),
       child: ElevatedButton(
-        onPressed: () {
+        onPressed: () async {
           bool result = _verifyRegistrationInfo();
           if (result ) {
             String fullname = "$firstname $lastname";
-            accountController.registerUser(
+            bool registerResult = await accountController.registerUser(
                 fullname,
                 email,
                 password
             );
+
           }
           else {
             return;

@@ -17,7 +17,7 @@ class NotificationService {
   final notificationHelper = PushNotificationHelper();
   final FlutterLocalNotificationsPlugin _localNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
-  String? _activeChatUserId; // Prevent notification if chatting with that user
+  String? _activeChatUserId; // To prevent notification if chatting with the same user
 
   Future<void> init() async {
     await _initializeLocalNotifications();
@@ -98,17 +98,16 @@ class NotificationService {
     final String body = message.data['body'] ?? '';
     final String? route = message.data['route'];
     final String senderId = message.data['senderId'] ?? '';
-
-    /*print("Recieved notification from: $senderId");
-    print("Recieved notification from2: $_activeChatUserId");*/
+    final String senderName = message.data['senderName'] ?? '';
 
     if (_activeChatUserId == senderId) {
       return; // Don't show the notification
     }
-    // Only show notification, don't navigate immediately
+
     showNotification(
       channelId: channelId,
       body: body,
+      senderName: senderName,
       route: route,
     );
   }
@@ -144,6 +143,7 @@ class NotificationService {
   Future<void> showNotification({
     required String channelId,
     required String body,
+    required String senderName,
     String? route,
     String? title,
   }) async {
@@ -151,8 +151,6 @@ class NotificationService {
     List<String>? languageData = await SharedPreferencesManager.getStringList(
         SharedPreferencesKeys.appLanguageKey);
     final String languageCode = languageData?.first ?? 'en';
-    /*print("Retrieved languageData in push: $languageData");
-    print("Retrieved languageCode in push: $languageCode");*/
 
     switch (channelId) {
       case 'friend_request':
@@ -163,7 +161,7 @@ class NotificationService {
       case 'new_message':
         platformDetails = const NotificationDetails(android: PushNotificationHelper.messageDetails);
         title ??= NotificationTranslations.getTranslation('received_new_message_title', languageCode);
-        body = '${NotificationTranslations.getTranslation('received_new_message_body', languageCode)} $body';
+        body = '$senderName: $body';
         break;
       default:
         platformDetails = const NotificationDetails(android: PushNotificationHelper.friendRequestDetails);
@@ -205,6 +203,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await NotificationService().showNotification(
     channelId: message.data['channelId'] ?? '',
     body: message.data['body'] ?? '',
+    senderName: message.data['senderName'] ?? '',
     route: route,
   );
 }

@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:playbazaar/services/push_notification_service/device_service.dart';
 import '../../api/firestore/firestore_user.dart';
 import '../../helper/sharedpreferences/sharedpreferences.dart';
 import '../../utils/show_custom_snackbar.dart';
@@ -82,8 +83,10 @@ class AuthController extends GetxController {
 
   Future logOutUser() async{
     try {
-      await SharedPreferencesManager.setBool(SharedPreferencesKeys.userLoggedInKey, false);
+      await DeviceService().handleDeviceNotificationOnLogout();
       await FirebaseAuth.instance.signOut();
+      await SharedPreferencesManager.setBool(SharedPreferencesKeys.userLoggedInKey, false);
+
       isSignedIn.value = false;
       isEmailVerified.value = false;
     } catch (e) {

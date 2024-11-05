@@ -17,6 +17,8 @@ exports.friendRequestNotifications = onDocumentCreated(
             const devicesSnapshot = await getFirestore()
                 .collection(`users/${recipientId}/devices`)
                 .where('fcmFriendRequest', '==', true)
+                .where('isActive', '==', true)
+                .where('fcmToken', '!=', null)
                 .get();
 
             if (devicesSnapshot.empty) {
@@ -39,6 +41,7 @@ exports.friendRequestNotifications = onDocumentCreated(
                 tokens: fcmTokens,
                 data: {
                     body: senderName,
+                    senderName: senderName,
                     channelId: 'friend_request',
                     route: '/friendsList',
                     timestamp: Date.now().toString(),
