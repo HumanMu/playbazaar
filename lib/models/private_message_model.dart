@@ -2,13 +2,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PrivateMessage {
   String senderId;
+  String sendersAvatar;
   String recipientId;
   String senderName;
   String text;
-  DateTime timestamp;
+  Timestamp timestamp;
 
   PrivateMessage({
     required this.senderId,
+    required this.sendersAvatar,
     required this.recipientId,
     required this.senderName,
     required this.text,
@@ -19,6 +21,7 @@ class PrivateMessage {
   Map<String, dynamic> toMap() {
     return {
       'senderId': senderId,
+      'sendersAvatar': sendersAvatar,
       'recipientId': recipientId,
       'senderName': senderName,
       'text': text,
@@ -31,10 +34,11 @@ class PrivateMessage {
     final data = doc.data()!;
     return PrivateMessage(
       senderId: data['senderId'] ?? '',
+      sendersAvatar: data['sendersAvatar'] ?? '',
       recipientId: data['recipientId'],
       senderName: data['senderName'],
       text: data['text'],
-      timestamp: (data['timestamp'] as Timestamp).toDate(),
+      timestamp: (data['timestamp']),
     );
   }
 }

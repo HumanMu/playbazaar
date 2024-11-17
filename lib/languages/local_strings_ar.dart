@@ -91,6 +91,8 @@ class LocalStringsAr extends Translations {
       'my_memberships': 'عضوياتي',
       'write_message_here': 'اكتب رسالتك هنا ...',
       'search_friends': 'البحث عن أصدقاء ...',
+      'search_in_friends': 'ابحث بين الأصدقاء...',
+      'msg_friend_not_found': 'تعذّر العثور على صديق بهذا الاسم',
       'search_groups': 'البحث عن مجموعات ...',
       'search': 'بحث',
       'choose_language': 'اختر لغتك المفضلة',
@@ -114,6 +116,7 @@ class LocalStringsAr extends Translations {
       'details': 'التفاصيل',
       'select' : 'اختر',
       'sounds': 'أصوات',
+      'say_hi': 'قل مرحباً لـ',
 
       'awaiting_response': 'في انتظار الرد',
       'approve_request': 'قبول الطلب',

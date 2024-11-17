@@ -1,8 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:playbazaar/controller/message_controller/private_message_controller.dart';
 import 'package:playbazaar/functions/string_cases.dart';
+import 'package:playbazaar/models/DTO/recent_interacted_user_dto.dart';
 import 'package:playbazaar/utils/show_custom_snackbar.dart';
 import '../../admob/banner_ad.dart';
 import '../../models/private_message_model.dart';
@@ -30,7 +32,7 @@ class PrivateChatPage extends StatefulWidget {
 }
 
 class _PrivateChatPageState extends State<PrivateChatPage> {
-  late PrivateMessageController controller;//  = Get.put(PrivateMessageController());
+  late PrivateMessageController controller;
   late ScrollController _scrollController;
   String currentUserName = FirebaseAuth.instance.currentUser?.displayName ?? "";
   final String? currentUserId = FirebaseAuth.instance.currentUser!.uid;
@@ -65,7 +67,7 @@ class _PrivateChatPageState extends State<PrivateChatPage> {
         appBar: AppBar(
           centerTitle: true,
           elevation: 0,
-          title: Text(capitalizeFirstLetter(widget.chatName),
+          title: Text(capitalizeFullname(widget.chatName),
             style: TextStyle(color: Colors.white),
           ),
           backgroundColor: Colors.red,
@@ -166,13 +168,24 @@ class _PrivateChatPageState extends State<PrivateChatPage> {
       if(isMessageLengthAllowed()){
         PrivateMessage newMessage = PrivateMessage(
             senderId: currentUserId!,
+            sendersAvatar: '',
             recipientId: widget.recieverId,
             senderName: splitBySpace(currentUserName)[0],
             text: messageBox.text,
-            timestamp: DateTime.now(),
+            timestamp: Timestamp.now(),
         );
 
-        PrivateMessageController().sendMessage(widget.chatId, newMessage);
+        RecentInteractedUserDto recentUser = RecentInteractedUserDto(
+            uid: widget.recieverId,
+            fullname: widget.chatName,
+            avatarImage: '',
+            lastMessage: messageBox.text,
+            timestamp: Timestamp.now(),
+            friendshipStatus: '',
+            chatId: widget.chatId,
+        );
+
+        PrivateMessageController().sendMessage(widget.chatId, newMessage, recentUser);
         setState(() {
           messageBox.text = "";
         });

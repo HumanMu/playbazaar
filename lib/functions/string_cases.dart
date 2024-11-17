@@ -5,6 +5,12 @@ String capitalizeFirstLetter(String input) {
   return input[0].toUpperCase() + input.substring(1);
 }
 
+String capitalizeFirstName(String input) {
+  if (input.isEmpty) return input;
+  String name = input.split(' ')[0];
+  return name[0].toUpperCase() + name.substring(1);
+}
+
 String capitalizeFullname(String name) {
   if (name.isEmpty) return name;
 

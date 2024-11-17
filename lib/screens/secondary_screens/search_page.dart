@@ -157,7 +157,7 @@ class _SearchPageState extends State<SearchPage> {
         });
       }
       else{
-        await userController.searchUserByName(searchController.text.trim());
+        await userController.searchGlobalByUserName(searchController.text.trim());
         setState(() {
           isLoading = false;
           hasUserSearched = true;
@@ -177,17 +177,17 @@ class _SearchPageState extends State<SearchPage> {
             final searched = userController.searchedUsersList[index];
             String friendStatus = "NoRequest";
 
-            if (userController.friendList.any((friend) => friend.uid == searched['uid'])) {
+            /*if (userController.friendList.any((friend) => friend.uid == searched['uid'])) {
               friendStatus = "Friend";
             } else if (userController.sentFriendRequests.any((request) => request.uid == searched['uid'])) {
               friendStatus = "WaitingAnswer";
             } else if (userController.receivedFriendRequests.any((request) => request.uid == searched['uid'])) {
               friendStatus = "ReceivedRequest";
-            }
+            }*/
 
 
             SearchFriendDto searchedResult = SearchFriendDto(
-              userId: FirebaseAuth.instance.currentUser!.uid,
+              currentUserId: FirebaseAuth.instance.currentUser!.uid,
               foreignId: searched['uid'],
               fullname: searched['fullname'],
               requestStatus: friendStatus,

@@ -1,10 +1,15 @@
 import 'dart:async';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
+import 'package:playbazaar/constants/enums.dart';
+import 'package:playbazaar/functions/enum_converter.dart';
+import 'package:playbazaar/services/hive_services/hive_user_service.dart';
 import 'package:playbazaar/services/user_services.dart';
+import '../../models/DTO/recent_interacted_user_dto.dart';
 import '../../models/friend_model.dart';
+import '../../models/friend_request_result_action.dart';
 import '../../models/user_model.dart';
 import '../../services/private_message_service.dart';
 import '../../utils/show_custom_snackbar.dart';
@@ -12,19 +17,18 @@ import '../../utils/show_custom_snackbar.dart';
 class UserController extends GetxController {
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   final UserServices userServices = Get.find<UserServices>();
+  final HiveUserService _hiveUserService = Get.find();
   final PrivateMessageService messageController = Get.find<PrivateMessageService>();
-  late String currentUserId;
-
-  final RxBool isLoading = false.obs;
-  RxBool isInitialized = false.obs;
-  RxString friendShipStatus = "".obs;
   final RxList<FriendModel> friendList = <FriendModel>[].obs;
-  RxList<FriendModel> receivedFriendRequests = <FriendModel>[].obs;
-  RxList<FriendModel> sentFriendRequests = <FriendModel>[].obs;
   Rxn<UserModel> userData = Rxn<UserModel>();
   RxList<Map<String, dynamic>> searchedUsersList = <Map<String, dynamic>>[].obs;
-  final RxList<FriendModel> friends = <FriendModel>[].obs;
+  RxList<FriendModel> searchedFriends = <FriendModel>[].obs;
+  RxList<FriendRequestResultModel> friendshipListner = <FriendRequestResultModel>[].obs;
   StreamSubscription? _friendsSubscription;
+  final RxBool isLoading = false.obs;
+  RxBool isInitialized = false.obs;
+  late String currentUserId;
+
 
   @override
   void onInit() {
@@ -35,9 +39,8 @@ class UserController extends GetxController {
       if (user != null) {
         currentUserId = firebaseAuth.currentUser!.uid;
         listenToUserChanges(user.uid);
-        listenToFriendRequests(); // if not working, that is because of you are not passing the userId
-        listenToSentRequests();
         _initFriendsListener(user.uid);
+        _updateFriendInLocalStorage(user.uid);
       } else {
         clearUser();
       }
@@ -54,33 +57,53 @@ class UserController extends GetxController {
     userData.bindStream(userServices.getUserById(userId));
   }
 
-  void listenToFriendRequests() {
-    userServices.getRecievedFriendRequests(firebaseAuth.currentUser!.uid).listen((requests) {
-      receivedFriendRequests.assignAll(requests);
-    });
-  }
-
-  void listenToSentRequests() {
-    userServices.getSentFriendRequests(firebaseAuth.currentUser!.uid).listen((requests) {
-      sentFriendRequests.assignAll(requests);
-    });
-    sentFriendRequests.refresh();
-  }
-
 
   void _initFriendsListener(String userId) {
     _friendsSubscription?.cancel();
     _friendsSubscription = userServices
         .listenToFriends(userId)
-        .listen(
-            (friends) {
+        .listen((friends) {
           friendList.assignAll(friends);
         },
         onError: (error) {
-          print('Error fetching friends: $error');
+          if (kDebugMode) {
+            print("Error fetching friends listner");
+          }
         }
     );
   }
+
+  Future<void> _updateFriendInLocalStorage(String uid) async {
+    userServices.listenToFriendRequestsResult(uid).listen((friendshipsResult) async {
+      if (friendshipsResult.isEmpty) {
+        return;
+      }
+      else {
+        for (var friendResult in friendshipsResult) {
+          if (friendResult.friendshipStatus == FriendshipStatus.unfriended) {
+            _hiveUserService.deleteRecentUser(friendResult.uid);
+          }
+          else if(friendResult.friendshipStatus == FriendshipStatus.accepted){
+            await userServices.deleteFriendRequestResult(uid, friendResult.uid);
+            FriendModel? friendModel = await userServices.getASingleFriendById(currentUserId, friendResult.uid);
+            if(friendModel?.friendshipStatus == FriendshipStatus.good) {
+              RecentInteractedUserDto recentUser = RecentInteractedUserDto(
+                uid: friendModel!.uid,
+                fullname: friendModel.fullname,
+                avatarImage: friendModel.avatarImage,
+                lastMessage: 'say_hi',
+                timestamp: Timestamp.now(),
+                friendshipStatus: friendShipState2String(FriendshipStatus.good),
+                chatId: friendModel.chatId,
+              );
+              _hiveUserService.addOrUpdateRecentUser(recentUser);
+            }
+          }
+        }
+      }
+    });
+  }
+
 
 
   /*Future<void> getFriendList(String userId) async {
@@ -100,55 +123,21 @@ class UserController extends GetxController {
     isLoading.value = false;
   }*/
 
-  Future<void> searchUserByName(String username) async {
-    try {
-      isLoading.value = true;
-      searchedUsersList.value = [];
 
-      var querySnapshot = await userServices.searchByUserName(username);
-      var searchResults = querySnapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
-
-      for (var user in searchResults) {
-        String searchedUserId = user['uid'];
-
-        // Check if the user is a friend or in friendRequest
-        bool isFriend = friendList.any((friend) => friend.uid == searchedUserId);
-        bool hasReceivedRequest = receivedFriendRequests.any((request) => request.uid == searchedUserId);
-
-
-        // Assign friendship or request status based on the conditions
-        user['friendStatus'] = isFriend
-            ? "TheyAreFriends"
-            : hasReceivedRequest
-            ? "WaitingAnswer"
-            : "NoRequest";
-
-        searchedUsersList.add(user);
-      }
-    } finally {
-      isLoading.value = false;
-    }
-  }
 
   Future<bool> sendFriendRequest(FriendModel friend, int index) async {
     bool result = await userServices.sendFriendRequest(friend);
     return result;
   }
 
-  Future<bool> cancelFriendshipRequest(String friendId) async {
-    return await userServices.cancelFriendshipRequest(friendId);
-  }
-
-  Future<bool> removeFriendById(String friendId) async {
-    bool removeResult = await userServices.removeFriendById(friendId);
-    if(removeResult){
-      friendList.removeWhere((friend) => friend.uid ==friendId);
+  Future<void> cancelFriendRequest(String friendId) async {
+    bool cancelResult = await userServices.cancelFriendshipRequest(friendId);
+    if(cancelResult){
+      _hiveUserService.deleteRecentUser(friendId);
     }
-    return removeResult;
   }
 
-
-  Future<void> accept(String friendId) async {
+  Future<void> acceptFriendRequest(String friendId) async {
     try {
       final chatId = await messageController.createChat(currentUserId, friendId);
 
@@ -157,10 +146,12 @@ class UserController extends GetxController {
         return;
       }
 
-      final result = await UserServices().acceptFriendRequest(chatId, friendId);
-      if (result) {
+      final recentUser = await UserServices().acceptFriendRequest(chatId, friendId);
+      if (recentUser != null) {
+        _hiveUserService.addOrUpdateRecentUser(recentUser);
         showCustomSnackbar("approved_friend_request".tr, true);
       } else {
+        print("recentUUser: $recentUser");
         showCustomSnackbar("failed_to_accept_friend_request".tr, false);
       }
 
@@ -173,7 +164,7 @@ class UserController extends GetxController {
   }
 
 
-  Future<void> decline(String friendId) async {
+  Future<void> declineFriendRequest(String friendId) async {
     final result = await UserServices(userId: currentUserId).declineFriendRequests(friendId);
     if(result){
       showCustomSnackbar("declined_friend_request".tr, true);
@@ -183,6 +174,7 @@ class UserController extends GetxController {
     }
   }
 
+
   Future<FriendModel?> getASingleFriendById(String friendId) async {
     try{
       final friendResult = await userServices.getASingleFriendById(currentUserId, friendId);
@@ -191,4 +183,55 @@ class UserController extends GetxController {
       return null;
     }
   }
+
+
+  Future<bool> removeFriendById(String friendId) async {
+    try {
+      bool removeResult = await userServices.removeFriendById(friendId);
+      if (removeResult) {
+        print("Friendship deletion result: $removeResult");
+        await _hiveUserService.deleteRecentUser(friendId);
+      }
+      return removeResult;
+    } catch (e) {
+      return false;
+    }
+  }
+
+
+  Future<bool> searchInFriends(String friendName) async {
+    isLoading.value = true;
+    List<FriendModel> foundedFriends = await userServices.searchByFriendsName(currentUserId, friendName);
+
+    if (foundedFriends.isNotEmpty) {
+      searchedFriends.clear();
+      searchedFriends.addAll(foundedFriends);
+      isLoading.value = false;
+      return true;
+    }
+    else{
+      isLoading.value = false;
+      return false;
+    }
+  }
+
+
+  Future<void> searchGlobalByUserName(String username) async {
+    try {
+      isLoading.value = true;
+      searchedUsersList.value = [];
+
+      var querySnapshot = await userServices.searchByUserName(username);
+      var searchResults = querySnapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
+
+      for (var user in searchResults) {
+        searchedUsersList.add(user);
+      }
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+
+
 }

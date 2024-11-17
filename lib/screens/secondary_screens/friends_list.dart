@@ -2,8 +2,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:playbazaar/controller/user_controller/user_controller.dart';
-import '../widgets/tiles/friends_list_tile.dart';
+import 'package:playbazaar/functions/enum_converter.dart';
+import 'package:playbazaar/utils/show_custom_snackbar.dart';
+import '../../constants/enums.dart';
+import '../../controller/message_controller/private_message_controller.dart';
+import '../../services/hive_services/hive_user_service.dart';
 import '../widgets/cards/recieved_requests_tile.dart';
+import '../widgets/text_boxes/text_inputs.dart';
+import '../widgets/tiles/friends_list_tile.dart';
 
 class FriendsList extends StatefulWidget {
   const FriendsList({super.key});
@@ -14,16 +20,41 @@ class FriendsList extends StatefulWidget {
 
 class _FriendsList extends State<FriendsList> {
   final UserController userController = Get.find<UserController>();
+  final PrivateMessageController pvMsgController = Get.put(PrivateMessageController());
+  final HiveUserService _hiveUserService = Get.find();
   final String currentUserId = FirebaseAuth.instance.currentUser!.uid;
+  late TextEditingController searchController = TextEditingController();
   String userName = "";
   String userEmail = "";
   Stream? friendRequests;
+  bool hasSearched = false;
+  int selectedCategoryIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
 
 
   String getName(String ind) {
     return ind.substring(ind.indexOf("_") + 1);
   }
 
+  final List<FriendsCategory> categories = [
+    FriendsCategory(title: 'btn_chats',
+        icon: Icons.chat
+    ),
+    FriendsCategory(
+      title: 'requests',
+      icon: Icons.people_alt_rounded,
+    ),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +70,7 @@ class _FriendsList extends State<FriendsList> {
               );
             },
             icon: const Icon(
-              Icons.search,
+              Icons.person_add_alt_rounded,
               color: Colors.white,
             ),
           ),
@@ -64,93 +95,228 @@ class _FriendsList extends State<FriendsList> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            readFriendRequestsList(),
-            friendList(),
+            Container(
+              height: 45,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.2),
+                    spreadRadius: 1,
+                    blurRadius: 4,
+                    offset: Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: categories.length,
+                itemBuilder: (context, index) {
+                  bool isSelected = selectedCategoryIndex == index;
+                  return GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        selectedCategoryIndex = index;
+                      });
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            color: isSelected ? Colors.red : Colors.transparent,
+                            width: 3,
+                          ),
+                        ),
+                      ),
+                      child: Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              categories[index].icon,
+                              color: isSelected ? Colors.red : Colors.grey,
+                            ),
+                            SizedBox(width: 8),
+                            Text(
+                              categories[index].title.tr,
+                              style: TextStyle(
+                                color: isSelected ? Colors.red : Colors.grey,
+                                fontWeight: isSelected
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+            SizedBox(height: 7),
+            SearchTextFormField(
+              controller: searchController,
+              labelText: 'search_in_friends'.tr,
+              onTap: () => searchInFriends(searchController.text),
+            ),
+            searchedFriends(),
+            selectedCategoryIndex == 0? conversationList() : Container(),
+            selectedCategoryIndex == 1? readFriendRequestsList() : Container(),
           ],
         ),
       ),
     );
   }
 
-  Widget friendList() {
-
+  Widget searchedFriends() {
     return Obx(() {
-      if (userController.isLoading.value) {
+      if (hasSearched && userController.isLoading.value) {
         return Center(child: CircularProgressIndicator());
       }
-      if (userController.friendList.isEmpty) {
+      if (hasSearched && userController.searchedFriends.isEmpty) {
         return Center(
-          child: Text("empty_friend_list".tr),
+          child: Text("msg_friend_not_found".tr),
         );
       }
 
       return Flexible(
-        child: SingleChildScrollView(
-          child: ListView.builder(
-            itemCount: userController.friendList.length,
-            shrinkWrap: true,
-            itemBuilder: (context, index) {
-              var friend = userController.friendList[index];
-              return FriendsListTile(
-                friendId: friend.uid,
-                fullname: friend.fullname,
-                onTap : () => goToChat(friend.uid, friend.fullname),
-                availabilityState: '',
-
-              );
-            },
-          ),
-        ));
+          child: SingleChildScrollView(
+            child: ListView.builder(
+              itemCount: userController.searchedFriends.length,
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                var friend = userController.searchedFriends[index];
+                return FriendsListTile(
+                  friendId: friend.uid,
+                  fullname: friend.fullname,
+                  onTap : () => goToChat(
+                      friend.uid,
+                      friend.fullname,
+                      friend.chatId,
+                      friendShipState2String(friend.friendshipStatus)
+                  ),
+                  lastMessage: '',
+                );
+              },
+            ),
+          ));
     });
   }
 
-  goToChat(String friendId, String recieverName) async {
-    String username = FirebaseAuth.instance.currentUser?.displayName ?? "";
-    final result  = await userController.getASingleFriendById(friendId);
-    if(result != null){
-      Get.toNamed('/private_chat', arguments: {
-        'chatId' : result.chatId,
-        'chatName' : recieverName,
-        'userName' : username,
-        'recieverId' : friendId
+
+  Widget conversationList() {
+    return Obx(() {
+      if (!_hiveUserService.isInitialized) {
+        return const Center(child: CircularProgressIndicator());
+      }
+
+      final recentUsers = _hiveUserService.recentUsers;
+      if (recentUsers.isEmpty) {
+        return Container();
+      }
+
+      return Flexible(
+        child: ListView.builder(
+          itemCount: recentUsers.length,
+          itemBuilder: (context, index) {
+            final user = recentUsers[index];
+            return FriendsListTile(
+              friendId: user.uid,
+              fullname: user.fullname,
+              onTap: () => goToChat(
+                  user.uid,
+                  user.fullname,
+                  user.chatId,
+                  user.friendshipStatus
+              ),
+              lastMessage: user.lastMessage,
+            );
+          },
+        ),
+      );
+    });
+  }
+
+
+  Future<void>searchInFriends(String friendsName) async {
+    if(friendsName.trim() == "")return;
+    bool searchResult = await userController.searchInFriends(friendsName);
+    if(!searchResult){
+      setState(() {
+        hasSearched = true;
       });
     }
   }
 
+
+  void goToChat(String friendId, String receiverName, String? chatId, String friendStat) async {
+    if(string2FriendshipState(friendStat) == FriendshipStatus.good){
+      String username = FirebaseAuth.instance.currentUser?.displayName ?? "";
+      await Get.toNamed(
+        '/private_chat',
+        arguments: {
+          'chatId': chatId,
+          'chatName': receiverName,
+          'userName': username,
+          'receiverId': friendId
+        },
+      );
+    }else if (string2FriendshipState(friendStat) == FriendshipStatus.waiting){
+      showCustomSnackbar("This user has not accepted your friend request yet", false);
+      return;
+    }
+    else{
+      showCustomSnackbar("Sorry, you may not be a friend with this user yet", false);
+      return;
+    }
+  }
 
   Widget readFriendRequestsList() {
     return Obx(() {
       if (userController.isLoading.value) {
         return Center(child: CircularProgressIndicator());
       }
-      if (userController.receivedFriendRequests.isEmpty) {
-        return Container();
+      final requestedFriendship = userController.friendList.where(
+              (friend) => friend.friendshipStatus == FriendshipStatus.received).toList();
+      if (requestedFriendship.isEmpty) {
+        return Center(child: Text('${'friend_request'.tr}  0'));
       }
       return Flexible(
           child: ListView.builder(
-            itemCount: userController.receivedFriendRequests.length,
-            itemBuilder: (context, index) {
-              var friend = userController.receivedFriendRequests[index];
+              itemCount: requestedFriendship.length,
+              itemBuilder: (context, index) {
+                var friend = requestedFriendship[index];
 
-              return RecievedRequestsTile(
-                fullname: friend.fullname,
-                avatarImage: friend.avatarImage,
-                acceptAction: () => accept(friend.uid),
-                declineAction: () => decline(friend.uid),
-              );
-            }
+                return RecievedRequestsTile(
+                  fullname: friend.fullname,
+                  avatarImage: friend.avatarImage,
+                  acceptAction: () => accept(friend.uid),
+                  declineAction: () => decline(friend.uid),
+                );
+              }
           )
       );
     });
   }
 
-
   accept(String friendId) async {
-    await userController.accept(friendId);
+    await userController.acceptFriendRequest(friendId);
   }
+
   decline(String userId) async {
-    await userController.decline(userId);
+    await userController.declineFriendRequest(userId);
   }
 
+}
 
+class FriendsCategory {
+  final String title;
+  final IconData icon;
+
+  FriendsCategory({
+    required this.title,
+    required this.icon,
+  });
 }

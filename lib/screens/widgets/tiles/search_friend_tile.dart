@@ -44,7 +44,7 @@ class _SearchFriendTileState extends State<SearchFriendTile> {
         buttonText = 'btn_cancel_request'.tr;
         buttonColor = Colors.orange;
         buttonAction = () async {
-          await userController.cancelFriendshipRequest(widget.searchData.foreignId);
+          await userController.cancelFriendRequest(widget.searchData.foreignId);
           setState(() {
             buttonText = 'request_cancelled'.tr;
             buttonColor = Colors.white;
@@ -56,7 +56,7 @@ class _SearchFriendTileState extends State<SearchFriendTile> {
         buttonText = 'btn_approve_request'.tr;
         buttonColor = Colors.orange;
         buttonAction = () async {
-          await userController.accept(widget.searchData.foreignId);
+          await userController.acceptFriendRequest(widget.searchData.foreignId);
           setState(() {
             buttonColor = Colors.white70;
             buttonText = 'friend'.tr;
@@ -69,10 +69,11 @@ class _SearchFriendTileState extends State<SearchFriendTile> {
         buttonColor = Colors.green;
         buttonAction = () async {
           FriendModel friendRequest = FriendModel(
+            senderId: widget.searchData.currentUserId,
             uid: widget.searchData.foreignId,
             fullname: widget.searchData.fullname,
             avatarImage: "",
-            friendshipStatus: FriendshipStatus.good,
+            friendshipStatus: FriendshipStatus.waiting,
             chatId: '',
           );
 
@@ -89,7 +90,7 @@ class _SearchFriendTileState extends State<SearchFriendTile> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.searchData.userId == widget.searchData.foreignId) {
+    if (widget.searchData.currentUserId == widget.searchData.foreignId) {
       return const Text(""); // Skip rendering the tile for the current user
     }
 

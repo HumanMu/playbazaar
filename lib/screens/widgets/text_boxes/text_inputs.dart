@@ -75,6 +75,63 @@ class CustomTextFormField extends StatelessWidget {
   }
 }
 
+/// Custom search text input
+class SearchTextFormField extends StatelessWidget {
+  final TextEditingController controller;
+  final String labelText;
+  final Function()? onTap; // Add onTap callback
 
+  const SearchTextFormField({
+    super.key,
+    required this.controller,
+    required this.labelText,
+    this.onTap, // Add this parameter
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.fromLTRB(10, 3, 10, 5),
+      height: 35,
+      child: TextFormField(
+        controller: controller,
+        maxLines: 1,
+        onTap: onTap,
+        decoration: InputDecoration(
+          labelText: labelText ?? "",
+          labelStyle: const TextStyle(fontStyle: FontStyle.italic),
+          suffixIcon: IconButton(
+            icon: const Icon(Icons.search, color: Colors.red),
+            onPressed: onTap,
+            hoverColor: Colors.red,
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15.0),
+            borderSide: const BorderSide(color: Colors.red),
+          ),
+          // Border when the field is enabled but not focused
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15.0),
+            borderSide: const BorderSide(color: Colors.red), // Change color here
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15.0),
+            borderSide: const BorderSide(
+              color: Colors.green,
+              width: 1.0,
+            ),
+          ),
+          contentPadding: const EdgeInsets.symmetric(
+            vertical: 10,
+            horizontal: 12,
+          ),
+        ),
+        style: const TextStyle(
+          color: Colors.black,
+        ),
+      ),
+    );
+  }
+}
 
 

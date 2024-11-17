@@ -56,6 +56,8 @@ dependencies:
   googleapis_auth: ^1.6.0
   firebase_app_check: ^0.3.1+4
   device_info_plus: ^11.1.0
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
 
 
 
@@ -69,6 +71,8 @@ dev_dependencies:
   #activated in analysis_options.yaml, where you can customize them.
 
   flutter_lints: ^5.0.0
+  hive_generator: ^2.0.0
+  build_runner: ^2.4.6
 
 flutter_launcher_icons:
   image_path: "icons/play_bazaar_logo.png"

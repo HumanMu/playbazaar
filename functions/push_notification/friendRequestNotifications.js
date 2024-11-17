@@ -5,7 +5,7 @@ const { logger } = require('firebase-functions');
 
 exports.friendRequestNotifications = onDocumentCreated(
     {
-        document: 'users/{userId}/receivedFriendRequests/{requestId}',
+        document: 'users/{userId}/friends/{requestId}',
         region: 'europe-west3',
     },
     async (event) => {
@@ -19,6 +19,7 @@ exports.friendRequestNotifications = onDocumentCreated(
                 .where('fcmFriendRequest', '==', true)
                 .where('isActive', '==', true)
                 .where('fcmToken', '!=', null)
+                .where('senderId', '!=', recipientId)
                 .get();
 
             if (devicesSnapshot.empty) {

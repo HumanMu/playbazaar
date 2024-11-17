@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:playbazaar/functions/string_cases.dart';
 import '../../api/Authentication/auth_service.dart';
 import '../../controller/user_controller/user_controller.dart';
 import '../../languages/custom_language.dart';
@@ -127,7 +128,7 @@ class _ProfilePage extends State<ProfilePage> {
                         children: [
                           CustomTextInputs(
                               description: "name".tr,
-                              value: user?.displayName ??""
+                              value: capitalizeFullname(user?.displayName ?? ""),
                           ),
                           CustomTextInputs(
                               description: "email".tr,

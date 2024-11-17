@@ -93,6 +93,8 @@ class LocalStringsDa extends Translations {
       'my_memberships': "Mine beskeder",
       'write_message_here': "Skriv dine beskeder her ...",
       'search_friends': 'Søg efter venner ...',
+      'search_in_friends': 'Søg blandt venner...',
+      'msg_friend_not_found': 'Kunne ikke finde en ven med det navn',
       'search_groups': 'Søg efter grupper ...',
       'search': 'Søg',
       'choose_language': 'Vælg dit foretrukne sprog',
@@ -117,8 +119,7 @@ class LocalStringsDa extends Translations {
       'details': 'Detaljer',
       'select' : 'Vælg',
       'sounds': 'Lyde',
-
-
+      'say_hi': 'Sig hej til',
 
       // friends
       'friends': 'Venner',

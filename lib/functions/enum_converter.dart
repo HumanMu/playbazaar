@@ -39,3 +39,16 @@ String friendShipState2String(FriendshipStatus state) {
 String groupUserRole2String(GroupUserRole state) {
   return state.toString().split('.').last;
 }
+
+
+
+FriendshipStatus string2FriendRequestResult(String s) {
+  FriendshipStatus status = FriendshipStatus.values.firstWhere(
+        (e) => e.toString().split('.').last == s
+  );
+  return status;
+}
+
+/*String friendRequestResult2String(FriendRequestResultAction state) {
+  return state.toString().split('.').last;
+}*/

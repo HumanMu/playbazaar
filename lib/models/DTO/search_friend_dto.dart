@@ -2,7 +2,7 @@
 
 
 class SearchFriendDto {
-  String userId;
+  String currentUserId;
   String foreignId;
   String fullname;
   String requestStatus;
@@ -10,7 +10,7 @@ class SearchFriendDto {
 
 
   SearchFriendDto({
-    required this.userId,
+    required this.currentUserId,
     required this.foreignId,
     required this.fullname,
     required this.requestStatus,

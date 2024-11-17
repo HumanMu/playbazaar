@@ -91,6 +91,8 @@ class LocalStringsEn extends Translations {
       'my_memberships' : "Messages",
       'write_message_here': "Write your messages here ...",
       'search_friends' : 'Search for friends ...',
+      'search_in_friends': 'Search within friends...',
+      'msg_friend_not_found': 'Could not find a friend with that name',
       'search_groups' : 'Search for groups ...',
       'search' : 'Search',
       'choose_language' : 'Choose your favorite language',
@@ -115,6 +117,7 @@ class LocalStringsEn extends Translations {
       'details': 'Details',
       'select' : 'Select',
       'sounds': 'Sounds',
+      'say_hi': 'Say hi to',
 
 
       // friends

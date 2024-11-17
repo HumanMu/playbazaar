@@ -1,24 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
-import '../models/private_chat_model.dart';
 import '../models/private_message_model.dart';
 
 class PrivateMessageService extends GetxService {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final CollectionReference chatCollection = FirebaseFirestore.instance.collection('privateMessages');
 
-
   Future<String?> createChat(String currentUserId, String friendId) async {
-    PrivateChatModel chat = PrivateChatModel(
-      userIds: [currentUserId, friendId],
-      lastMessage: '',
-      lastMessageTime: DateTime.now(),
-      readBy: [],
-    );
 
     try {
-      DocumentReference docRef = await chatCollection.add(chat.toMap());
+      DocumentReference docRef = await chatCollection.add({
+        'userIds': [currentUserId, friendId],
+        'lastMessage': '',
+        'lastMessageTime': DateTime.now(),
+        'readBy': [],
+      });
       return docRef.id;
     } catch (e) {
       if (kDebugMode) {
@@ -33,10 +30,13 @@ class PrivateMessageService extends GetxService {
     await chatCollection.doc(chatId)
         .collection('messages').doc().set(message.toMap());
 
-    /*await chatCollection.doc(chatId).update({  // This works - deaktivated for cost efficiency
+    await chatCollection.doc(chatId).update({
       'lastMessage': message.text,
       'lastMessageTime': message.timestamp,
-    });*/
+      'senderId': message.senderId,
+      'sendersAvatar': message.sendersAvatar,
+      'senderName': message.senderName,
+    });
   }
 
 
@@ -51,47 +51,68 @@ class PrivateMessageService extends GetxService {
   }
 
 
+
+
   Future<bool> deletePrivateMessageCollection(String collectionId) async {
-    DocumentReference docRef = chatCollection.doc(collectionId);
-    CollectionReference messagesRef = docRef.collection('messages');
+    if (collectionId.isEmpty) {
+      print("Invalid collection ID provided");
+      return false;
+    }
+
+    final DocumentReference docRef = chatCollection.doc(collectionId);
+    final CollectionReference messagesRef = docRef.collection('messages');
 
     try {
-      // First try with a small batch to minimize reads if collection is small
-      WriteBatch batch = FirebaseFirestore.instance.batch();
-      QuerySnapshot snapshot = await messagesRef.limit(50).get();
+      final docSnapshot = await docRef.get();
+      if (!docSnapshot.exists) {
+        print("Chat document doesn't exist: $collectionId");
+      }
 
-      // If we got less than 50 documents, we know we got all of them
-      // If we got exactly 50, there might be more
-      bool mightHaveMore = snapshot.docs.length == 50;
+      // Get total count of messages for logging
+      final QuerySnapshot countSnapshot = await messagesRef.get();
+      final int totalMessages = countSnapshot.size;
+
+      if (totalMessages == 0) {
+        await docRef.delete();
+        return true;
+      }
+
+      // Delete messages in smaller batches
+      const int batchSize = 50;
+      int deletedCount = 0;
 
       while (true) {
-        // Add current batch of documents to delete
-        for (final DocumentSnapshot doc in snapshot.docs) {
-          batch.delete(doc.reference);
-        }
+        final QuerySnapshot batch = await messagesRef.limit(batchSize).get();
 
-        // If we don't think there are more documents, or we didn't get any documents
-        // this time, break the loop
-        if (!mightHaveMore || snapshot.docs.isEmpty) {
+        if (batch.docs.isEmpty) {
           break;
         }
 
-        // If we got here, we need to commit this batch and get more documents
-        await batch.commit();
-        batch = FirebaseFirestore.instance.batch();
+        final WriteBatch writeBatch = FirebaseFirestore.instance.batch();
+        for (final doc in batch.docs) {
+          writeBatch.delete(doc.reference);
+        }
 
-        // Get next batch of documents
-        snapshot = await messagesRef.limit(500).get();
-        mightHaveMore = snapshot.docs.length == 500;
+        await writeBatch.commit();
+        deletedCount += batch.docs.length;
+
+        // Small delay to prevent overloading
+        await Future.delayed(const Duration(milliseconds: 50));
       }
 
-      // Commit any remaining deletes
-      if (snapshot.docs.isNotEmpty) {
-        await batch.commit();
+      // Final verification
+      final verificationSnapshot = await messagesRef.limit(1).get();
+      if (verificationSnapshot.docs.isEmpty) {
+        await docRef.delete();
+        print("Successfully deleted all messages and chat document");
+        return true;
+      } else {
+        print("Warning: Some messages may remain");
+        return false;
       }
-      await docRef.delete();
-      return true;
+
     } catch (e) {
+      print("Error in deletePrivateMessageCollection: $e");
       return false;
     }
   }

@@ -6,6 +6,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:playbazaar/controller/settings_controller/settings_controller.dart';
 import 'package:playbazaar/controller/user_controller/user_controller.dart';
 import 'package:playbazaar/games/games/quiz/screens/add_question.dart';
@@ -23,10 +24,12 @@ import 'package:playbazaar/screens/secondary_screens/friends_list.dart';
 import 'package:playbazaar/screens/secondary_screens/reset_password_page.dart';
 import 'package:playbazaar/screens/secondary_screens/search_page.dart';
 import 'package:playbazaar/screens/secondary_screens/settings_page.dart';
-import 'package:playbazaar/services/private_message_service.dart';
+import 'package:playbazaar/services/hive_services/hive_message_services.dart';
+import 'package:playbazaar/services/hive_services/hive_user_service.dart';
 import 'package:playbazaar/services/user_services.dart';
 import 'package:provider/provider.dart';
 import 'api/firestore/firestore_user.dart';
+import 'controller/message_controller/private_message_controller.dart';
 import 'controller/user_controller/auth_controller.dart';
 import 'games/games/quiz/main_quiz_page.dart';
 import 'games/games/quiz/screens/review_question_page.dart';
@@ -38,12 +41,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   final notificationService = NotificationService();
   await notificationService.init();
-
 
   await dotenv.load(fileName: "assets/config/.env");
   SecureKeyStorage secureStorage = SecureKeyStorage();
@@ -51,6 +54,9 @@ Future<void> main() async {
   String iv = dotenv.env['AES_IV'] ?? '';
   await secureStorage.storeKeys(key, iv);
 
+  await Hive.initFlutter();
+  final recentUsersService = Get.put(HiveUserService());
+  await recentUsersService.init();
 
   if(Platform.isAndroid){
     /*SystemChrome.setEnabledSystemUIMode(
@@ -68,7 +74,7 @@ Future<void> main() async {
   Get.put(AuthController(), permanent: true);
   Get.put(SettingsController(), permanent: true);
   Get.put(UserServices(), permanent: true);
-  Get.put(PrivateMessageService(), permanent: true);
+  Get.put(PrivateMessageController(), permanent: true);
   Get.put(UserController(), permanent: true);
 
   runApp(
@@ -238,7 +244,7 @@ class _PlayBazaarState extends State<PlayBazaar> {
                           chatId: args['chatId'],
                           chatName: args['chatName'],
                           userName: args['userName'],
-                          recieverId: args['recieverId'],
+                          recieverId: args['receiverId'],
                         );
                       },
                     ),

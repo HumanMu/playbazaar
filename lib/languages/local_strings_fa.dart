@@ -19,7 +19,7 @@ class LocalStringsFa extends Translations {
       'add_question_title': 'ارسال سؤال',
       'correct_answer_hint' : 'جواب درست',
       'pick_quiz_hint' : 'به کدام آزمون اضافه شود؟',
-      'question': 'سؤال', // Remove this but be aware of it could be used somewhere
+      'question': 'سؤال',
       'your_answer': 'پاسخ شما',
       'correct_answer': 'پاسخ درست',
       'correct_answers': 'پاسخ‌های صحیح',
@@ -90,6 +90,8 @@ class LocalStringsFa extends Translations {
       'my_memberships' : "عضویت های من",
       'write_message_here': "پیام خود را اینجا بنویس ...",
       'search_friends' : 'جستجو به دنبال دوست جدید ...',
+      'search_in_friends': 'جستجو در میان دوستان...',
+      'msg_friend_not_found': 'دوستی با این نام پیدا نشد',
       'search_groups' : 'جستجو به دنبال گروه جدید ...',
       'search' : 'جستجو',
       'choose_language' : 'زبان دلخواه خود را انتخاب کن',
@@ -114,17 +116,18 @@ class LocalStringsFa extends Translations {
       'details': 'جزئیات',
       'select' : 'انتخاب کنید',
       'sounds': 'صداها',
+      'say_hi': 'سلام کن به',
 
 
       // Friends
-      'friends' : 'دوست',
+      'friends' : 'دوستان',
       'empty_friend_list': 'شما هنوز دوستی ندارید',
       'friend_request': 'درخواست دوستی',
       'friends_messages': 'پیام از طرف دوستان',
 
 
       // Buttons
-      'btn_chats' : 'اتاق بحث',
+      'btn_chats' : 'پیام‌ها',
       'btn_home': 'خانه',
       'btn_cancel': 'لغو',
       'btn_create': 'ثبت کن',
@@ -167,7 +170,7 @@ class LocalStringsFa extends Translations {
       'fill_all_input_title': 'فرستادن سؤال',
 
 
-      // Message
+      // Snackbar Message
       'leaving_group': 'مطمئن هستی از اینکه گروه را ترک میکنی؟',
       'leaving_group_succed' : 'با موفقیت از گروه خارج شدی',
       'group_membership_succed' : 'با موفقیت عضو گروه شدی',

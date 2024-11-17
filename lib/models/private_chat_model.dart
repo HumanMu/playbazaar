@@ -36,5 +36,33 @@ class PrivateChatModel {
   }
 }
 
+class PrivateMessageModel {
+  final String messageId;
+  final String chatId;
+  final String senderId;
+  final String content;
+  final DateTime timestamp;
+
+  PrivateMessageModel({
+    required this.messageId,
+    required this.chatId,
+    required this.senderId,
+    required this.content,
+    required this.timestamp,
+  });
+
+  // Factory method to create a ChatModel from Firestore DocumentSnapshot
+  factory PrivateMessageModel.fromFirestore(DocumentSnapshot<Map<String, dynamic>> doc) {
+    final data = doc.data()!;
+    return PrivateMessageModel(
+      messageId: data['messageId'],
+      chatId: data['chatId'],
+      senderId: data['senderId'],
+      content: data['content'],
+      timestamp:(data['timestamp'] as Timestamp).toDate()
+    );
+  }
+}
+
 
 

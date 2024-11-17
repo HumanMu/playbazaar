@@ -2,20 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:playbazaar/controller/user_controller/user_controller.dart';
 import 'package:playbazaar/functions/string_cases.dart';
+import 'package:playbazaar/services/hive_services/hive_user_service.dart';
 import 'package:playbazaar/utils/show_custom_snackbar.dart';
 
 class FriendsListTile extends StatefulWidget {
   final String friendId;
   final String fullname;
   final Function()? onTap;
-  final String? availabilityState;
+  final String? lastMessage;
 
   const FriendsListTile({
     super.key,
     required this.friendId,
     required this.fullname,
     this.onTap,
-    this.availabilityState,
+    this.lastMessage,
   });
 
   @override
@@ -24,53 +25,18 @@ class FriendsListTile extends StatefulWidget {
 
 class _FriendsListTile extends State<FriendsListTile> {
   final UserController userController = Get.find<UserController>();
-  String currentUserName = "";
-
-  void _showMenu(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return Container(
-          height: 150,
-          margin: EdgeInsets.symmetric(horizontal: 10),
-          child: Column(
-            children: [
-              ListTile(
-                leading: const Icon(Icons.delete),
-                title: Text("${"delete_friendship".tr}: ${widget.fullname}"),
-                onTap: () {
-                  // Handle delete friendship logic here
-                  Navigator.pop(context); // Close the menu
-                  _deleteFriendship(); // Call your delete method
-                },
-              ),
-              // You can add more options here if needed
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  void _deleteFriendship() async {
-    bool deleteResult = await userController.removeFriendById(widget.friendId);
-    if(deleteResult){
-      showCustomSnackbar("${widget.fullname} ${"removed_from_friends".tr}", true);
-    }
-    else{
-      showCustomSnackbar("unexpected_result".tr, false);
-    }
-  }
+  final HiveUserService hiveUserService = Get.find<HiveUserService>();
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: widget.onTap,
-      child: Container(
-        color: Colors.white,
-        margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+
+      child: InkWell( // Replace GestureDetector with InkWell
+        onTap: widget.onTap,
         child: ListTile(
-          contentPadding: const EdgeInsets.symmetric(horizontal: 10),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+          dense: true,
           leading: CircleAvatar(
             radius: 20,
             backgroundColor: Colors.red,
@@ -89,15 +55,17 @@ class _FriendsListTile extends State<FriendsListTile> {
             textAlign: TextAlign.start,
             style: const TextStyle(
               fontWeight: FontWeight.bold,
+              fontSize: 15
             ),
           ),
           subtitle: Row(
             children: [
-              Text("${"status".tr}:"),
+              widget.lastMessage == 'say_hi'
+                ? Text('${"say_hi".tr} ${capitalizeFirstName(widget.fullname)}',
+                    style: TextStyle(fontStyle: FontStyle.italic, fontSize: 12),
+                )
+                : Text(widget.lastMessage ?? ''),
               const SizedBox(width: 10),
-              widget.availabilityState == "Online"
-                  ? Text('online'.tr, style: const TextStyle(color: Colors.green, fontSize: 11))
-                  : Text('offline'.tr, style: const TextStyle(color: Colors.black, fontSize: 12)),
             ],
           ),
           trailing: IconButton(
@@ -108,4 +76,48 @@ class _FriendsListTile extends State<FriendsListTile> {
       ),
     );
   }
+
+  Future<void> _deleteFriendship() async {
+    try {
+      bool deleteResult = await userController.removeFriendById(widget.friendId);
+
+      if (deleteResult) {
+        await hiveUserService.deleteRecentUser(widget.friendId);
+
+        // Update the UI state in UserController
+        userController.searchedFriends.removeWhere((friend) => friend.uid == widget.friendId);
+
+        showCustomSnackbar("${widget.fullname} ${"removed_from_friends".tr}", true);
+      } else {
+        showCustomSnackbar("unexpected_result".tr, false);
+      }
+    } catch (e) {
+      showCustomSnackbar("error_deleting_friend".tr, false);
+    }
+  }
+
+  void _showMenu(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          height: 150,
+          margin: const EdgeInsets.symmetric(horizontal: 10),
+          child: Column(
+            children: [
+              ListTile(
+                leading: const Icon(Icons.delete),
+                title: Text("${"delete_friendship".tr}: ${capitalizeFullname(widget.fullname)}"),
+                onTap: () {
+                  Navigator.pop(context);
+                  _deleteFriendship();
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
 }
