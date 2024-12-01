@@ -6,7 +6,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:playbazaar/controller/settings_controller/settings_controller.dart';
 import 'package:playbazaar/controller/user_controller/user_controller.dart';
 import 'package:playbazaar/games/games/quiz/screens/add_question.dart';
@@ -52,10 +52,8 @@ Future<void> main() async {
   String key = dotenv.env['AES_KEY'] ?? '';
   String iv = dotenv.env['AES_IV'] ?? '';
   await secureStorage.storeKeys(key, iv);
-
   await Hive.initFlutter();
-  final recentUsersService = Get.put(HiveUserService());
-  await recentUsersService.init();
+  Get.put(HiveUserService());
 
   if(Platform.isAndroid){
     /*SystemChrome.setEnabledSystemUIMode(

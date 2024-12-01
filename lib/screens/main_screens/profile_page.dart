@@ -5,8 +5,10 @@ import 'package:playbazaar/functions/string_cases.dart';
 import '../../api/Authentication/auth_service.dart';
 import '../../controller/user_controller/user_controller.dart';
 import '../../languages/custom_language.dart';
+import '../../services/hive_services/hive_user_service.dart';
 import '../widgets/sidebar_drawer.dart';
 import '../widgets/text_boxes/text_inputs.dart';
+
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -17,6 +19,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePage extends State<ProfilePage> {
   final userController = Get.find<UserController>();
+  final recentUsersService = Get.find<HiveUserService>();
   AuthService authService = AuthService();
   bool isSignedIn = false;
   bool isEmailVerified = false;
@@ -42,6 +45,8 @@ class _ProfilePage extends State<ProfilePage> {
         isSignedIn = true;
         isLoading = false;
       });
+
+      await recentUsersService.init();
     }
     else{
       Get.offNamed('/login');

@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../../api/Authentication/auth_service.dart';
 import '../../controller/user_controller/auth_controller.dart';
 import '../../helper/sharedpreferences/sharedpreferences.dart';
+import '../../services/hive_services/hive_user_service.dart';
 import 'avatars/primary_avatar.dart';
 import 'tiles/list_tile.dart';
 
@@ -23,6 +24,7 @@ class SidebarDrawer extends StatefulWidget {
 
 class SidebarDrawerState extends State<SidebarDrawer> {
   final String? currentUserId = FirebaseAuth.instance.currentUser!.uid;
+  final recentUsersService = Get.find<HiveUserService>();
   AuthController authController = Get.put(AuthController());
   late int friendRequestLength = 0;
   String userName = "";
@@ -51,6 +53,7 @@ class SidebarDrawerState extends State<SidebarDrawer> {
 
   void logoutAction() async {
     await authController.logOutUser();
+    await recentUsersService.clearRecentUsers();
     if (!mounted) return;
     Get.offAllNamed('/login');
   }

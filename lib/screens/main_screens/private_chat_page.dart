@@ -46,7 +46,6 @@ class _PrivateChatPageState extends State<PrivateChatPage> {
     Get.create(() => PrivateMessageController());
     controller = Get.find<PrivateMessageController>();
     controller.loadMessages(widget.chatId);
-    ever(controller.messages, (_) => scrollToBottom());
     NotificationService().activeChatWithUser(widget.recieverId);
   }
 
@@ -209,13 +208,11 @@ class _PrivateChatPageState extends State<PrivateChatPage> {
   }
 
   void scrollToBottom() {
-    if (_scrollController.hasClients) {
-      _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOut,
-      );
-    }
+    Future.delayed(Duration.zero, () {
+      if (_scrollController.hasClients) {
+        _scrollController.jumpTo(0); // Since the list is reversed
+      }
+    });
   }
 
 
@@ -244,6 +241,7 @@ class _PrivateChatPageState extends State<PrivateChatPage> {
         setState(() {
           messageBox.text = "";
         });
+        scrollToBottom(); // Scroll to the bottom of the chat messages
       }
     else{
       showCustomSnackbar("unexpected_result".tr, false);

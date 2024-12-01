@@ -86,11 +86,11 @@ class HiveUserService extends GetxService {
 
     if (existingUser != null) {
       recentUser = existingUser.copyWith(
-        lastMessage: dto.lastMessage,
-        lastMessageTime: dto.timestamp.toDate(),
-        avatarImage: dto.avatarImage,
-        friendshipStatus: dto.friendshipStatus,
-        chatId: dto.chatId
+          lastMessage: dto.lastMessage,
+          lastMessageTime: dto.timestamp.toDate(),
+          avatarImage: dto.avatarImage,
+          friendshipStatus: dto.friendshipStatus,
+          chatId: dto.chatId
       );
     } else {
       recentUser = RecentUser.fromDto(dto);
