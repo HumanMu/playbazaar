@@ -72,7 +72,7 @@ ios/Runner/GeneratedPluginRegistrant.*
 .flutter_secret
 .flutter_plugins
 google-services.json
-assets/config/.env
+/assets/config/.env
 push_notification_key.dart
 key.properties
 

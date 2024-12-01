@@ -215,6 +215,8 @@ class LocalStringsFa extends Translations {
       'allowed_message_length_1000' : 'لطفاً پیام خود را به کمتر از ۱۰۰۰ کاراکتر محدود کنید',
       'allowed_message_length_300' : 'لطفاً پیام خود را به کمتر از ۳۰۰ کاراکتر محدود کنید',
       'current_message_length' : 'طول فعلی پیام',
+      'reached_start_of_conversation': 'به ابتدای گفتگو رسیده‌اید',
+      'auto_destractor_message': 'پیام‌ها به طور خودکار پس از ۵ روز حذف می‌شوند',
       'chat_creation_failed': 'ایجاد چت ناموفق بود',
       'failed_to_accept_friend_request': 'قبول درخواست دوستی ناموفق بود',
 

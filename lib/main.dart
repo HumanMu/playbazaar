@@ -24,7 +24,6 @@ import 'package:playbazaar/screens/secondary_screens/friends_list.dart';
 import 'package:playbazaar/screens/secondary_screens/reset_password_page.dart';
 import 'package:playbazaar/screens/secondary_screens/search_page.dart';
 import 'package:playbazaar/screens/secondary_screens/settings_page.dart';
-import 'package:playbazaar/services/hive_services/hive_message_services.dart';
 import 'package:playbazaar/services/hive_services/hive_user_service.dart';
 import 'package:playbazaar/services/user_services.dart';
 import 'package:provider/provider.dart';

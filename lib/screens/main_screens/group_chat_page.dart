@@ -7,7 +7,7 @@ import 'package:playbazaar/functions/string_cases.dart';
 import 'package:playbazaar/utils/show_custom_snackbar.dart';
 import '../../admob/banner_ad.dart';
 import '../../models/group_message.dart';
-import '../widgets/cards/message_tile.dart';
+import '../widgets/tiles/message_tile_group.dart';
 
 class GroupChatPage extends StatefulWidget {
   final String chatId;
@@ -156,7 +156,7 @@ class _GroupChatPageState extends State<GroupChatPage> {
         controller: _scrollController,
         itemBuilder: (context, index) {
           final message = _messageController.messages[index];
-          return MessageTile(
+          return MessageTileGroup(
             message: message.text,
             sender: message.senderName,
             sendByMe: message.senderId == currentUserId? true: false,

@@ -7,7 +7,7 @@ import 'package:playbazaar/utils/show_custom_snackbar.dart';
 import '../../constants/enums.dart';
 import '../../controller/message_controller/private_message_controller.dart';
 import '../../services/hive_services/hive_user_service.dart';
-import '../widgets/cards/recieved_requests_tile.dart';
+import '../widgets/tiles/recieved_requests_tile.dart';
 import '../widgets/text_boxes/text_inputs.dart';
 import '../widgets/tiles/friends_list_tile.dart';
 

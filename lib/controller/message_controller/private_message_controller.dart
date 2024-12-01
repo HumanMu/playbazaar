@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:playbazaar/models/DTO/recent_interacted_user_dto.dart';
 import 'package:playbazaar/services/hive_services/hive_user_service.dart';
@@ -12,6 +15,11 @@ class PrivateMessageController extends GetxController {
   RxList<PrivateMessage> messages = <PrivateMessage>[].obs;
   RxList<RecentInteractedUserDto>? recentInteractedUserList;
   RxBool isLoading = true.obs;
+  RxBool hasMoreMessages  = true.obs;
+  DocumentSnapshot? lastDocument;
+  StreamSubscription? _messagesSubscription;
+  RxBool hasReachedEnd = false.obs;
+
 
 
   @override
@@ -36,9 +44,42 @@ class PrivateMessageController extends GetxController {
 
   void loadMessages(String chatId) {
     isLoading.value = true;
-    chatService.getMessages(chatId).listen((messageList) {
-      messages.value = messageList;
+    _messagesSubscription = chatService.getMessages(chatId).listen((messageList) {
+      if (messageList.isNotEmpty) {
+        messages.value = messageList;
+        lastDocument = messageList.last.documentSnapshot;
+      }
+      isLoading.value = false;
+    }, onError: (error) {
+      print('Error loading messages: $error');
       isLoading.value = false;
     });
+  }
+
+  Future<void> loadMoreMessages(String chatId) async {
+    if (isLoading.value || !hasMoreMessages.value || lastDocument == null) return;
+
+    isLoading.value = true;
+    try {
+      final moreMessages = await chatService.loadMoreMessages(chatId, lastDocument!);
+
+      if (moreMessages.isEmpty) {
+        hasMoreMessages.value = false;
+        hasReachedEnd.value = true;
+      } else {
+        // Ensure no duplicates when prepending
+        final Set<String> existingMessageIds = messages.map((m) => m.documentSnapshot!.id).toSet();
+        final filteredMoreMessages = moreMessages.where((m) => !existingMessageIds.contains(m.documentSnapshot!.id)).toList();
+
+        messages.addAll(filteredMoreMessages);
+        lastDocument = filteredMoreMessages.last.documentSnapshot;
+      }
+    } catch (e) {
+      print('Error loading more messages: $e');
+      hasMoreMessages.value = false;
+      hasReachedEnd.value = true;
+    } finally {
+      isLoading.value = false;
+    }
   }
 }

@@ -26,9 +26,16 @@ class PrivateMessageService extends GetxService {
   }
 
 
-  Future<void> sendMessage(String chatId, PrivateMessage message) async {
+  Future<void> sendMessage(String chatId, PrivateMessage message) async   {
     await chatCollection.doc(chatId)
-        .collection('messages').doc().set(message.toMap());
+        .collection('messages')
+        .doc()
+        .set({
+      ...message.toFirestore(),
+      'expiresAt': FieldValue.serverTimestamp(), // Adds server timestamp
+      'ttl': DateTime.now().add(Duration(seconds: 5)).millisecondsSinceEpoch // Optional explicit expiration
+    });
+        //.collection('messages').doc().set(message.toFirestore());
 
     await chatCollection.doc(chatId).update({
       'lastMessage': message.text,
@@ -40,17 +47,30 @@ class PrivateMessageService extends GetxService {
   }
 
 
-  Stream<List<PrivateMessage>> getMessages(String chatId) {
-    return chatCollection.doc(chatId)
+  Stream<List<PrivateMessage>> getMessages(String chatId, {int pageSize = 10}) {
+    return chatCollection
+        .doc(chatId)
         .collection('messages')
-        .orderBy('timestamp', descending: false)
+        .orderBy('timestamp', descending: true)
+        .limit(pageSize)
         .snapshots()
-        .map((snapshot) {
-      return snapshot.docs.map((doc) => PrivateMessage.fromFirestore(doc)).toList();
-    });
+        .map((snapshot) => snapshot.docs
+        .map((doc) => PrivateMessage.fromFirestore(doc))
+        .toList());
   }
 
-
+  Future<List<PrivateMessage>> loadMoreMessages(String chatId, DocumentSnapshot lastDocument, {int pageSize = 10}) {
+    return chatCollection
+        .doc(chatId)
+        .collection('messages')
+        .orderBy('timestamp', descending: true)
+        .startAfterDocument(lastDocument)
+        .limit(pageSize)
+        .get()
+        .then((snapshot) => snapshot.docs
+        .map((doc) => PrivateMessage.fromFirestore(doc))
+        .toList());
+  }
 
 
   Future<bool> deletePrivateMessageCollection(String collectionId) async {

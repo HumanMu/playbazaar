@@ -214,6 +214,8 @@ class LocalStringsEn extends Translations {
       'allowed_message_length_1000' : 'Please limit your message to under 1000 characters.',
       'allowed_message_length_300' : 'Please limit your message to under 300 characters.',
       'current_message_length' : 'Current message length',
+      'reached_start_of_conversation': 'You’ve reached the start of the conversation',
+      'auto_destractor_message': 'Messages will be automatically deleted after 5 days',
       'chat_creation_failed': 'Chat creation failed',
       'failed_to_accept_friend_request': 'Failed to accept friend request',
 

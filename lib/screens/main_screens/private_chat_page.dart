@@ -8,7 +8,7 @@ import 'package:playbazaar/models/DTO/recent_interacted_user_dto.dart';
 import 'package:playbazaar/utils/show_custom_snackbar.dart';
 import '../../admob/banner_ad.dart';
 import '../../models/private_message_model.dart';
-import '../widgets/cards/message_tile.dart';
+import '../widgets/tiles/message_tile_private.dart';
 import 'package:playbazaar/services/push_notification_service/push_notification_service.dart';
 
 class PrivateChatPage extends StatefulWidget {
@@ -33,7 +33,7 @@ class PrivateChatPage extends StatefulWidget {
 
 class _PrivateChatPageState extends State<PrivateChatPage> {
   late PrivateMessageController controller;
-  late ScrollController _scrollController;
+  final ScrollController _scrollController = ScrollController();
   String currentUserName = FirebaseAuth.instance.currentUser?.displayName ?? "";
   final String? currentUserId = FirebaseAuth.instance.currentUser!.uid;
   TextEditingController messageBox = TextEditingController();
@@ -45,7 +45,6 @@ class _PrivateChatPageState extends State<PrivateChatPage> {
     super.initState();
     Get.create(() => PrivateMessageController());
     controller = Get.find<PrivateMessageController>();
-    _scrollController = ScrollController();
     controller.loadMessages(widget.chatId);
     ever(controller.messages, (_) => scrollToBottom());
     NotificationService().activeChatWithUser(widget.recieverId);
@@ -139,29 +138,85 @@ class _PrivateChatPageState extends State<PrivateChatPage> {
   }
 
   Widget chatMessage() {
-    controller.loadMessages(widget.chatId);
     return Obx(() {
       if (controller.messages.isEmpty) {
-        return const Center(
-          child: Text(''),
-        );
+        return Center(child: Text("auto_destractor_message".tr));
       }
-      return ListView.builder(
-        itemCount: controller.messages.length,
-        controller: _scrollController,
-        itemBuilder: (context, index) {
-          final message = controller.messages[index];
-          return MessageTile(
-            message: message.text,
-            sender: message.senderName,
-            sendByMe: message.recipientId == currentUserId? true: false,
-          );
+
+      return NotificationListener<ScrollNotification>(
+        onNotification: (ScrollNotification scrollInfo) {
+          messageScrollListener(widget.chatId);
+          return false;
         },
+        child: Column(
+          children: [
+            Expanded(
+              child: ListView.builder(
+                itemCount: controller.messages.length +
+                    (controller.isLoading.value ? 1 : 0) +
+                    (controller.hasReachedEnd.value ? 1 : 0),
+                reverse: true,
+                controller: _scrollController,
+                itemBuilder: (context, index) {
+                  if (controller.isLoading.value && index == 0) {
+                    return const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                  }
+
+                  // Adjust index if loading indicator is present
+                  int adjustedIndex = controller.isLoading.value
+                      ? index - 1
+                      : index;
+
+                  if (controller.hasReachedEnd.value && adjustedIndex == controller.messages.length) {
+                    return Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text("reached_start_of_conversation".tr,
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                      ),
+                    );
+                  }
+
+                  final message = controller.messages[adjustedIndex];
+                  return MessageTilePrivate(
+                    message: message.text,
+                    sender: message.senderName,
+                    sendByMe: message.recipientId == currentUserId,
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       );
-    }
-    );
+    });
   }
 
+
+  void messageScrollListener(String chatId) {
+    if(controller.isLoading.value || !controller.hasMoreMessages.value){
+      return;
+    }
+    if(_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
+      controller.loadMoreMessages(chatId);
+    }
+  }
+
+  void scrollToBottom() {
+    if (_scrollController.hasClients) {
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    }
+  }
 
 
   sendPrivateMessage() {
@@ -194,17 +249,6 @@ class _PrivateChatPageState extends State<PrivateChatPage> {
       showCustomSnackbar("unexpected_result".tr, false);
     }
 
-  }
-
-
-  void scrollToBottom() {
-    if (_scrollController.hasClients) {
-      _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOut,
-      );
-    }
   }
 
 

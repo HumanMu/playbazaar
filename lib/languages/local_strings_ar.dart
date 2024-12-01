@@ -217,6 +217,8 @@ class LocalStringsAr extends Translations {
       'allowed_message_length_1000' : 'يرجى تحديد رسالتك بأقل من 1000 حرف',
       'allowed_message_length_300' : 'يرجى تحديد رسالتك بأقل من 300 حرف',
       'current_message_length' : 'طول الرسالة الحالي',
+      'reached_start_of_conversation': 'لقد وصلت إلى بداية المحادثة',
+      'auto_destractor_message': 'سيتم حذف الرسائل تلقائياً بعد 5 أيام',
       'chat_creation_failed': 'فشل في إنشاء المحادثة',
       'failed_to_accept_friend_request': 'فشل في قبول طلب الصداقة',
 

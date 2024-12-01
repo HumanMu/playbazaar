@@ -216,6 +216,8 @@ class LocalStringsDa extends Translations {
       'allowed_message_length_1000' : 'Venligst begræns din besked til under 1000 tegn',
       'allowed_message_length_300' : 'Venligst begræns din besked til under 300 tegn',
       'current_message_length' : 'Nuværende beskedlængde',
+      'reached_start_of_conversation': 'Du er nået til starten af samtalen',
+      'auto_destractor_message': 'Beskeder bliver automatisk slettet efter 5 dage',
       'chat_creation_failed': 'Oprettelse af chat mislykkedes',
       'failed_to_accept_friend_request': 'Kunne ikke acceptere venneanmodning',
 

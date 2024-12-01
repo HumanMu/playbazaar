@@ -105,6 +105,8 @@ class UserServices extends GetxService {
         'friendshipStatus': friendShipState2String(FriendshipStatus.received),
         'chatId': ''
       });
+
+      
       return true;
     }catch(e){
       if (kDebugMode) {
@@ -113,6 +115,8 @@ class UserServices extends GetxService {
       return false;
     }
   }
+
+
 
 
   Future<RecentInteractedUserDto?> acceptFriendRequest(String chatId, String friendId) async {

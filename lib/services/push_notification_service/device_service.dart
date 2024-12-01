@@ -9,6 +9,8 @@ import 'package:flutter/foundation.dart';
 import 'package:playbazaar/models/DTO/device_info_dto.dart';
 import 'dart:io';
 
+import '../../helper/encryption/encrypt_string.dart';
+
 
 
 class DeviceService {
@@ -22,6 +24,7 @@ class DeviceService {
       String? userId = FirebaseAuth.instance.currentUser?.uid;
       String? fcmToken = await _firebaseMessaging.getToken();
       DeviceInfo deviceInfo = await getDeviceInfo();
+      String? encryptedFcm = await EncryptionHelper.encryptPassword(fcmToken?? '');
 
       if (userId == null) {
         if(kDebugMode) {
@@ -31,7 +34,7 @@ class DeviceService {
       }
 
       PushNotificationModel device = PushNotificationModel(
-        fcmToken: fcmToken,
+        fcmToken: encryptedFcm,
         deviceId: deviceInfo.deviceId,
         fcmFriendRequest: true,
         fcmNewMessages: true,

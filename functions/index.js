@@ -6,4 +6,4 @@ admin.initializeApp();
 
 // Export the function directly
 exports.friendRequestNotifications = friendRequestNotifications;
-//exports.privateMessagesNotifications = privateMessagesNotifications;
+exports.privateMessagesNotifications = privateMessagesNotifications;

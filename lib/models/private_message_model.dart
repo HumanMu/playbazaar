@@ -7,6 +7,7 @@ class PrivateMessage {
   String senderName;
   String text;
   Timestamp timestamp;
+  DocumentSnapshot? documentSnapshot;
 
   PrivateMessage({
     required this.senderId,
@@ -15,10 +16,11 @@ class PrivateMessage {
     required this.senderName,
     required this.text,
     required this.timestamp,
+    this.documentSnapshot
   });
 
   // Convert a MessageModel to a Map for Firestore
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toFirestore() {
     return {
       'senderId': senderId,
       'sendersAvatar': sendersAvatar,
@@ -39,6 +41,7 @@ class PrivateMessage {
       senderName: data['senderName'],
       text: data['text'],
       timestamp: (data['timestamp']),
+      documentSnapshot: doc,
     );
   }
 }
