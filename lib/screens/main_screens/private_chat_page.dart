@@ -147,51 +147,57 @@ class _PrivateChatPageState extends State<PrivateChatPage> {
           messageScrollListener(widget.chatId);
           return false;
         },
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView.builder(
-                itemCount: controller.messages.length +
-                    (controller.isLoading.value ? 1 : 0) +
-                    (controller.hasReachedEnd.value ? 1 : 0),
-                reverse: true,
-                controller: _scrollController,
-                itemBuilder: (context, index) {
-                  if (controller.isLoading.value && index == 0) {
-                    return const Center(
-                      child: Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: CircularProgressIndicator(),
-                      ),
-                    );
-                  }
-
-                  // Adjust index if loading indicator is present
-                  int adjustedIndex = controller.isLoading.value
-                      ? index - 1
-                      : index;
-
-                  if (controller.hasReachedEnd.value && adjustedIndex == controller.messages.length) {
-                    return Center(
-                      child: Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text("reached_start_of_conversation".tr,
-                          style: TextStyle(color: Colors.grey),
+        child:Container(
+          constraints: BoxConstraints(
+          maxWidth: 600, // Max width of chat area
+          ),
+          color: Colors.white,
+          child:  Column(
+            children: [
+              Expanded(
+                child: ListView.builder(
+                  itemCount: controller.messages.length +
+                      (controller.isLoading.value ? 1 : 0) +
+                      (controller.hasReachedEnd.value ? 1 : 0),
+                  reverse: true,
+                  controller: _scrollController,
+                  itemBuilder: (context, index) {
+                    if (controller.isLoading.value && index == 0) {
+                      return const Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: CircularProgressIndicator(),
                         ),
-                      ),
-                    );
-                  }
+                      );
+                    }
 
-                  final message = controller.messages[adjustedIndex];
-                  return MessageTilePrivate(
-                    message: message.text,
-                    sender: message.senderName,
-                    sendByMe: message.recipientId == currentUserId,
-                  );
-                },
+                    // Adjust index if loading indicator is present
+                    int adjustedIndex = controller.isLoading.value
+                        ? index - 1
+                        : index;
+
+                    if (controller.hasReachedEnd.value && adjustedIndex == controller.messages.length) {
+                      return Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text("reached_start_of_conversation".tr,
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                        ),
+                      );
+                    }
+
+                    final message = controller.messages[adjustedIndex];
+                    return MessageTilePrivate(
+                      message: message.text,
+                      sender: message.senderName,
+                      sendByMe: message.recipientId == currentUserId,
+                    );
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       );
     });

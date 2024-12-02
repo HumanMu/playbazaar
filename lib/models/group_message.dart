@@ -18,7 +18,7 @@ class GroupMessage {
   });
 
   // Convert Message object to a map
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toFirestore() {
     return {
       'senderId': senderId,
       'senderName': senderName,

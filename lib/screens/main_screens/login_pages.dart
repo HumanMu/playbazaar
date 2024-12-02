@@ -43,98 +43,108 @@ class _LoginPage extends State<LoginPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const HeaderStack(),
-                    Container(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Form(
-                            key: formKey,
-                            child: Column(
-                              children: [
-                                TextFormField(
-                                  decoration: textInputDecoration.copyWith(
-                                    labelText: "email".tr,
-                                    prefixIcon: const Icon(
-                                      Icons.email,
+                    ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxWidth: 600,  // Maximum width of the textfields
+                      ),
+                      child: Container(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Form(
+                              key: formKey,
+                              child: Column(
+                                children: [
+                                  TextFormField(
+                                    decoration: textInputDecoration.copyWith(
+                                      labelText: "email".tr,
+                                      prefixIcon: const Icon(
+                                        Icons.email,
+                                      ),
                                     ),
-                                  ),
-                                  onChanged: (val) {
-                                    setState(() {
-                                      email = val.toLowerCase();
-                                    }
-                                    );
-                                  },
-                                  validator: (val) {
-                                    bool isValid = EmailValidator.validate(email);
-                                    return isValid ? null : "not_valid_email".tr;
-                                  },
+                                    onChanged: (val) {
+                                      setState(() {
+                                        email = val.toLowerCase();
+                                      }
+                                      );
+                                    },
+                                    validator: (val) {
+                                      bool isValid = EmailValidator.validate(email);
+                                      return isValid ? null : "not_valid_email".tr;
+                                    },
 
-                                ),
-                                const SizedBox(height: 10,),
-                                TextFormField(
-                                  obscureText: true,
-                                  decoration: textInputDecoration.copyWith(
-                                    labelText: "password".tr,
-                                    prefixIcon: const Icon(
-                                      Icons.lock,
+                                  ),
+                                  const SizedBox(height: 10,),
+                                  TextFormField(
+                                    obscureText: true,
+                                    decoration: textInputDecoration.copyWith(
+                                      labelText: "password".tr,
+                                      prefixIcon: const Icon(
+                                        Icons.lock,
+                                      ),
                                     ),
-                                  ),
-                                  onChanged: (val) {
-                                    setState(() {
-                                      password = val;
-                                    }
-                                    );
-                                  },
+                                    onChanged: (val) {
+                                      setState(() {
+                                        password = val;
+                                      }
+                                      );
+                                    },
 
-                                ),
-                                TextButton(
-                                  onPressed: () {
-                                    Get.toNamed('/resetPassword');
-                                  },
-                                  child: Text('forgot_password'.tr),
-                                ),
-                                const SizedBox(height: 10),
-                                _submitButton(),
-                                const SizedBox(height: 15),
-                                Container(
-                                    alignment: Alignment.center,
-                                    child: TextButton(
-                                      onPressed: () {
-                                        CustomLanguage().languageDialog(context);
-                                      },
-                                      child: Text('language'.tr,
-                                          style: const TextStyle(
-                                              color: Colors.red)),
-                                    )
-                                ),
-                              ],
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      Get.toNamed('/resetPassword');
+                                    },
+                                    child: Text('forgot_password'.tr),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  _submitButton(),
+                                  const SizedBox(height: 15),
+                                  Container(
+                                      alignment: Alignment.center,
+                                      child: TextButton(
+                                        onPressed: () {
+                                          CustomLanguage().languageDialog(context);
+                                        },
+                                        child: Text('language'.tr,
+                                            style: const TextStyle(
+                                                color: Colors.red)),
+                                      )
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
-                    Container(
-                      margin: const EdgeInsets.only(bottom: 10),
-                      child: RichText(
-                        text: TextSpan(
-                            text: "not_have_account".tr,
-                            style: const TextStyle(
-                              color: Colors.white,
-                            ),
-                            children: [
-                              TextSpan(
-                                  text: 'make_account_here'.tr,
-                                  style: const TextStyle(
-                                    color: Colors.redAccent,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = () {
-                                      Get.offNamed('/register');
-                                    }),
-                            ]),
+                    ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxWidth: 600, // Set the maximum width here
+                      ),
+                      child:Container(
+                        margin: const EdgeInsets.only(bottom: 10),
+                        child: RichText(
+                          text: TextSpan(
+                              text: "not_have_account".tr,
+                              style: const TextStyle(
+                                color: Colors.white,
+                              ),
+                              children: [
+                                TextSpan(
+                                    text: 'make_account_here'.tr,
+                                    style: const TextStyle(
+                                      color: Colors.redAccent,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () {
+                                        Get.offNamed('/register');
+                                      }),
+                              ]),
+                        ),
                       ),
                     ),
                   ],

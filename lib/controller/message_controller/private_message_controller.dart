@@ -33,6 +33,7 @@ class PrivateMessageController extends GetxController {
       await chatService.sendMessage(chatId, pvm);
       await _recentUsersService.addOrUpdateRecentUser(userDto);
     }catch(e) {
+      print("Error sending message: $e");
       showCustomSnackbar("error_while_sending_message".tr, false);
     }
   }

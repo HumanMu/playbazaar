@@ -16,7 +16,7 @@ class MessageService {
         .doc(groupId)
         .collection('messages')
         .orderBy('timestamp')
-        .limit(10)
+        .limit(5)
         .snapshots()
         .map((snapshot) => snapshot.docs
         .map((doc) => GroupMessage.fromMap(doc.data()))
@@ -26,7 +26,16 @@ class MessageService {
 
   Future<void> sendMessageToGroup(String groupId, GroupMessage message) async {
     try {
-      await groupCollection.doc(groupId).collection('messages').add(message.toMap());
+      await groupCollection
+          .doc(groupId)
+          .collection('messages')
+          .add({
+        ...message.toFirestore(),
+        'createdAt': FieldValue.serverTimestamp(),
+        'expiresAt': Timestamp.fromDate(
+            DateTime.now().add(Duration(hours: 1))
+        )
+      });
     } catch (e) {
       if (kDebugMode) {
         print('Error sending message: $e');

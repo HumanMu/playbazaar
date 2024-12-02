@@ -95,6 +95,7 @@ class _GroupChatPageState extends State<GroupChatPage> {
             alignment: Alignment.bottomCenter,
             width: MediaQuery.of(context).size.width,
             child: Container(
+              constraints: BoxConstraints(maxWidth: 600),
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               width: MediaQuery.of(context).size.width,
               color: Colors.grey,
@@ -131,7 +132,7 @@ class _GroupChatPageState extends State<GroupChatPage> {
                           Icons.send,
                           color: Colors.white,
                         ),
-                      
+
                       ),
                     ),
                   ),
@@ -151,20 +152,24 @@ class _GroupChatPageState extends State<GroupChatPage> {
           child: Text(''),
         );
       }
-      return ListView.builder(
-        itemCount: _messageController.messages.length,
-        controller: _scrollController,
-        itemBuilder: (context, index) {
-          final message = _messageController.messages[index];
-          return MessageTileGroup(
-            message: message.text,
-            sender: message.senderName,
-            sendByMe: message.senderId == currentUserId? true: false,
-          );
-        },
+      return Container(
+          constraints: BoxConstraints(
+            maxWidth: 600,
+          ),
+          child: ListView.builder(
+            itemCount: _messageController.messages.length,
+            controller: _scrollController,
+            itemBuilder: (context, index) {
+              final message = _messageController.messages[index];
+              return MessageTileGroup(
+                message: message.text,
+                sender: message.senderName,
+                sendByMe: message.senderId == currentUserId? true: false,
+              );
+            },
+          ),
       );
-    }
-    );
+    });
   }
 
 

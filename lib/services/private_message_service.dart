@@ -32,8 +32,9 @@ class PrivateMessageService extends GetxService {
         .doc()
         .set({
       ...message.toFirestore(),
-      'expiresAt': FieldValue.serverTimestamp(), // Adds server timestamp
-      'ttl': DateTime.now().add(Duration(seconds: 5)).millisecondsSinceEpoch // Optional explicit expiration
+      'ttl_timestamp': Timestamp.fromDate(
+        DateTime.now().add(Duration(days: 7)) // Longer TTL reduces frequency
+      )
     });
         //.collection('messages').doc().set(message.toFirestore());
 

@@ -40,108 +40,113 @@ class _RegisterPage extends State<RegisterPage> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   const HeaderStack(),
-                  Container(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        RichText(
-                          text: TextSpan(
-                            text: "app_name".tr,
-                            style: const TextStyle(
-                                fontSize: 35, fontWeight: FontWeight.bold),
+                  ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxWidth: 600, // Maximum width of the textfields
+                    ),
+                    child: Container(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          RichText(
+                            text: TextSpan(
+                              text: "app_name".tr,
+                              style: const TextStyle(
+                                  fontSize: 35, fontWeight: FontWeight.bold),
+                            ),
                           ),
-                        ),
-                        Form(
-                            key: formKey,
-                            child: Column(
-                              children: [
-                                const SizedBox(height: 8),
-                                TextFormField(
-                                  decoration: textInputDecoration.copyWith(
-                                    labelText: "name".tr,
-                                    prefixIcon: const Icon(
-                                      Icons.person,
+                          Form(
+                              key: formKey,
+                              child: Column(
+                                children: [
+                                  const SizedBox(height: 8),
+                                  TextFormField(
+                                    decoration: textInputDecoration.copyWith(
+                                      labelText: "name".tr,
+                                      prefixIcon: const Icon(
+                                        Icons.person,
+                                      ),
                                     ),
+                                    onChanged: (val) {
+                                      setState(() {
+                                        firstname = val;
+                                      });
+                                    },
+                                    validator: (val) {
+                                      if (val!.isNotEmpty) {
+                                        return null;
+                                      } else {
+                                        return "name_is_required".tr;
+                                      }
+                                    },
                                   ),
-                                  onChanged: (val) {
-                                    setState(() {
-                                      firstname = val;
-                                    });
-                                  },
-                                  validator: (val) {
-                                    if (val!.isNotEmpty) {
-                                      return null;
-                                    } else {
-                                      return "name_is_required".tr;
-                                    }
-                                  },
-                                ),
-                                const SizedBox(height: 8),
-                                TextFormField(
-                                  decoration: textInputDecoration.copyWith(
-                                    labelText: "lastname".tr + "optional".tr,
-                                    prefixIcon: const Icon(
-                                      Icons.person,
+                                  const SizedBox(height: 8),
+                                  TextFormField(
+                                    decoration: textInputDecoration.copyWith(
+                                      labelText: "lastname".tr + "optional".tr,
+                                      prefixIcon: const Icon(
+                                        Icons.person,
+                                      ),
                                     ),
+                                    onChanged: (val) {
+                                      setState(() {
+                                        lastname = val;
+                                      });
+                                    },
                                   ),
-                                  onChanged: (val) {
-                                    setState(() {
-                                      lastname = val;
-                                    });
-                                  },
-                                ),
 
-                                const SizedBox(height: 8),
-                                TextFormField(
-                                  decoration: textInputDecoration.copyWith(
-                                    labelText: "email".tr,
-                                    prefixIcon: const Icon(
-                                      Icons.email,
+                                  const SizedBox(height: 8),
+                                  TextFormField(
+                                    decoration: textInputDecoration.copyWith(
+                                      labelText: "email".tr,
+                                      prefixIcon: const Icon(
+                                        Icons.email,
+                                      ),
                                     ),
+                                    onChanged: (val) {
+                                      setState(() {
+                                        email = val.toLowerCase();
+                                      });
+                                    },
                                   ),
-                                  onChanged: (val) {
-                                    setState(() {
-                                      email = val.toLowerCase();
-                                    });
-                                  },
-                                ),
-                                const SizedBox(height: 8),
-                                TextFormField(
-                                  obscureText: true,
-                                  decoration: textInputDecoration.copyWith(
-                                    labelText: "password".tr,
-                                    prefixIcon: const Icon(
-                                      Icons.lock,
+                                  const SizedBox(height: 8),
+                                  TextFormField(
+                                    obscureText: true,
+                                    decoration: textInputDecoration.copyWith(
+                                      labelText: "password".tr,
+                                      prefixIcon: const Icon(
+                                        Icons.lock,
+                                      ),
                                     ),
+                                    onChanged: (val) {
+                                      setState(() {
+                                        password = val;
+                                      });
+                                    },
                                   ),
-                                  onChanged: (val) {
-                                    setState(() {
-                                      password = val;
-                                    });
-                                  },
-                                ),
-                                const SizedBox(height: 8),
-                                TextFormField(
-                                  obscureText: true,
-                                  decoration: textInputDecoration.copyWith(
-                                    labelText: "re_password".tr,
-                                    prefixIcon: const Icon(
-                                      Icons.lock,
+                                  const SizedBox(height: 8),
+                                  TextFormField(
+                                    obscureText: true,
+                                    decoration: textInputDecoration.copyWith(
+                                      labelText: "re_password".tr,
+                                      prefixIcon: const Icon(
+                                        Icons.lock,
+                                      ),
                                     ),
+                                    onChanged: (val) {
+                                      setState(() {
+                                        password2 = val;
+                                      });
+                                    },
                                   ),
-                                  onChanged: (val) {
-                                    setState(() {
-                                      password2 = val;
-                                    });
-                                  },
-                                ),
-                                const SizedBox(height: 8),
-                                _submitButton(),
-                              ],
-                            )),
-                      ],
+                                  const SizedBox(height: 8),
+                                  _submitButton(),
+                                ],
+                              )),
+                        ],
+                      ),
                     ),
                   ),
                   RichText(
