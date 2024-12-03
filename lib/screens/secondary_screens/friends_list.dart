@@ -243,12 +243,13 @@ class _FriendsList extends State<FriendsList> {
         ),
       );
     });
+
   }
 
 
   Future<void>searchInFriends(String friendsName) async {
     if(friendsName.trim() == "")return;
-    bool searchResult = await userController.searchInFriends(friendsName);
+    bool searchResult = await userController.searchInFirestore(friendsName);
     if(!searchResult){
       setState(() {
         hasSearched = true;

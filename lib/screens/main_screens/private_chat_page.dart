@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:playbazaar/controller/message_controller/private_message_controller.dart';
+import 'package:playbazaar/controller/user_controller/user_controller.dart';
 import 'package:playbazaar/functions/string_cases.dart';
 import 'package:playbazaar/models/DTO/recent_interacted_user_dto.dart';
 import 'package:playbazaar/utils/show_custom_snackbar.dart';
@@ -34,6 +35,7 @@ class PrivateChatPage extends StatefulWidget {
 class _PrivateChatPageState extends State<PrivateChatPage> {
   late PrivateMessageController controller;
   final ScrollController _scrollController = ScrollController();
+  final UserController userController = Get.find<UserController>();
   String currentUserName = FirebaseAuth.instance.currentUser?.displayName ?? "";
   final String? currentUserId = FirebaseAuth.instance.currentUser!.uid;
   TextEditingController messageBox = TextEditingController();
@@ -242,6 +244,8 @@ class _PrivateChatPageState extends State<PrivateChatPage> {
             friendshipStatus: '',
             chatId: widget.chatId,
         );
+        userController.searchedFriends.removeWhere(
+                (friend) => friend.uid == widget.recieverId);
 
         PrivateMessageController().sendMessage(widget.chatId, newMessage, recentUser);
         setState(() {

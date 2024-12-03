@@ -36,7 +36,7 @@ class PrivateMessageService extends GetxService {
         DateTime.now().add(Duration(days: 7)) // Longer TTL reduces frequency
       )
     });
-        //.collection('messages').doc().set(message.toFirestore());
+
 
     await chatCollection.doc(chatId).update({
       'lastMessage': message.text,

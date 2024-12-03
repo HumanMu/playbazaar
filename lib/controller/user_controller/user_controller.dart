@@ -73,6 +73,51 @@ class UserController extends GetxController {
     );
   }
 
+ /* RxList<FriendModel> searchLocalFriends(String query) {
+    if (query.isEmpty) return RxList<FriendModel>();
+
+    return RxList<FriendModel>(
+        _hiveUserService.getRecentUsers()
+            .where((user) =>
+            user.fullname.toLowerCase().contains(query.toLowerCase())
+        )
+          .map(recentFriend2FriendModel)
+          .toList()
+    );
+  }
+
+  void searchFriends(String query, {bool localOnly = false}) {
+    // First, always search locally in Hive
+    searchedFriends.value = searchLocalFriends(query);
+
+    // Only search Firestore if not local-only mode and search icon is clicked
+    if (!localOnly && query.isNotEmpty) {
+      searchInFirestore(query);
+    }
+  }*/
+
+  Future<bool> searchInFirestore(String friendName) async {
+    isLoading.value = true;
+    List<FriendModel> foundedFriends = await userServices.searchByFriendsName(currentUserId, friendName);
+
+    if (foundedFriends.isNotEmpty) {
+      final existingHiveUsers = _hiveUserService.getRecentUsers().map((user) => user.uid).toSet();
+      for (var friend in foundedFriends) {
+        if (!existingHiveUsers.contains(friend.uid)) {
+          searchedFriends.add(friend);
+        }
+      }
+      //searchedFriends.clear();
+      //searchedFriends.addAll(foundedFriends);
+      isLoading.value = false;
+      return true;
+    }
+    else{
+      isLoading.value = false;
+      return false;
+    }
+  }
+
   Future<void> _updateFriendInLocalStorage(String uid) async {
     userServices.listenToFriendRequestsResult(uid).listen((friendshipsResult) async {
       if (friendshipsResult.isEmpty) {
@@ -194,23 +239,6 @@ class UserController extends GetxController {
       }
       return removeResult;
     } catch (e) {
-      return false;
-    }
-  }
-
-
-  Future<bool> searchInFriends(String friendName) async {
-    isLoading.value = true;
-    List<FriendModel> foundedFriends = await userServices.searchByFriendsName(currentUserId, friendName);
-
-    if (foundedFriends.isNotEmpty) {
-      searchedFriends.clear();
-      searchedFriends.addAll(foundedFriends);
-      isLoading.value = false;
-      return true;
-    }
-    else{
-      isLoading.value = false;
       return false;
     }
   }
