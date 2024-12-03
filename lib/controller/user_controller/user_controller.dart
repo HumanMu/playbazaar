@@ -196,7 +196,6 @@ class UserController extends GetxController {
         _hiveUserService.addOrUpdateRecentUser(recentUser);
         showCustomSnackbar("approved_friend_request".tr, true);
       } else {
-        print("recentUUser: $recentUser");
         showCustomSnackbar("failed_to_accept_friend_request".tr, false);
       }
 
@@ -234,7 +233,6 @@ class UserController extends GetxController {
     try {
       bool removeResult = await userServices.removeFriendById(friendId);
       if (removeResult) {
-        print("Friendship deletion result: $removeResult");
         await _hiveUserService.deleteRecentUser(friendId);
       }
       return removeResult;

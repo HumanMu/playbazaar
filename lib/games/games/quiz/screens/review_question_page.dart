@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
+import 'package:playbazaar/constants/enums.dart';
+import 'package:playbazaar/controller/user_controller/user_controller.dart';
 import 'package:playbazaar/games/games/quiz/widgets/drop_down_list_tile.dart';
 import '../../../../api/firestore/firestore_quiz.dart';
 import '../../../../helper/sharedpreferences/sharedpreferences.dart';
@@ -17,14 +19,16 @@ class ReviewQuestionsPage extends StatefulWidget {
 
 class ReviewQuestionsPageState extends State<ReviewQuestionsPage> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final userController = Get.find<UserController>();
   late Stream<QuerySnapshot> _questionsStream;
   late List<DocumentSnapshot> questions;
+
 
   int? selectedQuizIndex;
   List<String>? language = [];
   List<String> quizPaths = [];
   List<String> quizLabels = [];
-  String? userRole = "";
+
 
   List<TextEditingController> wrongAnswerControllers = [];
   final TextEditingController pathController = TextEditingController();
@@ -36,7 +40,10 @@ class ReviewQuestionsPageState extends State<ReviewQuestionsPage> {
   void initState() {
     super.initState();
     _initializeLanguageSettings();
-    getUserRole();
+    //getUserRole();
+    if(userController.userData.value!.role == UserRole.normal){
+      return;
+    }
 
     _questionsStream = _firestore.collection('games').doc('quizz').collection('quetionRequest').snapshots();
   }
@@ -61,14 +68,14 @@ class ReviewQuestionsPageState extends State<ReviewQuestionsPage> {
     wrongAnswerControllers.clear();
   }
 
-  Future<void> getUserRole() async {
+  /*Future<void> getUserRole() async {
     final value = await SharedPreferencesManager.getString(SharedPreferencesKeys.userRoleKey);
     if (value != null && value != "") {
       setState(() {
         userRole = value;
       });
     }
-  }
+  }*/
 
   Future<void> _initializeLanguageSettings() async {
     final result = await getQuizLanguage();

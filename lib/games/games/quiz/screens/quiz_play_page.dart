@@ -172,70 +172,105 @@ class _QuizPlayScreen extends State<QuizPlayScreen>{
 
 
   void nextQuestion() {
-    if (mounted && selectedAnswerIndex != null) {
-      if (selectedAnswer < questionData.length - 1) {
-        setState(() {
-          selectedAnswer++;
-          final QuizQuestionModel nextQuestion = questionData[selectedAnswer];
-          currentQuestion = nextQuestion.question;
-          currentAnswer = nextQuestion.wrongAnswers.split(',');
-          currentAnswer.add(nextQuestion.correctAnswer);
-          currentAnswer.shuffle(Random());
-          selectedAnswerIndex = null;
-          isCorrect = null;
-        });
-      } else {
-        showResult();
-      }
-    } else {
+    if (!mounted) return;
+
+    if (selectedAnswerIndex == null) {
       showCustomSnackbar('pick_an_answer'.tr, false);
+      return;
+    }
+
+    if (selectedAnswer < questionData.length - 1) {
+      setState(() {
+        selectedAnswer++;
+        final QuizQuestionModel nextQuestion = questionData[selectedAnswer];
+        currentQuestion = nextQuestion.question;
+        currentAnswer = _prepareUniqueAnswers(nextQuestion);
+        selectedAnswerIndex = null;
+        isCorrect = null;
+      });
+    } else {
+      showResult();
     }
   }
-
 
 
   Future<void> getQuestionsFromFirestore() async {
+    setState(() {
+      isLoading = true;
+    });
+
     try {
       final questionResult = await FirestoreQuiz().getRandomQuizQuestions(
-          quizId: widget.selectedQuiz);
-      if(mounted) {
-        setState(() {
-          questionData = questionResult;
-          isLoading = false;
-          if (questionData.isNotEmpty) {
-            currentQuestion = questionData[selectedAnswer].question;
-            currentAnswer = questionData[selectedAnswer].wrongAnswers.split(',');
-            currentAnswer.add(questionData[selectedAnswer].correctAnswer);
-            currentAnswer.shuffle(Random());
+          quizId: widget.selectedQuiz
+      );
+
+      if (!mounted) return;
+
+      if (questionResult.isNotEmpty) {
+        // Use a set with a custom equality check to remove duplicates
+        final uniqueQuestions = <QuizQuestionModel>{};
+        for (var question in questionResult) {
+          // Add only if a similar question doesn't already exist
+          if (!uniqueQuestions.any((q) => q.question == question.question)) {
+            uniqueQuestions.add(question);
           }
+        }
+
+        // Convert back to a list
+        final uniqueQuestionsList = uniqueQuestions.toList();
+
+        setState(() {
+          questionData = uniqueQuestionsList;
+          isLoading = false;
+          selectedAnswer = 0;
+
+          final firstQuestion = questionData[selectedAnswer];
+          currentQuestion = firstQuestion.question;
+
+          // Prepare unique answers
+          currentAnswer = _prepareUniqueAnswers(firstQuestion);
         });
-        isLoading = false;
-      }
-      else {
-        return;
+      } else {
+        setState(() {
+          isLoading = false;
+        });
       }
     } catch (error) {
+      if (!mounted) return;
+
       setState(() {
-        isLoading= false;
+        isLoading = false;
       });
+      showCustomSnackbar('error_loading_quiz'.tr, false);
     }
   }
 
 
+  List<String> _prepareUniqueAnswers(QuizQuestionModel question) {
+    // Split the answers and remove duplicates
+    Set<String> allAnswers = question.wrongAnswers.split(',').toSet();
 
-  Color getButtonColor(int index) {
-    if (selectedAnswerIndex != null && selectedAnswer < questionData.length && index < currentAnswer.length) {
-      final isThisAnswerCorrect = currentAnswer[index] == questionData[selectedAnswer].correctAnswer;
+    // Add correct answer
+    allAnswers.add(question.correctAnswer);
 
-      final result = isThisAnswerCorrect ? Colors.green : Colors.red;
-      return result;
-    } else {
-      return Colors.white70;
+    // Convert to list to allow further manipulation
+    List<String> uniqueAnswers = allAnswers.toList();
+
+    if (uniqueAnswers.length > 10) {
+      uniqueAnswers = uniqueAnswers.take(10).toList();
     }
+
+    uniqueAnswers.shuffle(Random());
+    return uniqueAnswers;
   }
+
 
 
   void checkAnswer(int index) {
+    if (questionData.isEmpty || index < 0 || index >= currentAnswer.length) {
+      return;
+    }
+
     setState(() {
       selectedAnswerIndex = index;
       isCorrect = currentAnswer[index] == questionData[selectedAnswer].correctAnswer;
@@ -248,7 +283,7 @@ class _QuizPlayScreen extends State<QuizPlayScreen>{
     if (!alreadyAnswered) {
       QuizAttempt attempt = QuizAttempt(
         question: questionData[selectedAnswer].question,
-        userAnswer: currentAnswer[selectedAnswerIndex!],
+        userAnswer: currentAnswer[index],
         correctAnswer: questionData[selectedAnswer].correctAnswer,
         isCorrect: isCorrect ?? false,
       );
@@ -259,6 +294,24 @@ class _QuizPlayScreen extends State<QuizPlayScreen>{
     }
   }
 
+
+  void _playSound() async {
+    if(!settingsController.isButtonSoundsEnabled.value){
+      return;
+    }
+
+    try {
+      await _player.setAsset('assets/sounds/button/ui_clicked.wav');
+      _player.play();
+    } catch (e) {
+      if (kDebugMode) {
+        print("Error playing sound: $e");
+      }
+    }
+  }
+
+
+
   void showResult() async {
     if (quizAttempts.isEmpty) {
       return;
@@ -266,7 +319,6 @@ class _QuizPlayScreen extends State<QuizPlayScreen>{
     int numberOfCorrectAnswers = quizAttempts.where((attempt) => attempt.isCorrect).length;
     int numberOfWrongAnswers = quizAttempts.length - numberOfCorrectAnswers;
     int points = numberOfCorrectAnswers * 3 - quizAttempts.where((attempt) => !attempt.isCorrect).length;
-
 
     showDialog(
       context: context,
@@ -427,6 +479,18 @@ class _QuizPlayScreen extends State<QuizPlayScreen>{
   }
 
 
+  Color getButtonColor(int index) {
+    if (selectedAnswerIndex != null && selectedAnswer < questionData.length && index < currentAnswer.length) {
+      final isThisAnswerCorrect = currentAnswer[index] == questionData[selectedAnswer].correctAnswer;
+
+      final result = isThisAnswerCorrect ? Colors.green : Colors.red;
+      return result;
+    } else {
+      return Colors.white70;
+    }
+  }
+
+
   Widget motivationResult(int correctAnswer) {
     if (correctAnswer <= 3) {
       return buildMotivationText("you_can_do_better", Icons.thumb_down_alt, Colors.red, 14);
@@ -460,19 +524,6 @@ class _QuizPlayScreen extends State<QuizPlayScreen>{
   }
 
 
-  void _playSound() async {
-    if(!settingsController.isButtonSoundsEnabled.value){
-      return;
-    }
 
-    try {
-      await _player.setAsset('assets/sounds/button/ui_clicked.wav');
-      _player.play();
-    } catch (e) {
-      if (kDebugMode) {
-        print("Error playing sound: $e");
-      }
-    }
-  }
 
 }

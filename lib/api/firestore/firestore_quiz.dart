@@ -76,7 +76,7 @@ class FirestoreQuiz {
     int? numberOfQuetions,
   }) async {
     final randomSeed = Random().nextDouble();
-    numberOfQuetions ??= 10;
+    numberOfQuetions ??= 12;
 
     try {
       final snapshot = await quizReference.doc('quizz').collection(quizId)

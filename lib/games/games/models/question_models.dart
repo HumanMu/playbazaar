@@ -33,6 +33,18 @@ class QuizQuestionModel {
   String toString() {
     return 'QuizzQuestionModel(path: $path, question: $question, correctAnswer: $correctAnswer, wrongAnswers: $wrongAnswers, description: $description, random: $random)';
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is QuizQuestionModel &&
+        other.question == question &&
+        other.correctAnswer == correctAnswer;
+  }
+
+  @override
+  int get hashCode => question.hashCode ^ correctAnswer.hashCode;
 }
 
 class QuizAttempt {
