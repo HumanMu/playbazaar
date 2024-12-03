@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:playbazaar/constants/enums.dart';
+import 'package:playbazaar/controller/user_controller/user_controller.dart';
 import 'package:playbazaar/games/games/quiz/screens/quiz_play_page.dart';
-import 'package:playbazaar/helper/sharedpreferences/sharedpreferences.dart';
 import '../../../api/Authentication/auth_service.dart';
 import '../../../screens/widgets/sidebar_drawer.dart';
 import '../../widgets/game_list_box.dart';
@@ -16,11 +17,12 @@ class QuizMainPage extends StatefulWidget {
 
 class _QuizMainPage extends State<QuizMainPage> {
   AuthService authService = AuthService();
+  final userController = Get.find<UserController>();
 
   List<String>? language = [];
   List<String> quizPath = [];
   List<String> quizNames = [];
-  String userRole = "";
+  late UserRole userRole;
 
   int quizLength = 0;
 
@@ -42,9 +44,8 @@ class _QuizMainPage extends State<QuizMainPage> {
   }
   
   Future<void> _initializeUserRole() async {
-    final role = await SharedPreferencesManager.getString(SharedPreferencesKeys.userRoleKey) ?? "normal";
     setState(() {
-      userRole = role;
+      userRole = userController.userData.value!.role;
     });
   }
 
@@ -119,7 +120,7 @@ class _QuizMainPage extends State<QuizMainPage> {
                     ),
                   ),
                   const SizedBox(width: 4),
-                  userRole != "normal" && userRole != ""? Expanded(
+                  userRole != UserRole.normal? Expanded(
                     child: ElevatedButton(
                       onPressed: () {
                         Get.toNamed('/questionReviewPage');
