@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:playbazaar/controller/message_controller/group_message_controller.dart';
 import 'package:playbazaar/functions/string_cases.dart';
 import 'package:playbazaar/utils/show_custom_snackbar.dart';
-import '../../admob/banner_ad.dart';
+import '../../admob/adaptive_banner_ad.dart';
 import '../../models/group_message.dart';
 import '../widgets/tiles/message_tile_group.dart';
 
@@ -82,11 +82,19 @@ class _GroupChatPageState extends State<GroupChatPage> {
       ),
       body: Column(
         children: [
-          Container(
-            padding: EdgeInsets.all(3),
+          Container( // banner ad
+            //margin: EdgeInsets.all(3),
             color: Colors.teal[900],
             width: MediaQuery.of(context).size.width,
-            child: BannerAdWidget(),  // The BannerAd widget
+            child: AdaptiveBannerAd(
+              onAdLoaded: (isLoaded) {
+                if (isLoaded) {
+                  debugPrint('Ad loaded in Quiz Screen');
+                } else {
+                  debugPrint('Ad failed to load in Quiz Screen');
+                }
+              },
+            ),  // The BannerAd widget
           ),
           Expanded(
             child: showMessages(),

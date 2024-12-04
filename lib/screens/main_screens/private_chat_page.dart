@@ -8,7 +8,6 @@ import 'package:playbazaar/functions/string_cases.dart';
 import 'package:playbazaar/models/DTO/recent_interacted_user_dto.dart';
 import 'package:playbazaar/utils/show_custom_snackbar.dart';
 import '../../admob/adaptive_banner_ad.dart';
-import '../../admob/banner_ad.dart';
 import '../../models/private_message_model.dart';
 import '../widgets/tiles/message_tile_private.dart';
 import 'package:playbazaar/services/push_notification_service/push_notification_service.dart';
@@ -79,7 +78,7 @@ class _PrivateChatPageState extends State<PrivateChatPage> {
         body: Column(
           children: [
             Container(
-              padding: EdgeInsets.all(3),
+              //margin: EdgeInsets.all(3),
               color: Colors.teal[900],
               width: MediaQuery.of(context).size.width,
               child: AdaptiveBannerAd(
