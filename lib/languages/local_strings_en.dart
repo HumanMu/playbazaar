@@ -35,6 +35,11 @@ class LocalStringsEn extends Translations {
       'well_done': 'Well done!',
       'excellent': 'Excellent!',
       'correct' : 'Correct',
+      'with_options': 'With options',
+      'without_options': 'Without options',
+      'show_result': 'Show result',
+      'end_of_family_game': 'That was the end of the quiz. Play Bazaar hopes you had fun. Press the button below to return to the game list.',
+
 
 
       //Personal information

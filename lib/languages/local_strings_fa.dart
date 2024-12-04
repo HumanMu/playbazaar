@@ -35,6 +35,10 @@ class LocalStringsFa extends Translations {
       'not_bad': 'تلاش خوبی بود، ادامه بده',
       'well_done': 'بهترین نتیجه!',
       'excellent': ' عالی!',
+      'with_options': 'با گزینه‌',
+      'without_options': 'بدون گزینه‌',
+      'show_result': 'نمایش نتیجه',
+      'end_of_family_game': 'این پایان آزمون بود. Play Bazaar امیدوار است که لذت برده باشید. دکمه زیر را فشار دهید تا به لیست بازی‌ها بازگردید.',
 
 
       //Personal information

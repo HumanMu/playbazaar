@@ -14,7 +14,14 @@ import '../../models/question_models.dart';
 class QuizPlayScreen extends StatefulWidget {
   final String selectedQuiz;
   final String quizTitle;
-  const QuizPlayScreen({super.key, required this.selectedQuiz, required this.quizTitle});
+  final bool withOption;
+
+  const QuizPlayScreen({
+    super.key,
+    required this.selectedQuiz,
+    required this.quizTitle,
+    this.withOption = false,
+  });
 
   @override
   State<QuizPlayScreen> createState()  => _QuizPlayScreen();
@@ -33,6 +40,7 @@ class _QuizPlayScreen extends State<QuizPlayScreen>{
   late int selectedAnswer = 0;
   int? selectedAnswerIndex;
   bool? isCorrect;
+  late bool showAnswer = false;
 
   @override
   void initState() {
@@ -74,9 +82,8 @@ class _QuizPlayScreen extends State<QuizPlayScreen>{
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Container(
-              //margin: EdgeInsets.all(3),
+              padding: EdgeInsets.all(4),
               color: Colors.teal[900],
-              width: MediaQuery.of(context).size.width,
               child: AdaptiveBannerAd(
                 onAdLoaded: (isLoaded) {
                   if (isLoaded) {
@@ -98,7 +105,7 @@ class _QuizPlayScreen extends State<QuizPlayScreen>{
                       style: const TextStyle(fontSize: 16),
                     ),
                   )
-                  : Column(
+                  : widget.withOption? Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
@@ -160,9 +167,30 @@ class _QuizPlayScreen extends State<QuizPlayScreen>{
                          )
                           : Container(),
                     ],
+                  ) : Column(
+                    children: [
+                      Text(
+                        currentQuestion,
+                        style: GoogleFonts.actor(
+                          textStyle: const TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 30),
+                      showAnswer ? Text(
+                        questionData[selectedAnswer].correctAnswer,
+                        style: const TextStyle(color: Colors.green, fontSize: 40),
+                      ) : ElevatedButton(
+                        onPressed: () => checkAnswer(selectedAnswer),
+                        child: Text("show_result".tr),
+                      ),
+                    ],
                   ),
               ),
-            ),
+            ) ,
             Container(
               margin: EdgeInsets.only(bottom: 20),
               child: ElevatedButton(
@@ -174,7 +202,7 @@ class _QuizPlayScreen extends State<QuizPlayScreen>{
               ),
             )
           ],
-        ),
+      ),
     );
   }
 
@@ -195,10 +223,56 @@ class _QuizPlayScreen extends State<QuizPlayScreen>{
         currentAnswer = _prepareUniqueAnswers(nextQuestion);
         selectedAnswerIndex = null;
         isCorrect = null;
+        showAnswer = false;
       });
     } else {
-      showResult();
+      widget.withOption? showResult() : endOfQuestions();
     }
+  }
+
+  void endOfQuestions() {
+    if (quizAttempts.isEmpty) {
+      return;
+    }
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12.0)),
+          child: Container(
+              width: MediaQuery
+                  .of(context)
+                  .size
+                  .width * 0.8, // 80% of screen width
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text("end_of_family_game".tr),
+                  SizedBox(height: 40),
+                  Align(
+                    alignment: Alignment.center,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        endQuiz();
+                        Navigator.of(context).pop();
+                        Get.offNamed('/mainQuiz');
+                      },
+                      child: Text(
+                        "btn_continue".tr,
+                        style: const TextStyle(
+                          fontSize: 20,
+                          color: Colors.green,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              )
+          ),
+        ),
+    );
   }
 
 
@@ -277,6 +351,14 @@ class _QuizPlayScreen extends State<QuizPlayScreen>{
   void checkAnswer(int index) {
     if (questionData.isEmpty || index < 0 || index >= currentAnswer.length) {
       return;
+    }
+
+    if(!widget.withOption){
+      setState(() {
+        showAnswer = true;
+        selectedAnswerIndex = index;
+        isCorrect = true;
+      });
     }
 
     setState(() {

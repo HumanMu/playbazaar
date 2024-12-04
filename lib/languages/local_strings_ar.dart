@@ -34,7 +34,10 @@ class LocalStringsAr extends Translations {
       'not_bad': 'جهد جيد، استمر في التحسين',
       'well_done': 'عمل جيد!',
       'excellent': ' ممتاز!',
-
+      'with_options': 'مع الخيارات',
+      'without_options': 'بدون خيارات',
+      'show_result': 'عرض النتيجة',
+      'end_of_family_game': 'كان هذا نهاية الاختبار. يأمل Play Bazaar أن تكون قد استمتعت. اضغط على الزر أدناه للعودة إلى قائمة الألعاب.',
 
 
       //Personal information

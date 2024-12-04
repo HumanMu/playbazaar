@@ -35,8 +35,10 @@ class LocalStringsDa extends Translations {
       'not_bad': 'God indsats, bliv ved med at forbedre dig',
       'well_done': 'Godt gået!',
       'excellent': 'Fremragende!',
-
-
+      'with_options': 'med valgmuligheder',
+      'without_options': 'uden valgmuligheder',
+      'show_result': 'Vis resultat',
+      'end_of_family_game': 'Det var slutningen på quizzen. Play Bazaar håber, du havde det sjovt. Tryk på knappen nedenfor for at vende tilbage til spiloversigten.',
 
       //Personal information
       'aboutme': 'Om mig ',

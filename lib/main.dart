@@ -9,6 +9,7 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:playbazaar/controller/settings_controller/settings_controller.dart';
 import 'package:playbazaar/controller/user_controller/user_controller.dart';
 import 'package:playbazaar/games/games/quiz/screens/add_question.dart';
+import 'package:playbazaar/games/games/quiz/screens/quiz_play_page.dart';
 import 'package:playbazaar/screens/main_screens/group_chat_page.dart';
 import 'package:playbazaar/screens/main_screens/edit_page.dart';
 import 'package:playbazaar/screens/main_screens/home_page.dart';
@@ -194,6 +195,17 @@ class _PlayBazaarState extends State<PlayBazaar> {
                     GetPage(
                         name: '/mainQuiz',
                         page: () => const QuizMainPage()
+                    ),
+                    GetPage(
+                      name: '/quizPlayPlage',
+                      page: () {
+                        final args = Get.arguments as Map<String, dynamic>;
+                        return QuizPlayScreen(
+                          selectedQuiz: args['selectedPath'],
+                          quizTitle: args['quizTitle'],
+                          withOption: args['withOption'],
+                        );
+                      },
                     ),
                     GetPage(
                         name: '/resetPassword',

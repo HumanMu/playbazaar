@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:playbazaar/constants/enums.dart';
 import 'package:playbazaar/controller/user_controller/user_controller.dart';
-import 'package:playbazaar/games/games/quiz/screens/quiz_play_page.dart';
 import '../../../api/Authentication/auth_service.dart';
 import '../../../screens/widgets/sidebar_drawer.dart';
 import '../../widgets/game_list_box.dart';
@@ -25,6 +24,7 @@ class _QuizMainPage extends State<QuizMainPage> {
   late UserRole userRole;
 
   int quizLength = 0;
+  late bool expandedQuizIndex = false;
 
   @override
   void initState() {
@@ -84,12 +84,16 @@ class _QuizMainPage extends State<QuizMainPage> {
       children: [
         Expanded(
           child: ListView.builder(
-            itemCount: quizLength,
+          itemCount: quizNames.length,
             itemBuilder: (context, index) {
-              return GameListBox(
-                title: quizNames[index],
-                navigationParameter: quizPath[index],
-                onTap: _handleNavigation,
+              return Column(
+                children: [
+                  GameListBox(
+                    title: quizNames[index],
+                    navigationParameter: quizPath[index],
+                    onTap: _handleNavigation,
+                  ),
+                ],
               );
             },
           ),
@@ -144,10 +148,15 @@ class _QuizMainPage extends State<QuizMainPage> {
   }
 
   void _handleNavigation(String selectedPath, String title) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => QuizPlayScreen(selectedQuiz: selectedPath, quizTitle: title)),
+    Get.toNamed(
+        '/quizPlayPlage',
+        arguments: {
+          'selectedPath': selectedPath,
+          'quizTitle': title,
+          'withOption': false,
+        }
     );
   }
+
 
 }
