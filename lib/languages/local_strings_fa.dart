@@ -30,7 +30,7 @@ class LocalStringsFa extends Translations {
       "game_result": "نتایج بازی",
       'question_is_answered' : 'شما قبلاً به این پرسش پاسخ داده‌اید',
       'pick_an_answer' : 'سؤال انتخواب نکردی ',
-      'points_earned': 'امتیازهای کسب شده',
+      'points_earned': 'امتیازها',
       'you_can_do_better': 'آرزوی نتیجه بهتر در دور بعدی',
       'not_bad': 'تلاش خوبی بود، ادامه بده',
       'well_done': 'بهترین نتیجه!',

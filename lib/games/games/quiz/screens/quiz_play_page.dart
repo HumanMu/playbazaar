@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:playbazaar/admob/banner_ad.dart';
 import 'package:playbazaar/controller/settings_controller/settings_controller.dart';
+import '../../../../admob/adaptive_banner_ad.dart';
 import '../../../../api/firestore/firestore_quiz.dart';
 import '../../../../utils/show_custom_snackbar.dart';
 import '../../models/question_models.dart';
@@ -74,10 +74,18 @@ class _QuizPlayScreen extends State<QuizPlayScreen>{
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Container(
-              padding: EdgeInsets.symmetric(vertical: 7),
+              padding: EdgeInsets.all(3),
               color: Colors.teal[900],
               width: MediaQuery.of(context).size.width,
-              child: BannerAdWidget(),  // The BannerAd widget
+              child: AdaptiveBannerAd(
+                onAdLoaded: (isLoaded) {
+                  if (isLoaded) {
+                    debugPrint('Ad loaded in Quiz Screen');
+                  } else {
+                    debugPrint('Ad failed to load in Quiz Screen');
+                  }
+                },
+              ),  // The BannerAd widget
             ),
             const SizedBox(height: 30),
             Expanded(

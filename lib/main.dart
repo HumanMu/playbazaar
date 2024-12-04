@@ -1,6 +1,5 @@
 
 import 'dart:async';
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
@@ -27,6 +26,7 @@ import 'package:playbazaar/screens/secondary_screens/settings_page.dart';
 import 'package:playbazaar/services/hive_services/hive_user_service.dart';
 import 'package:playbazaar/services/user_services.dart';
 import 'package:provider/provider.dart';
+import 'admob/ad_manager_services.dart';
 import 'api/firestore/firestore_user.dart';
 import 'controller/message_controller/private_message_controller.dart';
 import 'controller/user_controller/auth_controller.dart';
@@ -44,6 +44,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await AdManagerService().initialize();
+
   final notificationService = NotificationService();
   await notificationService.init();
 
@@ -52,22 +54,10 @@ Future<void> main() async {
   String key = dotenv.env['AES_KEY'] ?? '';
   String iv = dotenv.env['AES_IV'] ?? '';
   await secureStorage.storeKeys(key, iv);
+
+
   await Hive.initFlutter();
   Get.put(HiveUserService());
-
-  if(Platform.isAndroid){
-    /*SystemChrome.setEnabledSystemUIMode(
-      SystemUiMode.manual,
-      overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
-    );*/
-
-  }
-  var devices = [""];
-  unawaited(MobileAds.instance.initialize());
-  RequestConfiguration requestConfiguration = RequestConfiguration(
-      testDeviceIds: devices
-  );
-
   Get.put(AuthController(), permanent: true);
   Get.put(SettingsController(), permanent: true);
   Get.put(UserServices(), permanent: true);

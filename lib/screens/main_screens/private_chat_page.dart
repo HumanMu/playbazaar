@@ -7,6 +7,7 @@ import 'package:playbazaar/controller/user_controller/user_controller.dart';
 import 'package:playbazaar/functions/string_cases.dart';
 import 'package:playbazaar/models/DTO/recent_interacted_user_dto.dart';
 import 'package:playbazaar/utils/show_custom_snackbar.dart';
+import '../../admob/adaptive_banner_ad.dart';
 import '../../admob/banner_ad.dart';
 import '../../models/private_message_model.dart';
 import '../widgets/tiles/message_tile_private.dart';
@@ -81,7 +82,15 @@ class _PrivateChatPageState extends State<PrivateChatPage> {
               padding: EdgeInsets.all(3),
               color: Colors.teal[900],
               width: MediaQuery.of(context).size.width,
-              child: BannerAdWidget(),  // The BannerAd widget
+              child: AdaptiveBannerAd(
+                onAdLoaded: (isLoaded) {
+                  if (isLoaded) {
+                    debugPrint('Ad loaded in Quiz Screen');
+                  } else {
+                    debugPrint('Ad failed to load in Quiz Screen');
+                  }
+                },
+              ),  // The BannerAd widget
             ),
             Expanded(
               child: chatMessage(),
