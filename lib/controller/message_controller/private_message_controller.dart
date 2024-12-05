@@ -6,7 +6,7 @@ import 'package:playbazaar/models/DTO/recent_interacted_user_dto.dart';
 import 'package:playbazaar/services/hive_services/hive_user_service.dart';
 import '../../models/private_message_model.dart';
 import '../../services/private_message_service.dart';
-import '../../utils/show_custom_snackbar.dart';
+import '../../global_widgets/show_custom_snackbar.dart';
 
 class PrivateMessageController extends GetxController {
   final PrivateMessageService chatService = Get.put(PrivateMessageService());

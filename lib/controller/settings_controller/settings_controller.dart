@@ -2,7 +2,7 @@
 import 'package:get/get.dart';
 import 'package:playbazaar/models/DTO/push_notification_dto.dart';
 import 'package:playbazaar/services/push_notification_service/device_service.dart';
-import 'package:playbazaar/utils/show_custom_snackbar.dart';
+import 'package:playbazaar/global_widgets/show_custom_snackbar.dart';
 import '../../helper/sharedpreferences/sharedpreferences.dart';
 final DeviceService _deviceTokenService = DeviceService();
 
@@ -69,8 +69,6 @@ class SettingsController extends GetxController {
         bool savePermissions = await _deviceTokenService.updateDeviceNotificationSetting(permissions);
         if(savePermissions){
           saveSharedPreferences();
-          print("Request for permissions result: $isFriendRequestNotificationEnabled");
-          print("Permission firestore result: $savePermissions");
         }
       }
 
@@ -92,7 +90,7 @@ class SettingsController extends GetxController {
           isPlayBazaarNotificationEnabled.value
       );
     }catch(e){
-      showCustomSnackbar("You may logout and ind again before your changes work correct", false);
+      showCustomSnackbar("You may logout and login again before your changes work correct", false);
     }
   }
 }

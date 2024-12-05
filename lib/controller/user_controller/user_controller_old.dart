@@ -7,7 +7,6 @@ import 'package:playbazaar/services/user_services.dart';
 import '../../models/friend_model.dart';
 import '../../models/user_model.dart';
 import '../../services/private_message_service.dart';
-import '../../utils/show_custom_snackbar.dart';
 
 class UserController extends GetxController {
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;

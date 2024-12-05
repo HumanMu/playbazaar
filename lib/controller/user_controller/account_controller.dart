@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:playbazaar/services/push_notification_service/device_service.dart';
 import '../../api/services/firestore_services.dart';
-import '../../utils/show_custom_snackbar.dart';
+import '../../global_widgets/show_custom_snackbar.dart';
 import '../../helper/sharedpreferences/sharedpreferences.dart';
 
 
@@ -39,8 +39,6 @@ class AccountController extends GetxController {
       }
 
       await user.sendEmailVerification();
-      await DeviceService().registerDevice();
-
       showCustomSnackbar('verification_email_sent'.tr, true, timing: 7);
       Get.offAllNamed('/emailVerification');
       showCustomSnackbar("registration_succed".tr, true);

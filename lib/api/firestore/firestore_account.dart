@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
-import '../../utils/show_custom_snackbar.dart';
+import '../../global_widgets/show_custom_snackbar.dart';
 
 class FirestoreAccount {
   final CollectionReference userCollection =

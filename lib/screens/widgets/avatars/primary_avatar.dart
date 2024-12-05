@@ -2,8 +2,7 @@ import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:typed_data';
-
-import '../../../utils/custom_avatar.dart';
+import '../../../global_widgets/custom_avatar.dart';
 
 
 class PrimaryAvatarImage extends StatefulWidget {

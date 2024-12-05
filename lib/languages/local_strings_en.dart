@@ -123,6 +123,7 @@ class LocalStringsEn extends Translations {
       'select' : 'Select',
       'sounds': 'Sounds',
       'say_hi': 'Say hi to',
+      'guide': 'Guide',
 
 
       // friends
@@ -130,6 +131,8 @@ class LocalStringsEn extends Translations {
       'empty_friend_list': 'You don’t have any friends yet',
       'friend_request': 'Friend request',
       'friends_messages': 'Message from friends',
+
+
 
       // Buttons
       'btn_chats' : 'Messages',
@@ -157,6 +160,7 @@ class LocalStringsEn extends Translations {
       'btn_cancel_request': 'Cancel request',
       'btn_request_friendship' : 'Add friend',
       'btn_restart': 'Restart',
+      'btn_ok': 'Ok',
 
 
       // Settings
@@ -251,7 +255,21 @@ class LocalStringsEn extends Translations {
 
       // Long message
       'empty_quizz_message' : 'This game currently lacks words, and we need your help. Please return to the previous page and press the \'Submit Questions\' button at the bottom of the page to send us the words you would like added to the game. Thank you for your kindness and effort.',
-      'email_verification_intro' : 'Welcome to Play Bazaar! A verification email has been sent to your email. Please confirm your email to complete the process. We verify every member at Play Bazaar to ensure our platform remains a safe place where every user is a real person.'
+      'email_verification_intro' : 'Welcome to Play Bazaar! A verification email has been sent to your email. Please confirm your email to complete the process. We verify every member at Play Bazaar to ensure our platform remains a safe place where every user is a real person.',
+
+      'quiz_play_guide': '''Word games will either take you directly to the game page or ask you to choose whether you want to play with options or without options. Below are the explanations for both conditions:
+
+      ** With Options **  
+      If you choose "with options", each question will have four options, and you must select one to move to the next question. After 10 questions, the results and your total score will be displayed.  
+      1. Each correct answer gives 3 points  
+      2. Each incorrect answer gives 1 negative point  
+      
+      ** Without Options **  
+      If you’re sitting with friends and need some entertainment, this option is for you. The question will be displayed for everyone to share their opinions. Once everyone has given their response, press the "Show Answer" button to reveal the correct answer. Scoring is up to you in this option.''',
+
+
+      'notification_permission_description': '''Please grant us permission to notify you when you receive private messages from friends, friend requests, or exclusive deals from Play Bazaar. You can always revoke or deny permissions for specific services to send you notifications via the settings.''',
+
     }
   };
 

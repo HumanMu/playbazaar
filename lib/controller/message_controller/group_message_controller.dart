@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:playbazaar/services/group_message_services.dart';
 import '../../models/group_message.dart';
-import '../../utils/show_custom_snackbar.dart';
+import '../../global_widgets/show_custom_snackbar.dart';
 
 class GroupMessageController extends GetxController {
   final CollectionReference colRef = FirebaseFirestore.instance.collection('groups');

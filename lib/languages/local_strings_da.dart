@@ -40,6 +40,7 @@ class LocalStringsDa extends Translations {
       'show_result': 'Vis resultat',
       'end_of_family_game': 'Det var slutningen på quizzen. Play Bazaar håber, du havde det sjovt. Tryk på knappen nedenfor for at vende tilbage til spiloversigten.',
 
+
       //Personal information
       'aboutme': 'Om mig ',
       'name': 'Navn ',
@@ -122,6 +123,8 @@ class LocalStringsDa extends Translations {
       'select' : 'Vælg',
       'sounds': 'Lyde',
       'say_hi': 'Sig hej til',
+      'guide': 'Vejledning',
+
 
       // friends
       'friends': 'Venner',
@@ -157,6 +160,9 @@ class LocalStringsDa extends Translations {
       'btn_cancel_request': 'Annuller anmodning',
       'btn_request_friendship' : 'Send venneansmodning',
       'btn_restart': 'Start forfra',
+      'btn_ok': 'Ok',
+
+
 
       // Settings
       'settings': 'Indstillinger',
@@ -249,7 +255,21 @@ class LocalStringsDa extends Translations {
 
       // Long message
       'empty_quizz_message' : 'Dette spil mangler i øjeblikket ord, og vi har brug for din hjælp. Gå venligst tilbage til den forrige side og tryk på knappen \'Indsend Spørgsmål\' nederst på siden for at sende os de ord, du gerne vil have tilføjet til spillet. Tak for din venlighed og indsats.',
-      'email_verification_intro' : 'Velkommen til Play Bazaar! En e-mailbekræftelse er sendt til din e-mail. Bekræft venligst din e-mail for at fuldføre processen. Vi verificerer hver medlem i Play Bazaar for at sikre, at vores platform forbliver et sikkert sted, hvor hver bruger er en reel person.'
+      'email_verification_intro' : 'Velkommen til Play Bazaar! En e-mailbekræftelse er sendt til din e-mail. Bekræft venligst din e-mail for at fuldføre processen. Vi verificerer hver medlem i Play Bazaar for at sikre, at vores platform forbliver et sikkert sted, hvor hver bruger er en reel person.',
+
+      'quiz_play_guide': '''Ordspil fører dig enten direkte til spillet eller beder dig vælge, om du vil spille "med valgmuligheder" eller "uden valgmuligheder". Nedenfor forklares begge muligheder:
+      
+        ** Med valgmuligheder **  
+        Hvis du vælger "med valgmuligheder", vil der for hvert spørgsmål være fire svarmuligheder, hvor du skal vælge ét for at gå videre til næste spørgsmål. Efter 10 spørgsmål vil resultaterne og dine samlede point blive vist.  
+        1. Hvert rigtigt svar giver 3 point  
+        2. Hvert forkert svar giver 1 minuspoint  
+        
+        ** Uden valgmuligheder **  
+        Hvis du sidder med venner og mangler lidt underholdning, er denne mulighed perfekt til dig. Her vises spørgsmålet, så alle kan give deres mening. Når alle har givet deres svar, trykker du på "Vis svar"-knappen for at se det korrekte svar. Pointgivning er op til jer selv.''',
+
+        'notification_permission_description': '''Giv os venligst tilladelse til at informere dig, når du modtager private beskeder fra venner, venneanmodninger eller eksklusive tilbud fra Play Bazaar. Du kan altid tilbagekalde tilladelsen eller nægte specifikke tjenester at sende dig notifikationer via indstillingerne.''',
+
+
     }
   };
 }

@@ -11,8 +11,8 @@ import '../../controller/group_controller/group_controller.dart';
 import '../../controller/user_controller/user_controller.dart';
 import '../../functions/string_cases.dart';
 import '../../helper/encryption/encrypt_string.dart';
-import '../../utils/notfound.dart';
-import '../../utils/text_boxes/text_box_decoration.dart';
+import '../../global_widgets//notfound.dart';
+import '../../global_widgets/text_boxes/text_box_decoration.dart';
 import '../widgets/tiles/custom_group_tile.dart';
 import '../widgets/sidebar_drawer.dart';
 

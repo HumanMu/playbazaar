@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controller/user_controller/auth_controller.dart';
-import '../../utils/show_custom_snackbar.dart';
+import '../../global_widgets/show_custom_snackbar.dart';
 
 class ResetPasswordPage extends StatelessWidget {
   final AuthController authController = Get.find<AuthController>();

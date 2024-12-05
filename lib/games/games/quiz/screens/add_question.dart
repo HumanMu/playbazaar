@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../api/firestore/firestore_quiz.dart';
-import '../../../../utils/show_custom_snackbar.dart';
+import '../../../../global_widgets/show_custom_snackbar.dart';
 import '../../models/question_models.dart';
 import '../functions/quiz_language.dart';
 

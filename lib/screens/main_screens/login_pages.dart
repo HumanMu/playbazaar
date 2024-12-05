@@ -5,8 +5,8 @@ import 'package:get/get.dart';
 import '../../api/Authentication/auth_service.dart';
 import '../../controller/user_controller/account_controller.dart';
 import '../../languages/custom_language.dart';
-import '../../utils/headerstack.dart';
-import '../../utils/show_custom_snackbar.dart';
+import '../../global_widgets/headerstack.dart';
+import '../../global_widgets/show_custom_snackbar.dart';
 import '../widgets/text_boxes/text_widgets.dart';
 
 class LoginPage extends StatefulWidget {

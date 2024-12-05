@@ -7,7 +7,7 @@ import 'package:playbazaar/models/DTO/add_group_member.dart';
 import '../../models/DTO/add_user_to_group_dto.dart';
 import '../../models/DTO/create_group_dto.dart';
 import '../../services/group_services.dart';
-import '../../utils/show_custom_snackbar.dart';
+import '../../global_widgets/show_custom_snackbar.dart';
 
 class GroupController extends GetxController {
   final UserController userController = Get.find<UserController>();

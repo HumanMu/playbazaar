@@ -3,7 +3,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import '../../services/user_services.dart';
-import '../../utils/show_custom_snackbar.dart';
 
 class FriendController extends GetxController {
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;

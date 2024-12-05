@@ -5,7 +5,7 @@ import 'package:just_audio/just_audio.dart';
 import '../../api/firestore/firestore_quiz.dart';
 import '../../games/games/models/question_models.dart';
 import '../../games/games/quiz/sharedpreferences/quiz.dart';
-import '../../utils/show_custom_snackbar.dart';
+import '../../global_widgets/show_custom_snackbar.dart';
 
 class GameController extends GetxController {
   final AudioPlayer _player = AudioPlayer();

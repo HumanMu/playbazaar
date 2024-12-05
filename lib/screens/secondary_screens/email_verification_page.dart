@@ -2,9 +2,11 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:playbazaar/utils/show_custom_snackbar.dart';
+import 'package:playbazaar/global_widgets/accept_dialog.dart';
+import 'package:playbazaar/global_widgets/show_custom_snackbar.dart';
 
 import '../../controller/user_controller/auth_controller.dart';
+import '../../services/push_notification_service/device_service.dart';
 
 class EmailVerificationPage extends StatefulWidget {
   const EmailVerificationPage({super.key});
@@ -41,9 +43,15 @@ class _EmailVerificationState extends State<EmailVerificationPage> {
       await authController.checkAndUpdateEmailVerificationStatus();
       if (authController.isEmailVerified.value) {
         timer.cancel(); // Stop the timer once email is verified
+        await askForNotificationPermission();
+        await DeviceService().registerDevice();
         Get.offAllNamed('/profile');
       }
     });
+  }
+
+  Future<void> askForNotificationPermission()async {
+    acceptDialog(context, "notifications".tr, "notification_permission_description".tr);
   }
 
   void startResendCooldown() {

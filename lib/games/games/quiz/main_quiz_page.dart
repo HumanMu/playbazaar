@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:playbazaar/constants/enums.dart';
 import 'package:playbazaar/controller/user_controller/user_controller.dart';
+import 'package:playbazaar/global_widgets/accept_dialog.dart';
 import '../../../api/Authentication/auth_service.dart';
 import '../../../screens/widgets/sidebar_drawer.dart';
 import '../../widgets/game_list_box.dart';
@@ -97,6 +98,10 @@ class _QuizMainPage extends State<QuizMainPage> {
               );
             },
           ),
+        ),
+        ElevatedButton(
+          onPressed: () => acceptDialog(context, 'guide'.tr, 'quiz_play_guide'.tr),
+          child: Text('guide'.tr),
         ),
         Column(
           mainAxisAlignment: MainAxisAlignment.end,

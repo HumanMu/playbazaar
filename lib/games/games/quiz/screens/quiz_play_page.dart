@@ -7,7 +7,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:playbazaar/controller/settings_controller/settings_controller.dart';
 import '../../../../admob/adaptive_banner_ad.dart';
 import '../../../../api/firestore/firestore_quiz.dart';
-import '../../../../utils/show_custom_snackbar.dart';
+import '../../../../global_widgets/show_custom_snackbar.dart';
 import '../../models/question_models.dart';
 
 

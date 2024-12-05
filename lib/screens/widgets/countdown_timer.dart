@@ -6,7 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:playbazaar/api/firestore/firestore_account.dart';
 import 'package:playbazaar/screens/main_screens/login_pages.dart';
 import '../../helper/sharedpreferences/sharedpreferences.dart';
-import '../../utils/show_custom_snackbar.dart';
+import '../../global_widgets/show_custom_snackbar.dart';
 
 class CountdownTimer extends StatefulWidget {
   const CountdownTimer({super.key});

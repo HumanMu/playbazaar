@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:playbazaar/controller/user_controller/user_controller.dart';
 import 'package:playbazaar/functions/enum_converter.dart';
-import 'package:playbazaar/utils/show_custom_snackbar.dart';
+import 'package:playbazaar/global_widgets/show_custom_snackbar.dart';
 import '../../constants/enums.dart';
 import '../../controller/message_controller/private_message_controller.dart';
 import '../../services/hive_services/hive_user_service.dart';

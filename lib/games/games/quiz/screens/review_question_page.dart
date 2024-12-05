@@ -5,8 +5,7 @@ import 'package:playbazaar/constants/enums.dart';
 import 'package:playbazaar/controller/user_controller/user_controller.dart';
 import 'package:playbazaar/games/games/quiz/widgets/drop_down_list_tile.dart';
 import '../../../../api/firestore/firestore_quiz.dart';
-import '../../../../helper/sharedpreferences/sharedpreferences.dart';
-import '../../../../utils/show_custom_snackbar.dart';
+import '../../../../global_widgets/show_custom_snackbar.dart';
 import '../../models/question_models.dart';
 import '../functions/quiz_language.dart';
 

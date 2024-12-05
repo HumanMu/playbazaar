@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:playbazaar/services/push_notification_service/device_service.dart';
 import '../../api/firestore/firestore_user.dart';
 import '../../helper/sharedpreferences/sharedpreferences.dart';
-import '../../utils/show_custom_snackbar.dart';
+import '../../global_widgets/show_custom_snackbar.dart';
 
 
 

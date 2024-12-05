@@ -8,7 +8,6 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/foundation.dart';
 import 'package:playbazaar/models/DTO/device_info_dto.dart';
 import 'dart:io';
-
 import '../../helper/encryption/encrypt_string.dart';
 
 
@@ -51,7 +50,7 @@ class DeviceService {
           .set(device.toFirestore(), SetOptions(merge: true));
     } catch (e) {
       if(kDebugMode){
-        print('Error in registerDevice - device service: $e');
+        print('Error in registerDevice - device service');
       }
     }
   }

@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:playbazaar/controller/user_controller/user_controller.dart';
 import 'package:playbazaar/functions/string_cases.dart';
 import 'package:playbazaar/services/hive_services/hive_user_service.dart';
-import 'package:playbazaar/utils/show_custom_snackbar.dart';
+import 'package:playbazaar/global_widgets/show_custom_snackbar.dart';
 
 class FriendsListTile extends StatefulWidget {
   final String friendId;

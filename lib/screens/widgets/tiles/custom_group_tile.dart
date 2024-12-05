@@ -6,9 +6,9 @@ import 'package:playbazaar/controller/group_controller/group_controller.dart';
 import 'package:playbazaar/functions/string_cases.dart';
 import 'package:playbazaar/helper/encryption/encrypt_string.dart';
 import 'package:playbazaar/models/group_model.dart';
-import 'package:playbazaar/utils/show_custom_snackbar.dart';
+import 'package:playbazaar/global_widgets/show_custom_snackbar.dart';
 import '../../../models/DTO/add_group_member.dart';
-import '../../../utils/text_boxes/text_box_decoration.dart';
+import '../../../global_widgets/text_boxes/text_box_decoration.dart';
 import '../dialogs/accept_result_dialog.dart';
 import '../dialogs/leaving_group_dialog.dart';
 
