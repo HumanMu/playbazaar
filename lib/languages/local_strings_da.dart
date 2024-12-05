@@ -243,6 +243,11 @@ class LocalStringsDa extends Translations {
       'policy_data_security_and_thirdparty_description_part1': 'Vi deler, sælger eller distribuerer ikke dine personlige oplysninger med nogen tredjepart. Dine oplysninger bruges kun til at levere tjenester gennem PlayBazaar-appen. Dine data gemmes på Firebases servere i Frankfurt, Tyskland.',
       'policy_data_security_and_thirdparty_description_part2': 'Selvom dine data opbevares i Firestore, som tilhører Google, giver dette ikke Google nogen rettigheder til at bruge dine personlige oplysninger til formål, der ikke er relateret til vores app. Google er ansvarlig for at opretholde sikkerheden af deres cloud-tjenester, og vi sikrer, at dine oplysninger er beskyttet i henhold til Googles strenge sikkerhedsforanstaltninger.',
 
+      'policy_forbidden_usage_title': 'Brugsbetingelser',
+      'policy_forbidden_usage_description': '''Hos Play Bazaar gør vi vores bedste for at give vores brugere den bedst mulige oplevelse ved at skabe et sikkert, respektfuldt og underholdende fællesskab. For at opretholde denne standard har vi indført specifikke regler for brugen af grupper og private beskeder.  
+          Det er strengt forbudt at deltage i hadefuld tale, diskrimination, chikane eller at dele eksplicit eller stødende indhold. Diskussioner om racisme, sexisme eller andre følsomme emner er ikke tilladt og kan medføre konsekvenser som midlertidig eller permanent udelukkelse fra grupper eller private beskeder.  
+          Ved at bruge disse funktioner accepterer du at følge disse retningslinjer og bidrage til et positivt og respektfuldt miljø for alle.''',
+
       'policy_agreement_title' :  'Aftale om Politik',
       'policy_agreement_description': 'Ved at bruge Play Bazaar-appen anerkender og accepterer du denne privatlivspolitik. Firebase-servere, der er placeret i et europæisk land, bruges til databehandling. Vi opfordrer dig til regelmæssigt at gennemgå denne politik, da fortsat brug af appen indikerer din accept af eventuelle ændringer eller opdateringer.',
 

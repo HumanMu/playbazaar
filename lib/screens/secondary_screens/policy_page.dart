@@ -64,6 +64,8 @@ class PolicyPage extends StatelessWidget {
             const SizedBox(height: 20),
             textDescription('policy_data_security_and_thirdparty_description_part2'.tr),
 
+            textTitle('policy_forbidden_usage_title'.tr),
+            textDescription('policy_forbidden_usage_description'.tr),
             // Agreement
             textTitle('policy_agreement_title'.tr),
             textDescription('policy_agreement_description'.tr),

@@ -243,11 +243,19 @@ class LocalStringsEn extends Translations {
       'policy_data_security_and_thirdparty_description_part1': 'We do not share, sell, or distribute your personal information with any third parties. Your information is used only to provide services through the PlayBazaar app. Your data is stored on Firebase servers in Frankfurt, Germany.',
       'policy_data_security_and_thirdparty_description_part2': 'While your data is stored on Firestore, owned by Google, this does not grant Google any rights to use your personal information for purposes unrelated to our app. Google is responsible for maintaining the security of its cloud services, and we ensure that your information is protected in accordance with Google’s strict security measures.',
 
+
+      'policy_forbidden_usage_title': 'Terms of Use',
+      'policy_forbidden_usage_description': '''At Play Bazaar, we strive to provide our users with the best possible experience by fostering a safe, respectful, and enjoyable community. To maintain this standard, we have implemented specific rules for the use of groups and private messaging. 
+        It is strictly prohibited to engage in hate speech, discrimination, harassment, or share explicit or offensive content. Discussions involving racism, sexism, or other sensitive topics are not allowed and may result in consequences such as temporary or permanent restrictions on group participation or private messaging. 
+        By using these features, you agree to follow these guidelines and contribute to a positive and respectful environment for everyone.''',
+
+
       'policy_agreement_title' :  'Policy Agreement',
       'policy_agreement_description' : 'By using the Play Bazaar app, you acknowledge and accept this privacy policy. We encourage you to review this policy regularly, as continued use of the app indicates your acceptance of any changes or updates.',
 
       'policy_updates_title': 'Policy Updates',
       'policy_updates_description' : 'We reserve the right to update or modify this privacy policy at any time. Any changes will be reflected on this page, and your continued use of the app constitutes your acceptance of such changes.',
+
 
       // contact us
       'contact_us_title' : 'Contact Us',
