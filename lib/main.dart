@@ -5,7 +5,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:hive_flutter/adapters.dart';
-import 'package:playbazaar/controller/settings_controller/settings_controller.dart';
+import 'package:playbazaar/controller/settings_controller/notification_settings_controller.dart';
 import 'package:playbazaar/controller/user_controller/user_controller.dart';
 import 'package:playbazaar/games/games/quiz/screens/add_question.dart';
 import 'package:playbazaar/games/games/quiz/screens/quiz_play_page.dart';
@@ -59,7 +59,7 @@ Future<void> main() async {
   await Hive.initFlutter();
   Get.put(HiveUserService());
   Get.put(AuthController(), permanent: true);
-  Get.put(SettingsController(), permanent: true);
+  Get.put(NotificationSettingsController(), permanent: true);
   Get.put(UserServices(), permanent: true);
   Get.put(PrivateMessageController(), permanent: true);
   Get.put(UserController(), permanent: true);
@@ -110,7 +110,7 @@ class _PlayBazaarState extends State<PlayBazaar> {
   @override
   Widget build(BuildContext context) {
     final authController = Get.find<AuthController>();
-    final settingsController = Get.find<SettingsController>();
+    final settingsController = Get.find<NotificationSettingsController>();
     final userController = Get.find<UserController>();
 
     return GetBuilder<AuthController>(
@@ -127,7 +127,7 @@ class _PlayBazaarState extends State<PlayBazaar> {
             );
           }
 
-          return GetBuilder<SettingsController>(
+          return GetBuilder<NotificationSettingsController>(
               init: settingsController,
               builder: (settingsController) {
                 if (!settingsController.isInitialized.value) {

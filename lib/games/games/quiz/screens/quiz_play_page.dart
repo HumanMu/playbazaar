@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:playbazaar/controller/settings_controller/settings_controller.dart';
+import 'package:playbazaar/controller/settings_controller/notification_settings_controller.dart';
 import '../../../../admob/adaptive_banner_ad.dart';
 import '../../../../api/firestore/firestore_quiz.dart';
 import '../../../../global_widgets/show_custom_snackbar.dart';
@@ -29,7 +29,7 @@ class QuizPlayScreen extends StatefulWidget {
 }
 
 class _QuizPlayScreen extends State<QuizPlayScreen>{
-  final SettingsController settingsController = Get.find<SettingsController>();
+  final NotificationSettingsController settingsController = Get.find<NotificationSettingsController>();
   late AudioPlayer _player;
   bool isLoading = true;
   late List<QuizQuestionModel> questionData = [];

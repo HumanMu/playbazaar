@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../controller/settings_controller/settings_controller.dart';
+import '../../../controller/settings_controller/notification_settings_controller.dart';
 import 'package:playbazaar/screens/widgets/settings_switch.dart';
+
+import '../../languages/custom_language.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -11,7 +13,7 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsState extends State<SettingsPage> {
-  final SettingsController settingsController = Get.find<SettingsController>();
+  final NotificationSettingsController settingsController = Get.find<NotificationSettingsController>();
   var isSignedIn = false.obs;
   int selectedCategoryIndex = 0;
 
@@ -23,6 +25,10 @@ class _SettingsState extends State<SettingsPage> {
     SettingsCategory(
       title: 'notifications',
       icon: Icons.notifications,
+    ),
+    SettingsCategory(
+      title: 'account',
+      icon: Icons.settings,
     ),
   ];
 
@@ -154,6 +160,34 @@ class _SettingsState extends State<SettingsPage> {
                 child: Text("btn_save".tr),
               ),
             )
+          ],
+        );
+      case 2: // Account
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            textTitle('choose_language'.tr),
+            Container(
+              alignment: Alignment.center,
+              child: TextButton(
+                onPressed: () {
+                  CustomLanguage().languageDialog(context);
+                },
+                child: Row (
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('language'.tr,
+                      style: const TextStyle(
+                        color: Colors.red,
+                        fontSize: 20,
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Icon(Icons.arrow_drop_down_circle_outlined, color: Colors.red),
+                  ],
+                ),
+              ),
+            ),
           ],
         );
       default:

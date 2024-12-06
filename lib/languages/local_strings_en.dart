@@ -83,6 +83,7 @@ class LocalStringsEn extends Translations {
 
       // Others
       'language' : 'انتخاب زبان',
+      'account': 'Account',
       'farsi' : 'فارسی , دری',
       'english' : 'English',
       'requests': 'Requests',
@@ -100,7 +101,7 @@ class LocalStringsEn extends Translations {
       'msg_friend_not_found': 'Could not find a friend with that name',
       'search_groups' : 'Search for groups ...',
       'search' : 'Search',
-      'choose_language' : 'Choose your favorite language',
+      'choose_language' : 'Choose language',
       'not_have_account' : 'Do not have an account? ',
       'make_account_here' : 'Create your account here  ',
       'not_valid_email' : 'Enter a valid email please',
@@ -124,6 +125,8 @@ class LocalStringsEn extends Translations {
       'sounds': 'Sounds',
       'say_hi': 'Say hi to',
       'guide': 'Guide',
+      'danger_zone': 'Danger Zone',
+
 
 
       // friends

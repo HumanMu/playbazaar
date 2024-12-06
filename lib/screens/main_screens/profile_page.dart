@@ -104,27 +104,6 @@ class _ProfilePage extends State<ProfilePage> {
                   Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Container(
-                        alignment: Alignment.center,
-                        child: TextButton(
-                          onPressed: () {
-                            CustomLanguage().languageDialog(context);
-                          },
-                          child: Row (
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text('language'.tr,
-                                style: const TextStyle(
-                                  color: Colors.red,
-                                  fontSize: 20,
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              Icon(Icons.arrow_drop_down_circle_outlined, color: Colors.red),
-                            ],
-                          ),
-                        ),
-                      ),
                       Text(
                         'aboutme'.tr,
                         style: const TextStyle(color: Colors.white, fontSize: 45),
@@ -149,6 +128,7 @@ class _ProfilePage extends State<ProfilePage> {
                           )
                         ],
                       ),
+                      SizedBox(height: 30),
                       Container(
                         margin: const EdgeInsets.fromLTRB(30, 10, 30, 10),
                         height: 50,

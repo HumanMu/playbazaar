@@ -81,6 +81,7 @@ class LocalStringsAr extends Translations {
 
       // Others
       'language': 'Languages',
+      'account': 'الحساب',
       'farsi': 'الفارسية , الدارية',
       'english': 'الإنجليزية',
       'requests': 'الطلبات',
@@ -121,7 +122,7 @@ class LocalStringsAr extends Translations {
       'sounds': 'أصوات',
       'say_hi': 'قل مرحباً لـ',
       'guide': 'دليل',
-
+      'danger_zone': 'منطقة الخطر',
 
       'awaiting_response': 'في انتظار الرد',
       'approve_request': 'قبول الطلب',

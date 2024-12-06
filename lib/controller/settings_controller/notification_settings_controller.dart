@@ -8,12 +8,13 @@ final DeviceService _deviceTokenService = DeviceService();
 
 
 
-class SettingsController extends GetxController {
+class NotificationSettingsController extends GetxController {
   var isInitialized = false.obs;
   var isButtonSoundsEnabled = true.obs;
   var isFriendRequestNotificationEnabled = false.obs;
   var isMessageNotificationEnabled = false.obs;
   var isPlayBazaarNotificationEnabled = false.obs;
+
 
   @override
   void onInit() {

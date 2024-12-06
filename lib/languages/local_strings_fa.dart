@@ -82,6 +82,7 @@ class LocalStringsFa extends Translations {
 
       // Others
       'language' : 'Languages',
+      'account': 'حساب کاربری',
       'farsi' : 'فارسی , دری',
       'english' : 'English',
       'requests': 'درخواست ها ',
@@ -98,7 +99,7 @@ class LocalStringsFa extends Translations {
       'msg_friend_not_found': 'دوستی با این نام پیدا نشد',
       'search_groups' : 'جستجو به دنبال گروه جدید ...',
       'search' : 'جستجو',
-      'choose_language' : 'زبان دلخواه خود را انتخاب کن',
+      'choose_language' : 'انتخاب زبان',
       'not_have_account' : 'تا حالا ثبت نام نیستی؟  ',
       'make_account_here' : 'اینجا ثبت نام کن  ',
       'not_valid_email' : 'یک ایمیل معتبر وارد کن لطفا',
@@ -122,6 +123,7 @@ class LocalStringsFa extends Translations {
       'sounds': 'صداها',
       'say_hi': 'سلام کن به',
       'guide': 'راهنما',
+      'danger_zone': 'منطقه خطر',
 
 
       // Friends

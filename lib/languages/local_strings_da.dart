@@ -83,6 +83,7 @@ class LocalStringsDa extends Translations {
 
       // Others
       'language': 'Languages',
+      'account': 'Konto',
       'farsi': 'فارسی , دری',
       'english': 'Engelsk',
       'requests': 'Anmodninger',
@@ -100,7 +101,7 @@ class LocalStringsDa extends Translations {
       'msg_friend_not_found': 'Kunne ikke finde en ven med det navn',
       'search_groups': 'Søg efter grupper ...',
       'search': 'Søg',
-      'choose_language': 'Vælg dit foretrukne sprog',
+      'choose_language': 'Vælg sprog',
       'not_have_account': 'Har du ikke en konto? ',
       'make_account_here': 'Opret din konto her ',
       'not_valid_email': 'Indtast venligst en gyldig e-mail',
@@ -124,6 +125,8 @@ class LocalStringsDa extends Translations {
       'sounds': 'Lyde',
       'say_hi': 'Sig hej til',
       'guide': 'Vejledning',
+      'danger_zone': 'Farezone',
+
 
 
       // friends
