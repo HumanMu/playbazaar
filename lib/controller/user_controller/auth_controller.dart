@@ -80,7 +80,6 @@ class AuthController extends GetxController {
     }
   }
 
-
   Future logOutUser() async{
     try {
       await DeviceService().handleDeviceNotificationOnLogout();
@@ -93,5 +92,7 @@ class AuthController extends GetxController {
       return null;
     }
   }
+
+
 
 }

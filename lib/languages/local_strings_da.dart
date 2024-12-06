@@ -50,6 +50,7 @@ class LocalStringsDa extends Translations {
       'me': 'Jeg er ',
       'password': 'Adgangskode',
       're_password': 'Gentag din adgangskode',
+      'enter_your_password': 'Indtast din adgangskode',
       'optional': ' \\(valgfri)',
       'status': 'Status ',
       'online': 'Online',
@@ -164,6 +165,8 @@ class LocalStringsDa extends Translations {
       'btn_request_friendship' : 'Send venneansmodning',
       'btn_restart': 'Start forfra',
       'btn_ok': 'Ok',
+      'btn_delete_account': 'Slet konto',
+
 
 
 
@@ -222,6 +225,10 @@ class LocalStringsDa extends Translations {
       'didnt_made_changes': 'Du har ikke foretaget nogen ændringer, der skal gemmes',
       'your_changes_succed': 'Dine oplysninger er ændret succesfuldt',
       'account_succed_but_info_failed': 'Din konto er oprettet, men dit fornavn og efternavn kunne ikke gemmes. Tilføj dem venligst via redigeringsmuligheden',
+      'delete_account_guidance': 'Sletning af din konto vil permanent fjerne alle dine data og træde i kraft med det samme. Denne handling kan ikke fortrydes. Hvis du ønsker at vende tilbage i fremtiden, skal du oprette en ny konto.',
+      'delete_account_warning': 'Er du sikker på, at du vil slette din konto permanent?',
+      'delete_account_reauth_description': 'For at fortsætte med sletning af kontoen, skal du indtaste dit nuværende password. Hvis du har glemt dit password, skal du logge ud og trykke på "Glemt mit password"-linket på login-siden for at nulstille det.',
+      'account_deletion_succed': 'Din konto er blevet slettet med succes.',
       'change_path' : 'Ændr stien nedenfor',
       'error_while_sending_message' : 'Kunne ikke sende din besked. Prøv igen!',
       'allowed_message_length_1000' : 'Venligst begræns din besked til under 1000 tegn',

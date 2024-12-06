@@ -5,12 +5,14 @@ class SettingsSwitch extends StatelessWidget {
   final String title;
   final bool value;
   final Function() onToggle;
+  final Color? color;
 
   const SettingsSwitch({
     super.key,
     required this.title,
     required this.value,
     required this.onToggle,
+    this.color
   });
 
   @override
@@ -18,7 +20,11 @@ class SettingsSwitch extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(title),
+        Text(title, style:
+          TextStyle(
+              color: color?? Colors.black,
+          )
+        ),
         Switch(
           value: value,
           onChanged: (_) => onToggle(),

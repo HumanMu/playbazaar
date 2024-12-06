@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:playbazaar/controller/user_controller/account_controller.dart';
 import '../../../controller/settings_controller/notification_settings_controller.dart';
 import 'package:playbazaar/screens/widgets/settings_switch.dart';
 
@@ -14,6 +15,7 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsState extends State<SettingsPage> {
   final NotificationSettingsController settingsController = Get.find<NotificationSettingsController>();
+  final AccountController accountController = Get.put(AccountController());
   var isSignedIn = false.obs;
   int selectedCategoryIndex = 0;
 
@@ -28,7 +30,7 @@ class _SettingsState extends State<SettingsPage> {
     ),
     SettingsCategory(
       title: 'account',
-      icon: Icons.settings,
+      icon: Icons.account_box,
     ),
   ];
 
@@ -125,7 +127,7 @@ class _SettingsState extends State<SettingsPage> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            textTitle('sounds'.tr),
+            textTitle('sounds'.tr, null),
             Obx(() => SettingsSwitch(
               title: "btn_sounds".tr,
               value: settingsController.isButtonSoundsEnabled.value,
@@ -137,7 +139,7 @@ class _SettingsState extends State<SettingsPage> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            textTitle('notifications'.tr),
+            textTitle('notifications'.tr, null),
             Obx(() => SettingsSwitch(
               title: "friend_request".tr,
               value: settingsController.isFriendRequestNotificationEnabled.value,
@@ -164,9 +166,9 @@ class _SettingsState extends State<SettingsPage> {
         );
       case 2: // Account
         return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            textTitle('choose_language'.tr),
+            textTitle('choose_language'.tr, null),
             Container(
               alignment: Alignment.center,
               child: TextButton(
@@ -178,16 +180,33 @@ class _SettingsState extends State<SettingsPage> {
                   children: [
                     Text('language'.tr,
                       style: const TextStyle(
-                        color: Colors.red,
+                        color: Colors.green,
                         fontSize: 20,
                       ),
                     ),
                     const SizedBox(width: 10),
-                    Icon(Icons.arrow_drop_down_circle_outlined, color: Colors.red),
+                    Icon(Icons.arrow_drop_down_circle_outlined, color: Colors.green),
                   ],
                 ),
               ),
             ),
+            SizedBox(height: 30),
+            Divider(height: 1),
+            SizedBox(height: 20),
+            textTitle('danger_zone'.tr, Colors.red),
+            Text("delete_account_guidance".tr),
+            TextButton(
+              onPressed: () {
+                accountController.deleteMyAccount(context);
+              },
+              child: Text(
+                  "btn_delete_account".tr,
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontSize: 20
+                  ),
+              ),
+            )
           ],
         );
       default:
@@ -195,13 +214,14 @@ class _SettingsState extends State<SettingsPage> {
     }
   }
 
-  Widget textTitle(String title) {
+  Widget textTitle(String title, Color? color) {
     return Center(
       child: Text(
         title,
         style: TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: 25,
+          color: color?? Colors.black
         ),
       ),
     );

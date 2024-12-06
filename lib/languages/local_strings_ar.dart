@@ -49,6 +49,7 @@ class LocalStringsAr extends Translations {
       'me': 'أنا',
       'password': 'كلمة المرور',
       're_password': 'أعد إدخال كلمة المرور',
+      'enter_your_password': 'أدخل كلمة المرور الخاصة بك',
       'optional': ' \\(اختياري)',
       'status': 'الحالة',
       'online': 'متصل',
@@ -162,6 +163,7 @@ class LocalStringsAr extends Translations {
       'btn_request_friendship': 'أرسل طلب صداقة',
       'btn_restart': 'إعادة تشغيل',
       'btn_ok': 'موافق',
+      'btn_delete_account': 'حذف الحساب',
 
 
 
@@ -220,6 +222,10 @@ class LocalStringsAr extends Translations {
       'didnt_made_changes': 'لم تقم بأي تغييرات ليتم حفظها',
       'your_changes_succed': 'تم تغيير معلوماتك بنجاح',
       'account_succed_but_info_failed': 'تم إنشاء حسابك، لكن لم يتم حفظ اسمك ولقبك. يرجى إضافتهما من خلال خيار التعديل',
+      'delete_account_guidance': 'حذف حسابك سيؤدي إلى إزالة جميع بياناتك بشكل دائم وسينفذ فوراً. هذا الإجراء لا يمكن التراجع عنه. إذا أردت العودة في المستقبل، ستحتاج إلى إنشاء حساب جديد.',
+      'delete_account_warning': 'هل أنت متأكد أنك تريد حذف حسابك بشكل دائم؟',
+      'delete_account_reauth_description': 'للمتابعة مع حذف الحساب، يرجى إدخال كلمة المرور الحالية الخاصة بك. إذا نسيت كلمة المرور الخاصة بك، يرجى تسجيل الخروج والنقر على رابط "نسيت كلمة المرور" في صفحة تسجيل الدخول لإعادة تعيينها.',
+      'account_deletion_succed': 'تم حذف حسابك بنجاح.',
       'change_path' : 'غير المسار من الأسفل',
       'error_while_sending_message': 'تعذر إرسال رسالتك. حاول مرة أخرى!',
       'allowed_message_length' : 'يرجى تحديد رسالتك بأقل من 1000 حرف',

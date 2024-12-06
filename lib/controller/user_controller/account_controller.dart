@@ -1,13 +1,21 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:playbazaar/services/collection_services.dart';
+import 'package:playbazaar/services/hive_services/hive_user_service.dart';
 import 'package:playbazaar/services/push_notification_service/device_service.dart';
 import '../../api/services/firestore_services.dart';
 import '../../global_widgets/show_custom_snackbar.dart';
+import '../../global_widgets/string_return_dialog.dart';
 import '../../helper/sharedpreferences/sharedpreferences.dart';
 
 
 class AccountController extends GetxController {
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  final firestore = FirebaseFirestore.instance;
+  final collectionServices = CollectionServices();
+  final hiveService = HiveUserService();
 
   RxBool isLoading = false.obs;
 
@@ -88,9 +96,68 @@ class AccountController extends GetxController {
     }
   }
 
+  Future<void> deleteMyAccount(BuildContext context) async {
+    try {
+      User? currentUser = FirebaseAuth.instance.currentUser;
+
+      if (currentUser == null) {
+        Get.snackbar('Error', 'No user logged in');
+        return;
+      }
+
+      String? password = await showDialog<String?>(
+        context: context,
+        builder: (_) =>
+        StringReturnDialog(
+          title: "password".tr,
+          description: "delete_account_reauth_description".tr,
+          hintText: 'enter_your_password'.tr,
+          btnApproveColor: Colors.red,
+        ),
+      );
+
+      // If user cancels
+      if (password == null || password.trim().isEmpty) {
+        return;
+      }
+
+      // Reauthenticate with current credentials
+      AuthCredential credential = EmailAuthProvider.credential(
+          email: currentUser.email!,
+          password: password
+      );
+
+      await HiveUserService().clearRecentUsers();
+
+      // Reauthenticate
+      await currentUser.reauthenticateWithCredential(credential);
+
+      // 1. Remove this user from friends' friend lists
+      CollectionReference userCollection = firestore.collection("user");
+      await collectionServices.deleteCollection(userCollection, 'friends', firebaseAuth.currentUser!.uid);
+      await collectionServices.deleteCollection(userCollection, 'devices', firebaseAuth.currentUser!.uid);
+
+      // 3. Delete user's main document
+      await firestore.collection('users').doc(currentUser.uid).delete();
+
+      // 4. Delete Firebase Authentication user
+      await currentUser.delete();
+
+      await FirebaseAuth.instance.signOut();
+      Get.offAll('/login');
+      showCustomSnackbar("account_deletion_succed".tr, true);
+
+    } on FirebaseAuthException catch (e) {
+      _handleFirebaseAuthException(e);
+    } catch (e) {
+      Get.snackbar('Error', 'An unexpected error occurred: $e');
+    }
+  }
 
   void _handleFirebaseAuthException(FirebaseAuthException e) {
     switch (e.code) {
+      case 'wrong_password':
+        showCustomSnackbar('wrong_password'.tr, false);
       case 'weak-password':
         showCustomSnackbar('weak_password'.tr, false);
         break;

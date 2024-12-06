@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:playbazaar/global_widgets/accept_dialog.dart';
 import 'package:playbazaar/global_widgets/show_custom_snackbar.dart';
-
 import '../../controller/user_controller/auth_controller.dart';
 import '../../services/push_notification_service/device_service.dart';
 

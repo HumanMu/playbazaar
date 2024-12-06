@@ -76,7 +76,6 @@ class PrivateMessageService extends GetxService {
 
   Future<bool> deletePrivateMessageCollection(String collectionId) async {
     if (collectionId.isEmpty) {
-      print("Invalid collection ID provided");
       return false;
     }
 
@@ -86,7 +85,7 @@ class PrivateMessageService extends GetxService {
     try {
       final docSnapshot = await docRef.get();
       if (!docSnapshot.exists) {
-        print("Chat document doesn't exist: $collectionId");
+        return false;
       }
 
       // Get total count of messages for logging

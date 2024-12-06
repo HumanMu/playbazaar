@@ -47,6 +47,7 @@ class LocalStringsFa extends Translations {
       'email' : ' ایمیل  ',
       'password' : 'رمز ورود',
       're_password' : 'تکرار رمز ورود',
+      'enter_your_password': 'رمز عبور خود را وارد کنید',
       'points': ' امتیاز  ',
       'aboutme' : 'درباره من',
       'me' : ' من  ',
@@ -161,6 +162,8 @@ class LocalStringsFa extends Translations {
       'btn_request_friendship' : 'درخواست دوستی',
       'btn_restart': 'راه‌اندازی مجدد',
       'btn_ok': 'باشه',
+      'btn_delete_account': 'حذف حساب',
+
 
 
       //  Settings
@@ -217,6 +220,10 @@ class LocalStringsFa extends Translations {
       'didnt_made_changes' : 'شما هیچ تغییری برای ذخیره کردن انجام نداده‌اید',
       'your_changes_succed' : 'اطلاعات شما با موفقیت تغییر یافت',
       'account_succed_but_info_failed' : 'حساب شما ایجاد شده است، اما نام و نام خانوادگی شما ذخیره نشد. لطفاً از طریق گزینه ویرایش آن را اضافه کنید',
+      'delete_account_guidance': 'حذف حساب شما تمام داده‌های شما را به طور دائمی حذف کرده و بلافاصله اجرا می‌شود. این اقدام غیرقابل برگشت است. اگر روزی بخواهید برگردید، باید یک حساب جدید ایجاد کنید.',
+      'delete_account_warning': 'آیا مطمئن هستید که می‌خواهید حساب خود را به طور دائمی حذف کنید؟',
+      'delete_account_reauth_description': 'برای ادامه حذف حساب، لطفاً رمز عبور فعلی خود را وارد کنید. اگر رمز عبور خود را فراموش کرده‌اید، لطفاً از حساب خود خارج شوید و روی لینک "فراموشی رمز عبور" در صفحه ورود کلیک کنید تا آن را تغییر دهید.',
+      'account_deletion_succed': 'حساب شما با موفقیت حذف شد.',
       'change_path' : 'مسیر را از زیر تغییر دهید',
       'error_while_sending_message': 'پیام شما ارسال نشد. دوباره تلاش کنید!',
       'allowed_message_length_1000' : 'لطفاً پیام خود را به کمتر از ۱۰۰۰ کاراکتر محدود کنید',

@@ -51,6 +51,7 @@ class LocalStringsEn extends Translations {
       'me' : 'I am  ',
       'password': 'Password',
       're_password' : 'Re-enter your password',
+      'enter_your_password': 'Enter your password',
       'optional' : ' \\(optional)',
       'status' : 'Status  ',
       'online' : 'Online',
@@ -164,6 +165,8 @@ class LocalStringsEn extends Translations {
       'btn_request_friendship' : 'Add friend',
       'btn_restart': 'Restart',
       'btn_ok': 'Ok',
+      'btn_delete_account': 'Delete Account',
+
 
 
       // Settings
@@ -221,6 +224,10 @@ class LocalStringsEn extends Translations {
       'didnt_made_changes' : 'You have not made any changes to be saved',
       'your_changes_succed' : 'Your information has been changed successfully',
       'account_succed_but_info_failed': 'Your account has been created, but your first and last name could not be saved. Please add them through the edit option',
+      'delete_account_guidance': 'Deleting your account will permanently remove all your data and take immediate effect. This action is irreversible. If you wish to return in the future, you will need to create a new account.',
+      'delete_account_warning': 'Are you sure you want to permanently delete your account?',
+      'delete_account_reauth_description': 'To proceed with account deletion, please enter your current password. If you have forgotten your password, please log out and click on the "Forgot my password" link on the login page to reset it.',
+      'account_deletion_succed': 'Your account has been successfully deleted.',
       'change_path' : 'Change the path below',
       'error_while_sending_message': 'Could not send your message. Please try again!',
       'allowed_message_length_1000' : 'Please limit your message to under 1000 characters.',
