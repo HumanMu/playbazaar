@@ -5,10 +5,12 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:playbazaar/controller/settings_controller/notification_settings_controller.dart';
+import 'package:playbazaar/games/games/quiz/widgets/quiz_end_message_dialog.dart';
 import '../../../../admob/adaptive_banner_ad.dart';
 import '../../../../api/firestore/firestore_quiz.dart';
 import '../../../../global_widgets/show_custom_snackbar.dart';
 import '../../models/question_models.dart';
+import '../widgets/quiz_result_dialog.dart';
 
 
 class QuizPlayScreen extends StatefulWidget {
@@ -226,104 +228,42 @@ class _QuizPlayScreen extends State<QuizPlayScreen>{
         showAnswer = false;
       });
     } else {
-      widget.withOption? showResult() : endOfQuestions();
+      widget.withOption? showResult() : showQuizzEnd();
     }
-  }
-
-  void endOfQuestions() {
-    if (quizAttempts.isEmpty) {
-      return;
-    }
-    showDialog(
-      context: context,
-      builder: (context) => Dialog(
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12.0)),
-          child: Container(
-              width: MediaQuery
-                  .of(context)
-                  .size
-                  .width * 0.8, // 80% of screen width
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text("end_of_family_game".tr),
-                  SizedBox(height: 40),
-                  Align(
-                    alignment: Alignment.center,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        endQuiz();
-                        Navigator.of(context).pop();
-                        Get.offNamed('/mainQuiz');
-                      },
-                      child: Text(
-                        "btn_continue".tr,
-                        style: const TextStyle(
-                          fontSize: 20,
-                          color: Colors.green,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              )
-          ),
-        ),
-    );
   }
 
 
   Future<void> getQuestionsFromFirestore() async {
-    setState(() {
-      isLoading = true;
-    });
+    if (!mounted) return;
+    setState(() => isLoading = true);
 
     try {
       final questionResult = await FirestoreQuiz().getRandomQuizQuestions(
           quizId: widget.selectedQuiz
       );
 
-      if (!mounted) return;
-
-      if (questionResult.isNotEmpty) {
-        // Use a set with a custom equality check to remove duplicates
-        final uniqueQuestions = <QuizQuestionModel>{};
-        for (var question in questionResult) {
-          // Add only if a similar question doesn't already exist
-          if (!uniqueQuestions.any((q) => q.question == question.question)) {
-            uniqueQuestions.add(question);
-          }
-        }
-
-        // Convert back to a list
-        final uniqueQuestionsList = uniqueQuestions.toList();
-
-        setState(() {
-          questionData = uniqueQuestionsList;
-          isLoading = false;
-          selectedAnswer = 0;
-
-          final firstQuestion = questionData[selectedAnswer];
-          currentQuestion = firstQuestion.question;
-
-          // Prepare unique answers
-          currentAnswer = _prepareUniqueAnswers(firstQuestion);
-        });
-      } else {
-        setState(() {
-          isLoading = false;
-        });
+      if (questionResult.isEmpty) {
+        setState(() => isLoading = false);
+        return;
       }
+
+      // Optimize duplicate removal using toSet() and a custom comparator
+      final uniqueQuestionsList = questionResult.toSet().toList();
+
+      setState(() {
+        questionData = uniqueQuestionsList;
+        isLoading = false;
+        selectedAnswer = 0;
+
+        final firstQuestion = questionData[selectedAnswer];
+        currentQuestion = firstQuestion.question;
+        currentAnswer = _prepareUniqueAnswers(firstQuestion);
+      });
     } catch (error) {
       if (!mounted) return;
 
-      setState(() {
-        isLoading = false;
-      });
-      showCustomSnackbar('error_loading_quiz'.tr, false);
+      setState(() => isLoading = false);
+      showCustomSnackbar('error*loading_quiz'.tr, false);
     }
   }
 
@@ -395,177 +335,9 @@ class _QuizPlayScreen extends State<QuizPlayScreen>{
       _player.play();
     } catch (e) {
       if (kDebugMode) {
-        print("Error playing sound: $e");
+        print("Error playing button sounds");
       }
     }
-  }
-
-
-
-  void showResult() async {
-    if (quizAttempts.isEmpty) {
-      return;
-    }
-    int numberOfCorrectAnswers = quizAttempts.where((attempt) => attempt.isCorrect).length;
-    int numberOfWrongAnswers = quizAttempts.length - numberOfCorrectAnswers;
-    int points = numberOfCorrectAnswers * 3 - quizAttempts.where((attempt) => !attempt.isCorrect).length;
-
-    showDialog(
-      context: context,
-      builder: (context) => Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-        child: Container(
-          width: MediaQuery.of(context).size.width * 0.8, // 80% of screen width
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                margin: EdgeInsets.all(0),
-                alignment: Alignment.center,
-                child: Text("game_result".tr,
-                  style: const TextStyle(
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("${"correct_answers".tr}:  $numberOfCorrectAnswers"),
-                        Text("${"wrong_answers".tr}:  $numberOfWrongAnswers"),
-                      ],
-                    ),
-                  ),
-
-                  Expanded( // Use Expanded to make Columns take up available space
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("${"points_earned".tr}:   $points"),
-                        motivationResult(numberOfCorrectAnswers),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              const Divider(thickness: 12, color: Colors.blueGrey),
-              const SizedBox(height: 10),
-              Container(
-                margin: EdgeInsets.all(0),
-                alignment: Alignment.center,
-                child: Text("details".tr,
-                  style: const TextStyle(
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10),
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: quizAttempts.asMap().entries.map((entry) {
-                      final index = entry.key;
-                      final attempt = entry.value;
-
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "${"question_hint".tr} ${index + 1}: ${attempt.question}",
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16.0,
-                              ),
-                            ),
-                            const SizedBox(height: 4.0),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text("${"your_answer".tr}: "),
-                                Expanded(
-                                  child: Text(
-                                    attempt.userAnswer,
-                                    style: TextStyle(
-                                      color: attempt.isCorrect ? Colors.green : Colors.red,
-                                    ),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 4.0),
-                            attempt.isCorrect == false
-                                ? Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text("${"correct_answer".tr}: "),
-                                    Expanded(
-                                      child: Text(
-                                        attempt.correctAnswer,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
-                                  ],
-                                )
-                                : const Text(""),
-                            const Divider(),
-                          ],
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                ),
-              ),
-
-              // Button should stay fixed at the bottom
-              const SizedBox(height: 10), // Add space between content and button
-              Align(
-                alignment: Alignment.center,
-                child: ElevatedButton(
-                  onPressed: () {
-                    endQuiz();
-                    Navigator.of(context).pop();
-                    Get.offNamed('/mainQuiz');
-                  },
-                  child: Text(
-                    "btn_continue".tr,
-                    style: const TextStyle(
-                      fontSize: 20,
-                      color: Colors.green,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-
-
-  void endQuiz() {
-    setState(() {
-      questionData = [];
-      quizAttempts = [];
-      currentAnswer = [];
-      currentQuestion = "";
-      selectedAnswer = 0;
-    });
   }
 
 
@@ -580,40 +352,44 @@ class _QuizPlayScreen extends State<QuizPlayScreen>{
     }
   }
 
-
-  Widget motivationResult(int correctAnswer) {
-    if (correctAnswer <= 3) {
-      return buildMotivationText("you_can_do_better", Icons.thumb_down_alt, Colors.red, 14);
-    } else if (correctAnswer <= 5) {
-      return buildMotivationText("not_bad", Icons.thumbs_up_down, Colors.orange, 18);
-    } else if (correctAnswer <= 8) {
-      return buildMotivationText("well_done", Icons.thumb_up_alt, Colors.amber, 22);
-    } else if (correctAnswer <= 10) {
-      return buildMotivationText("excellent", Icons.star, Colors.green, 26);
-    } else {
-      return const SizedBox();
-    }
+  void showQuizzEnd() async {
+      if (quizAttempts.isEmpty) {
+        return;
+      }
+      endQuiz();
+      showDialog(
+          context: context,
+          builder: (context) => QuizEndMessageDialog(
+          quizAttempts: quizAttempts
+      ));
   }
 
+  void showResult() async {
+    if (quizAttempts.isEmpty) {
+      return;
+    }
 
-  Widget buildMotivationText(String text, IconData icon, Color color, double fontSize) {
-    return Text.rich(
-      TextSpan(
-        children: [
-          TextSpan(
-            text: text.tr,
-            style: TextStyle(color: color, fontSize: fontSize, fontWeight: FontWeight.bold),
-          ),
-          WidgetSpan(
-            alignment: PlaceholderAlignment.middle,
-            child: Icon(icon, color: color, size: fontSize + 6),
-          ),
-        ],
+    showDialog(
+      context: context,
+      builder: (context) => QuizResultDialog(
+        quizAttempts: quizAttempts,
+        onContinue: () {
+          endQuiz();
+          Navigator.of(context).pop();
+          Get.offNamed('/mainQuiz');
+        },
       ),
     );
   }
 
-
-
+  void endQuiz() {
+    setState(() {
+      questionData = [];
+      quizAttempts = [];
+      currentAnswer = [];
+      currentQuestion = "";
+      selectedAnswer = 0;
+    });
+  }
 
 }

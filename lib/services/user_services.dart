@@ -167,9 +167,9 @@ class UserServices extends GetxService {
 
       // Adding to the users device
       RecentInteractedUserDto recentUser = RecentInteractedUserDto(
-        uid: friendData['uid'],
-        fullname: friendData['fullname'],
-        avatarImage: friendData['avatarImage'],
+        uid: userData['uid'],
+        fullname: userData['fullname'],
+        avatarImage: userData['avatarImage'],
         lastMessage: 'say_hi',
         timestamp: Timestamp.now(),
         friendshipStatus: 'good',
