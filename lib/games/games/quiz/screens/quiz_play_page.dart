@@ -1,10 +1,8 @@
 import 'dart:math';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:just_audio/just_audio.dart';
-import 'package:playbazaar/controller/settings_controller/notification_settings_controller.dart';
+import 'package:playbazaar/controller/sound_controller/sound_controller.dart';
 import 'package:playbazaar/games/games/quiz/widgets/quiz_end_message_dialog.dart';
 import '../../../../admob/adaptive_banner_ad.dart';
 import '../../../../api/firestore/firestore_quiz.dart';
@@ -31,9 +29,7 @@ class QuizPlayScreen extends StatefulWidget {
 }
 
 class _QuizPlayScreen extends State<QuizPlayScreen>{
-  final NotificationSettingsController settingsController = Get.find<NotificationSettingsController>();
-  late AudioPlayer _player;
-  bool isLoading = true;
+  final SoundController soundController = Get.put(SoundController());
   late List<QuizQuestionModel> questionData = [];
   List<QuizAttempt> quizAttempts = [];
   bool showQuestionsDetailResult = false;
@@ -43,18 +39,18 @@ class _QuizPlayScreen extends State<QuizPlayScreen>{
   int? selectedAnswerIndex;
   bool? isCorrect;
   late bool showAnswer = false;
+  bool isLoading = true;
+
 
   @override
   void initState() {
     super.initState();
-    _player = AudioPlayer();
-    _playSound();
     getQuestionsFromFirestore();
   }
 
   @override
-  void dispose() {
-    _player.dispose();
+  void dispose(){
+    soundController.dispose();
     super.dispose();
   }
 
@@ -94,12 +90,12 @@ class _QuizPlayScreen extends State<QuizPlayScreen>{
                     debugPrint('Ad failed to load in Quiz Screen');
                   }
                 },
-              ),  // The BannerAd widget
+              ),
             ),
             const SizedBox(height: 30),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 20), // This padding is only for the quiz content
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
                 child: questionData.isEmpty
                   ? Center(
                     child: Text(
@@ -130,7 +126,7 @@ class _QuizPlayScreen extends State<QuizPlayScreen>{
                               padding: const EdgeInsets.symmetric(vertical: 5.0),
                               child: ElevatedButton(
                                 onPressed: () {
-                                  _playSound();
+                                  soundController.playSound('assets/sounds/button/ui_clicked.wav');
                                   checkAnswer(index);
                                 },
                                 style: ElevatedButton.styleFrom(
@@ -321,22 +317,6 @@ class _QuizPlayScreen extends State<QuizPlayScreen>{
     }
     else {
       return showCustomSnackbar("question_is_answered".tr, false);
-    }
-  }
-
-
-  void _playSound() async {
-    if(!settingsController.isButtonSoundsEnabled.value){
-      return;
-    }
-
-    try {
-      await _player.setAsset('assets/sounds/button/ui_clicked.wav');
-      _player.play();
-    } catch (e) {
-      if (kDebugMode) {
-        print("Error playing button sounds");
-      }
     }
   }
 
