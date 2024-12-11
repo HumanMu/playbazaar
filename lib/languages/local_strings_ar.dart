@@ -37,6 +37,8 @@ class LocalStringsAr extends Translations {
       'with_options': 'مع الخيارات',
       'without_options': 'بدون خيارات',
       'show_result': 'عرض النتيجة',
+      'show_the_answer': 'أظهر الإجابة',
+      'see_result_first': 'يرجى رؤية النتيجة أولاً.',
       'end_of_family_game': 'كان هذا نهاية الاختبار. يأمل Play Bazaar أن تكون قد استمتعت. اضغط على الزر أدناه للعودة إلى قائمة الألعاب.',
 
 

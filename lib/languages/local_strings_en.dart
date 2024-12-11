@@ -38,6 +38,8 @@ class LocalStringsEn extends Translations {
       'with_options': 'With options',
       'without_options': 'Without options',
       'show_result': 'Show result',
+      'show_the_answer': 'Show the answer',
+      'see_result_first': 'See the result first, please.',
       'end_of_family_game': 'That was the end of the quiz. Play Bazaar hopes you had fun. Press the button below to return to the game list.',
 
 
@@ -83,7 +85,7 @@ class LocalStringsEn extends Translations {
 
 
       // Others
-      'language' : 'انتخاب زبان',
+      'language' : 'Language',
       'account': 'Account',
       'farsi' : 'فارسی , دری',
       'english' : 'English',

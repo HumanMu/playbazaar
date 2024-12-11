@@ -8,7 +8,7 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:playbazaar/controller/settings_controller/notification_settings_controller.dart';
 import 'package:playbazaar/controller/user_controller/user_controller.dart';
 import 'package:playbazaar/games/games/quiz/screens/add_question.dart';
-import 'package:playbazaar/games/games/quiz/screens/quiz_play_page.dart';
+import 'package:playbazaar/games/games/quiz/screens/optionized_play_page.dart';
 import 'package:playbazaar/screens/main_screens/group_chat_page.dart';
 import 'package:playbazaar/screens/main_screens/edit_page.dart';
 import 'package:playbazaar/screens/main_screens/home_page.dart';
@@ -32,6 +32,7 @@ import 'controller/message_controller/private_message_controller.dart';
 import 'controller/user_controller/auth_controller.dart';
 import 'games/games/quiz/main_quiz_page.dart';
 import 'games/games/quiz/screens/review_question_page.dart';
+import 'games/games/quiz/screens/none_optionized_play_page.dart';
 import 'helper/encryption/secure_key_storage.dart';
 import 'languages/local_strings.dart';
 import 'middleware/auth_guard.dart';
@@ -196,13 +197,23 @@ class _PlayBazaarState extends State<PlayBazaar> {
                         page: () => const QuizMainPage()
                     ),
                     GetPage(
-                      name: '/quizPlayPlage',
+                      name: '/optionizedPlayScreen',
                       page: () {
                         final args = Get.arguments as Map<String, dynamic>;
-                        return QuizPlayScreen(
+                        return OptionizedPlayScreen(
                           selectedQuiz: args['selectedPath'],
                           quizTitle: args['quizTitle'],
-                          withOption: args['withOption'],
+                          //withOption: args['withOption'],
+                        );
+                      },
+                    ),
+                    GetPage(
+                      name: '/noneOptionizedPlayScreen',
+                      page: () {
+                        final args = Get.arguments as Map<String, dynamic>;
+                        return NoneOptionizedPlayScreen(
+                          selectedQuiz: args['selectedPath'],
+                          quizTitle: args['quizTitle'],
                         );
                       },
                     ),

@@ -38,6 +38,8 @@ class LocalStringsDa extends Translations {
       'with_options': 'med valgmuligheder',
       'without_options': 'uden valgmuligheder',
       'show_result': 'Vis resultat',
+      'show_the_answer': 'Vis svaret',
+      'see_result_first': 'Se venligst resultatet først.',
       'end_of_family_game': 'Det var slutningen på quizzen. Play Bazaar håber, du havde det sjovt. Tryk på knappen nedenfor for at vende tilbage til spiloversigten.',
 
 

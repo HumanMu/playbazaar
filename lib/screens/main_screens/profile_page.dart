@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:playbazaar/functions/string_cases.dart';
 import '../../api/Authentication/auth_service.dart';
 import '../../controller/user_controller/user_controller.dart';
-import '../../languages/custom_language.dart';
 import '../../services/hive_services/hive_user_service.dart';
 import '../widgets/sidebar_drawer.dart';
 import '../widgets/text_boxes/text_inputs.dart';
@@ -162,7 +161,9 @@ class _ProfilePage extends State<ProfilePage> {
         onPressed: () {
           Get.toNamed('/edit');
         },
-        child: Text('btn_edit'.tr),
+        child: Text('btn_edit'.tr,
+          style: TextStyle(color: Colors.white),
+        ),
       ),
     );
   }

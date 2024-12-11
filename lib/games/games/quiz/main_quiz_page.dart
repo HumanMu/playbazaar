@@ -85,24 +85,29 @@ class _QuizMainPage extends State<QuizMainPage> {
       children: [
         Expanded(
           child: ListView.builder(
-          itemCount: quizNames.length,
+            itemCount: quizNames.length,
             itemBuilder: (context, index) {
               return Column(
                 children: [
                   GameListBox(
                     title: quizNames[index],
-                    navigationParameter: quizPath[index],
-                    onTap: _handleNavigation,
+                    quizPath: quizPath[index],
                   ),
                 ],
               );
             },
           ),
         ),
-        ElevatedButton(
+        TextButton(
           onPressed: () => acceptDialog(context, 'guide'.tr, 'quiz_play_guide'.tr),
-          child: Text('guide'.tr),
+          child: Text('guide'.tr,
+              style: TextStyle(
+                color: Colors.red,
+                fontSize: 20,
+              )
+          ),
         ),
+
         Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
@@ -125,7 +130,9 @@ class _QuizMainPage extends State<QuizMainPage> {
                               borderRadius: BorderRadius.all(Radius.circular(5))
                           )
                       ),
-                      child: Text("btn_send_question".tr),
+                      child: Text("btn_send_question".tr,
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                   ),
                   const SizedBox(width: 4),
@@ -140,7 +147,9 @@ class _QuizMainPage extends State<QuizMainPage> {
                               borderRadius: BorderRadius.all(Radius.circular(5))
                           )
                       ),
-                      child: Text("btn_review_question".tr),
+                      child: Text("btn_review_question".tr,
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                   ) : const Text(""),
                 ],
@@ -151,17 +160,5 @@ class _QuizMainPage extends State<QuizMainPage> {
       ],
     );
   }
-
-  void _handleNavigation(String selectedPath, String title) {
-    Get.toNamed(
-        '/quizPlayPlage',
-        arguments: {
-          'selectedPath': selectedPath,
-          'quizTitle': title,
-          'withOption': false,
-        }
-    );
-  }
-
 
 }

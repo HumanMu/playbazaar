@@ -19,7 +19,7 @@ class UserController extends GetxController {
   final UserServices userServices = Get.find<UserServices>();
   final HiveUserService _hiveUserService = Get.find();
   final PrivateMessageService messageController = Get.find<PrivateMessageService>();
-  final RxList<FriendModel> friendList = <FriendModel>[].obs;
+  final RxList<FriendModel> friendRequests = <FriendModel>[].obs;
   Rxn<UserModel> userData = Rxn<UserModel>();
   RxList<Map<String, dynamic>> searchedUsersList = <Map<String, dynamic>>[].obs;
   RxList<FriendModel> searchedFriends = <FriendModel>[].obs;
@@ -63,7 +63,7 @@ class UserController extends GetxController {
     _friendsSubscription = userServices
         .listenToFriends(userId)
         .listen((friends) {
-          friendList.assignAll(friends);
+        friendRequests.assignAll(friends);
         },
         onError: (error) {
           if (kDebugMode) {

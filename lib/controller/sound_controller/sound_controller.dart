@@ -12,7 +12,6 @@ class SoundController extends GetxController {
   void onInit() {
     super.onInit();
     _player = AudioPlayer();
-    playSound("");
   }
 
   @override
@@ -32,7 +31,7 @@ class SoundController extends GetxController {
       _player.play();
     } catch (e) {
       if (kDebugMode) {
-        print("Error playing button sounds");
+        print("Error playing button sounds: $e");
       }
     }
   }

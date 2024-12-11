@@ -19,7 +19,10 @@ Future<void> acceptDialog(context, title, message) async {
           Center(
             child: TextButton(
               child: Text('btn_ok'.tr,
-                style: TextStyle(fontSize: 25),
+                style: TextStyle(
+                  fontSize: 25,
+                  color: Colors.black
+                ),
               ),
               onPressed: () {
                 Navigator.of(context).pop();

@@ -51,8 +51,8 @@ class _MainScreenGames extends State<MainScreenGames> {
                 itemBuilder: (context, index){
                   return GameListBox(
                     title: gameListConstantsFa[index],
-                    navigationParameter: gameListConstants[index],
-                    onTap: _handleNavigation,
+                    quizPath: gameListConstants[index],
+                    //onTap: _handleNavigation,
                   );
                 }
             ),
@@ -82,7 +82,7 @@ class _MainScreenGames extends State<MainScreenGames> {
     );
   }
 
-  _handleNavigation(String? selectedPath, String title) {
+  void _handleNavigation(String? selectedPath, String title, String pagePath) {
    switch(selectedPath){
      case "Quiz":
        navigateToAnotherScreen(context, const QuizMainPage());

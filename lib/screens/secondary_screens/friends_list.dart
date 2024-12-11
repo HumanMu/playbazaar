@@ -47,8 +47,10 @@ class _FriendsList extends State<FriendsList> {
   }
 
   final List<FriendsCategory> categories = [
-    FriendsCategory(title: 'btn_chats',
-        icon: Icons.chat
+    FriendsCategory(
+      title: 'btn_chats',
+      icon: Icons.chat,
+
     ),
     FriendsCategory(
       title: 'requests',
@@ -285,7 +287,7 @@ class _FriendsList extends State<FriendsList> {
       if (userController.isLoading.value) {
         return Center(child: CircularProgressIndicator());
       }
-      final requestedFriendship = userController.friendList.where(
+      final requestedFriendship = userController.friendRequests.where(
               (friend) => friend.friendshipStatus == FriendshipStatus.received).toList();
       if (requestedFriendship.isEmpty) {
         return Center(child: Text('${'friend_request'.tr}  0'));

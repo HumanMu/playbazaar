@@ -38,6 +38,8 @@ class LocalStringsFa extends Translations {
       'with_options': 'با گزینه‌',
       'without_options': 'بدون گزینه‌',
       'show_result': 'نمایش نتیجه',
+      'show_the_answer': 'نمایش جواب',
+      'see_result_first': 'لطفاً ابتدا نتیجه را مشاهده کنید.',
       'end_of_family_game': 'این پایان آزمون بود. Play Bazaar امیدوار است که لذت برده باشید. دکمه زیر را فشار دهید تا به لیست بازی‌ها بازگردید.',
 
 

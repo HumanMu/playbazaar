@@ -3,14 +3,12 @@ import 'package:get/get.dart';
 
 class GameListBox extends StatefulWidget {
   final String title;
-  final String navigationParameter;
-  final Function(String, String)? onTap;
+  final String quizPath;
 
   const GameListBox({
     super.key,
     required this.title,
-    required this.navigationParameter,
-    this.onTap,
+    required this.quizPath,
   });
 
   @override
@@ -18,25 +16,33 @@ class GameListBox extends StatefulWidget {
 }
 
 class GameListBoxState extends State<GameListBox> {
-  bool isClicked = false;
-  late bool hasDifficulities = false;
+  bool hasDifficulities = false;
+  bool showOptions = false;
+
+  // Define a list of quiz paths that should have difficulty options
+  static final List<String> difficultiesQuizPaths = [
+    'hazaragi_af',
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    showOptions = difficultiesQuizPaths.contains(widget.quizPath);
+  }
 
   @override
   Widget build(BuildContext context) {
-
     return GestureDetector(
       onTap: () {
-        if (widget.onTap != null) {
-          bool hasLevel = checkForDifficulities(widget.navigationParameter);
-          if(hasLevel){
+        //if (widget.onTap != null) {
+          if (showOptions) {
             setState(() {
               hasDifficulities = !hasDifficulities;
             });
+          } else {
+            _handleNavigation();
           }
-          else{
-            widget.onTap!(widget.navigationParameter, widget.title); // Call the callback with the navigation parameter
-          }
-        }
+        //}
       },
       child: Column(
         children: [
@@ -54,68 +60,67 @@ class GameListBoxState extends State<GameListBox> {
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
-                  color:  Colors.white,
+                  color: Colors.white,
                 ),
               ),
             ),
           ),
-          hasDifficulities? buildDifficultySection(widget.navigationParameter) : Container(),
-        ]
+          hasDifficulities ? _buildDifficultySection() : Container(),
+        ],
       ),
     );
   }
 
-  Widget buildDifficultySection(String quizPath) {
+  Widget _buildDifficultySection() {
     return Padding(
-        padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: difficultyLevels.map((option) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.redAccent
-                  ),
-                  onPressed: () => handleDifficultySelection(quizPath, option),
-                  child: Text(option,
-                    style: TextStyle(color: Colors.white),
-                  ),
+      padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: _difficultyLevels.map((option) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4.0),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.redAccent,
                 ),
-              );
-            }).toList(),
-          ),
+                onPressed: () => _handleNavigationWithOption(option),
+                child: Text(
+                  option,
+                  style: const TextStyle(color: Colors.white),
+                ),
+              ),
+            );
+          }).toList(),
         ),
+      ),
     );
   }
 
-
-
-  void handleDifficultySelection(String quizPath, String options) {
+  void _handleNavigation() {
     Get.toNamed(
-        '/quizPlayPlage',
-        arguments: {
-          'selectedPath': quizPath,
-          'quizTitle': widget.title,
-          'withOption': options == 'with_options'.tr? true : false,
-        }
+      '/noneOptionizedPlayScreen',
+      arguments: {
+        'selectedPath': widget.quizPath,
+        'quizTitle': widget.title,
+      },
     );
-    //Navigator.pushNamed(context, quizPath, arguments: difficulty);
   }
 
-  bool checkForDifficulities(String pathParameter) {
-    switch(pathParameter){
-      case "hazaragi_af":
-        return true;
-      default:
-        return false;
-    }
+  void _handleNavigationWithOption(String selectedOption) {
+    final isWithOptions = selectedOption == 'with_options'.tr;
+
+    Get.toNamed(
+      isWithOptions ? '/optionizedPlayScreen' : '/noneOptionizedPlayScreen',
+      arguments: {
+        'selectedPath': widget.quizPath,
+        'quizTitle': widget.title,
+      },
+    );
   }
 
-
-  final List<String> difficultyLevels = [
+  final List<String> _difficultyLevels = [
     'with_options'.tr,
     'without_options'.tr,
   ];

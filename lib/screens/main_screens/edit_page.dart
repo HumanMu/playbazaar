@@ -150,7 +150,9 @@ class _EditPage extends State<EditPage> {
           onPressed: () {
             saveUserData();
           },
-          child: Text('btn_save'.tr),
+          child: Text('btn_save'.tr,
+            style: TextStyle(color: Colors.white),
+          ),
         ),
     );
   }

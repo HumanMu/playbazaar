@@ -38,14 +38,14 @@ class _LudoWorldWarState extends State<LudoWorldWar> {
         itemBuilder: (context, index){
           return GameListBox(
             title: ludoTypes[index],
-            navigationParameter: ludoTypes[index],
-            onTap: _handleNavigation,
+            quizPath: ludoTypes[index],
+            //onTap: _handleNavigation,
           );
         }
     );
   }
 
-  _handleNavigation(String? selectedPath, String title) {
+  _handleNavigation(String? selectedPath, String title, String pagePath) {
     if (kDebugMode) {
       print("Navigation Parameter: $selectedPath");
     }
