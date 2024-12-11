@@ -60,6 +60,7 @@ class LocalStringsAr extends Translations {
       // group
       'private': 'خاص',
       'public': 'عام',
+      'groups': 'المجموعات',
       'group_password_hint': 'أدخل كلمة مرور المجموعة',
       'creating_group_title': 'إنشاء مجموعة',
       'creating_group_description': 'اختر تفاصيل المجموعة',

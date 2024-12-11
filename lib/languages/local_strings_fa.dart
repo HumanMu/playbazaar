@@ -61,6 +61,7 @@ class LocalStringsFa extends Translations {
       // Group
       'private': 'خصوصی',
       'public': 'عمومی',
+      'groups': 'گروه‌ها',
       'group_password_hint' : 'رمز ورود انتخاب کن ... ',
       'enter_group_password' : 'این گروه خصوصی می باشد!',
       'group_admin': 'رئیس گروه: ',

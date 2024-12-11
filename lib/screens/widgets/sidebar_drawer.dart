@@ -104,7 +104,7 @@ class SidebarDrawerState extends State<SidebarDrawer> {
               ),
               ListTileWidget(
                 iconColor: Colors.red,
-                title: "my_chat".tr,
+                title: "groups".tr,
                 icon: Icons.mark_unread_chat_alt,
                 action: () => navigateTo('home'),
               ),

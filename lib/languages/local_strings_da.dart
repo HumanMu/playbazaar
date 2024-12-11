@@ -61,6 +61,7 @@ class LocalStringsDa extends Translations {
       // group
       'private': 'Privat',
       'public': 'Offentlig',
+      'groups': 'Grupper',
       'group_password_hint': 'Indtast gruppens adgangskode',
       'creating_group_title': 'Opretter gruppe',
       'creating_group_description': 'Vælg gruppens detaljer',

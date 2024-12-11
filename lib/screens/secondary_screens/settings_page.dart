@@ -111,6 +111,8 @@ class _SettingsState extends State<SettingsPage> {
           Expanded(
             child: Container(
               padding: EdgeInsets.all(25),
+              color: Colors.white38,
+              constraints: BoxConstraints(maxWidth: 500),
               child: SingleChildScrollView(
                 child: _buildSettingsContent(),
               ),

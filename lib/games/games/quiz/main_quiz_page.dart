@@ -84,22 +84,31 @@ class _QuizMainPage extends State<QuizMainPage> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Expanded(
-          child: ListView.builder(
-            itemCount: quizNames.length,
-            itemBuilder: (context, index) {
-              return Column(
-                children: [
-                  GameListBox(
-                    title: quizNames[index],
-                    quizPath: quizPath[index],
-                  ),
-                ],
-              );
-            },
+          child: Center(
+            child: Container(
+              constraints: BoxConstraints(maxWidth: 600),
+              child: ListView.builder(
+                itemCount: quizNames.length,
+                itemBuilder: (context, index) {
+                  return Column(
+                    children: [
+                      GameListBox(
+                        title: quizNames[index],
+                        quizPath: quizPath[index],
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ),
           ),
         ),
         TextButton(
-          onPressed: () => acceptDialog(context, 'guide'.tr, 'quiz_play_guide'.tr),
+          onPressed: () => acceptDialog(
+              context,
+              'guide'.tr,
+              'quiz_play_guide'.tr
+          ),
           child: Text('guide'.tr,
               style: TextStyle(
                 color: Colors.red,
@@ -112,11 +121,15 @@ class _QuizMainPage extends State<QuizMainPage> {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 3),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 10.0,
+                  vertical: 3
+              ),
               child: Text("add_question_hint".tr),
             ),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10),
+              constraints: BoxConstraints(maxWidth: 600),
               child: Row(
                 children: [
                   Expanded(

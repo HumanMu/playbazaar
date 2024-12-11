@@ -67,7 +67,7 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Colors.red,
         centerTitle: true,
         title: Text(
-          "my_memberships".tr,
+          "groups".tr,
           style: const TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
@@ -83,7 +83,12 @@ class _HomePageState extends State<HomePage> {
         parentContext: context,
       ),
 
-      body: groupList(),
+      body: Center(
+        child: Container(
+          constraints: BoxConstraints(maxWidth: 600),
+          child: groupList()
+        ),
+      ),
 
       floatingActionButton: FloatingActionButton(
         onPressed: () { popUpDialog(context); },

@@ -62,6 +62,7 @@ class LocalStringsEn extends Translations {
       // group
       'private': 'Private',
       'public' : 'Public',
+      'groups': 'Groups',
       'group_password_hint' : 'Enter the group password',
       'creating_group_title': 'Creating group',
       'creating_group_description': 'Select the group details',
