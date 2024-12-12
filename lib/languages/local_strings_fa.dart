@@ -12,6 +12,7 @@ class LocalStringsFa extends Translations {
       // Games
       'games' : 'بازیها',
       'games_list' : 'فهرست بازیها',
+      'wall_blaster': 'دیوار شکن',
       'ludo_world_war' : 'جنگ جهانی لودو',
       'quiz_list': 'فهرست بازی‌هایی لغتی',
       'add_question_hint' : 'سوالی دآری که میخواهی در هر کدام از این بازیها اضافه شود؟ دکمه پایین را بزن',

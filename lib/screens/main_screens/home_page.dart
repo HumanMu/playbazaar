@@ -189,13 +189,17 @@ class _HomePageState extends State<HomePage> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red,
                     ),
-                    child: Text("btn_cancel".tr),
+                    child: Text("btn_cancel".tr,
+                      style: TextStyle(color: Colors.white)
+                    ),
                   ),
                   ElevatedButton(
                     onPressed: () => createGroup(),
                     style:
                         ElevatedButton.styleFrom(backgroundColor: Colors.green),
-                    child: Text("btn_create".tr),
+                    child: Text("btn_create".tr,
+                      style: TextStyle(color: Colors.white)
+                    ),
                   ),
                 ]);
           }));

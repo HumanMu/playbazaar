@@ -13,6 +13,7 @@ class LocalStringsEn extends Translations {
       // Games
       'games' : 'Games',
       'games_list': 'Games list',
+      'wall_blaster': 'Wall Blaster',
       'ludo_world_war' : 'Ludo World War',
       'add_question_hint' : 'Do you have a question you would like to add to any of these games? Press the button below!',
       'question_hint' : 'Question',

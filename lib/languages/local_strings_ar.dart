@@ -13,6 +13,7 @@ class LocalStringsAr extends Translations {
       // Games
       'games': 'الألعاب',
       'games_list': 'قائمة الألعاب',
+      'wall_blaster': 'محطم الجدران',
       'ludo_world_war': 'حرب لودو العالمية',
       'add_question_hint': 'هل لديك سؤال ترغب في إضافته إلى أي من هذه الألعاب؟ اضغط على الزر أدناه!',
       'question_hint': 'سؤال',

@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../models/question_models.dart';
+import '../models/question_models.dart';
 
 class SharedPreferencesService {
   static const String _quizAttemptsKey = 'quiz_attempts';

@@ -14,6 +14,7 @@ class LocalStringsDa extends Translations {
       // Games
       'games': 'Spil',
       'games_list': 'Spilliste',
+      'wall_blaster': 'Vægknuser',
       'ludo_world_war': 'Ludo World War',
       'add_question_hint': 'Har du et spørgsmål, du gerne vil tilføje til et af disse spil? Tryk på knappen nedenfor!',
       'question_hint': 'Spørgsmål',

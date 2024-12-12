@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:playbazaar/api/firestore/firestore_quiz.dart';
 import 'package:playbazaar/global_widgets/show_custom_snackbar.dart';
-import '../models/question_models.dart';
+import '../quiz/models/question_models.dart';
 import '../quiz/widgets/quiz_end_message_dialog.dart';
 import '../quiz/widgets/quiz_result_dialog.dart';
 
@@ -110,6 +110,7 @@ class QuizPlayController extends GetxController {
       currentAnswer.value = prepareUniqueAnswers(nextQuestion);
       selectedAnswerIndex.value = null;
       showAnswer.value = false;
+      isCorrect.value = null;
     }
   }
 

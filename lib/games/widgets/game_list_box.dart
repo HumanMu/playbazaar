@@ -5,7 +5,7 @@ class GameListBox extends StatefulWidget {
   final String title;
   final String quizPath;
 
-  const GameListBox({
+  const  GameListBox({
     super.key,
     required this.title,
     required this.quizPath,
@@ -100,7 +100,7 @@ class GameListBoxState extends State<GameListBox> {
 
   void _handleNavigation() {
     Get.toNamed(
-      '/noneOptionizedPlayScreen',
+      '/optionizedPlayScreen',
       arguments: {
         'selectedPath': widget.quizPath,
         'quizTitle': widget.title,

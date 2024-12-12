@@ -23,8 +23,8 @@ List<String> quizListConstantsAr = ['جغرافیا', 'سوري', 'مغربي', 
 
 
 // Others
-List<String> gameListConstants = ['Quiz', 'Ludo',];
-List<String> gameListConstantsFa = ['مسابقه آزمونی', 'لودو'];
+List<String> gameListConstants = ['Quiz', 'Block',];
+List<String> gameListConstantsFa = ['مسابقه آزمونی', 'بازی پازل'];
 
 List<String> ludoTypes = ['Online', 'Robots'];
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:playbazaar/games/widgets/game_list_box.dart';
+import 'package:playbazaar/global_widgets/show_custom_snackbar.dart';
 import '../api/Authentication/auth_service.dart';
 import '../screens/widgets/sidebar_drawer.dart';
 import '../screens/widgets/text_boxes/text_widgets.dart';
@@ -26,7 +27,13 @@ class _MainScreenGames extends State<MainScreenGames> {
         centerTitle: true,
         title: Text("games_list".tr,
           style: const TextStyle(
-              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 25),
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 25,
+          ),
+        ),
+        iconTheme: IconThemeData(
+          color: Colors.white
         ),
       ),
       drawer: SidebarDrawer(
@@ -46,53 +53,54 @@ class _MainScreenGames extends State<MainScreenGames> {
         Expanded(
           child: Container(
             margin: const EdgeInsets.fromLTRB(0, 0, 0, 20),
+            constraints: BoxConstraints(maxWidth: 600),
             child: ListView.builder(
                 itemCount: gameListConstantsFa.length,
                 itemBuilder: (context, index){
-                  return GameListBox(
-                    title: gameListConstantsFa[index],
-                    quizPath: gameListConstants[index],
-                    //onTap: _handleNavigation,
+                  return _buildGameTile(
+                      title: gameListConstantsFa[index],
+                      quizPath: gameListConstants[index],
                   );
                 }
             ),
           ),
         ),
-
-        Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 3),
-              child: Text("add_question_hint".tr),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const AddQuestion()),
-                );
-              },
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-              child: Text("btn_send_question".tr,),
-            )
-          ],
-        )
       ],
     );
   }
 
-  void _handleNavigation(String? selectedPath, String title, String pagePath) {
-   switch(selectedPath){
-     case "Quiz":
-       navigateToAnotherScreen(context, const QuizMainPage());
-       break;
-     case "Ludo":
-       navigateToAnotherScreen(context, const LudoWorldWar());
-       break;
+  Widget _buildGameTile({required String title, required String quizPath}) {
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      elevation: 4,
+      child: ListTile(
+        title: Center(
+          child: Text(
+            title,
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        onTap: () {
+          _navigateToGamePage(quizPath);
+        },
+      ),
+    );
+  }
 
-     default: return;
-   }
+  void _navigateToGamePage(String quizPath) {
+
+    switch (quizPath) {
+      case 'Quiz':
+        Get.toNamed('/mainQuiz');
+        break;
+      case 'Block':
+        Get.toNamed('/wallBlast');
+        break;
+      default: showCustomSnackbar('Please, pick a game first', false);
+    }
   }
 }
 

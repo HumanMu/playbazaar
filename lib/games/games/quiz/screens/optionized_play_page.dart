@@ -132,7 +132,12 @@ class _QuizPlayScreen extends State<OptionizedPlayScreen>{
                                   child: Text(
                                     playController.currentAnswer[index],
                                     style: GoogleFonts.actor(
-                                      textStyle: const TextStyle(fontSize: 17),
+                                      textStyle: TextStyle(
+                                          fontSize: 17,
+                                          color: playController.isCorrect.value != null
+                                            ? Colors.white
+                                            : Colors.black,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -179,7 +184,7 @@ class _QuizPlayScreen extends State<OptionizedPlayScreen>{
                       : Colors.white70,
                 ),
                 child: Text("btn_next".tr,
-                  style: TextStyle(color: Colors.black),
+                  style: TextStyle(color: Colors.white),
                 ),
               ),
             )

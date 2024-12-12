@@ -95,83 +95,80 @@ class _FriendsList extends State<FriendsList> {
       body: Material(
         color: Colors.white10,
         child: Center(
-          child: Container(
-            constraints: BoxConstraints(maxWidth: 600),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Container(
-                  height: 45,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.2),
-                        spreadRadius: 1,
-                        blurRadius: 4,
-                        offset: Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: categories.length,
-                    itemBuilder: (context, index) {
-                      bool isSelected = selectedCategoryIndex == index;
-                      return GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            selectedCategoryIndex = index;
-                          });
-                        },
-                        child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 20),
-                          decoration: BoxDecoration(
-                            border: Border(
-                              bottom: BorderSide(
-                                color: isSelected ? Colors.red : Colors.transparent,
-                                width: 3,
-                              ),
-                            ),
-                          ),
-                          child: Center(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  categories[index].icon,
-                                  color: isSelected ? Colors.red : Colors.grey,
-                                ),
-                                SizedBox(width: 8),
-                                Text(
-                                  categories[index].title.tr,
-                                  style: TextStyle(
-                                    color: isSelected ? Colors.red : Colors.grey,
-                                    fontWeight: isSelected
-                                        ? FontWeight.bold
-                                        : FontWeight.normal,
-                                  ),
-                                ),
-                              ],
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                height: 45,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.2),
+                      spreadRadius: 1,
+                      blurRadius: 4,
+                      offset: Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: categories.length,
+                  itemBuilder: (context, index) {
+                    bool isSelected = selectedCategoryIndex == index;
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          selectedCategoryIndex = index;
+                        });
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        decoration: BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(
+                              color: isSelected ? Colors.red : Colors.transparent,
+                              width: 3,
                             ),
                           ),
                         ),
-                      );
-                    },
-                  ),
+                        child: Center(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                categories[index].icon,
+                                color: isSelected ? Colors.red : Colors.grey,
+                              ),
+                              SizedBox(width: 8),
+                              Text(
+                                categories[index].title.tr,
+                                style: TextStyle(
+                                  color: isSelected ? Colors.red : Colors.grey,
+                                  fontWeight: isSelected
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
                 ),
-                SizedBox(height: 7),
-                SearchTextFormField(
-                  controller: searchController,
-                  labelText: 'search_in_friends'.tr,
-                  onTap: () => searchInFriends(searchController.text),
-                ),
-                searchedFriends(),
-                selectedCategoryIndex == 0? conversationList() : Container(),
-                selectedCategoryIndex == 1? readFriendRequestsList() : Container(),
-              ],
-            ),
+              ),
+              SizedBox(height: 7),
+              SearchTextFormField(
+                controller: searchController,
+                labelText: 'search_in_friends'.tr,
+                onTap: () => searchInFriends(searchController.text),
+              ),
+              searchedFriends(),
+              selectedCategoryIndex == 0? conversationList() : Container(),
+              selectedCategoryIndex == 1? readFriendRequestsList() : Container(),
+            ]
           ),
         ),
       ),
@@ -226,22 +223,24 @@ class _FriendsList extends State<FriendsList> {
       }
 
       return Flexible(
-        child: ListView.builder(
-          itemCount: recentUsers.length,
-          itemBuilder: (context, index) {
-            final user = recentUsers[index];
-            return FriendsListTile(
-              friendId: user.uid,
-              fullname: user.fullname,
-              onTap: () => goToChat(
-                  user.uid,
-                  user.fullname,
-                  user.chatId,
-                  user.friendshipStatus
-              ),
-              lastMessage: user.lastMessage,
-            );
-          },
+        child: SingleChildScrollView(
+          child: ListView.builder(
+            itemCount: recentUsers.length,
+            itemBuilder: (context, index) {
+              final user = recentUsers[index];
+              return FriendsListTile(
+                friendId: user.uid,
+                fullname: user.fullname,
+                onTap: () => goToChat(
+                    user.uid,
+                    user.fullname,
+                    user.chatId,
+                    user.friendshipStatus
+                ),
+                lastMessage: user.lastMessage,
+              );
+            },
+          ),
         ),
       );
     });

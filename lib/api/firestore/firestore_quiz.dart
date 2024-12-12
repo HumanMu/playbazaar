@@ -1,9 +1,7 @@
 import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
-
-import '../../games/games/models/question_models.dart';
+import '../../games/games/quiz/models/question_models.dart';
 
 class FirestoreQuiz {
   final String? userId;

@@ -7,8 +7,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:playbazaar/controller/settings_controller/notification_settings_controller.dart';
 import 'package:playbazaar/controller/user_controller/user_controller.dart';
+import 'package:playbazaar/games/games/puzzle/wall_blast_play_page.dart';
 import 'package:playbazaar/games/games/quiz/screens/add_question.dart';
 import 'package:playbazaar/games/games/quiz/screens/optionized_play_page.dart';
+import 'package:playbazaar/games/main_screen_games.dart';
 import 'package:playbazaar/screens/main_screens/group_chat_page.dart';
 import 'package:playbazaar/screens/main_screens/edit_page.dart';
 import 'package:playbazaar/screens/main_screens/home_page.dart';
@@ -18,6 +20,7 @@ import 'package:playbazaar/screens/main_screens/profile_page.dart';
 import 'package:playbazaar/screens/main_screens/register_page.dart';
 import 'package:playbazaar/screens/secondary_screens/chat_info.dart';
 import 'package:playbazaar/screens/secondary_screens/email_verification_page.dart';
+import 'package:playbazaar/functions/orientation_manager.dart';
 import 'package:playbazaar/screens/secondary_screens/policy_page.dart';
 import 'package:playbazaar/screens/secondary_screens/friends_list.dart';
 import 'package:playbazaar/screens/secondary_screens/reset_password_page.dart';
@@ -30,6 +33,7 @@ import 'admob/ad_manager_services.dart';
 import 'api/firestore/firestore_user.dart';
 import 'controller/message_controller/private_message_controller.dart';
 import 'controller/user_controller/auth_controller.dart';
+import 'games/games/controller/wall_blast_controller.dart';
 import 'games/games/quiz/main_quiz_page.dart';
 import 'games/games/quiz/screens/review_question_page.dart';
 import 'games/games/quiz/screens/none_optionized_play_page.dart';
@@ -113,6 +117,7 @@ class _PlayBazaarState extends State<PlayBazaar> {
     final authController = Get.find<AuthController>();
     final settingsController = Get.find<NotificationSettingsController>();
     final userController = Get.find<UserController>();
+    OrientationManager.setPreferredOrientations(context);
 
     return GetBuilder<AuthController>(
         init: authController,
@@ -185,16 +190,27 @@ class _PlayBazaarState extends State<PlayBazaar> {
                         page: () => const FriendsList()
                     ),
                     GetPage(
+                        name: '/mainGames',
+                        page: () => const MainScreenGames()
+                    ),
+                    GetPage(
+                        name: '/mainQuiz',
+                        page: () => const QuizMainPage()
+                    ),
+                    GetPage(
+                        name: '/wallBlast',
+                        page: () => WallBlastPlayPage(),
+                        binding: BindingsBuilder(() {
+                          Get.lazyPut<WallBlastController>(() => WallBlastController());
+                        })
+                    ),
+                    GetPage(
                         name: '/questionReviewPage',
                         page: () => const ReviewQuestionsPage()
                     ),
                     GetPage(
                         name: '/addQuestion',
                         page: () => const AddQuestion()
-                    ),
-                    GetPage(
-                        name: '/mainQuiz',
-                        page: () => const QuizMainPage()
                     ),
                     GetPage(
                       name: '/optionizedPlayScreen',

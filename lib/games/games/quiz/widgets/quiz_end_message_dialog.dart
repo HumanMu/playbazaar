@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../models/question_models.dart';
+import '../models/question_models.dart';
 
 class QuizEndMessageDialog extends StatelessWidget {
   final List<QuizAttempt> quizAttempts;

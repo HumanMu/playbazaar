@@ -115,7 +115,7 @@ class _ProfilePage extends State<ProfilePage> {
                           ),
                           CustomTextInputs(
                               description: "email".tr,
-                              value: user?.email ??""
+                              value: "Your email"//user?.email ??""
                           ),
                           CustomTextInputs(
                               description: "points".tr,
