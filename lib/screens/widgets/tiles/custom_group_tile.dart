@@ -90,6 +90,7 @@ class _GroupTileState extends State<CustomGroupTile> {
       'chatId': widget.groupId,
       'chatName': widget.groupName,
       'userName': widget.admin,
+      'isPublic': widget.isPublic
     });
   }
 

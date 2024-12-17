@@ -48,7 +48,7 @@ class PrivateMessageService extends GetxService {
   }
 
 
-  Stream<List<PrivateMessage>> getMessages(String chatId, {int pageSize = 10}) {
+  Stream<List<PrivateMessage>> listenToPrivateMessages(String chatId, {int pageSize = 10}) {
     return chatCollection
         .doc(chatId)
         .collection('messages')

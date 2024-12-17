@@ -10,7 +10,7 @@ class MessageService {
   final CollectionReference groupCollection
   = FirebaseFirestore.instance.collection("groups");
 
-  Stream<List<GroupMessage>> getMessages(String groupId) {
+  Stream<List<GroupMessage>> listenToGroupChat(String groupId) {
     return _firestore
         .collection('groups')
         .doc(groupId)

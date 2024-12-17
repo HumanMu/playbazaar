@@ -107,8 +107,8 @@ class UserController extends GetxController {
           searchedFriends.add(friend);
         }
       }
-      //searchedFriends.clear();
-      //searchedFriends.addAll(foundedFriends);
+      searchedFriends.clear();
+      searchedFriends.addAll(foundedFriends);
       isLoading.value = false;
       return true;
     }

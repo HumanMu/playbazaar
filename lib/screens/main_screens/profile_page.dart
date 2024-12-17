@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:playbazaar/functions/string_cases.dart';
+import '../../admob/ad_manager_services.dart';
 import '../../api/Authentication/auth_service.dart';
 import '../../controller/user_controller/user_controller.dart';
 import '../../services/hive_services/hive_user_service.dart';
@@ -44,8 +45,8 @@ class _ProfilePage extends State<ProfilePage> {
         isSignedIn = true;
         isLoading = false;
       });
-
       await recentUsersService.init();
+      await AdManagerService().initialize(); // Admob
     }
     else{
       Get.offNamed('/login');
@@ -115,7 +116,7 @@ class _ProfilePage extends State<ProfilePage> {
                           ),
                           CustomTextInputs(
                               description: "email".tr,
-                              value: "Your email"//user?.email ??""
+                              value: user?.email ??""
                           ),
                           CustomTextInputs(
                               description: "points".tr,

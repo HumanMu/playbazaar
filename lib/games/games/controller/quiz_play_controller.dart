@@ -92,6 +92,7 @@ class QuizPlayController extends GetxController {
   }
 
   void nextQuestion(bool isOptionized, BuildContext context) {
+    showAnswer.value = false;
     if (selectedAnswerIndex.value == null) {
       showCustomSnackbar('see_result_first'.tr, false);
       return;
@@ -109,7 +110,6 @@ class QuizPlayController extends GetxController {
       currentQuestion.value = nextQuestion.question;
       currentAnswer.value = prepareUniqueAnswers(nextQuestion);
       selectedAnswerIndex.value = null;
-      showAnswer.value = false;
       isCorrect.value = null;
     }
   }
@@ -132,7 +132,7 @@ class QuizPlayController extends GetxController {
     if (questionData.isEmpty || index < 0 || index >= currentAnswer.length) {
       return;
     }
-
+    showAnswer.value = true;
     selectedAnswerIndex.value = index;
     isCorrect.value = currentAnswer[index] == questionData[selectedAnswer.value].correctAnswer;
 

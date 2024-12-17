@@ -33,7 +33,7 @@ class PrivateChatPage extends StatefulWidget {
 }
 
 class _PrivateChatPageState extends State<PrivateChatPage> {
-  late PrivateMessageController controller;
+  late PrivateMessageController controller = Get.find<PrivateMessageController>();
   final ScrollController _scrollController = ScrollController();
   final UserController userController = Get.find<UserController>();
   String currentUserName = FirebaseAuth.instance.currentUser?.displayName ?? "";
@@ -46,7 +46,7 @@ class _PrivateChatPageState extends State<PrivateChatPage> {
   void initState() {
     super.initState();
     Get.create(() => PrivateMessageController());
-    controller = Get.find<PrivateMessageController>();
+    //controller = Get.find<PrivateMessageController>();
     controller.loadMessages(widget.chatId);
     NotificationService().activeChatWithUser(widget.recieverId);
   }
@@ -54,7 +54,8 @@ class _PrivateChatPageState extends State<PrivateChatPage> {
   @override
   void dispose() {
     messageBox.dispose();
-    Get.delete<PrivateMessageController>();
+    controller.messages.value = [];
+    //Get.delete<PrivateMessageController>();
     NotificationService().endChat();
     super.dispose();
   }
@@ -98,7 +99,10 @@ class _PrivateChatPageState extends State<PrivateChatPage> {
               alignment: Alignment.bottomCenter,
               width: MediaQuery.of(context).size.width,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 10
+                ),
                 width: MediaQuery.of(context).size.width,
                 color: Colors.grey,
                 child: Row(
@@ -171,6 +175,7 @@ class _PrivateChatPageState extends State<PrivateChatPage> {
                       (controller.hasReachedEnd.value ? 1 : 0),
                   reverse: true,
                   controller: _scrollController,
+                  shrinkWrap: true,
                   itemBuilder: (context, index) {
                     if (controller.isLoading.value && index == 0) {
                       return const Center(

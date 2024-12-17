@@ -1,0 +1,15 @@
+flutter_native_splash:
+  android: true
+  ios: true
+  web: false
+
+  color: "#e7d1d1"  # Baggrundsfarve for splash-skærm
+  image: assets/icons/splash_screen_960x960.png  # Stien til din splash-ikon
+  image_dark: assets/icons/splash_screen_960x960.png
+
+  android_12:
+    color: "#e7d1d1"
+    image: assets/icons/splash_screen_960x960.png
+    image_dark: assets/icons/splash_screen_960x960.png
+
+

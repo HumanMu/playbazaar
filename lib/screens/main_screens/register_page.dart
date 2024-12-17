@@ -178,7 +178,7 @@ class _RegisterPage extends State<RegisterPage> {
   }
 
 
-  Widget _submitButton() {
+  Widget _submitButton(){
     return Container(
       height: 55,
       width: double.infinity,
@@ -189,15 +189,14 @@ class _RegisterPage extends State<RegisterPage> {
       ),
       child: ElevatedButton(
         onPressed: () async {
-          bool result = _verifyRegistrationInfo();
+          bool result = await _verifyRegistrationInfo();
           if (result ) {
             String fullname = "$firstname $lastname";
-            bool registerResult = await accountController.registerUser(
+            await accountController.registerUser(
                 fullname,
                 email,
                 password
             );
-
           }
           else {
             return;
@@ -217,13 +216,16 @@ class _RegisterPage extends State<RegisterPage> {
             })),
         child: Text(
           'btn_create'.tr,
-          style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+          style: const TextStyle(
+              fontSize: 32,
+              fontWeight: FontWeight.bold
+          ),
         ),
       ),
     );
   }
 
-  bool _verifyRegistrationInfo () {
+  Future<bool> _verifyRegistrationInfo () async {
     final bool isValid = EmailValidator.validate(email);
     if(!isValid) {
       showCustomSnackbar('invalid_email_format'.tr, false);

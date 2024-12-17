@@ -30,7 +30,7 @@ class _FriendsListTile extends State<FriendsListTile> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
 
       child: InkWell( // Replace GestureDetector with InkWell
         onTap: widget.onTap,

@@ -14,11 +14,11 @@ class AdManagerService {
   static const String iosAdUnitId = 'ca-app-pub-xxxxxxxx/xxxxxxxx';
 
 
-  void printTestDeviceID() {
+  /*void printTestDeviceID() {
     MobileAds.instance.getRequestConfiguration().then((requestConfiguration) {
       print('Test Device ID: ${requestConfiguration.testDeviceIds}');
     });
-  }
+  }*/
 
   // Get the appropriate ad unit ID based on platform
   String get adUnitId {

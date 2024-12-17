@@ -166,6 +166,7 @@ class _FriendsList extends State<FriendsList> {
                 onTap: () => searchInFriends(searchController.text),
               ),
               searchedFriends(),
+              SizedBox(height: 7),
               selectedCategoryIndex == 0? conversationList() : Container(),
               selectedCategoryIndex == 1? readFriendRequestsList() : Container(),
             ]
@@ -223,7 +224,6 @@ class _FriendsList extends State<FriendsList> {
       }
 
       return Flexible(
-        child: SingleChildScrollView(
           child: ListView.builder(
             itemCount: recentUsers.length,
             itemBuilder: (context, index) {
@@ -241,8 +241,7 @@ class _FriendsList extends State<FriendsList> {
               );
             },
           ),
-        ),
-      );
+        );
     });
 
   }

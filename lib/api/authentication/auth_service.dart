@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
+import 'package:playbazaar/controller/user_controller/auth_controller.dart';
 import '../../global_widgets/show_custom_snackbar.dart';
-import '../firestore/firestore_user.dart';
 
 class AuthService {
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
@@ -52,7 +52,7 @@ class AuthService {
       User? user = userCredential.user;
 
       if(user != null) {
-        await  FirestoreUser(userId: user.uid ).createUser(fullname,  email);
+        await  AuthController().createUser(fullname,  email);//FirestoreUser(userId: user.uid ).createUser(fullname,  email);
         user.sendEmailVerification().then((value) => showCustomSnackbar('verification_email_sent'.tr, true, timing: 7));
       }
 

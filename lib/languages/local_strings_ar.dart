@@ -128,7 +128,6 @@ class LocalStringsAr extends Translations {
       'say_hi': 'قل مرحباً لـ',
       'guide': 'دليل',
       'danger_zone': 'منطقة الخطر',
-
       'awaiting_response': 'في انتظار الرد',
       'approve_request': 'قبول الطلب',
       'request_sent': 'تم إرسال الطلب',

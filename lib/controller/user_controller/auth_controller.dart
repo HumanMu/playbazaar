@@ -1,18 +1,24 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:playbazaar/services/push_notification_service/device_service.dart';
-import '../../api/firestore/firestore_user.dart';
+import '../../api/services/firestore_services.dart';
 import '../../helper/sharedpreferences/sharedpreferences.dart';
 import '../../global_widgets/show_custom_snackbar.dart';
+import '../../models/DTO/user_profile_dto.dart';
 
 
 
 class AuthController extends GetxController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final _db = FirebaseFirestore.instance;
+
   var isSignedIn = false.obs;
   var isEmailVerified = false.obs;
   var language = ['en', 'US'].obs;
   var isInitialized = false.obs;
+
+
 
   @override
   void onInit() {
@@ -22,12 +28,13 @@ class AuthController extends GetxController {
   }
 
   Future<void> initializeSettings() async {
-    await _checkAuthStatus();
+    await checkAuthStatus();
     await getUserLoggedInState();
     await getAppLanguage();
     isInitialized.value = true;
     update();
   }
+
 
   Future<void> checkAndUpdateEmailVerificationStatus() async {
     User? user = FirebaseAuth.instance.currentUser;
@@ -39,7 +46,8 @@ class AuthController extends GetxController {
     }
   }
 
-  Future<void> _checkAuthStatus() async {
+
+  Future<void> checkAuthStatus() async {
     User? user = FirebaseAuth.instance.currentUser;
 
     if (user != null) {
@@ -66,10 +74,12 @@ class AuthController extends GetxController {
 
   Future<void> setOnlineState(String status) async {
     if (FirebaseAuth.instance.currentUser != null) {
-      await FirestoreUser(userId: FirebaseAuth.instance.currentUser!.uid)
-          .getOnlineState(status);
+      return await _db.collection('users').doc(_auth.currentUser!.uid).update({
+        'availabilityState': status
+      });
     }
   }
+
 
   Future<void> sendPasswordResetEmail(String email) async {
     try {
@@ -78,6 +88,21 @@ class AuthController extends GetxController {
     } catch (e) {
       showCustomSnackbar('error_occurred'.tr, false);
     }
+  }
+
+  Future<bool> createUser(String fullname, String email) async {
+    return await FirestoreServices().createUser(
+        fullname,
+        email,
+        _auth.currentUser!.uid
+    );
+  }
+
+  Future<bool> editUserAuthentication(UserProfileModel data) async{
+    return await FirestoreServices().editUserData(
+        data,
+        FirebaseAuth.instance.currentUser!.uid
+    );
   }
 
   Future logOutUser() async{
@@ -92,7 +117,15 @@ class AuthController extends GetxController {
       return null;
     }
   }
-
-
-
 }
+
+
+/*void listenToVerification() {
+    _auth.userChanges().listen((User? user) async {
+      if (user != null) {
+        isEmailVerified.value = user.emailVerified;
+        update();
+      }
+    });
+  }*/
+

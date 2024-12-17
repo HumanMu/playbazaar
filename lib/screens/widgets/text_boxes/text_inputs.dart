@@ -98,7 +98,7 @@ class SearchTextFormField extends StatelessWidget {
         maxLines: 1,
         onTap: onTap,
         decoration: InputDecoration(
-          labelText: labelText ?? "",
+          labelText: labelText,
           labelStyle: const TextStyle(fontStyle: FontStyle.italic),
           suffixIcon: IconButton(
             icon: const Icon(Icons.search, color: Colors.red),

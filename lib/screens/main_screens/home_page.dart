@@ -59,7 +59,10 @@ class _HomePageState extends State<HomePage> {
         actions: [
           IconButton(
             onPressed: () {
-              Get.toNamed('/search', arguments: {'searchId': 'group'});
+              Get.toNamed('/search',
+                  arguments: {
+                'searchId': 'group'
+              });
             },
             icon: const Icon(Icons.search, color: Colors.white,),
           ),
@@ -109,7 +112,10 @@ class _HomePageState extends State<HomePage> {
 
       if (groupsId == null || groupsId.isEmpty) {
         return Center(
-          child: notFound("not_found_title".tr, "not_found_message".tr),
+          child: notFound(
+              "not_found_title".tr,
+              "not_found_message".tr
+          ),
         );
       }
 
@@ -132,78 +138,78 @@ class _HomePageState extends State<HomePage> {
 
   popUpDialog(BuildContext context) {
     showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (context) {
-          return StatefulBuilder(builder: ((context, setState) {
-            _popUpDialogController.addListener(() {
-                setState(() {
-                  privateToggler = _popUpDialogController.value;
-                });
-            });
+      barrierDismissible: false,
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(builder: ((context, setState) {
+          _popUpDialogController.addListener(() {
+              setState(() {
+                privateToggler = _popUpDialogController.value;
+              });
+          });
 
-            return AlertDialog(
-                content: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text("creating_group_title".tr,
-                        style: TextStyle(
-                            fontSize: 25,
-                            fontWeight: FontWeight.bold
-                        )
+          return AlertDialog(
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text("creating_group_title".tr,
+                      style: TextStyle(
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold
+                      )
+                  ),
+                  Text("creating_group_description".tr),
+                  userController.isLoading.value == true
+                      ? const Center(
+                          child: CircularProgressIndicator(
+                          color: Colors.red,
+                        ))
+                      : TextField(
+                          controller: groupNameController,
+                          onChanged: (val) {
+                            groupName = val;
+                          },
+                          decoration: decoration("group_name_hint".tr),
+                        ),
+                  privatePublicToggler(_popUpDialogController),
+                  Visibility(
+                    visible: privateToggler,
+                    child: TextField(
+                      controller: groupPasswordController,
+                      obscureText: true,
+                      onChanged: (val) {
+                        groupPassword = val;
+                      },
+                      decoration: decoration("group_password_hint".tr),
                     ),
-                    Text("creating_group_description".tr),
-                    userController.isLoading.value == true
-                        ? const Center(
-                            child: CircularProgressIndicator(
-                            color: Colors.red,
-                          ))
-                        : TextField(
-                            controller: groupNameController,
-                            onChanged: (val) {
-                              groupName = val;
-                            },
-                            decoration: decoration("group_name_hint".tr),
-                          ),
-                    privatePublicToggler(_popUpDialogController),
-                    Visibility(
-                      visible: privateToggler,
-                      child: TextField(
-                        controller: groupPasswordController,
-                        obscureText: true,
-                        onChanged: (val) {
-                          groupPassword = val;
-                        },
-                        decoration: decoration("group_password_hint".tr),
-                      ),
-                    ),
-                  ],
+                  ),
+                ],
+              ),
+              actions: [
+                ElevatedButton(
+                  onPressed: () {
+                    groupPasswordController.text = "";
+                    groupNameController.text = "";
+                    Navigator.of(context).pop();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                  ),
+                  child: Text("btn_cancel".tr,
+                    style: TextStyle(color: Colors.white)
+                  ),
                 ),
-                actions: [
-                  ElevatedButton(
-                    onPressed: () {
-                      groupPasswordController.text = "";
-                      groupNameController.text = "";
-                      Navigator.of(context).pop();
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
-                    ),
-                    child: Text("btn_cancel".tr,
-                      style: TextStyle(color: Colors.white)
-                    ),
+                ElevatedButton(
+                  onPressed: () => createGroup(),
+                  style:
+                      ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                  child: Text("btn_create".tr,
+                    style: TextStyle(color: Colors.white)
                   ),
-                  ElevatedButton(
-                    onPressed: () => createGroup(),
-                    style:
-                        ElevatedButton.styleFrom(backgroundColor: Colors.green),
-                    child: Text("btn_create".tr,
-                      style: TextStyle(color: Colors.white)
-                    ),
-                  ),
-                ]);
-          }));
-        });
+                ),
+              ]);
+        }));
+      });
   }
 
   privatePublicToggler(controller) {

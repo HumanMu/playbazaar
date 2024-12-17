@@ -1,7 +1,6 @@
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:get/get.dart';
 import 'dart:developer' as developer;
-import '../../controller/user_controller/user_controller.dart';
 import '../../models/DTO/recent_interacted_user_dto.dart';
 import '../../models/hive_models/recent_interacted_user_model.dart';
 

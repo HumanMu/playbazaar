@@ -58,7 +58,7 @@ class CollectionServices {
       }
 
     } catch (e) {
-      print("Error in deletePrivateMessageCollection: $e");
+      print("Error in deletePrivateMessageCollection");
       return false;
     }
   }

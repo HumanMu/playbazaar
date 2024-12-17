@@ -107,8 +107,7 @@ class AccountController extends GetxController {
 
       String? password = await showDialog<String?>(
         context: context,
-        builder: (_) =>
-        StringReturnDialog(
+        builder: (_) => StringReturnDialog(
           title: "password".tr,
           description: "delete_account_reauth_description".tr,
           hintText: 'enter_your_password'.tr,

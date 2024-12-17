@@ -13,6 +13,7 @@ class GroupChatPage extends StatefulWidget {
   final String chatId;
   final String chatName;
   final String userName;
+  final bool isPublic;
 
 
   const GroupChatPage({
@@ -20,7 +21,7 @@ class GroupChatPage extends StatefulWidget {
     required this.chatId,
     required this.chatName,
     required this.userName,
-
+    required this.isPublic
   });
 
   @override
@@ -71,6 +72,7 @@ class _GroupChatPageState extends State<GroupChatPage> {
                 'chatId': widget.chatId,
                 'chatName': widget.chatName,
                 'adminName': admin,
+                'isPublic': widget.isPublic,
               });
             },
             icon: const Icon(Icons.info, color: Colors.white70),

@@ -20,7 +20,7 @@ class GroupMessageController extends GetxController {
 
 
   void listenToMessages(String groupId) {
-    _messageService.getMessages(groupId).listen((messageList) {
+    _messageService.listenToGroupChat(groupId).listen((messageList) {
       messages.value = messageList;
     });
   }

@@ -4,7 +4,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:playbazaar/controller/sound_controller/sound_controller.dart';
 import 'package:playbazaar/games/games/controller/quiz_play_controller.dart';
 import '../../../../admob/adaptive_banner_ad.dart';
-import '../widgets/quiz_result_dialog.dart';
 
 
 class OptionizedPlayScreen extends StatefulWidget {
@@ -87,10 +86,10 @@ class _QuizPlayScreen extends State<OptionizedPlayScreen>{
                 },
               ),
             ),  // Banner
-            const SizedBox(height: 30),
+            const SizedBox(height: 20),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
+                padding: const EdgeInsets.fromLTRB(15, 0, 16, 20),
                 child: playController.questionData.isEmpty
                   ? Center(
                     child: Text(
@@ -105,23 +104,23 @@ class _QuizPlayScreen extends State<OptionizedPlayScreen>{
                         playController.currentQuestion.value,
                         style: GoogleFonts.actor(
                           textStyle: const TextStyle(
-                            fontSize: 24,
+                            fontSize: 20,
                             fontWeight: FontWeight.bold,
                             fontStyle: FontStyle.italic,
                           ),
                         ),
                       ),
-                      const SizedBox(height: 20),
-                      Expanded(
+                      const SizedBox(height: 15),
+                      Container(
+                        constraints: BoxConstraints(maxWidth: 700),
                         child: ListView.builder(
                           shrinkWrap: true,
                           itemCount: playController.currentAnswer.length,
                           itemBuilder: (context, index) {
                             return Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 5.0),
+                              padding: const EdgeInsets.symmetric(vertical: 4.0),
                               child: ElevatedButton(
                                 onPressed: () {
-                                  //soundController.playSound('assets/sounds/button/ui_clicked.wav');
                                   playController.checkAnswer(index);
                                 },
                                 style: ElevatedButton.styleFrom(
@@ -133,8 +132,8 @@ class _QuizPlayScreen extends State<OptionizedPlayScreen>{
                                     playController.currentAnswer[index],
                                     style: GoogleFonts.actor(
                                       textStyle: TextStyle(
-                                          fontSize: 17,
-                                          color: playController.isCorrect.value != null
+                                        fontSize: 17,
+                                        color: playController.isCorrect.value != null
                                             ? Colors.white
                                             : Colors.black,
                                       ),
@@ -172,6 +171,7 @@ class _QuizPlayScreen extends State<OptionizedPlayScreen>{
                           : Container(),
                     ],
                   ),
+
               ),
             ) ,
             Container(
@@ -193,23 +193,4 @@ class _QuizPlayScreen extends State<OptionizedPlayScreen>{
       ),
     );
   }
-
-
-  /*void showResult() async {
-    if (playController.quizAttempts.isEmpty) {
-      return;
-    }
-
-    showDialog(
-      context: context,
-      builder: (context) => QuizResultDialog(
-        quizAttempts: playController.quizAttempts,
-        onContinue: () {
-          playController.endQuiz();
-          Navigator.of(context).pop();
-          Get.offNamed('/mainQuiz');
-        },
-      ),
-    );
-  }*/
 }
