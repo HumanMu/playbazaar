@@ -19,7 +19,7 @@ class WallWidget extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.all(2),
         decoration: BoxDecoration(
-          color: block.isMatched ? Colors.grey.withOpacity(0.5) : block.color,
+          color: block.isMatched ? Colors.grey.withAlpha((0.5 * 255).toInt()) : block.color,
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
             color: controller.selectedBlock.value == block
@@ -29,7 +29,7 @@ class WallWidget extends StatelessWidget {
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withAlpha((0.1 * 255).toInt()),
               blurRadius: 4,
               offset: const Offset(0, 2),
             ),

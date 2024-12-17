@@ -4,8 +4,8 @@ import 'package:get/get.dart';
 void showCustomSnackbar( String message, bool successful, {int? timing}) {
   Get.rawSnackbar(
     backgroundColor: successful
-        ? Colors.green.withOpacity(0.7)
-        :  Colors.redAccent.withOpacity(0.7),
+        ? Colors.green.withAlpha((0.7 * 255).toInt())
+        : Colors.red.withAlpha((0.7 * 255).toInt()),
     margin: const EdgeInsets.all(10),
     borderRadius: 10,
     borderWidth: 2,

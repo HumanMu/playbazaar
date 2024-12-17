@@ -51,7 +51,6 @@ class WallBlastModel extends HiveObject {
   int get hashCode => x.hashCode ^ y.hashCode ^ color.hashCode;
 }
 
-// Color adapter for Hive
 class ColorAdapter extends TypeAdapter<Color> {
   @override
   final int typeId = 1;
@@ -67,9 +66,9 @@ class ColorAdapter extends TypeAdapter<Color> {
 
   @override
   void write(BinaryWriter writer, Color obj) {
-    writer.writeInt(obj.red);
-    writer.writeInt(obj.green);
-    writer.writeInt(obj.blue);
-    writer.writeInt(obj.alpha);
+    writer.writeInt(obj.r.toInt());
+    writer.writeInt(obj.g.toInt());
+    writer.writeInt(obj.b.toInt());
+    writer.writeInt(obj.a.toInt());
   }
 }

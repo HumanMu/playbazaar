@@ -88,7 +88,7 @@ class PrivateMessageService extends GetxService {
         return false;
       }
 
-      // Get total count of messages for logging
+
       final QuerySnapshot countSnapshot = await messagesRef.get();
       final int totalMessages = countSnapshot.size;
 
@@ -132,7 +132,7 @@ class PrivateMessageService extends GetxService {
       }
 
     } catch (e) {
-      print("Error in deletePrivateMessageCollection: $e");
+      print("Error in deletePrivateMessageCollection: ");
       return false;
     }
   }

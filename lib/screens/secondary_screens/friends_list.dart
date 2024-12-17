@@ -105,7 +105,7 @@ class _FriendsList extends State<FriendsList> {
                   color: Colors.white,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withOpacity(0.2),
+                      color: Colors.grey.withAlpha((0.2 * 255).toInt()),
                       spreadRadius: 1,
                       blurRadius: 4,
                       offset: Offset(0, 2),

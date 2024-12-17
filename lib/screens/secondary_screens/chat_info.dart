@@ -127,7 +127,7 @@ class _ChatInfoState extends State<ChatInfo> {
                   color: Theme
                       .of(context)
                       .primaryColor
-                      .withOpacity(0.2),
+                      .withValues(alpha: 0.2),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,

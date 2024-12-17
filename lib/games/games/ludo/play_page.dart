@@ -1,8 +1,6 @@
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import '../../constants/constants.dart';
 import '../../widgets/game_list_box.dart';
 
@@ -43,12 +41,6 @@ class _LudoWorldWarState extends State<LudoWorldWar> {
           );
         }
     );
-  }
-
-  _handleNavigation(String? selectedPath, String title, String pagePath) {
-    if (kDebugMode) {
-      print("Navigation Parameter: $selectedPath");
-    }
   }
 
 }
