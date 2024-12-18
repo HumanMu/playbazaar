@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
-import 'package:playbazaar/games/games/puzzle/wall_blast_play_page.dart';
 import 'package:playbazaar/games/games/quiz/screens/add_question.dart';
 import 'package:playbazaar/games/games/quiz/screens/optionized_play_page.dart';
 import 'package:playbazaar/games/main_screen_games.dart';
@@ -24,7 +23,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../controller/settings_controller/notification_settings_controller.dart';
 import '../../controller/user_controller/auth_controller.dart';
 import '../../controller/user_controller/user_controller.dart';
-import '../../games/games/controller/wall_blast_controller.dart';
 import '../../games/games/quiz/main_quiz_page.dart';
 import '../../games/games/quiz/screens/none_optionized_play_page.dart';
 import '../../games/games/quiz/screens/review_question_page.dart';
@@ -152,13 +150,13 @@ class _PlayBazaarState extends State<AppRoutes> {
                         name: '/mainQuiz',
                         page: () => const QuizMainPage()
                     ),
-                    GetPage(
+                    /*GetPage(
                         name: '/wallBlast',
                         page: () => WallBlastPlayPage(),
                         binding: BindingsBuilder(() {
                           Get.lazyPut<WallBlastController>(() => WallBlastController());
                         })
-                    ),
+                    ),*/
                     GetPage(
                         name: '/questionReviewPage',
                         page: () => const ReviewQuestionsPage()
