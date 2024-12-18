@@ -58,16 +58,24 @@ class _FriendsListTile extends State<FriendsListTile> {
               fontSize: 15
             ),
           ),
-          subtitle: Row(
-            children: [
-              widget.lastMessage == 'say_hi'
-                ? Text('${"say_hi".tr} ${capitalizeFirstName(widget.fullname)}',
-                    style: TextStyle(fontStyle: FontStyle.italic, fontSize: 12),
-                )
-                : Text(widget.lastMessage ?? ''),
-              const SizedBox(width: 10),
-            ],
-          ),
+            subtitle: Row(
+              children: [
+                Flexible(
+                  child: widget.lastMessage == 'say*hi'
+                      ? Text(
+                    '${"say_hi".tr} ${capitalizeFirstName(widget.fullname)}',
+                    style: const TextStyle(fontStyle: FontStyle.italic, fontSize: 12),
+                    overflow: TextOverflow.ellipsis,
+                  )
+                      : Text(
+                    widget.lastMessage ?? '',
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(fontSize: 12),
+                  ),
+                ),
+                const SizedBox(width: 10),
+              ],
+            ),
           trailing: IconButton(
             icon: const Icon(Icons.more_vert),
             onPressed: () => _showMenu(context),

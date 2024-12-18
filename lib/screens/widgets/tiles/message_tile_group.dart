@@ -28,7 +28,7 @@ class MessageTileGroup extends StatelessWidget {
           ),
           color: sendByMe ? Colors.red : Colors.green,
         ),
-        child: Row(
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
@@ -40,13 +40,14 @@ class MessageTileGroup extends StatelessWidget {
                   color: Colors.white54
               ),
             ),
-            const SizedBox(width: 5),
+            const SizedBox(height: 4),
             Text(
               message,
               style: const TextStyle(
                 fontSize: 15,
                 color: Colors.white,
               ),
+              softWrap: true, // Enable text wrapping
             ),
           ],
         ),

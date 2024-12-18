@@ -108,16 +108,26 @@ class _PrivateChatPageState extends State<PrivateChatPage> {
                 child: Row(
                   children: [
                     Expanded(
-                      child: TextFormField(
+                      child: TextField(
                         controller: messageBox,
+                        maxLines: null, // Allow multiple lines
+                        keyboardType: TextInputType.multiline, // Enable multiline input
                         style: const TextStyle(
-                            color: Colors.white),
+                          color: Colors.white,
+                        ),
                         decoration: InputDecoration(
                           hintText: "your_message_here".tr,
                           hintStyle: const TextStyle(
                             color: Colors.white,
                             fontSize: 15,
                           ),
+                          // Add border to make it more flexible
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide.none,
+                          ),
+                          filled: true,
+                          fillColor: Colors.white24,
                         ),
                       ),
                     ),

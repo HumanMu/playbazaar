@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
-import 'package:playbazaar/models/DTO/message_list_dto.dart';
+import 'package:playbazaar/models/DTO/user_message_list_dto.dart';
 import 'package:playbazaar/models/DTO/recent_interacted_user_dto.dart';
 import 'package:playbazaar/services/hive_services/hive_user_service.dart';
 import '../../models/private_message_model.dart';
@@ -15,7 +15,7 @@ class PrivateMessageController extends GetxController {
   RxList<RecentInteractedUserDto>? recentInteractedUserList;
 
   RxList<PrivateMessage> messages = <PrivateMessage>[].obs;
-  RxList<MessageListDto> messageList = <MessageListDto>[].obs;
+  RxList<UserMessageListDto> messageList = <UserMessageListDto>[].obs;
   RxBool isLoading = true.obs;
   RxBool hasMoreMessages  = true.obs;
   DocumentSnapshot? lastDocument;
@@ -46,25 +46,16 @@ class PrivateMessageController extends GetxController {
   }
 
 
-  /*void listenToNewMessages(String chatId) {
-    isLoading.value = true;
-    if(currentChatId.value != chatId){
-      messagesSubscription!.cancel();
-      currentChatId.value = chatId;
-    }
-    messagesSubscription = chatService.listenToPrivateMessages(chatId).listen((newMessageList) {
-      if (newMessageList.isNotEmpty) {
-        bool existUser = messageList.any((message) => message.userId == chatId);
-        print("Exist user: $existUser");
-      }
-      isLoading.value = false;
-    }, onError: (error) {
-      isLoading.value = false;
-    });
-  }*/
-
-
   void loadMessages(String chatId) {
+
+    /*bool chatExist = messageList.any((chat) => chat.userId == chatId);
+
+    if (chatExist) {
+      int chatIndex = messageList.indexWhere((chat) => chat.userId == chatId);
+      messages.clear();
+      messages.addAll(messageList[chatIndex].messages);
+    }*/
+
     isLoading.value = true;
     chatService.listenToPrivateMessages(chatId).listen((newMessageList) {
       if (newMessageList.isNotEmpty) {
@@ -79,7 +70,6 @@ class PrivateMessageController extends GetxController {
       }
       isLoading.value = false;
     }, onError: (error) {
-      print('Error loading messages');
       isLoading.value = false;
     });
   }
@@ -108,5 +98,26 @@ class PrivateMessageController extends GetxController {
     } finally {
       isLoading.value = false;
     }
+  }
+
+
+  void archiveMessages(String chatId) {
+    bool chatExist = messageList.any((chat) => chat.userId == chatId);
+
+    if (chatExist) {
+      int chatIndex = messageList.indexWhere((chat) => chat.userId == chatId);
+
+      messageList[chatIndex] = UserMessageListDto(
+          messages: List.from(messages),
+          userId: chatId
+      );
+    } else {
+      messageList.add(UserMessageListDto(
+          messages: List.from(messages),
+          userId: chatId
+      ));
+    }
+
+    messages.clear();
   }
 }

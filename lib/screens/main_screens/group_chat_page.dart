@@ -31,6 +31,7 @@ class GroupChatPage extends StatefulWidget {
 class _GroupChatPageState extends State<GroupChatPage> {
   late GroupMessageController _messageController;
   late ScrollController _scrollController;
+  final FocusNode _messageFocusNode = FocusNode();
   String currentUserName = FirebaseAuth.instance.currentUser?.displayName ?? "";
   final String? currentUserId = FirebaseAuth.instance.currentUser!.uid;
   TextEditingController messageBox = TextEditingController();
@@ -40,18 +41,28 @@ class _GroupChatPageState extends State<GroupChatPage> {
   @override
   void initState() {
     super.initState();
-    Get.create(() => GroupMessageController(groupId: widget.chatId));
+
+    Get.create(() => GroupMessageController());
     _messageController = Get.find<GroupMessageController>();
+    _messageController.listenToMessages(widget.chatId);
     _scrollController = ScrollController();
 
-    _messageController.listenToMessages(widget.chatId);
-    ever(_messageController.messages, (_) => scrollToBottom());
+    /*_messageController.listenToMessages();
+    ever(_messageController.messages, (_) => scrollToBottom());*/
+    _messageController.messages.listen((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        scrollToBottom();
+      });
+    });
+    _messageFocusNode.addListener(_onFocusChange);
   }
 
   @override
   void dispose() {
     messageBox.dispose();
-    Get.delete<GroupMessageController>();
+    _messageFocusNode.dispose();
+    _scrollController.dispose();
+    _messageController.dispose();
     super.dispose();
   }
 
@@ -112,16 +123,27 @@ class _GroupChatPageState extends State<GroupChatPage> {
               child: Row(
                 children: [
                   Expanded(
-                    child: TextFormField(
+                    child: TextField(
                       controller: messageBox,
+                      focusNode: _messageFocusNode,
+                      maxLines: null, // Allow multiple lines
+                      keyboardType: TextInputType.multiline, // Enable multiline input
                       style: const TextStyle(
-                        color: Colors.white),
+                        color: Colors.white,
+                      ),
                       decoration: InputDecoration(
                         hintText: "your_message_here".tr,
                         hintStyle: const TextStyle(
                           color: Colors.white,
                           fontSize: 15,
                         ),
+                        // Add border to make it more flexible
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide.none,
+                        ),
+                        filled: true,
+                        fillColor: Colors.white24,
                       ),
                     ),
                   ),
@@ -155,7 +177,6 @@ class _GroupChatPageState extends State<GroupChatPage> {
   }
 
   Widget showMessages() {
-    _messageController.listenToMessages(widget.chatId);
     return Obx(() {
       if (_messageController.messages.isEmpty) {
         return const Center(
@@ -169,6 +190,8 @@ class _GroupChatPageState extends State<GroupChatPage> {
           child: ListView.builder(
             itemCount: _messageController.messages.length,
             controller: _scrollController,
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: EdgeInsets.only(bottom: 20),
             itemBuilder: (context, index) {
               final message = _messageController.messages[index];
               return MessageTileGroup(
@@ -192,9 +215,18 @@ class _GroupChatPageState extends State<GroupChatPage> {
         isSentByMe: true,
         timestamp: Timestamp.now(),
       );
-      GroupMessageController(groupId: widget.chatId).sendMessageToGroup( message );
+      GroupMessageController(groupId: widget.chatId).sendMessageToGroup(widget.chatId, message );
       setState(() {
         messageBox.clear();
+      });
+    }
+  }
+
+  void _onFocusChange() {
+    if (_messageFocusNode.hasFocus) {
+      // Slight delay to allow keyboard to fully open
+      Future.delayed(Duration(milliseconds: 300), () {
+        scrollToBottom();
       });
     }
   }

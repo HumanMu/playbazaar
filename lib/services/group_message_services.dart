@@ -1,25 +1,27 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:get/get.dart';
 import '../models/group_message.dart';
 
-class MessageService {
+class MessageService extends GetxService {
   final String? userId;
   MessageService({this.userId});
 
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final CollectionReference groupCollection
-  = FirebaseFirestore.instance.collection("groups");
+  = FirebaseFirestore.instance.collection('groups');
 
-  Stream<List<GroupMessage>> listenToGroupChat(String groupId) {
-    return _firestore
-        .collection('groups')
-        .doc(groupId)
+
+  Stream<List<GroupMessage>> listenToGroupChat(String chatId, {int pageSize = 5}) {
+    return groupCollection
+        .doc(chatId)
         .collection('messages')
-        .orderBy('timestamp')
-        .limit(5)
+        .orderBy('timestamp', descending: true)
+        .limit(pageSize)
         .snapshots()
         .map((snapshot) => snapshot.docs
-        .map((doc) => GroupMessage.fromMap(doc.data()))
+        .map((doc) => GroupMessage.fromFirestore(doc.data(), doc.id))
+        .toList()
+        .reversed
         .toList());
   }
 
@@ -29,13 +31,7 @@ class MessageService {
       await groupCollection
           .doc(groupId)
           .collection('messages')
-          .add({
-        ...message.toFirestore(),
-        'createdAt': FieldValue.serverTimestamp(),
-        'expiresAt': Timestamp.fromDate(
-            DateTime.now().add(Duration(hours: 1))
-        )
-      });
+          .add(message.toFirestore());
     } catch (e) {
       if (kDebugMode) {
         print('Error sending message: $e');

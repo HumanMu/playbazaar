@@ -1,5 +1,3 @@
-
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class GroupMessage {
@@ -7,6 +5,7 @@ class GroupMessage {
   final String senderName;
   final String text;
   final bool isSentByMe;
+  final String? messageId;
   final Timestamp timestamp;
 
   GroupMessage({
@@ -15,6 +14,7 @@ class GroupMessage {
     required this.text,
     required this.isSentByMe,
     required this.timestamp,
+    this.messageId,
   });
 
   // Convert Message object to a map
@@ -24,18 +24,20 @@ class GroupMessage {
       'senderName': senderName,
       'text': text,
       'isSentByMe': isSentByMe,
-      'timestamp' : timestamp,
+      'messageId' : messageId,
+      'timestamp': timestamp
     };
   }
 
   // Create a Message object from a map
-  factory GroupMessage.fromMap(Map<String, dynamic> map) {
+  factory GroupMessage.fromFirestore(Map<String, dynamic> map, String docId) {
     return GroupMessage(
       senderId: map['senderId'],
       senderName: map['senderName'],
       text: map['text'],
       isSentByMe: map['isSentByMe'],
-      timestamp : map['timestamp']
+      timestamp: map['timestamp'],
+      messageId : docId
     );
   }
 }
