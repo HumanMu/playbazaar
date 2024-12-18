@@ -42,4 +42,7 @@ Future<void> main() async {
     const AppRoutes(),
   );
 }
+// Lottie splash
+// https://lottiefiles.com/tutorials/flutter/flutter-lottie-animation-tutorial-or-stunning-animations-in-flutter-using-lottie-3sIVBs6v5FE
+
 
