@@ -61,6 +61,8 @@ dependencies:
   hive_flutter: ^1.1.0
   http: ^1.2.2
   path: ^1.9.0
+  flutter_svg: ^2.0.16
+  lottie: ^3.3.0
 
 
 
@@ -100,9 +102,11 @@ flutter:
     - assets/images/
     - assets/sounds/
     - assets/sounds/button/
+    - assets/sounds/sad/baby_no_no_no.mp3
     - assets/sounds/end_game/
     - assets/config/
     - assets/icons/splash_screen_960x960.png
+    - assets/games/hangman/
 
 
 

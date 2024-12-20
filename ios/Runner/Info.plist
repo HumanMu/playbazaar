@@ -54,5 +54,7 @@
 		<false/>
 		<key>UIStatusBarHidden</key>
 		<false/>
+        <key>NSMicrophoneUsageDescription</key>
+        <string>This app needs to access the sound system to play game effects</string>
 	</dict>
 </plist>

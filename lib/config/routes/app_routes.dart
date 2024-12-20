@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
+import 'package:playbazaar/games/games/controller/wall_puzzle_controller.dart';
+import 'package:playbazaar/games/games/hangman/hangman_play_screen.dart';
+import 'package:playbazaar/games/games/puzzle/puzzle_play_screen.dart';
 import 'package:playbazaar/games/games/quiz/screens/add_question.dart';
 import 'package:playbazaar/games/games/quiz/screens/optionized_play_page.dart';
 import 'package:playbazaar/games/main_screen_games.dart';
@@ -150,13 +153,10 @@ class _PlayBazaarState extends State<AppRoutes> {
                         name: '/mainQuiz',
                         page: () => const QuizMainPage()
                     ),
-                    /*GetPage(
-                        name: '/wallBlast',
-                        page: () => WallBlastPlayPage(),
-                        binding: BindingsBuilder(() {
-                          Get.lazyPut<WallBlastController>(() => WallBlastController());
-                        })
-                    ),*/
+                    GetPage(
+                        name: '/hangman',
+                        page: () => HangmanPlayScreen(),
+                    ),
                     GetPage(
                         name: '/questionReviewPage',
                         page: () => const ReviewQuestionsPage()

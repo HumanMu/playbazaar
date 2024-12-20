@@ -42,6 +42,9 @@ class LocalStringsDa extends Translations {
       'show_the_answer': 'Vis svaret',
       'see_result_first': 'Se venligst resultatet først.',
       'end_of_family_game': 'Det var slutningen på quizzen. Play Bazaar håber, du havde det sjovt. Tryk på knappen nedenfor for at vende tilbage til spiloversigten.',
+      'you_won_conguratulation': 'Du vandt! Tillykke!',
+      'you_lost_word_was': 'Du tabte! Ordet var:',
+      'incorrect_guess': 'Forkert gæt:',
 
 
       //Personal information
@@ -170,6 +173,8 @@ class LocalStringsDa extends Translations {
       'btn_restart': 'Start forfra',
       'btn_ok': 'Ok',
       'btn_delete_account': 'Slet konto',
+      'btn_new_game': 'Nyt Spil',
+      'hangman': 'Galgespil',
 
 
 
