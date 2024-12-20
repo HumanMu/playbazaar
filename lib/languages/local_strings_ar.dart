@@ -41,6 +41,12 @@ class LocalStringsAr extends Translations {
       'show_the_answer': 'أظهر الإجابة',
       'see_result_first': 'يرجى رؤية النتيجة أولاً.',
       'end_of_family_game': 'كان هذا نهاية الاختبار. يأمل Play Bazaar أن تكون قد استمتعت. اضغط على الزر أدناه للعودة إلى قائمة الألعاب.',
+      'you_won_conguratulation': 'لقد فزت! تهانينا!',
+      'you_lost_word_was': 'لقد خسرت! الكلمة كانت:',
+      'incorrect_guess': 'تخمين غير صحيح:',
+      'hangman': 'لعبة الجلاد',
+
+
 
 
       //Personal information
@@ -167,6 +173,9 @@ class LocalStringsAr extends Translations {
       'btn_restart': 'إعادة تشغيل',
       'btn_ok': 'موافق',
       'btn_delete_account': 'حذف الحساب',
+      'btn_new_game': 'لعبة جديدة',
+
+
 
 
 

@@ -84,7 +84,7 @@ class SidebarDrawerState extends State<SidebarDrawer> {
                   iconColor: Colors.red,
                   title: "games".tr,
                   icon: Icons.games_sharp,
-                  action: () => navigateTo('mainQuiz'),
+                  action: () => navigateTo('mainGames'),
                 ),
                 ListTileWidget(
                   iconColor: Colors.red,
@@ -93,10 +93,10 @@ class SidebarDrawerState extends State<SidebarDrawer> {
                   action: logoutAction,
                 ),
                 const Divider(
-                  color: Colors.grey, // Line color
-                  thickness: 1, // Line thickness
-                  indent: 20, // Left padding
-                  endIndent: 20, // Right padding
+                  color: Colors.redAccent,
+                  thickness: 1,
+                  indent: 20,
+                  endIndent: 20,
                 ),
                 ListTileWidget(
                   iconColor: Colors.red,

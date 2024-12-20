@@ -42,6 +42,9 @@ class LocalStringsFa extends Translations {
       'show_the_answer': 'نمایش جواب',
       'see_result_first': 'لطفاً ابتدا نتیجه را مشاهده کنید.',
       'end_of_family_game': 'این پایان آزمون بود. Play Bazaar امیدوار است که لذت برده باشید. دکمه زیر را فشار دهید تا به لیست بازی‌ها بازگردید.',
+      'you_won_conguratulation': 'شما برنده شدید! تبریک!',
+      'you_lost_word_was': 'شما باختید! کلمه این بود:',
+      'incorrect_guess': 'حدس اشتباه:',
 
 
       //Personal information
@@ -167,6 +170,8 @@ class LocalStringsFa extends Translations {
       'btn_restart': 'راه‌اندازی مجدد',
       'btn_ok': 'باشه',
       'btn_delete_account': 'حذف حساب',
+      'btn_new_game': 'بازی جدید',
+      'hangman': 'بازی جلاد',
 
 
 

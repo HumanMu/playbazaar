@@ -42,6 +42,10 @@ class LocalStringsEn extends Translations {
       'show_the_answer': 'Show the answer',
       'see_result_first': 'See the result first, please.',
       'end_of_family_game': 'That was the end of the quiz. Play Bazaar hopes you had fun. Press the button below to return to the game list.',
+      'you_won_conguratulation': 'You won! Congratulations!',
+      'you_lost_word_was': 'You lost! The word was:',
+      'incorrect_guess': 'Incorrect guess:',
+      'hangman': 'Hangman',
 
 
 
@@ -170,6 +174,7 @@ class LocalStringsEn extends Translations {
       'btn_restart': 'Restart',
       'btn_ok': 'Ok',
       'btn_delete_account': 'Delete Account',
+      'btn_new_game': 'New Game',
 
 
 

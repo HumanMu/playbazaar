@@ -22,6 +22,8 @@ class GameListBoxState extends State<GameListBox> {
   // Define a list of quiz paths that should have difficulty options
   static final List<String> difficultiesQuizPaths = [
     'hazaragi_af',
+    'geography_fa',
+    'general_nowledge_fa'
   ];
 
   @override
@@ -110,7 +112,6 @@ class GameListBoxState extends State<GameListBox> {
 
   void _handleNavigationWithOption(String selectedOption) {
     final isWithOptions = selectedOption == 'with_options'.tr;
-
     Get.toNamed(
       isWithOptions ? '/optionizedPlayScreen' : '/noneOptionizedPlayScreen',
       arguments: {
@@ -118,6 +119,7 @@ class GameListBoxState extends State<GameListBox> {
         'quizTitle': widget.title,
       },
     );
+
   }
 
   final List<String> _difficultyLevels = [

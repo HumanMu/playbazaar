@@ -6,7 +6,7 @@ import 'package:playbazaar/global_widgets/accept_dialog.dart';
 import '../../../api/Authentication/auth_service.dart';
 import '../../../screens/widgets/sidebar_drawer.dart';
 import '../../widgets/game_list_box.dart';
-import 'functions/quiz_language.dart';
+import '../../functions/get_quiz_language.dart';
 
 class QuizMainPage extends StatefulWidget {
   const QuizMainPage({super.key});
@@ -42,6 +42,7 @@ class _QuizMainPage extends State<QuizMainPage> {
       quizLength = result['quizLength'];
       quizNames = result['quizNames'];
     });
+
   }
   
   Future<void> _initializeUserRole() async {
@@ -58,10 +59,10 @@ class _QuizMainPage extends State<QuizMainPage> {
         centerTitle: true,
         title: Text("quiz_list".tr,
           style: const TextStyle(
-              color: Colors.white,
-              fontWeight:
-              FontWeight.bold,
-              fontSize: 25
+            color: Colors.white,
+            fontWeight:
+            FontWeight.bold,
+            fontSize: 25
           ),
         ),
         iconTheme: IconThemeData(
@@ -70,12 +71,12 @@ class _QuizMainPage extends State<QuizMainPage> {
       ),
 
       drawer: SidebarDrawer(
-          authService: authService,
-          parentContext: context
+        authService: authService,
+        parentContext: context
       ),
       body: quizPath.isEmpty && quizLength == 0
-          ? const Center(child: CircularProgressIndicator())
-          : _quizList(),
+        ? const Center(child: CircularProgressIndicator())
+        : _quizList(),
     );
   }
 
@@ -105,15 +106,15 @@ class _QuizMainPage extends State<QuizMainPage> {
         ),
         TextButton(
           onPressed: () => acceptDialog(
-              context,
-              'guide'.tr,
-              'quiz_play_guide'.tr
+            context,
+            'guide'.tr,
+            'quiz_play_guide'.tr
           ),
           child: Text('guide'.tr,
-              style: TextStyle(
-                color: Colors.red,
-                fontSize: 20,
-              )
+            style: TextStyle(
+              color: Colors.red,
+              fontSize: 20,
+            )
           ),
         ),
 
@@ -122,8 +123,8 @@ class _QuizMainPage extends State<QuizMainPage> {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(
-                  horizontal: 10.0,
-                  vertical: 3
+                horizontal: 10.0,
+                vertical: 3
               ),
               child: Text("add_question_hint".tr),
             ),
@@ -138,10 +139,10 @@ class _QuizMainPage extends State<QuizMainPage> {
                         Get.toNamed('/addQuestion');
                       },
                       style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.green,
-                          shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(Radius.circular(5))
-                          )
+                        backgroundColor: Colors.green,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(5))
+                        ),
                       ),
                       child: Text("btn_send_question".tr,
                         style: TextStyle(color: Colors.white),
@@ -155,10 +156,10 @@ class _QuizMainPage extends State<QuizMainPage> {
                         Get.toNamed('/questionReviewPage');
                       },
                       style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.green,
-                          shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(Radius.circular(5))
-                          )
+                        backgroundColor: Colors.green,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(5))
+                        )
                       ),
                       child: Text("btn_review_question".tr,
                         style: TextStyle(color: Colors.white),

@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:playbazaar/global_widgets/show_custom_snackbar.dart';
 import '../api/Authentication/auth_service.dart';
 import '../screens/widgets/sidebar_drawer.dart';
-import 'constants/constants.dart';
+import 'functions/get_game_language.dart';
 
 class MainScreenGames extends StatefulWidget {
   const MainScreenGames({super.key});
@@ -14,6 +14,28 @@ class MainScreenGames extends StatefulWidget {
 
 class _MainScreenGames extends State<MainScreenGames> {
   AuthService authService = AuthService();
+
+  List<String> gamePath = [];
+  List<String> gameNames = [];
+  int gameLength = 0;
+
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeLanguageSettings();
+  }
+
+
+  Future<void> _initializeLanguageSettings() async {
+    final result = await getGameLanguage();
+    setState(() {
+      gamePath = result['gamePath'];
+      gameNames = result['gameNames'];
+      gameLength = gameNames.length;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,13 +72,13 @@ class _MainScreenGames extends State<MainScreenGames> {
             margin: const EdgeInsets.fromLTRB(0, 0, 0, 20),
             constraints: BoxConstraints(maxWidth: 600),
             child: ListView.builder(
-                itemCount: gameListConstantsFa.length,
-                itemBuilder: (context, index){
-                  return _buildGameTile(
-                      title: gameListConstantsFa[index],
-                      quizPath: gameListConstants[index],
-                  );
-                }
+              itemCount: gameNames.length,
+              itemBuilder: (context, index){
+                return _buildGameTile(
+                  title: gameNames[index],
+                  gamePath: gamePath[index],
+                );
+              }
             ),
           ),
         ),
@@ -64,7 +86,10 @@ class _MainScreenGames extends State<MainScreenGames> {
     );
   }
 
-  Widget _buildGameTile({required String title, required String quizPath}) {
+  Widget _buildGameTile({
+    required String title,
+    required String gamePath
+  }) {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       elevation: 4,
@@ -79,20 +104,20 @@ class _MainScreenGames extends State<MainScreenGames> {
           ),
         ),
         onTap: () {
-          _navigateToGamePage(quizPath);
+          _navigateToGamePage(gamePath);
         },
       ),
     );
   }
 
-  void _navigateToGamePage(String quizPath) {
+  void _navigateToGamePage(String gamePath) {
 
-    switch (quizPath) {
+    switch (gamePath) {
       case 'Quiz':
         Get.toNamed('/mainQuiz');
         break;
-      case 'Block':
-        Get.toNamed('/wallBlast');
+      case 'Hangman':
+        Get.toNamed('/hangman');
         break;
       default: showCustomSnackbar('Please, pick a game first', false);
     }
