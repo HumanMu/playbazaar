@@ -20,6 +20,8 @@ class _GameOverCryingEmojiState extends State<GameOverCryingEmoji>
   late Animation<double> _mouthAnimation;
   late AudioPlayer _soundPlayer;
   bool _isPlaying = false;
+  int _animationCount = 0;
+  static const int maxAnimationRounds = 3;
 
   @override
   void initState() {
@@ -27,9 +29,24 @@ class _GameOverCryingEmojiState extends State<GameOverCryingEmoji>
 
     // Setup animation controller
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 400),
+      duration: const Duration(milliseconds: 280),
       vsync: this,
-    )..repeat(reverse: true);
+    );//..repeat(reverse: true);
+
+    _controller.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        _animationCount++;
+        if (_animationCount >= maxAnimationRounds * 2) { // Multiply by 2 because of forward/reverse cycles
+          _controller.stop();
+          _stopCrying();
+        } else {
+          _controller.reverse();
+        }
+      } else if (status == AnimationStatus.dismissed) {
+        _controller.forward();
+      }
+    });
+
 
     // Create bounce animation
     _bounceAnimation = Tween<double>(
@@ -52,10 +69,17 @@ class _GameOverCryingEmojiState extends State<GameOverCryingEmoji>
     _initSound();
     if (widget.isVisible) {
       _startCrying();
-      _isPlaying = true;
+      //_isPlaying = true;
     }
   }
 
+  @override
+  void dispose() {
+    _controller.dispose();
+    _stopCrying();
+    _soundPlayer.stop();
+    super.dispose();
+  }
 
 
   Future<void> _initSound() async {
@@ -63,6 +87,13 @@ class _GameOverCryingEmojiState extends State<GameOverCryingEmoji>
       _soundPlayer = AudioPlayer();
       await _soundPlayer.setAsset('assets/sounds/sad/baby_no_no_no.mp3');
       _soundPlayer.setVolume(1.0);
+
+      // Add completion listener
+      _soundPlayer.playerStateStream.listen((state) {
+        if (state.processingState == ProcessingState.completed) {
+          _stopCrying();  // Stop when audio completes
+        }
+      });
 
     } catch (e) {
       debugPrint('Error initializing sound player for crying emoji: $e');
@@ -84,7 +115,13 @@ class _GameOverCryingEmojiState extends State<GameOverCryingEmoji>
   Future<void> _startCrying() async {
     try {
       if (!_isPlaying ) {
-        _isPlaying = true;
+        setState(() {
+          _isPlaying = true;
+
+        });
+        _animationCount = 0;
+        _controller.forward();
+        await _soundPlayer.seek(Duration.zero);
         await _soundPlayer.play();
       }
     } catch (e) {
@@ -94,20 +131,28 @@ class _GameOverCryingEmojiState extends State<GameOverCryingEmoji>
 
   Future<void> _stopCrying() async {
     try {
-      _isPlaying = false;
+      setState(() {
+        _isPlaying = false;
+      });
       await _soundPlayer.stop();
+      await _soundPlayer.seek(Duration.zero);
     } catch (e) {
       debugPrint('Error stopping sound: $e');
     }
   }
 
-  @override
-  void dispose() {
-    _controller.dispose();
-    _stopCrying();
-    _soundPlayer.stop();
-    super.dispose();
+  void _restartCrying() async {
+    if (!_isPlaying) {
+      await _stopCrying();  // First stop everything
+      setState(() {
+        _animationCount = 0;
+      });
+      // Reset animation controller to initial state
+      _controller.reset();  // Add this line
+      _startCrying();
+    }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -115,20 +160,23 @@ class _GameOverCryingEmojiState extends State<GameOverCryingEmoji>
       return const SizedBox.shrink();
     }
 
-    return AnimatedBuilder(
-      animation: _controller,
-      builder: (context, child) {
-        return Transform.translate(
-          offset: Offset(0, _bounceAnimation.value),
-          child: CustomPaint(
-            size: const Size(200, 200),
-            painter: CryingEmojiPainter(
-              animation: _controller,
-              mouthAnimation: _mouthAnimation,
+    return GestureDetector(
+      onTap: _restartCrying,
+      child: AnimatedBuilder(
+        animation: _controller,
+        builder: (context, child) {
+          return Transform.translate(
+            offset: Offset(0, _bounceAnimation.value),
+            child: CustomPaint(
+              size: const Size(200, 200),
+              painter: CryingEmojiPainter(
+                animation: _controller,
+                mouthAnimation: _mouthAnimation,
+              ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }
