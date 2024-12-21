@@ -31,7 +31,7 @@ class _GameOverCryingEmojiState extends State<GameOverCryingEmoji>
     _controller = AnimationController(
       duration: const Duration(milliseconds: 280),
       vsync: this,
-    );//..repeat(reverse: true);
+    );
 
     _controller.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
@@ -69,7 +69,6 @@ class _GameOverCryingEmojiState extends State<GameOverCryingEmoji>
     _initSound();
     if (widget.isVisible) {
       _startCrying();
-      //_isPlaying = true;
     }
   }
 
@@ -196,7 +195,7 @@ class CryingEmojiPainter extends CustomPainter {
 
     // Face
     final paint = Paint()
-      ..color = const Color(0xFFFFD700)
+      ..color = const Color(0xFFFF4D00)
       ..style = PaintingStyle.fill;
     canvas.drawCircle(center, size.width * 0.4, paint);
 
