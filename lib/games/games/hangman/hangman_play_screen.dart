@@ -114,7 +114,8 @@ class _HangmanPlayScreenState extends State<HangmanPlayScreen> with SingleTicker
                         : Container(),
 
                       // Keyboard Buttons
-                      SizedBox(
+                      Container(
+                        constraints: BoxConstraints(maxWidth: 600),
                         width: double.infinity,
                         child: Wrap(
                           alignment: WrapAlignment.center,
