@@ -160,8 +160,10 @@ class _HangmanPlayScreenState extends State<HangmanPlayScreen> with SingleTicker
                     ? Center(
                       child:Column(
                         children: [
-                          GameOverCryingEmoji(),
-                          SizedBox(height: 30),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 20),
+                            child: GameOverCryingEmoji(),
+                          ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [

@@ -104,13 +104,13 @@ class _MainScreenGames extends State<MainScreenGames> {
           ),
         ),
         onTap: () {
-          _navigateToGamePage(gamePath);
+          navigateToGamePage(gamePath);
         },
       ),
     );
   }
 
-  void _navigateToGamePage(String gamePath) {
+  void navigateToGamePage(String gamePath) {
 
     switch (gamePath) {
       case 'Quiz':
