@@ -32,6 +32,13 @@ FriendshipStatus string2FriendshipState(String s) {
   return condition;
 }
 
+FriendshipStatus string2FriendRequestResult(String s) {
+  FriendshipStatus status = FriendshipStatus.values.firstWhere(
+          (e) => e.toString().split('.').last == s
+  );
+  return status;
+}
+
 String friendShipState2String(FriendshipStatus state) {
   return state.toString().split('.').last;
 }
@@ -40,15 +47,22 @@ String groupUserRole2String(GroupUserRole state) {
   return state.toString().split('.').last;
 }
 
-
-
-FriendshipStatus string2FriendRequestResult(String s) {
-  FriendshipStatus status = FriendshipStatus.values.firstWhere(
-        (e) => e.toString().split('.').last == s
+Difficulty string2Difficulty(String s) {
+  Difficulty difficulty = Difficulty.values.firstWhere(
+          (e) => e.toString().split('.').last == s
   );
-  return status;
+  return difficulty;
 }
 
-/*String friendRequestResult2String(FriendRequestResultAction state) {
-  return state.toString().split('.').last;
-}*/
+String difficulty2String(Difficulty difficulty) {
+  return difficulty.toString().split('.').last;
+}
+
+
+
+
+
+
+
+
+

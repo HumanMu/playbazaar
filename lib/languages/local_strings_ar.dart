@@ -7,7 +7,7 @@ class LocalStringsAr extends Translations {
     'ar_SA': {
       //appName
       'app_name': 'بازار اللعب',
-      'notification_title': 'بازار اللعب',
+      'notification_title': 'Play Bazaar',
 
 
       // Games
@@ -45,6 +45,26 @@ class LocalStringsAr extends Translations {
       'you_lost_word_was': 'لقد خسرت! الكلمة كانت:',
       'incorrect_guess': 'تخمين غير صحيح:',
       'hangman': 'لعبة الجلاد',
+      'hangman_play_settings': 'إعدادات لعبة الرجل المشنوق',
+      'share_hangman_play_code': 'شارك الكود مع من تريد أن ينضم إلى اللعبة',
+      'deactive_other_options': 'تعطيل الخيارات الأخرى',
+      'deactive_play_with_friends': 'هل تريد اللعب بمفردك؟ إذاً يرجى تعطيل الخيارين أعلاه للمتابعة إلى اللعبة',
+      'add_player': 'إضافة لاعب',
+      'play_offline_multiplayer': 'لعب متعدد اللاعبين دون اتصال',
+      'give_players_name': 'اكتب اسم كل لاعب واضغط على "+"',
+      'online_with_friends': 'عبر الإنترنت مع الأصدقاء',
+      'this_generating_code': 'سيقوم هذا بإنشاء رمز لمشاركته مع الأصدقاء للانضمام',
+      'play_solo': 'العب بمفردك',
+      'play_solo_description': 'إذا كنت تريد اللعب بمفردك، اختر هذا الخيار',
+      'players_name_here': 'أضف أسماء اللاعبين هنا...',
+      'zero_player_error': 'يرجى إضافة لاعبين على الأقل أو إلغاء تفعيل خيارات اللعب الجماعي',
+      'add_words': 'إضافة كلمات',
+      'add_words_label': 'أضف الكلمات وافصلها بفاصلة',
+      'add_words_hint': 'أضف تلميحًا',
+      'guess_a_word': 'حدس یک کلمه',
+      'guess_a_word_description': 'کلمه نباید فاصله اضافی، قوانین نوشتاری را نقض کند یا شامل کاراکترهای خاص باشد',
+      'player_turn': 'دور ',
+
 
 
 
@@ -63,6 +83,8 @@ class LocalStringsAr extends Translations {
       'status': 'الحالة',
       'online': 'متصل',
       'offline': 'غير متصل',
+
+
 
       // group
       'private': 'خاص',
@@ -137,6 +159,7 @@ class LocalStringsAr extends Translations {
       'awaiting_response': 'في انتظار الرد',
       'approve_request': 'قبول الطلب',
       'request_sent': 'تم إرسال الطلب',
+      'write_here': 'اكتب هنا...',
 
 
       // friends
@@ -174,8 +197,8 @@ class LocalStringsAr extends Translations {
       'btn_ok': 'موافق',
       'btn_delete_account': 'حذف الحساب',
       'btn_new_game': 'لعبة جديدة',
-
-
+      'btn_start': 'ابدأ',
+      'btn_send_words': 'أرسل لنا الكلمات',
 
 
 
@@ -206,6 +229,7 @@ class LocalStringsAr extends Translations {
       'registration_succed': 'تم إنشاء حسابك بنجاح',
       'authentication_failed': 'فشل التحقق. حاول مرة أخرى من فضلك',
       'unexpected_result': 'نتيجة غير متوقعة، حاول مرة أخرى',
+      'restart_app_fail': 'بسبب خطأ غير متوقع، يرجى إغلاق التطبيق وإعادة تشغيله',
       'members_notfound': 'لم يتم العثور على أي أعضاء',
       'name_is_required': 'الاسم مطلوب',
       'approved_friend_request': 'تمت الإضافة إلى قائمة أصدقائك',

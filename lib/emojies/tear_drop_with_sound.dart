@@ -11,7 +11,7 @@ class GameOverCryingEmoji extends StatefulWidget {
   const GameOverCryingEmoji({
     super.key,
     this.isVisible = true,
-    this.animationDuration = const Duration(milliseconds: 280),
+    this.animationDuration = const Duration(milliseconds: 300),
     this.maxAnimationRounds = 3,
     this.soundAsset = 'assets/sounds/sad/baby_no_no_no.mp3',
     this.volume = 1.0,

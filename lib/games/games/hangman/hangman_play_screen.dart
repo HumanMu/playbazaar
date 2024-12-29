@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
-import '../../../constants/alphabets.dart';
+import 'package:playbazaar/global_widgets/accept_dialog.dart';
 import '../../../emojies/tear_drop_with_sound.dart';
-import '../controller/hangman_controller.dart';
+import 'controller/play_controller.dart';
 import 'animated_hangman_painter.dart';
 import 'dart:math' as math;
 
@@ -15,7 +15,7 @@ class HangmanPlayScreen extends StatefulWidget {
 }
 
 class _HangmanPlayScreenState extends State<HangmanPlayScreen> with SingleTickerProviderStateMixin {
-  final HangmanController controller = Get.put(HangmanController());
+  final PlayController controller = Get.put(PlayController());
   late AnimationController _animationController;
 
   @override
@@ -36,10 +36,16 @@ class _HangmanPlayScreenState extends State<HangmanPlayScreen> with SingleTicker
   @override
   Widget build(BuildContext context) {
     return Directionality(
-      textDirection: controller.isPersian.value ? TextDirection.rtl : TextDirection.ltr,
+      textDirection: controller.isAlphabetRTL.value ? TextDirection.rtl : TextDirection.ltr,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('hangman'.tr, style: TextStyle(color: Colors.white)),
+          title: Text('hangman'.tr,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 22,
+              fontWeight: FontWeight.bold
+            )
+          ),
           centerTitle: true,
           backgroundColor: Colors.red,
           iconTheme: IconThemeData(color: Colors.white),
@@ -50,9 +56,7 @@ class _HangmanPlayScreenState extends State<HangmanPlayScreen> with SingleTicker
             Padding(
               padding: const EdgeInsets.all(4.0),
               child: Obx(() {
-                  final alphabet = controller.isPersian.value
-                      ? Alphabets.persian
-                      : Alphabets.english;
+                  final alphabet = controller.alphabet;
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
@@ -91,26 +95,57 @@ class _HangmanPlayScreenState extends State<HangmanPlayScreen> with SingleTicker
                       // Hidden Word
                       !controller.gameLost.value
                         ? SizedBox(
-                            width: double.infinity,
-                            child: Center(
+                          width: double.infinity,
+                          child: Center(
+                            child: Directionality(
+                              textDirection: controller.isAlphabetRTL.value ? TextDirection.rtl : TextDirection.ltr,
                               child: Text(
                                 controller.buildHiddenWord(),
-                                style: TextStyle(fontSize: 30,
-                                  color: controller.gameWon.value? Colors.amber : Colors.black,
-                                  fontWeight: controller.gameWon.value? FontWeight.bold : FontWeight.normal,
-                                )
+                                style: TextStyle(
+                                  fontSize: 30,
+                                  color: controller.gameWon.value ? Colors.amber : Colors.black,
+                                  fontWeight: controller.gameWon.value ? FontWeight.bold : FontWeight.normal,
+                                ),
                               ),
                             ),
+                          ),
                         ) : Container(),
 
                       !controller.gameLost.value && !controller.gameWon.value
-                        ? SizedBox(
-                          width: double.infinity,
-                          child: Center(
-                            child: Text(
-                              ' ${"incorrect_guess".tr} ${controller.incorrectGuesses}/${controller.maxIncorrectGuesses}'
+                        ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                                width: double.infinity,
+                                child: Center(
+                                  child: Text(
+                                      ' ${"incorrect_guess".tr} ${controller.incorrectGuesses}/${controller.maxIncorrectGuesses}'
+                                  ),
+                                )
                             ),
-                          ))
+                            Center(
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  controller.wordHint.value != ""
+                                    ? GestureDetector(
+                                        child: Text("${'guide'.tr}: 1",
+                                          style: TextStyle(color: Colors.green),
+                                        ),
+                                        onTap: () => acceptDialog(this.context, "guide".tr, controller.wordHint.value),
+                                      ) : Container(),
+                                  SizedBox(width: 15),
+                                  GestureDetector(
+                                    child: Text("${'guide'.tr}: 2",
+                                      style: TextStyle(color: Colors.green),
+                                    ),
+                                    onTap: () => acceptDialog(this.context, "guide".tr, controller.wordToGuess.value[0]),
+                                  )
+                                ],
+                              ),
+                            )
+                          ],
+                        )
                         : Container(),
 
                       // Keyboard Buttons
@@ -158,42 +193,30 @@ class _HangmanPlayScreenState extends State<HangmanPlayScreen> with SingleTicker
                     ) : Container(),
                   ),
                   Obx(() => controller.gameLost.value
-                    ? Center(
-                      child:Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 20),
-                            child: GameOverCryingEmoji(),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text("The word was: ",
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.red
-                                ),
-                              ),
-                              Text(controller.wordToGuess.value,
-                                style: TextStyle(
-                                    fontSize: 25,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.red
-                                ),
-                              )
-                            ],
-                          ),
-                        ],
-                      ))
-                    : Container()
+                    ? Column(
+                      children: [
+                        Center(
+                          child: GameOverCryingEmoji(),
+                        ),
+                         Center(
+                          child: Text(controller.wordToGuess.value,
+                            style: TextStyle(
+                                fontSize: 35,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.red
+                            ),
+                          )
+                         ),
+                      ],
+                    ) : Container(),
+
                   ),
 
                   // New Game Button
                   Obx(() => controller.gameWon.value || controller.gameLost.value?
                     Center(
                       child: ElevatedButton(
-                        onPressed: controller.startNewGame,
+                        onPressed: () => controller.startNextGame(context),
                         style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.green
                         ),

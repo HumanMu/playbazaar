@@ -6,7 +6,7 @@ class LocalStringsFa extends Translations {
   Map<String, Map<String, String>> get keys => {
     'fa_AF': {
       'app_name' : 'بازار بازی',
-      'notification_title' : 'بازار بازی',
+      'notification_title' : 'Play Bazaar',
 
 
       // Games
@@ -45,6 +45,29 @@ class LocalStringsFa extends Translations {
       'you_won_conguratulation': 'شما برنده شدید! تبریک!',
       'you_lost_word_was': 'شما باختید! کلمه این بود:',
       'incorrect_guess': 'حدس اشتباه:',
+      'hangman': 'بازی جلاد',
+      'hangman_play_settings': 'تنظیمات بازی جلاد',
+      'share_hangman_play_code': 'کد را با کسانی که می‌خواهید در بازی شرکت کنند به اشتراک بگذارید',
+      'deactive_other_options': 'غیرفعال کردن گزینه‌های دیگر',
+      'deactive_play_with_friends': 'آیا می‌خواهید تنها بازی کنید؟ اگر بله، لطفاً دو گزینه بالا را غیرفعال کنید تا به بازی ادامه دهید',
+      'add_player': 'اضافه کردن بازیکن',
+      'play_offline_multiplayer': 'بازی چندنفره آفلاین',
+      'give_players_name': 'نام هر بازیکن را وارد کرده و "+" را فشار دهید',
+      'online_with_friends': 'آنلاین با دوستان',
+      'this_generating_code': 'این یک کد تولید می‌کند که می‌توانید با دوستان خود به اشتراک بگذارید تا بپیوندند',
+      'play_solo': 'تک‌نفره بازی کن',
+      'play_solo_description': 'اگر می‌خواهی به‌تنهایی بازی کنی، این گزینه را انتخاب کن',
+      'players_name_here': 'نام بازیکنان را اینجا اضافه کنید...',
+      'zero_player_error': 'لطفاً حداقل دو بازیکن اضافه کنید یا گزینه‌های چندنفره را غیرفعال کنید',
+      'pick_difficulty': 'سطح دشواری را انتخاب کنید',
+      'add_words': 'اضافه کردن لغات',
+      'add_words_label': 'کلمات را اضافه کنید و با کاما جدا کنید',
+      'add_words_hint': 'یک راهنما اضافه کنید',
+      'guess_a_word': 'حدس یک کلمه',
+      'guess_a_word_description': 'کلمه نباید فاصله اضافی، قوانین نوشتاری را نقض کند یا شامل کاراکترهای خاص باشد',
+      'player_turn': 'نوبت ',
+
+
 
 
       //Personal information
@@ -132,6 +155,7 @@ class LocalStringsFa extends Translations {
       'say_hi': 'سلام کن به',
       'guide': 'راهنما',
       'danger_zone': 'منطقه خطر',
+      'write_here': 'اینجا بنویسید...',
 
 
       // Friends
@@ -171,7 +195,9 @@ class LocalStringsFa extends Translations {
       'btn_ok': 'باشه',
       'btn_delete_account': 'حذف حساب',
       'btn_new_game': 'بازی جدید',
-      'hangman': 'بازی جلاد',
+      'btn_start': 'شروع',
+      'btn_send_words': 'کلمات را برای ما ارسال کنید',
+
 
 
 
@@ -201,6 +227,7 @@ class LocalStringsFa extends Translations {
       'registration_succed': 'ثبت نام شما با موفقیت انجام شد',
       'authentication_failed' : 'حراز هویت ناموفق بود. لطفاً دوباره تلاش کنید',
       'unexpected_result' : 'اتفاق غیر منتظره رخ داد, لطفا دوباره تلاش کن',
+      'restart_app_fail': 'به دلیل یک خطای غیرمنتظره، لطفاً برنامه را ببندید و دوباره راه‌اندازی کنید',
       'members_notfound' : 'هیچ عضوی  پیدا نشد',
       'name_is_required' : 'وارد کردن نام ضروری است!',
       'approved_friend_request': 'درخواست دوستی شما پذیرفته شد ',

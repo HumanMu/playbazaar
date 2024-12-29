@@ -45,6 +45,30 @@ class LocalStringsDa extends Translations {
       'you_won_conguratulation': 'Du vandt! Tillykke!',
       'you_lost_word_was': 'Du tabte! Ordet var:',
       'incorrect_guess': 'Forkert gæt:',
+      'hangman': 'Galgespil',
+      'hangman_play_settings': 'Indstillinger for Galgespil',
+      'share_hangman_play_code': 'Del koden med dem, du vil have med i spillet',
+      'deactive_other_options': 'Deaktiver andre muligheder',
+      'deactive_play_with_friends': 'Vil du spille alene? Hvis ja, deaktiver venligst de to ovenstående muligheder for at fortsætte spillet',
+      'add_player': 'Tilføj spiller',
+      'play_offline_multiplayer': 'Spil offline multiplayer',
+      'give_players_name': 'Skriv hver spillers navn og tryk på "+"',
+      'online_with_friends': 'Online med venner',
+      'this_generating_code': 'Dette vil generere en kode, som du kan dele med venner for at deltage',
+      'play_solo': 'Spil alene',
+      'play_solo_description': 'Hvis du vil spille alene, så vælg denne mulighed',
+      'players_name_here': 'Tilføj spillerens navn her...',
+      'zero_player_error': 'Tilføj venligst mindst to spiller eller deaktiver multiplayer-switch',
+      'pick_difficulty': 'Vælg Sværhedsgrad',
+      'add_words': 'Tilføjelse af ord',
+      'add_words_label': 'Tilføj ordene og adskil med et komma',
+      'add_words_hint': 'Tilføj et hint',
+      'guess_a_word': 'Gæt et ord',
+      'guess_a_word_description': 'Ordet må ikke indeholde ekstra mellemrum, bryde skriveregler eller inkludere specialtegn',
+      'player_turn': 'Tur for ',
+
+
+
 
 
       //Personal information
@@ -134,6 +158,7 @@ class LocalStringsDa extends Translations {
       'say_hi': 'Sig hej til',
       'guide': 'Vejledning',
       'danger_zone': 'Farezone',
+      'write_here': 'Skriv her...',
 
 
 
@@ -174,7 +199,8 @@ class LocalStringsDa extends Translations {
       'btn_ok': 'Ok',
       'btn_delete_account': 'Slet konto',
       'btn_new_game': 'Nyt Spil',
-      'hangman': 'Galgespil',
+      'btn_start': 'Start',
+      'btn_send_words': 'Send os ord',
 
 
 
@@ -206,6 +232,7 @@ class LocalStringsDa extends Translations {
       'registration_succed': 'Din konto er oprettet succesfuldt',
       'authentication_failed': 'Godkendelse mislykkedes. Prøv venligst igen',
       'unexpected_result': 'Et uventet resultat, prøv venligst igen',
+      'restart_app_fail': 'Grundet en uventet fejl, luk appen og start forfra venligst',
       'members_notfound': 'Kunne ikke finde nogen medlemmer',
       'name_is_required': 'Navn er påkrævet',
       'approved_friend_request': 'Tilføjet til din venneliste',
