@@ -46,8 +46,6 @@ class PlayController extends GetxController {
     await getAppLanguage();
     await getDifficultyAndPath();
     _initializeAlphabet();
-    //await _loadWords();
-    //startNewGame();
   }
 
   void startNewGame() {
@@ -86,15 +84,16 @@ class PlayController extends GetxController {
   }
 
   Future<void> startNextGame(BuildContext context) async {
+    currentIndex.value++;
     if(isLocalMultiplayerMode.value) {
       await getPlayerGuess(context);
+      startNewGame();
+      return;
     }
-    if(!isLocalMultiplayerMode.value && currentIndex.value == words.length -1){
+    if(currentIndex.value == words.length -1){
       await _loadWords();
       showCustomSnackbar("Reading new words", false);
     }
-
-    isLocalMultiplayerMode.value? currentIndex.value = 0 : currentIndex.value++;
     startNewGame();
   }
 
@@ -107,6 +106,8 @@ class PlayController extends GetxController {
       showCustomSnackbar("restart_app_fail".tr, false);
       return;
     }
+    currentIndex.value = 0;
+    words.clear();
     retrievedWords.words.shuffle(random);
     words.addAll(retrievedWords.words.map((word) => word.trim().toUpperCase()));
     wordHint.value = retrievedWords.hint;
@@ -191,7 +192,8 @@ class PlayController extends GetxController {
       if(playerTurn.value >= localPlayers.length) playerTurn.value = 0;
 
     } else {
-      debugPrint("User canceled or entered an empty string");
+      wordToGuess.value = "";
+      words.clear();
     }
   }
 
