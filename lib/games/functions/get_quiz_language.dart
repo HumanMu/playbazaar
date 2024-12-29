@@ -1,6 +1,5 @@
 
-import 'package:get/get.dart';
-import '../../controller/user_controller/auth_controller.dart';
+import '../../helper/sharedpreferences/sharedpreferences.dart';
 
 // English
 List<String> quizListConstantsRoutesEn = ['geography_en', 'english_en', 'general_knowledge_en'];
@@ -20,15 +19,14 @@ List<String> quizListConstantsAr = ['جغرافیا', 'سوري', 'مغربي', 
 
 
 Future<Map<String, dynamic>> getQuizLanguage() async {
-  //List<String>? value = await SharedPreferencesManager.getStringList(SharedPreferencesKeys.appLanguageKey);
   List<String> quizPath;
   int quizLength;
   List<String> quizNames;
+  List<String>? value = await SharedPreferencesManager.getStringList(SharedPreferencesKeys.appLanguageKey);
+  //final authController = Get.find<AuthController>();
 
-  final authController = Get.find<AuthController>();
-
-  if (authController.language.isNotEmpty) {
-    switch (authController.language[0]) {
+  if (value != null && value.isNotEmpty) {
+    switch (value[0]) {
       case 'fa':
         quizPath = quizListConstantsRoutesAf;
         quizLength = quizListConstantsRoutesAf.length;

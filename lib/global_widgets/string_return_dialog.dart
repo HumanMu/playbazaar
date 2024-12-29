@@ -3,14 +3,16 @@ import 'package:get/get.dart';
 class StringReturnDialog extends StatelessWidget {
   final String title;
   final String? description;
-  final String hintText;
+  final String? hintText;
   final Color? btnApproveColor;
+  final Color? btnDeclineColor;
 
   const StringReturnDialog({
     required this.title,
     this.description,
-    required this.hintText,
+    this.hintText,
     this.btnApproveColor,
+    this.btnDeclineColor,
     super.key
   });
 
@@ -52,11 +54,19 @@ class StringReturnDialog extends StatelessWidget {
           onPressed: () {
             Navigator.of(context).pop(null);
           },
-          child: Text('btn_cancel'.tr),
+          child: Text('btn_cancel'.tr,
+            style: TextStyle(
+              color: btnDeclineColor?? Colors.red,
+            ),
+          ),
         ),
         TextButton(
           onPressed: () {
-            Navigator.of(context).pop(controller.text.isEmpty ? null : controller.text);
+            Navigator.of(context).pop(
+              controller.text.isEmpty
+                ? null
+                : controller.text
+            );
           },
           child: Text('btn_approve'.tr,
             style: TextStyle(

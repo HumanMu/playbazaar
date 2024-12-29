@@ -46,6 +46,28 @@ class LocalStringsEn extends Translations {
       'you_lost_word_was': 'You lost! The word was:',
       'incorrect_guess': 'Incorrect guess:',
       'hangman': 'Hangman',
+      'hangman_play_settings': 'Hangman Play Settings',
+      'share_hangman_play_code': 'Share the code with those you want to join the game',
+      'deactive_other_options': 'Deactivate other options',
+      'deactive_play_with_friends': 'Do you want to play alone? If so, please deactivate the two options above to continue the game',
+      'add_player': 'Add Player',
+      'play_offline_multiplayer': 'Play Offline Multiplayer',
+      'give_players_name': 'Type each player\'s name and tap "+"',
+      'online_with_friends': 'Online with friends',
+      'this_generating_code': 'This will generate a code to share with friends to join',
+      'play_solo': 'Play Solo',
+      'play_solo_description': 'If you want to play by yourself, choose this option',
+      'players_name_here': 'Add players name here...',
+      'zero_player_error': 'Please add at least one player or deactivate the multiplayer options',
+      'pick_difficulty': 'Pick Difficulty',
+      'add_words': 'Adding Words',
+      'add_words_label': 'Add the words & separate by a comma',
+      'add_words_hint': 'Add a hint',
+      'guess_a_word': 'Guess a word',
+      'guess_a_word_description': 'The word should not contain any extra spacing, violate writing rules, or include special characters',
+      'player_turn': 'Turn of ',
+
+
 
 
 
@@ -135,6 +157,7 @@ class LocalStringsEn extends Translations {
       'say_hi': 'Say hi to',
       'guide': 'Guide',
       'danger_zone': 'Danger Zone',
+      'write_here': 'Write here...',
 
 
 
@@ -175,6 +198,8 @@ class LocalStringsEn extends Translations {
       'btn_ok': 'Ok',
       'btn_delete_account': 'Delete Account',
       'btn_new_game': 'New Game',
+      'btn_start': 'Start',
+      'btn_send_words': 'Send us words',
 
 
 
@@ -205,6 +230,7 @@ class LocalStringsEn extends Translations {
       'registration_succed': 'Your account has been created succesfully',
       'authentication_failed' : 'Authentication failed. Please try again',
       'unexpected_result' : 'An unexpected result, try again please',
+      'restart_app_fail': 'Due to an unexpected error, please close the app and restart it',
       'members_notfound' : 'Could not find any members',
       'name_is_required' : 'Name is required',
       'approved_friend_request': 'Added to the list of your friend',

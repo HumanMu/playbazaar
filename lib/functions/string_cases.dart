@@ -30,3 +30,7 @@ List<String> splitByUnderscore(String s) {
 List<String> splitBySpace(String s) {
   return s.split(' ');
 }
+
+List<String> splitByComma(String s) {
+  return s.split(',');
+}

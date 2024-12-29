@@ -1,9 +1,8 @@
-import 'package:get/get.dart';
-import '../../controller/user_controller/auth_controller.dart';
+import '../../helper/sharedpreferences/sharedpreferences.dart';
 
 
 // English
-List<String> gameListPath = ['Quiz', 'Hangman',];
+List<String> gamePagesPath = ['Quiz', 'Hangman',];
 List<String> gameNamesFarsi = ['مسابقات آزمونی', 'بازی جلاد'];
 List<String> gameNamesArabic = ['قائمة الألعاب', 'لعبة الجلاد'];
 List<String> gameNamesDanish = ['Quiz', 'Galgespil'];
@@ -13,35 +12,36 @@ List<String> ludoTypes = ['Online', 'Robots'];
 
 Future<Map<String, dynamic>> getGameLanguage() async {
 
-  final auth = Get.find<AuthController>();
+  //final auth = Get.find<AuthController>();
+  List<String>? value = await SharedPreferencesManager.getStringList(SharedPreferencesKeys.appLanguageKey);
   List<String> gamePath;
   List<String> gameNames;
 
-  if (auth.language.isNotEmpty) {
-    switch (auth.language[0]) {
+  if (value != null && value.isNotEmpty) {
+    switch (value[0]) {
       case 'fa':
-        gamePath = gameListPath;
+        gamePath = gamePagesPath;
         gameNames = gameNamesFarsi;
         break;
       case 'en':
-        gamePath = gameListPath;
-        gameNames = gameListPath;
+        gamePath = gamePagesPath;
+        gameNames = gamePagesPath;
         break;
       case 'ar':
-        gamePath = gameListPath;
+        gamePath = gamePagesPath;
         gameNames = gameNamesArabic;
         break;
       case 'dk':
-        gamePath = gameListPath;
+        gamePath = gamePagesPath;
         gameNames = gameNamesDanish;
         break;
       default:
-        gamePath = gameListPath;
-        gameNames = gameListPath;
+        gamePath = gamePagesPath;
+        gameNames = gamePagesPath;
     }
   } else {
-    gamePath = gameListPath;
-    gameNames = gameListPath;
+    gamePath = gamePagesPath;
+    gameNames = gamePagesPath;
   }
 
 

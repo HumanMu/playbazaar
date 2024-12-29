@@ -117,7 +117,7 @@ class _MainScreenGames extends State<MainScreenGames> {
         Get.toNamed('/mainQuiz');
         break;
       case 'Hangman':
-        Get.toNamed('/hangman');
+        Get.toNamed('/hangmanPlaySettings');
         break;
       default: showCustomSnackbar('Please, pick a game first', false);
     }

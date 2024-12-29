@@ -21,7 +21,7 @@ Future<void> acceptDialog(context, title, message) async {
               child: Text('btn_ok'.tr,
                 style: TextStyle(
                   fontSize: 25,
-                  color: Colors.black
+                  color: Colors.green
                 ),
               ),
               onPressed: () {
