@@ -49,6 +49,7 @@ class PlayController extends GetxController {
   }
 
   void startNewGame() {
+    if(words.isEmpty) return;
     wordToGuess.value = normalizeAlphabet(words[currentIndex.value]).toUpperCase();
     guessedLetters.clear();
     incorrectGuesses.value = 0;
@@ -227,8 +228,8 @@ class PlayController extends GetxController {
 
   String normalizeAlphabet(String guessWord) {
     if (language.value == 'fa' || language.value == 'ar') {
-      // Single RegExp to match all special characters and whitespace
       return guessWord.replaceAll(
+        // This is important for none-visible characters in RTL alphabets
           RegExp(r'[\u200c\u200e\u200f\u202a-\u202e\u2066-\u2069\u00a0\s]+'),
           ''
       ).trim();

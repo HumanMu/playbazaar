@@ -199,7 +199,7 @@ class CryingEmojiPainter extends CustomPainter {
   final Animation<double> mouthAnimation;
 
   static final Paint _paint = Paint();
-  static const Color _tearColor = Color(0xFF88C1E5);
+  static const Color _tearColor = Color(0xFF7DA4BD);
   static const Color _faceColor = Color(0xFFFF4D00);
 
   CryingEmojiPainter({
