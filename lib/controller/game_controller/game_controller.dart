@@ -2,7 +2,7 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
-import '../../api/firestore/firestore_quiz.dart';
+import '../../games/services/firestore_quiz.dart';
 import '../../games/games/quiz/models/question_models.dart';
 import '../../games/games/quiz/sharedpreferences/quiz.dart';
 import '../../global_widgets/show_custom_snackbar.dart';

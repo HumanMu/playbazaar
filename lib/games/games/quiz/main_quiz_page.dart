@@ -34,6 +34,12 @@ class _QuizMainPage extends State<QuizMainPage> {
     _initializeUserRole();
   }
 
+  Future<void> _initializeUserRole() async {
+    setState(() {
+      userRole = userController.userData.value!.role;
+    });
+  }
+
 
   Future<void> _initializeLanguageSettings() async {
     final result = await getQuizLanguage();
@@ -44,12 +50,7 @@ class _QuizMainPage extends State<QuizMainPage> {
     });
 
   }
-  
-  Future<void> _initializeUserRole() async {
-    setState(() {
-      userRole = userController.userData.value!.role;
-    });
-  }
+
 
   @override
   Widget build(BuildContext context) {

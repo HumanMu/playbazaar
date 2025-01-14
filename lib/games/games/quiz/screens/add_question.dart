@@ -1,8 +1,7 @@
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../../api/firestore/firestore_quiz.dart';
+import '../../../services/firestore_quiz.dart';
 import '../../../../global_widgets/show_custom_snackbar.dart';
 import '../../../functions/get_quiz_language.dart';
 import '../models/question_models.dart';
@@ -112,7 +111,9 @@ class AddQuestionState extends State<AddQuestion> {
               child: ElevatedButton(
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
                   onPressed: () => _submit(),
-                  child: Text("btn_send".tr)),
+                  child: Text("btn_send".tr,
+                    style: TextStyle(color: Colors.white),
+                  )),
             )
           ],
         ),
@@ -150,9 +151,7 @@ class AddQuestionState extends State<AddQuestion> {
           : null,
     );
     final firestoreAPI = FirestoreQuiz();
-    if (kDebugMode) {
-      print("Failed to add quetions: ${newQuestion.wrongAnswers}");
-    }
+    debugPrint("Failed to add quetions: ${newQuestion.wrongAnswers}");
 
     firestoreAPI.addQuestionsToReviewList(
       quizId: 'quetionRequest',
@@ -160,7 +159,7 @@ class AddQuestionState extends State<AddQuestion> {
     ).then((_) {
 
       showCustomSnackbar('question_added'.tr, true);
-      _questionC.clear();
+      //_questionC.clear();
       _correctAnswerC.clear();
       _wrongAnswer1C.clear();
       _wrongAnswer2C.clear();
@@ -180,7 +179,7 @@ class AddQuestionState extends State<AddQuestion> {
               hintText,
               style: const TextStyle(fontSize: 16),
             ),
-            const SizedBox(height: 8), // Add some space between the text and the TextFormField
+            const SizedBox(height: 8),
             TextFormField(
               controller: controller,
               maxLines: isMultiLine ? null : 1,

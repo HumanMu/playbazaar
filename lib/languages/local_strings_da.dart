@@ -13,6 +13,8 @@ class LocalStringsDa extends Translations {
 
       // Games
       'games': 'Spil',
+      'quiz': 'Quiz',
+      'hangman': 'Galgespil',
       'games_list': 'Spilliste',
       'wall_blaster': 'Vægknuser',
       'ludo_world_war': 'Ludo World War',
@@ -45,15 +47,14 @@ class LocalStringsDa extends Translations {
       'you_won_conguratulation': 'Du vandt! Tillykke!',
       'you_lost_word_was': 'Du tabte! Ordet var:',
       'incorrect_guess': 'Forkert gæt:',
-      'hangman': 'Galgespil',
       'hangman_play_settings': 'Indstillinger for Galgespil',
       'share_hangman_play_code': 'Del koden med dem, du vil have med i spillet',
       'deactive_other_options': 'Deaktiver andre muligheder',
       'deactive_play_with_friends': 'Vil du spille alene? Hvis ja, deaktiver venligst de to ovenstående muligheder for at fortsætte spillet',
       'add_player': 'Tilføj spiller',
-      'play_offline_multiplayer': 'Spil offline multiplayer',
+      'compete_offline': 'Konkurrer med venner - offline',
+      'compete_online': 'Konkurrer med venner - online',
       'give_players_name': 'Skriv hver spillers navn og tryk på "+"',
-      'online_with_friends': 'Online med venner',
       'this_generating_code': 'Dette vil generere en kode, som du kan dele med venner for at deltage',
       'play_solo': 'Spil alene',
       'play_solo_description': 'Hvis du vil spille alene, så vælg denne mulighed',
@@ -66,6 +67,19 @@ class LocalStringsDa extends Translations {
       'guess_a_word': 'Gæt et ord',
       'guess_a_word_description': 'Ordet må ikke indeholde ekstra mellemrum, bryde skriveregler eller inkludere specialtegn',
       'player_turn': 'Tur for ',
+      'waiting_room': 'Venterum',
+      'game_code': 'Spilkode',
+      'game_code_hint': 'Din kode her ...',
+      'waiting_start': 'Venter på at værten starter...',
+      'host': 'Vært',
+      'first_letter': 'Starter med bogstav: ',
+      'join_hangman_with_code': 'Deltag med kode',
+      'join_hangman_with_code_description': 'Hvis du har en kode for at deltage med andre, vælg denne',
+      'waiting_participants': 'Venter på deltagere...',
+      'msg_game_destruction_succed': 'Spillet er blevet succesfuldt ødelagt.',
+      'msg_game_not_found': 'Kunne ikke finde et spil med den angivne kode.',
+      'msg_game_creator_deleted': 'Spillet blev ikke fundet, skaberen har muligvis slettet spillet.',
+      'game_hint_has_changed': 'Spillets ledetråd blev ændret',
 
 
 
@@ -159,6 +173,9 @@ class LocalStringsDa extends Translations {
       'guide': 'Vejledning',
       'danger_zone': 'Farezone',
       'write_here': 'Skriv her...',
+      'copy': 'Kopiér',
+      'copied_to_clipboard': 'Koden er kopieret til udklipsholderen: ',
+
 
 
 
@@ -201,6 +218,7 @@ class LocalStringsDa extends Translations {
       'btn_new_game': 'Nyt Spil',
       'btn_start': 'Start',
       'btn_send_words': 'Send os ord',
+      'btn_leave': 'Forlad',
 
 
 
@@ -320,6 +338,42 @@ class LocalStringsDa extends Translations {
 
         'notification_permission_description': '''Giv os venligst tilladelse til at informere dig, når du modtager private beskeder fra venner, venneanmodninger eller eksklusive tilbud fra Play Bazaar. Du kan altid tilbagekalde tilladelsen eller nægte specifikke tjenester at sende dig notifikationer via indstillingerne.''',
 
+      'hangman_settings_title': 'Hangman Spil Indstillinger',
+      'hangman_settings_description': '''
+        I denne sektion kan brugere vælge, hvilken type spil de vil spille. De tilgængelige muligheder er:
+        
+        Solo Play:
+        I denne tilstand vælger systemet automatisk et ord fra databasen, og brugeren skal gætte det.
+        
+        Offline med Venner:
+        Brugere skal indtaste spillernes navne og trykke på "+" knappen for at tilføje dem til listen.
+        Efter at have indtastet alle navne, tryk på "Start" for at starte spillet.
+        Systemet vælger en spiller ad gangen til at vælge et ord, og de andre spillere skal gætte ordet.
+        
+        Online med Venner:
+        Hvis brugeren aktiverer "Online", genererer systemet en kode, som skal sendes til venner.
+        Venner kan slutte sig til spillet ved at indtaste koden i sektionen "Slut med Kode".
+        Spilskaberen starter spillet, og målet er at alle gætter ordet så hurtigt som muligt.
+      '''.split('\n') // Split the string by lines
+        .map((line) => line.trim()) // Remove leading and trailing spaces from each line
+        .join('\n') // Rejoin the lines into a string
+        .trim(), // Remove any extra spaces from the start and end of the entire string
+
+      'play_rules_title': 'Spilleregler',
+      'play_rules_description': '''
+        Reglen er enkel: du skal finde det skjulte ord. Du har 2 hints:
+        
+        1. Det første hint viser kategorien for det skjulte ord.
+        2. Det andet hint viser det første bogstav i ordet.
+        
+        Du har 6 chancer til at lave fejl. For hver fejl vil en del af din krop blive tegnet på galgen. Du skal gætte ordet, før din fulde krop hænges.
+        
+        Hints:
+        Hvis du ingen idé har om ordet, så tænk på kategorien og hvilke bogstaver der ofte bruges i den kategori. Prøv at vælge et bogstav, der bruges ofte.
+      '''.split('\n') // Split the string by lines
+          .map((line) => line.trim()) // Remove leading and trailing spaces from each line
+          .join('\n') // Rejoin the lines into a string
+          .trim(), // Remove any extra spaces from the start and end of the entire string
 
     }
   };

@@ -12,6 +12,8 @@ class LocalStringsAr extends Translations {
 
       // Games
       'games': 'الألعاب',
+      'quiz': 'قائمة الألعاب',
+      'hangman': 'لعبة الجلاد',
       'games_list': 'قائمة الألعاب',
       'wall_blaster': 'محطم الجدران',
       'ludo_world_war': 'حرب لودو العالمية',
@@ -44,15 +46,14 @@ class LocalStringsAr extends Translations {
       'you_won_conguratulation': 'لقد فزت! تهانينا!',
       'you_lost_word_was': 'لقد خسرت! الكلمة كانت:',
       'incorrect_guess': 'تخمين غير صحيح:',
-      'hangman': 'لعبة الجلاد',
       'hangman_play_settings': 'إعدادات لعبة الرجل المشنوق',
       'share_hangman_play_code': 'شارك الكود مع من تريد أن ينضم إلى اللعبة',
       'deactive_other_options': 'تعطيل الخيارات الأخرى',
       'deactive_play_with_friends': 'هل تريد اللعب بمفردك؟ إذاً يرجى تعطيل الخيارين أعلاه للمتابعة إلى اللعبة',
       'add_player': 'إضافة لاعب',
-      'play_offline_multiplayer': 'لعب متعدد اللاعبين دون اتصال',
+      'compete_offline': 'تنافس مع الأصدقاء - دون اتصال',
+      'compete_online': 'تنافس مع الأصدقاء - عبر الإنترنت',
       'give_players_name': 'اكتب اسم كل لاعب واضغط على "+"',
-      'online_with_friends': 'عبر الإنترنت مع الأصدقاء',
       'this_generating_code': 'سيقوم هذا بإنشاء رمز لمشاركته مع الأصدقاء للانضمام',
       'play_solo': 'العب بمفردك',
       'play_solo_description': 'إذا كنت تريد اللعب بمفردك، اختر هذا الخيار',
@@ -64,6 +65,19 @@ class LocalStringsAr extends Translations {
       'guess_a_word': 'حدس یک کلمه',
       'guess_a_word_description': 'کلمه نباید فاصله اضافی، قوانین نوشتاری را نقض کند یا شامل کاراکترهای خاص باشد',
       'player_turn': 'دور ',
+      'waiting_room': 'غرفة الانتظار',
+      'game_code': 'رمز اللعبة',
+      'game_code_hint': 'أدخل الكود هنا ...',
+      'waiting_start': 'في انتظار المضيف للبدء...',
+      'host': 'المضيف',
+      'first_letter': 'ابدأ بالحرف: ',
+      'join_hangman_with_code': 'الانضمام باستخدام الكود',
+      'join_hangman_with_code_description': 'إذا كان لديك كود للانضمام إلى الآخرين، اختر هذا الخيار',
+      'waiting_participants': 'في انتظار المشاركين...',
+      'msg_game_destruction_succed': 'تم تدمير اللعبة بنجاح.',
+      'msg_game_not_found': 'فشل في العثور على لعبة بالكود المعطى.',
+      'msg_game_creator_deleted': 'اللعبة غير موجودة، ربما قام المنشئ بحذف اللعبة.',
+      'game_hint_has_changed': 'تم تغيير تلميح اللعبة.',
 
 
 
@@ -160,6 +174,9 @@ class LocalStringsAr extends Translations {
       'approve_request': 'قبول الطلب',
       'request_sent': 'تم إرسال الطلب',
       'write_here': 'اكتب هنا...',
+      'copy': 'نسخ',
+      'copied_to_clipboard': 'تم نسخ الكود إلى الحافظة: ',
+
 
 
       // friends
@@ -199,6 +216,7 @@ class LocalStringsAr extends Translations {
       'btn_new_game': 'لعبة جديدة',
       'btn_start': 'ابدأ',
       'btn_send_words': 'أرسل لنا الكلمات',
+      'btn_leave': 'غادر',
 
 
 
@@ -317,6 +335,45 @@ class LocalStringsAr extends Translations {
       إذا كنت جالساً مع أصدقائك وتحتاج إلى ترفيه، فهذه الخيار مثالي لك. هنا سيظهر السؤال للجميع ليعطوا آرائهم. بعد أن يقدم الجميع إجاباتهم، اضغط على زر "إظهار الإجابة" لرؤية الإجابة الصحيحة. توزيع النقاط في هذا الخيار متروك لكم.''',
 
       'notification_permission_description': '''يرجى منحنا الإذن لإبلاغك عند تلقي رسائل خاصة من أصدقائك أو طلبات صداقة أو عروض حصرية من Play Bazaar. يمكنك دائمًا إلغاء الإذن أو رفض السماح لخدمات معينة بإرسال الإشعارات عبر الإعدادات.''',
+
+
+      // Hangman
+      'hangman_settings_title': 'إعدادات لعبة هانغمان',
+      'hangman_settings_description': '''
+        في هذا القسم، يمكن للمستخدمين اختيار نوع اللعبة. الخيارات المتاحة هي:
+        
+        اللعب الفردي:
+        في هذا الوضع، يختار النظام تلقائيًا كلمة من قاعدة البيانات، ويجب على المستخدم تخمينها.
+        
+        اللعب بدون الإنترنت مع الأصدقاء:
+        يجب على المستخدمين إدخال أسماء اللاعبين والضغط على زر "+" لإضافتهم إلى القائمة.
+        بعد إدخال جميع الأسماء، اضغط على زر "ابدأ" لبدء اللعبة.
+        يختار النظام لاعبًا واحدًا في كل مرة لاختيار كلمة، ويجب على اللاعبين الآخرين تخمينها.
+        
+        اللعب عبر الإنترنت مع الأصدقاء:
+        إذا قام المستخدم بتمكين "الإنترنت"، يقوم النظام بإنشاء رمز يجب أن يتم إرساله إلى الأصدقاء.
+        يمكن للأصدقاء الانضمام إلى اللعبة عن طريق إدخال الرمز في قسم "الانضمام باستخدام الرمز".
+        يبدأ منشئ اللعبة اللعبة، والهدف هو أن يخمن الجميع الكلمة بأسرع وقت ممكن.
+      '''.split('\n') // Split the string by lines
+        .map((line) => line.trim()) // Remove leading and trailing spaces from each line
+        .join('\n') // Rejoin the lines into a string
+        .trim(), // Remove any extra spaces from the start and end of the entire string
+
+      'play_rules_title': 'قواعد اللعب',
+      'play_rules_description': '''
+        القاعدة سهلة: يجب أن تحاول العثور على الكلمة المخفية. لديك تلميحان:
+        
+        1. التلميح الأول يظهر الفئة التي تنتمي إليها الكلمة المخفية.
+        2. التلميح الثاني يظهر أول حرف من الكلمة.
+        
+        لديك 6 فرص للخطأ. مع كل خطأ، سيتم رسم جزء من جسمك على المشنقة. يجب أن تخمن الكلمة قبل أن يتم رسم جسمك بالكامل.
+        
+        تلميحات:
+        إذا لم يكن لديك فكرة عن الكلمة، فكر في الفئة والحروف التي تُستخدم أكثر في تلك الفئة. حاول اختيار حرف يُستخدم بشكل متكرر.
+      '''.split('\n') // Split the string by lines
+          .map((line) => line.trim()) // Remove leading and trailing spaces from each line
+          .join('\n') // Rejoin the lines into a string
+          .trim(), // Remove any extra spaces from the start and end of the entire string
 
     }
   };

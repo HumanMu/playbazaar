@@ -156,12 +156,6 @@ class _PlayBazaarState extends State<AppRoutes> {
                     GetPage(
                         name: '/hangman',
                         page: () => HangmanPlayScreen()
-                        /*{
-                          final args = Get.arguments as Map<String, dynamic>;
-                          return HangmanPlayScreen(
-                            gameType: args['gameType'],
-                          );
-                        }*/
                     ),
                     GetPage(
                         name: '/hangmanPlaySettings',

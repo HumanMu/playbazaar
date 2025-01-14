@@ -1,15 +1,17 @@
 
-
 import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
+import 'package:playbazaar/games/games/hangman/models/game_participiant.dart';
+import 'package:playbazaar/games/games/hangman/models/game_state_change_model.dart';
 import '../games/hangman/models/hangman_word_model.dart';
+import '../games/hangman/models/online_competition_doc_model.dart';
 
 class HangmanService extends GetxService {
-  final CollectionReference hangmanReference
-  = FirebaseFirestore.instance.collection("games");
+  final DocumentReference hangmanReference
+  = FirebaseFirestore.instance.collection("games").doc('hangman');
 
 
   Future<void> addWordsToReviewList({
@@ -18,12 +20,11 @@ class HangmanService extends GetxService {
   }) async {
 
     await hangmanReference
-        .doc('hangman')
         .collection(collectionId)
         .add(wordsData.toFirestore(),
 
     ).catchError((error) {
-      print("Error adding the words");
+      debugPrint("Error adding the words");
       return error;
     });
   }
@@ -32,11 +33,10 @@ class HangmanService extends GetxService {
   Future<HangmanWordModel?> getRandomHangmanWords({
     required String collectionId,
   }) async {
-    final randomSeed = Random().nextDouble();
+    final randomSeed = Random.secure().nextDouble();
 
     try {
       final snapshot = await hangmanReference
-          .doc('hangman')
           .collection(collectionId)
           .where(Filter('random', isGreaterThanOrEqualTo: randomSeed))
           .limit(1)
@@ -44,7 +44,6 @@ class HangmanService extends GetxService {
 
       if (snapshot.docs.isEmpty) {
         final wrappedSnapshot = await hangmanReference
-            .doc('hangman')
             .collection(collectionId)
             .where(Filter('random', isGreaterThanOrEqualTo: 0))
             .limit(1)
@@ -61,5 +60,189 @@ class HangmanService extends GetxService {
     }
   }
 
+
+  Future<bool> createJoinableHangmanGame(String inviteCode, String word, String? hint) async {
+    final DocumentReference gameRef = hangmanReference.collection('inProgressGames').doc();
+
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) throw Exception('No authenticated user found');
+
+      final participant = GameParticipantModel(
+        uid: user.uid,
+        name: user.displayName ?? "",
+        image: user.photoURL,
+        numberOfWin: 0,
+      );
+
+      OnlineCompetitionDocModel gameData = OnlineCompetitionDocModel(
+        gameId: gameRef.id,
+        inviteCode: inviteCode,
+        hostId: user.uid,
+        participants: [participant],
+        gameState: "waiting",
+        wordToGuess: word,
+        createdAt: Timestamp.now(),
+        wordHint: hint ?? ""
+      );
+
+      await gameRef.set(gameData.toFirestore());
+      return true;
+
+    }catch(e){
+      debugPrint("Creating game ends with an error: $e");
+      return false;
+    }
+  }
+
+
+  Future<bool> joinGame(String inviteCode) async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) throw Exception('No authenticated user found');
+
+      // Find the game with the invite code
+      final querySnapshot = await hangmanReference
+          .collection('inProgressGames')
+          .where('inviteCode', isEqualTo: inviteCode)
+          .limit(1)
+          .get();
+
+      if (querySnapshot.docs.isEmpty) {
+        return false;
+      }
+
+      final gameDoc = querySnapshot.docs.first;
+      final gameData = OnlineCompetitionDocModel.fromFirestore(gameDoc.data());
+
+      // Check if user is already in the game
+      if (gameData.participants.any((p) => p.uid == user.uid)) {
+        debugPrint("User already in the game");
+        return true;
+      }
+
+      if (gameData.participants.length >= (gameData.maxParticipants ?? 8)) {
+        return false;
+      }
+
+      final newParticipant = GameParticipantModel(
+        uid: user.uid,
+        name: user.displayName ?? "",
+        image: user.photoURL,
+        numberOfWin: 0,
+      );
+
+      await gameDoc.reference.update({
+        'participants': FieldValue.arrayUnion([newParticipant.toFirestore()]),
+      });
+
+      return true;
+    } catch (e) {
+      debugPrint("Error joining game: $e");
+      return false;
+    }
+  }
+
+  Stream<OnlineCompetitionDocModel?> streamGameByInviteCode(String inviteCode) {
+    return hangmanReference
+        .collection('inProgressGames')
+        .where('inviteCode', isEqualTo: inviteCode)
+        .limit(1)
+        .snapshots()
+        .map((snapshot) {
+      if (snapshot.docs.isEmpty) {
+        return null;
+      }
+      try {
+        return OnlineCompetitionDocModel.fromFirestore(
+            snapshot.docs.first.data()
+        );
+      } catch (e) {
+        debugPrint('Error parsing game data: $e');
+        return null;
+      }
+    });
+  }
+
+
+  Future<bool> handleGameWin(String gameId, int winCount, List<GameParticipantModel> participants) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return false;
+
+    try {
+      List<GameParticipantModel> updatedParticipants = participants.map((participant) {
+        if (participant.uid == user.uid) {
+          return GameParticipantModel(
+            uid: participant.uid,
+            name: participant.name,
+            image: participant.image,
+            numberOfWin: participant.numberOfWin + 1,
+          );
+        }
+        return participant;
+      }).toList();
+
+      // Prepare update data
+      Map<String, dynamic> updateData = {
+        'gameState': 'waiting',
+        'winner': updatedParticipants.firstWhere(
+                (p) => p.uid == user.uid).toFirestore(),
+        'participants': updatedParticipants.map(
+                (p) => p.toFirestore()).toList(),
+        'wordHint': '',
+        'wordToGuess': '',
+      };
+
+      await hangmanReference
+          .collection('inProgressGames')
+          .doc(gameId)
+          .update(updateData);
+      return true;
+    } catch (e) {
+      debugPrint("Error updating game state: $e");
+      return false;
+    }
+  }
+
+  Future<bool> handleNextGameStart(GameStateChangeModel nextGameData) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return false;
+
+    try {
+      Map<String, dynamic> updateData = {
+        'gameState': 'playing',
+        'winner': null,
+        'wordHint': nextGameData.wordHint,
+        'wordToGuess': nextGameData.word
+      };
+
+      await hangmanReference
+          .collection('inProgressGames')
+          .doc(nextGameData.gameId)
+          .update(updateData);
+      return true;
+    } catch (e) {
+      debugPrint("Error updating game state: $e");
+      return false;
+    }
+  }
+
+
+  Future<bool> destroyGame(String gameId) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return false;
+
+    try {
+        await hangmanReference
+            .collection('inProgressGames')
+            .doc(gameId)
+            .delete();
+
+      return true;
+    } catch (e) {
+      debugPrint("Error in leaveCompetition: $e");
+      return false;
+    }
+  }
 
 }

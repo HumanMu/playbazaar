@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
+import 'package:googleapis/firebaserules/v1.dart';
 import 'package:playbazaar/constants/enums.dart';
 import 'package:playbazaar/controller/user_controller/user_controller.dart';
 import 'package:playbazaar/games/games/quiz/widgets/drop_down_list_tile.dart';
-import '../../../../api/firestore/firestore_quiz.dart';
+import '../../../services/firestore_quiz.dart';
 import '../../../../global_widgets/show_custom_snackbar.dart';
 import '../../../functions/get_quiz_language.dart';
 import '../models/question_models.dart';
@@ -39,11 +40,9 @@ class ReviewQuestionsPageState extends State<ReviewQuestionsPage> {
   void initState() {
     super.initState();
     _initializeLanguageSettings();
-    //getUserRole();
     if(userController.userData.value!.role == UserRole.normal){
       return;
     }
-
     _questionsStream = _firestore.collection('games').doc('quizz').collection('quetionRequest').snapshots();
   }
 
@@ -66,15 +65,6 @@ class ReviewQuestionsPageState extends State<ReviewQuestionsPage> {
     }
     wrongAnswerControllers.clear();
   }
-
-  /*Future<void> getUserRole() async {
-    final value = await SharedPreferencesManager.getString(SharedPreferencesKeys.userRoleKey);
-    if (value != null && value != "") {
-      setState(() {
-        userRole = value;
-      });
-    }
-  }*/
 
   Future<void> _initializeLanguageSettings() async {
     final result = await getQuizLanguage();
@@ -159,14 +149,6 @@ class ReviewQuestionsPageState extends State<ReviewQuestionsPage> {
 
           final question = questions[0];
 
-          /*TextEditingController pathController = TextEditingController(text: question['path']);
-          TextEditingController questionController = TextEditingController(text: question['question']);
-          TextEditingController correctAnswerController = TextEditingController(text: question['correctAnswer']);
-          TextEditingController descriptionController = TextEditingController(text: question['description'] ?? '');
-
-          wrongAnswerControllers = (question['wrongAnswers'] as String).split(',').map((answer) {
-            return TextEditingController(text: answer.trim());
-          }).toList();*/
           pathController.text = question['path'];
           questionController.text = question['question'];
           correctAnswerController.text = question['correctAnswer'];
@@ -188,7 +170,6 @@ class ReviewQuestionsPageState extends State<ReviewQuestionsPage> {
                       quizLabels: quizLabels,
                       quizPaths: quizPaths,
                       onQuizSelected: (int? selectedIndex) {
-                        //selectedIndex != null?  quizPaths[selectedIndex] : pathController.text = question['path'];
                         if (selectedIndex != null) {
                           pathController.text = quizPaths[selectedIndex];
                         } else {
@@ -251,12 +232,16 @@ class ReviewQuestionsPageState extends State<ReviewQuestionsPage> {
                             _approveQuestion(newQuestion, pathController.text, question.id);
                           },
                           style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-                          child: Text("btn_approve".tr),
+                          child: Text("btn_approve".tr,
+                            style: TextStyle(color: Colors.white),
+                          ),
                         ),
                         ElevatedButton(
                           onPressed: () => _rejectQuestion(question, question.id),
                           style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                          child: Text("btn_reject".tr),
+                          child: Text("btn_reject".tr,
+                            style: TextStyle(color: Colors.white),
+                          ),
                         ),
                       ],
                     ),

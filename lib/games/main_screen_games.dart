@@ -96,7 +96,7 @@ class _MainScreenGames extends State<MainScreenGames> {
       child: ListTile(
         title: Center(
           child: Text(
-            title,
+            gamePath.tr,
             style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -113,10 +113,10 @@ class _MainScreenGames extends State<MainScreenGames> {
   void navigateToGamePage(String gamePath) {
 
     switch (gamePath) {
-      case 'Quiz':
+      case 'quiz':
         Get.toNamed('/mainQuiz');
         break;
-      case 'Hangman':
+      case 'hangman':
         Get.toNamed('/hangmanPlaySettings');
         break;
       default: showCustomSnackbar('Please, pick a game first', false);
