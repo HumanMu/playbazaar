@@ -1,0 +1,97 @@
+import 'package:flutter/material.dart';
+
+class AnimatedKeyboardButton extends StatefulWidget {
+  final String letter;
+  final VoidCallback? onPressed;
+  final bool isGameOver;
+  final bool isCorrectGuess;
+  final int index;
+
+  const AnimatedKeyboardButton({
+    required this.letter,
+    required this.onPressed,
+    required this.isGameOver,
+    required this.isCorrectGuess,
+    required this.index,
+    super.key,
+  });
+
+  @override
+  State<AnimatedKeyboardButton> createState() => _AnimatedKeyboardButtonState();
+}
+
+class _AnimatedKeyboardButtonState extends State<AnimatedKeyboardButton>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _scaleAnimation;
+  late Animation<double> _fadeAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 500),
+      vsync: this,
+    );
+
+    _scaleAnimation = Tween<double>(
+      begin: 1.0,
+      end: widget.isCorrectGuess ? 1.2 : 0.8,
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeInOut,
+    ));
+
+    _fadeAnimation = Tween<double>(
+      begin: 1.0,
+      end: widget.isCorrectGuess ? 1.0 : 0.5,
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeInOut,
+    ));
+  }
+
+  @override
+  void didUpdateWidget(AnimatedKeyboardButton oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.isGameOver && !oldWidget.isGameOver) {
+      Future.delayed(Duration(milliseconds: widget.index * 50), () {
+        _controller.forward();
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        return Transform.scale(
+          scale: _scaleAnimation.value,
+          child: Opacity(
+            opacity: _fadeAnimation.value,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: widget.isCorrectGuess && widget.isGameOver
+                    ? Colors.green
+                    : Colors.red,
+                foregroundColor: Colors.white,
+              ),
+              onPressed: widget.onPressed,
+              child: Text(
+                widget.letter,
+                style: const TextStyle(fontSize: 14, color: Colors.white),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}

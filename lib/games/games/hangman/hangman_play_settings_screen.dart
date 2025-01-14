@@ -1,21 +1,53 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:playbazaar/global_widgets/show_custom_snackbar.dart';
+import '../../../constants/enums.dart';
+import '../../../controller/user_controller/user_controller.dart';
+import '../../../global_widgets/accept_dialog.dart';
 import '../../../global_widgets/tiles/custom_switch_tile.dart';
 import 'package:playbazaar/games/games/hangman/controller/play_controller.dart';
+import '../../widgets/custom_switch_textbox_tile.dart';
 
-class HangmanPlaySettingsScreen extends StatelessWidget {
-  final PlayController controller = Get.put(PlayController());
+
+class HangmanPlaySettingsScreen extends StatefulWidget {
+
+  const HangmanPlaySettingsScreen({super.key});
+
+  @override
+  State<HangmanPlaySettingsScreen> createState() => _HangmanPlaySettingsScreenState();
+}
+
+class _HangmanPlaySettingsScreenState extends State<HangmanPlaySettingsScreen> {
+  final PlayController controller = Get.put(PlayController(), permanent: true);
   final TextEditingController playerNameController = TextEditingController();
+  final TextEditingController gameCodeController = TextEditingController();
 
-  HangmanPlaySettingsScreen({super.key});
+  final userController = Get.find<UserController>();
+  late UserRole userRole;
 
+  @override
+  void initState() {
+    super.initState();
+    _initializeUserRole();
+  }
+
+  Future<void> _initializeUserRole() async {
+    setState(() {
+      userRole = userController.userData.value!.role;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors. red,
+        backgroundColor: Colors.red,
         centerTitle: true,
+        leading: IconButton(
+          onPressed: () {Get.offNamed('/mainGames');},
+          icon: const Icon(Icons.arrow_back),
+        ),
         title: Text(
           "hangman_play_settings".tr,
           style: const TextStyle(
@@ -26,51 +58,78 @@ class HangmanPlaySettingsScreen extends StatelessWidget {
         ),
         iconTheme: const IconThemeData(color: Colors.white),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    _buildOnlinePlayCard(),
-                    const SizedBox(height: 10),
-                    _buildLocalPlayCard(),
-                    const SizedBox(height: 16),
-                    _buildOfflinePlayCard(),
-                    const SizedBox(height: 16),
-                    _buildStartGameButton(context),
-                  ],
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 700),
+          child: Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        _buildOnlinePlayCard(),
+                        const SizedBox(height: 10),
+                        _buildJoinGame(),
+                        const SizedBox(height: 10),
+                        _buildLocalPlayCard(),
+                        const SizedBox(height: 10),
+                        _buildSoloPlayCard(),
+                        const SizedBox(height: 10),
+                        _buildStartGameButton(context),
+                      ],
+                    ),
+                  ),
                 ),
               ),
-            ),
+              Column(
+                children: [
+                  TextButton(
+                    onPressed: () => acceptDialog(
+                        context,
+                        'hangman_settings_title'.tr,
+                        "${'hangman_settings_description'.tr}"
+                        "\n\n${"play_rules_title".tr}"
+                        "\n${"play_rules_description".tr}"
+                    ),
+                    child: Text('guide'.tr,
+                        style: const TextStyle(
+                          color: Colors.red,
+                          fontSize: 20,
+                        )
+                    ),
+                  ),
+                  if(userRole != UserRole.normal)
+                    Obx(() => !controller.isOfflineMode.value && !controller.isJoiningMode.value
+                      ? Padding(
+                        padding: const EdgeInsets.only(bottom: 16),
+                        child: ElevatedButton(
+                          onPressed: () => Get.toNamed('/hangmanAddWords'),
+                          child: Text("btn_send_words".tr,
+                            style: const TextStyle(color: Colors.black),
+                          ),
+                        ),
+                      ) : Container()
+                    ),
+                ],
+              )
+            ],
           ),
-          Obx(() => !controller.isLocalMultiplayerMode.value
-            ? Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: ElevatedButton(
-                onPressed: () => Get.toNamed('/hangmanAddWords'),
-                child: Text("btn_send_words".tr,
-                  style: TextStyle(color: Colors.black),
-                ),
-              ),
-            ) : Container()
-          ),
-        ],
+        ),
       ),
     );
   }
 
   Widget _buildOnlinePlayCard() {
     return Obx(() => CustomSwitchTile(
-      title: 'online_with_friends'.tr,
+      title: 'compete_online'.tr,
       subtitle: 'this_generating_code'.tr,
       value: controller.isOnlineMode.value,
       onChanged: (value) {
-        controller.toggleOnlineMode(value);
-        controller.toggleLocalMultiplayerMode(false);
+        controller.setOnlineMode(value);
+        controller.setOfflineMode(false);
       },
       showAdditionalInfo: controller.isOnlineMode.value,
       additionalInfoTitle: 'share_hangman_play_code'.tr,
@@ -78,114 +137,63 @@ class HangmanPlaySettingsScreen extends StatelessWidget {
       additionalActionIcon: Icons.copy,
       onAdditionalActionPressed: () {
         // Copy functionality
+        Clipboard.setData(ClipboardData(text: controller.gameCode.value));
+        showCustomSnackbar("copied_to_clipboard".tr, true);
       },
     ));
   }
 
-
   Widget _buildLocalPlayCard() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Obx(() => SwitchListTile(
-              title: Text('play_offline_multiplayer'.tr,
-                style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold
-                ),
-              ),
-              subtitle: Text('give_players_name'.tr),
-              value: controller.isLocalMultiplayerMode.value,
-              onChanged: (value) {
-                controller.toggleLocalMultiplayerMode(value);
-                controller.toggleOnlineMode(false);
-              },
-              activeColor: Colors.green,
-              inactiveThumbColor: Colors.black,
-            )),
-            Obx(() {
-              if (controller.isLocalMultiplayerMode.value) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Divider(),
-                    const SizedBox(height: 8),
-                    Text('add_player'.tr,
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: TextField(
-                            controller: playerNameController,
-                            decoration: InputDecoration(
-                              hintText: 'players_name_here'.tr,
-                              border: OutlineInputBorder(),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        IconButton(
-                          icon: const Icon(
-                              Icons.add,
-                              color: Colors.green,
-                              size: 40
-                          ),
-                          onPressed: () {
-                            controller.addLocalPlayer(playerNameController.text.trim());
-                            playerNameController.clear();
-                          },
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    Obx(() => ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: controller.localPlayers.length,
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          leading: CircleAvatar(
-                            child: Text((index + 1).toString()),
-                          ),
-                          title: Text(controller.localPlayers[index]),
-                          trailing: IconButton(
-                            icon: const Icon(Icons.remove_circle_outline, color: Colors.red),
-                            onPressed: () => controller.removeLocalPlayer(index),
-                          ),
-                        );
-                      },
-                    )),
-                  ],
-                );
-              }
-              return const SizedBox.shrink();
-            }),
-          ],
-        ),
-      ),
-    );
+    return Obx(() => CustomSwitchTextboxTile(
+      title: 'compete_offline'.tr,
+      subtitle: 'give_players_name'.tr,
+      value: controller.isOfflineMode.value,
+      onSwitchChanged: (value) {
+        controller.setOfflineMode(value);
+        controller.setOnlineMode(false);
+      },
+      textController: playerNameController,
+      textFieldHeader: 'add_player'.tr,
+      textFieldHint: 'players_name_here'.tr,
+      onItemAdd: controller.addLocalPlayer,
+      items: controller.localPlayers,
+      onItemRemove: controller.removeLocalPlayer,
+    ));
   }
 
-  Widget _buildOfflinePlayCard() {
+  Widget _buildJoinGame() {
+    return Obx(() => CustomSwitchTextboxTile(
+      title: 'join_hangman_with_code'.tr,
+      subtitle: 'join_hangman_with_code_description'.tr,
+      value: controller.isJoiningMode.value,
+      onSwitchChanged: (value) {
+        controller.setOfflineMode(false);
+        controller.setOnlineMode(false);
+        controller.setJoinMode(value);
+      },
+      textController: gameCodeController,
+      textFieldHeader: 'game_code'.tr,
+      textFieldHint: 'game_code_hint'.tr,
+      onItemAdd: controller.joinGameWithCode,
+      items: controller.localPlayers,
+    ));
+  }
+
+  Widget _buildSoloPlayCard() {
     return Card(
-      child: ListTile(
-        title: Text('play_solo'.tr,
-          style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold
+      child: Container(
+        padding: EdgeInsets.all(5.0),
+        child: ListTile(
+          title: Text('play_solo'.tr,
+            style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold
+            ),
           ),
+          subtitle: Text('play_solo_description'.tr),
+          trailing: const Icon(Icons.arrow_forward),
+          onTap: controller.startSoloGamePlay,
         ),
-        subtitle: Text('play_solo_description'.tr),
-        trailing: const Icon(Icons.arrow_forward),
-        onTap: controller.startSoloGamePlay,
       ),
     );
   }
@@ -193,16 +201,19 @@ class HangmanPlaySettingsScreen extends StatelessWidget {
   Widget _buildStartGameButton(BuildContext context) {
     return Obx(() {
       if (controller.isOnlineMode.value ||
-          controller.isLocalMultiplayerMode.value) {
+          controller.isOfflineMode.value) {
         return SizedBox(
           width: double.infinity,
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.all(16),
+              backgroundColor: controller.isOnlineMode.value || controller.localPlayers.length >=2
+                  ? Colors.green
+                  : Colors.white54,
             ),
             onPressed: () => controller.startTeamPlayGame(context),
             child: Text('btn_start'.tr,
-              style: TextStyle(fontSize: 18, color: Colors.black),
+              style: TextStyle(fontSize: 18, color: Colors.white),
             ),
           ),
         );

@@ -15,8 +15,8 @@ class AuthController extends GetxController {
 
   var isSignedIn = false.obs;
   var isEmailVerified = false.obs;
-  var language = ['en', 'US'].obs;
   var isInitialized = false.obs;
+  RxList<String> language = ['en', 'US'].obs;
 
 
 
@@ -35,6 +35,21 @@ class AuthController extends GetxController {
     update();
   }
 
+  Future<void> getAppLanguage() async {
+    final languageList = await SharedPreferencesManager.getStringList(
+        SharedPreferencesKeys.appLanguageKey);
+    language.value = languageList ?? ['en', 'US'];
+    update();
+  }
+
+  Future<void> updateLanguage(List<String> newLanguage) async {
+    await SharedPreferencesManager.setStringList(
+        SharedPreferencesKeys.appLanguageKey,
+        newLanguage
+    );
+    language.value = newLanguage;
+    update();
+  }
 
   Future<void> checkAndUpdateEmailVerificationStatus() async {
     User? user = FirebaseAuth.instance.currentUser;
@@ -64,12 +79,6 @@ class AuthController extends GetxController {
     final isLoggedIn = await SharedPreferencesManager.getBool(
         SharedPreferencesKeys.userLoggedInKey);
     isSignedIn.value = isLoggedIn ?? false;
-  }
-
-  Future<void> getAppLanguage() async {
-    final languageList = await SharedPreferencesManager.getStringList(
-        SharedPreferencesKeys.appLanguageKey);
-    language.value = languageList ?? ['fa', 'AF'];
   }
 
   Future<void> setOnlineState(String status) async {

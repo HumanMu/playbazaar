@@ -12,6 +12,8 @@ class LocalStringsEn extends Translations {
 
       // Games
       'games' : 'Games',
+      'quiz': 'Quiz',
+      'hangman': 'Hangman',
       'games_list': 'Games list',
       'wall_blaster': 'Wall Blaster',
       'ludo_world_war' : 'Ludo World War',
@@ -45,15 +47,14 @@ class LocalStringsEn extends Translations {
       'you_won_conguratulation': 'You won! Congratulations!',
       'you_lost_word_was': 'You lost! The word was:',
       'incorrect_guess': 'Incorrect guess:',
-      'hangman': 'Hangman',
       'hangman_play_settings': 'Hangman Play Settings',
       'share_hangman_play_code': 'Share the code with those you want to join the game',
       'deactive_other_options': 'Deactivate other options',
       'deactive_play_with_friends': 'Do you want to play alone? If so, please deactivate the two options above to continue the game',
       'add_player': 'Add Player',
-      'play_offline_multiplayer': 'Play Offline Multiplayer',
+      'compete_offline': 'Compete with friends - offline',
+      'compete_online': 'Compete with friends - online',
       'give_players_name': 'Type each player\'s name and tap "+"',
-      'online_with_friends': 'Online with friends',
       'this_generating_code': 'This will generate a code to share with friends to join',
       'play_solo': 'Play Solo',
       'play_solo_description': 'If you want to play by yourself, choose this option',
@@ -66,6 +67,19 @@ class LocalStringsEn extends Translations {
       'guess_a_word': 'Guess a word',
       'guess_a_word_description': 'The word should not contain any extra spacing, violate writing rules, or include special characters',
       'player_turn': 'Turn of ',
+      'waiting_room': 'Waiting Room',
+      'game_code': 'Game Code',
+      'game_code_hint': 'Your code here ...',
+      'waiting_start': 'Waiting for host to start...',
+      'host': 'Host',
+      'first_letter': 'Start with letter: ',
+      'join_hangman_with_code': 'Join with code',
+      'join_hangman_with_code_description': 'If you have a code to join others, pick this one',
+      'waiting_participants': 'Waiting for participants...',
+      'msg_game_destruction_succed': 'The game has been successfully destroyed.',
+      'msg_game_not_found': 'Failed to find a game with the given code.',
+      'msg_game_creator_deleted': 'Game not found, the creator might have deleted the game.',
+      'game_hint_has_changed': 'The game hint has been changed',
 
 
 
@@ -158,6 +172,8 @@ class LocalStringsEn extends Translations {
       'guide': 'Guide',
       'danger_zone': 'Danger Zone',
       'write_here': 'Write here...',
+      'copy': 'Copy',
+      'copied_to_clipboard': 'Code copied to clipboard: ',
 
 
 
@@ -200,6 +216,7 @@ class LocalStringsEn extends Translations {
       'btn_new_game': 'New Game',
       'btn_start': 'Start',
       'btn_send_words': 'Send us words',
+      'btn_leave': 'Leave',
 
 
 
@@ -322,6 +339,44 @@ class LocalStringsEn extends Translations {
 
 
       'notification_permission_description': '''Please grant us permission to notify you when you receive private messages from friends, friend requests, or exclusive deals from Play Bazaar. You can always revoke or deny permissions for specific services to send you notifications via the settings.''',
+
+      // Hangman
+      'hangman_settings_title': 'Hangman Game Settings',
+      'hangman_settings_description': '''
+        In this section, users can choose the type of game. The available options are:
+        
+        Solo Play:
+        In this mode, the system automatically selects a word from the database, and the user has to guess it.
+        
+        Offline with Friends:
+        Users need to enter the names of players and press the "+" button to add them to the list.
+        After entering all names, press the "Start" button to begin the game.
+        The system will select one player at a time to choose a word, and the other players have to guess the word.
+        
+        Online with Friends:
+        If the user enables "Online", the system generates a code that should be sent to friends.
+        Friends can join the game by entering the code in the "Join with Code" section.
+        The game creator starts the game, and the goal is for everyone to guess the word as quickly as possible.
+      '''.split('\n') // Split the string by lines
+        .map((line) => line.trim()) // Remove leading and trailing spaces from each line
+        .join('\n') // Rejoin the lines into a string
+        .trim(), // Remove any extra spaces from the start and end of the entire string
+
+      'play_rules_title': 'Play Rules',
+      'play_rules_description': '''
+        The rule is easy: you should try to find the hidden word. You have 2 hints:
+        
+        1. The first hint shows the category of the hidden word.
+        2. The second hint shows the first letter of the word.
+        
+        You have 6 chances to make mistakes. For each mistake, a part of your body will be drawn on the gallows. You must guess the word before your full body is hanged.
+        
+        Hints:
+        If you have no idea about the word, think about the category and which letters are commonly used in that category. Try pressing a letter that is often used.
+      '''.split('\n') // Split the string by lines
+          .map((line) => line.trim()) // Remove leading and trailing spaces from each line
+          .join('\n') // Rejoin the lines into a string
+          .trim(), // Remove any extra spaces from the start and end of the entire string
 
     }
   };

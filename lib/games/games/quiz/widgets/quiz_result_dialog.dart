@@ -62,7 +62,7 @@ class QuizResultDialog extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 20),
-            const Divider(thickness: 12, color: Colors.blueGrey),
+            const Divider(thickness: 12, color: Colors.red),
             const SizedBox(height: 10),
             Container(
               margin: EdgeInsets.all(0),

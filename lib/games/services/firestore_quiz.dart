@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
-import '../../games/games/quiz/models/question_models.dart';
+import '../games/quiz/models/question_models.dart';
 
 class FirestoreQuiz {
   final String? userId;
@@ -33,7 +33,6 @@ class FirestoreQuiz {
     required String documentId,
   }) async {
     try {
-      // Deleting the document from the specified collection
       await quizReference
           .doc('quizz')
           .collection('quetionRequest')
@@ -73,8 +72,8 @@ class FirestoreQuiz {
     required String quizId,
     int? numberOfQuetions,
   }) async {
-    final randomSeed = Random().nextDouble();
-    numberOfQuetions ??= 12;
+    final randomSeed = Random.secure().nextDouble();
+    numberOfQuetions ??= 10;
 
     try {
       final snapshot = await quizReference.doc('quizz').collection(quizId)
