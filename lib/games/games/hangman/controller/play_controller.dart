@@ -68,6 +68,7 @@ class PlayController extends GetxController {
   @override
   void onClose() {
     _gameSubscription?.cancel();
+    leaveOnlineCompetition();
     super.onClose();
   }
 
