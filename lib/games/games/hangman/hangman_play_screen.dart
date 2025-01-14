@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
+import '../../../admob/adaptive_banner_ad.dart';
 import 'animated_hangman_painter.dart';
 import 'package:flutter/material.dart';
 import 'controller/play_controller.dart';
@@ -65,8 +66,21 @@ class _HangmanPlayScreenState extends State<HangmanPlayScreen> with SingleTicker
                   Column(
                     children: [
                       // Hangman drawing with fixed height
+                      Container(
+                        padding: EdgeInsets.all(4),
+                        color: Colors.teal[900],
+                        child: AdaptiveBannerAd(
+                          onAdLoaded: (isLoaded) {
+                            if (isLoaded) {
+                              debugPrint('Ad loaded in Quiz Screen');
+                            } else {
+                              debugPrint('Ad failed to load in Quiz Screen');
+                            }
+                          },
+                        ),
+                      ),  // Banner
                       SizedBox(
-                        height: constraints.maxHeight * 0.3,
+                        height: constraints.maxHeight * 0.28,
                         child: Center(
                           child: AnimatedBuilder(
                             animation: _animationController,
@@ -108,7 +122,7 @@ class _HangmanPlayScreenState extends State<HangmanPlayScreen> with SingleTicker
                                   // Hidden Word
                                   if (!controller.gameLost.value)
                                     Padding(
-                                      padding: const EdgeInsets.symmetric(vertical: 5.0),
+                                      padding: const EdgeInsets.symmetric(vertical: 1.0),
                                       child: Center(
                                         child: Directionality(
                                           textDirection: controller.isAlphabetRTL.value
@@ -133,7 +147,7 @@ class _HangmanPlayScreenState extends State<HangmanPlayScreen> with SingleTicker
                                   // Game status and hints
                                   if (!controller.gameLost.value && !controller.gameWon.value)
                                     Padding(
-                                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                      padding: const EdgeInsets.symmetric(vertical: 4.0),
                                       child: Column(
                                         children: [
                                           Text(
