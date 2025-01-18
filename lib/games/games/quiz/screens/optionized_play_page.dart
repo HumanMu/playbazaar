@@ -100,16 +100,28 @@ class _QuizPlayScreen extends State<OptionizedPlayScreen>{
                   : Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text(
-                        playController.currentQuestion.value,
-                        style: GoogleFonts.actor(
-                          textStyle: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            fontStyle: FontStyle.italic,
+                      playController.showAnswer.value && playController.currentDescription.value != null
+                        ? Text(
+                          playController.currentDescription.value?? playController.currentQuestion.value,
+                          style: GoogleFonts.actor(
+                            textStyle: const TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              fontStyle: FontStyle.italic,
+                              color: Colors.green
+                            ),
+                            ),
+                          )
+                        : Text(
+                          playController.currentQuestion.value,
+                            style: GoogleFonts.actor(
+                              textStyle: const TextStyle(
+                                fontSize: 19,
+                                fontWeight: FontWeight.bold,
+                                fontStyle: FontStyle.italic,
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
                       const SizedBox(height: 15),
                       Container(
                         constraints: BoxConstraints(maxWidth: 700),
