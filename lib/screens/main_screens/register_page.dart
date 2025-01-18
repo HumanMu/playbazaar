@@ -54,7 +54,9 @@ class _RegisterPage extends State<RegisterPage> {
                             text: TextSpan(
                               text: "app_name".tr,
                               style: const TextStyle(
-                                  fontSize: 35, fontWeight: FontWeight.bold),
+                                fontSize: 35,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                           Form(
@@ -67,6 +69,7 @@ class _RegisterPage extends State<RegisterPage> {
                                       labelText: "name".tr,
                                       prefixIcon: const Icon(
                                         Icons.person,
+                                        color: Colors.green,
                                       ),
                                     ),
                                     onChanged: (val) {
@@ -88,6 +91,7 @@ class _RegisterPage extends State<RegisterPage> {
                                       labelText: "lastname".tr + "optional".tr,
                                       prefixIcon: const Icon(
                                         Icons.person,
+                                        color: Colors.green
                                       ),
                                     ),
                                     onChanged: (val) {
@@ -103,6 +107,7 @@ class _RegisterPage extends State<RegisterPage> {
                                       labelText: "email".tr,
                                       prefixIcon: const Icon(
                                         Icons.email,
+                                        color: Colors.green
                                       ),
                                     ),
                                     onChanged: (val) {
@@ -118,6 +123,7 @@ class _RegisterPage extends State<RegisterPage> {
                                       labelText: "password".tr,
                                       prefixIcon: const Icon(
                                         Icons.lock,
+                                        color: Colors.green
                                       ),
                                     ),
                                     onChanged: (val) {
@@ -133,6 +139,7 @@ class _RegisterPage extends State<RegisterPage> {
                                       labelText: "re_password".tr,
                                       prefixIcon: const Icon(
                                         Icons.lock,
+                                        color: Colors.green
                                       ),
                                     ),
                                     onChanged: (val) {
@@ -217,8 +224,9 @@ class _RegisterPage extends State<RegisterPage> {
         child: Text(
           'btn_create'.tr,
           style: const TextStyle(
-              fontSize: 32,
-              fontWeight: FontWeight.bold
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Colors.white
           ),
         ),
       ),

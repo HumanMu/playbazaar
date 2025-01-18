@@ -62,6 +62,7 @@ class _LoginPage extends State<LoginPage> {
                                       labelText: "email".tr,
                                       prefixIcon: const Icon(
                                         Icons.email,
+                                        color: Colors.green
                                       ),
                                     ),
                                     onChanged: (val) {
@@ -83,6 +84,7 @@ class _LoginPage extends State<LoginPage> {
                                       labelText: "password".tr,
                                       prefixIcon: const Icon(
                                         Icons.lock,
+                                        color: Colors.green
                                       ),
                                     ),
                                     onChanged: (val) {
@@ -110,7 +112,8 @@ class _LoginPage extends State<LoginPage> {
                                         },
                                         child: Text('language'.tr,
                                             style: const TextStyle(
-                                                color: Colors.red)),
+                                              color: Colors.red,
+                                            )),
                                       )
                                   ),
                                 ],
@@ -198,8 +201,10 @@ class _LoginPage extends State<LoginPage> {
           )),
           child: Text('btn_login'.tr,
             style: const TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold)
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.white
+            ),
           ),
         ),
     );

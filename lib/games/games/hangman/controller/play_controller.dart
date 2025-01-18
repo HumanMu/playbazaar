@@ -184,6 +184,7 @@ class PlayController extends GetxController {
       showCustomSnackbar("unexpected_result".tr, false);
     }finally{
       closeWaitingRoom();
+      Get.offNamed('/mainGames');
     }
   }
 

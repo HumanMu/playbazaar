@@ -8,7 +8,6 @@ import '../quiz/widgets/quiz_end_message_dialog.dart';
 import '../quiz/widgets/quiz_result_dialog.dart';
 
 class QuizPlayController extends GetxController {
-  //final SoundController _soundController = Get.put(SoundController());
 
   final RxList<QuizQuestionModel> questionData = <QuizQuestionModel>[].obs;
   final RxList<QuizAttempt> quizAttempts = <QuizAttempt>[].obs;
@@ -18,6 +17,7 @@ class QuizPlayController extends GetxController {
   final RxInt selectedAnswer = 0.obs;
   final RxString currentQuestion = ''.obs;
   final RxList<String> currentAnswer = <String>[].obs;
+  final RxnString currentDescription = RxnString(null);
   final RxnInt selectedAnswerIndex = RxnInt(null);
 
   // Only optionized
@@ -76,8 +76,6 @@ class QuizPlayController extends GetxController {
   List<String> prepareUniqueAnswers(QuizQuestionModel question) {
     // Split the answers and remove duplicates
     Set<String> allAnswers = question.wrongAnswers.split(',').toSet();
-
-    // Add correct answer
     allAnswers.add(question.correctAnswer);
 
     // Convert to list to allow further manipulation
@@ -93,6 +91,7 @@ class QuizPlayController extends GetxController {
 
   void nextQuestion(bool isOptionized, BuildContext context) {
     showAnswer.value = false;
+    currentDescription.value = null;
     if (selectedAnswerIndex.value == null) {
       showCustomSnackbar('see_result_first'.tr, false);
       return;
@@ -109,6 +108,12 @@ class QuizPlayController extends GetxController {
       final QuizQuestionModel nextQuestion = questionData[selectedAnswer.value];
       currentQuestion.value = nextQuestion.question;
       currentAnswer.value = prepareUniqueAnswers(nextQuestion);
+      if(nextQuestion.description == null || nextQuestion.description== ""){
+        currentDescription.value = null;
+      }
+      else{
+        currentDescription.value = nextQuestion.description;
+      }
       selectedAnswerIndex.value = null;
       isCorrect.value = null;
     }

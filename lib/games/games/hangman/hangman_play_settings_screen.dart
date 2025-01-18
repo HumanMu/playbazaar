@@ -84,37 +84,40 @@ class _HangmanPlaySettingsScreenState extends State<HangmanPlaySettingsScreen> {
                   ),
                 ),
               ),
-              Column(
-                children: [
-                  TextButton(
-                    onPressed: () => acceptDialog(
-                        context,
-                        'hangman_settings_title'.tr,
-                        "${'hangman_settings_description'.tr}"
-                        "\n\n${"play_rules_title".tr}"
-                        "\n${"play_rules_description".tr}"
-                    ),
-                    child: Text('guide'.tr,
-                        style: const TextStyle(
-                          color: Colors.red,
-                          fontSize: 20,
-                        )
-                    ),
-                  ),
-                  if(userRole != UserRole.normal)
-                    Obx(() => !controller.isOfflineMode.value && !controller.isJoiningMode.value
-                      ? Padding(
-                        padding: const EdgeInsets.only(bottom: 16),
-                        child: ElevatedButton(
-                          onPressed: () => Get.toNamed('/hangmanAddWords'),
-                          child: Text("btn_send_words".tr,
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    if(userRole != UserRole.normal)
+                      Obx(() => !controller.isOfflineMode.value && !controller.isJoiningMode.value
+                        ? ElevatedButton(
+                            onPressed: () => Get.toNamed('/hangmanAddWords'),
+                            child: Text("btn_send_words".tr,
                             style: const TextStyle(color: Colors.black),
                           ),
-                        ),
-                      ) : Container()
+                        ) : Container()
+                      ),
+
+                    TextButton(
+                      onPressed: () => acceptDialog(
+                          context,
+                          'hangman_settings_title'.tr,
+                          "${'hangman_settings_description'.tr}"
+                              "\n\n${"play_rules_title".tr}"
+                              "\n${"play_rules_description".tr}"
+                      ),
+                      child: Text('guide'.tr,
+                          style: const TextStyle(
+                            color: Colors.red,
+                            fontSize: 20,
+                          )
+                      ),
                     ),
-                ],
-              )
+                  ],
+                ),
+              ),
             ],
           ),
         ),
