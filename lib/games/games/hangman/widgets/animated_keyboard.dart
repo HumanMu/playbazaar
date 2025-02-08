@@ -1,6 +1,50 @@
 import 'package:flutter/material.dart';
 
-class AnimatedKeyboardButton extends StatefulWidget {
+class KeyboardButton extends StatelessWidget {
+  final String letter;
+  final VoidCallback? onPressed;
+  final bool isGameOver;
+  final bool isCorrectGuess;
+
+  const KeyboardButton({
+    required this.letter,
+    required this.onPressed,
+    required this.isGameOver,
+    required this.isCorrectGuess,
+    super.key,
+  });
+
+  Color _getButtonColor() {
+    if (isGameOver) {
+      return isCorrectGuess ? Colors.green : Colors.red.shade300;
+    }
+    return onPressed == null ? Colors.grey : Colors.red;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        minimumSize: const Size(60, 40),
+        backgroundColor: _getButtonColor(),
+        foregroundColor: Colors.white,
+        padding: EdgeInsets.zero,
+      ),
+      onPressed: onPressed,
+      child: Text(
+        letter,
+        style: const TextStyle(
+          fontSize: 16,
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
+}
+
+
+/*class AnimatedKeyboardButton extends StatefulWidget {
   final String letter;
   final VoidCallback? onPressed;
   final bool isGameOver;
@@ -94,4 +138,4 @@ class _AnimatedKeyboardButtonState extends State<AnimatedKeyboardButton>
       },
     );
   }
-}
+}*/

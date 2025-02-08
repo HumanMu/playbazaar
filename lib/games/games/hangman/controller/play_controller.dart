@@ -9,7 +9,7 @@ import 'package:playbazaar/games/games/hangman/models/game_participiant.dart';
 import 'package:playbazaar/games/games/hangman/models/game_state_change_model.dart';
 import 'package:playbazaar/games/services/hangman_services.dart';
 import 'package:playbazaar/global_widgets/show_custom_snackbar.dart';
-import 'package:playbazaar/global_widgets/string_return_dialog.dart';
+import 'package:playbazaar/global_widgets/dialog/string_return_dialog.dart';
 import '../../../../functions/generate_strings.dart';
 import '../../../../screens/widgets/dialogs/accept_result_dialog.dart';
 import '../../../functions/get_hangman_difficulty.dart';
@@ -96,9 +96,16 @@ class PlayController extends GetxController {
       if(!normalizedWord.contains(letter)) incorrectGuesses.value++;
       if(!buildHiddenWord().contains('_')) {
         gameWon.value = true;
-        await handleOnlineGameWin(participants);
+        if(isOnlineMode.value || isJoiningMode.value){
+          await handleOnlineGameWin(participants);
+        }
       }
-      if (incorrectGuesses.value >= maxIncorrectGuesses) gameLost.value = true;
+      if (incorrectGuesses.value >= maxIncorrectGuesses){
+        gameLost.value = true;
+        if(isOnlineMode.value || isJoiningMode.value){
+          showWaitingRoom();
+        }
+      }
     }
   }
 

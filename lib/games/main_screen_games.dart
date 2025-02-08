@@ -9,23 +9,20 @@ class MainScreenGames extends StatefulWidget {
   const MainScreenGames({super.key});
 
   @override
-  State<MainScreenGames> createState() => _MainScreenGames();
+  State<MainScreenGames> createState() => _MainScreenGamesState();
 }
 
-class _MainScreenGames extends State<MainScreenGames> {
+class _MainScreenGamesState extends State<MainScreenGames> {
   AuthService authService = AuthService();
-
   List<String> gamePath = [];
   List<String> gameNames = [];
   int gameLength = 0;
-
 
   @override
   void initState() {
     super.initState();
     _initializeLanguageSettings();
   }
-
 
   Future<void> _initializeLanguageSettings() async {
     final result = await getGameLanguage();
@@ -39,18 +36,21 @@ class _MainScreenGames extends State<MainScreenGames> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey.shade200,
       appBar: AppBar(
+        elevation: 0,
         backgroundColor: Colors.red,
         centerTitle: true,
-        title: Text("games_list".tr,
-          style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 25,
+        title: Text(
+          "games_list".tr,
+          style: TextStyle(
+            color: Colors.grey.shade200,
+            fontWeight: FontWeight.w600,
+            fontSize: 22,
           ),
         ),
         iconTheme: IconThemeData(
-          color: Colors.white
+          color: Colors.grey.shade200,
         ),
       ),
       drawer: SidebarDrawer(
@@ -58,7 +58,19 @@ class _MainScreenGames extends State<MainScreenGames> {
         parentContext: context,
       ),
       body: Center(
-        child: _gameList(),
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Colors.white,
+                Colors.grey.shade100,
+              ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+          ),
+          child: _gameList(),
+        ),
       ),
     );
   }
@@ -69,16 +81,16 @@ class _MainScreenGames extends State<MainScreenGames> {
       children: [
         Expanded(
           child: Container(
-            margin: const EdgeInsets.fromLTRB(0, 0, 0, 20),
-            constraints: BoxConstraints(maxWidth: 600),
+            margin: const EdgeInsets.only(bottom: 20),
+            constraints: const BoxConstraints(maxWidth: 600),
             child: ListView.builder(
               itemCount: gameNames.length,
-              itemBuilder: (context, index){
+              itemBuilder: (context, index) {
                 return _buildGameTile(
                   title: gameNames[index],
                   gamePath: gamePath[index],
                 );
-              }
+              },
             ),
           ),
         ),
@@ -88,30 +100,44 @@ class _MainScreenGames extends State<MainScreenGames> {
 
   Widget _buildGameTile({
     required String title,
-    required String gamePath
+    required String gamePath,
   }) {
-    return Card(
+    return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      elevation: 4,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Colors.blue.shade50, Colors.white],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.blueGrey.shade100.withValues(alpha: 0.5),
+            spreadRadius: 1,
+            blurRadius: 5,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
       child: ListTile(
+        contentPadding: const EdgeInsets.all(16),
         title: Center(
           child: Text(
             gamePath.tr,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
+              color: Colors.blueGrey.shade900,
             ),
           ),
         ),
-        onTap: () {
-          navigateToGamePage(gamePath);
-        },
+        onTap: () => navigateToGamePage(gamePath),
       ),
     );
   }
 
   void navigateToGamePage(String gamePath) {
-
     switch (gamePath) {
       case 'quiz':
         Get.toNamed('/mainQuiz');
@@ -119,7 +145,11 @@ class _MainScreenGames extends State<MainScreenGames> {
       case 'hangman':
         Get.toNamed('/hangmanPlaySettings');
         break;
-      default: showCustomSnackbar('Please, pick a game first', false);
+      case 'wordconnector':
+        Get.toNamed('/wordConnectorSettingScreen');
+        break;
+      default:
+        showCustomSnackbar('Please, pick a game first', false);
     }
   }
 }

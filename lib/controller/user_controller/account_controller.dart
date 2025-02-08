@@ -7,7 +7,7 @@ import 'package:playbazaar/services/hive_services/hive_user_service.dart';
 import 'package:playbazaar/services/push_notification_service/device_service.dart';
 import '../../api/services/firestore_services.dart';
 import '../../global_widgets/show_custom_snackbar.dart';
-import '../../global_widgets/string_return_dialog.dart';
+import '../../global_widgets/dialog/string_return_dialog.dart';
 import '../../helper/sharedpreferences/sharedpreferences.dart';
 
 

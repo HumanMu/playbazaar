@@ -5,93 +5,158 @@ class LetterCirclePosition {
   final String letter;
   final int index;
   final Offset position;
+  final double radius;
 
-  LetterCirclePosition({
+  const LetterCirclePosition({
     required this.letter,
     required this.index,
     required this.position,
+    required this.radius,
   });
 }
 
+/// Configuration for the letter circle painter's theme
+class LetterCircleTheme {
+  final Color backgroundColor;
+  final Color circleFillColor;
+  final Color selectedCircleFillColor;
+  final Color borderColor;
+  final Color selectedBorderColor;
+  final Color lineColor;
+  final TextStyle normalTextStyle;
+  final TextStyle selectedTextStyle;
+  final double strokeWidth;
+  final double letterRadius;
+  final double lineStrokeWidth;
+
+  const LetterCircleTheme({
+    this.backgroundColor = Colors.white38,//const Color(0x33228B22),  // Semi-transparent green
+    this.circleFillColor = Colors.white,
+    this.selectedCircleFillColor = Colors.blue,
+    this.borderColor = const Color(0x66228B22),  // Semi-transparent green
+    this.selectedBorderColor = Colors.blue,
+    this.lineColor = Colors.blue,
+    this.normalTextStyle = const TextStyle(
+      color: Colors.black,
+      fontSize: 18,
+      fontWeight: FontWeight.bold,
+    ),
+    this.selectedTextStyle = const TextStyle(
+      color: Colors.white,
+      fontSize: 20,
+      fontWeight: FontWeight.bold,
+    ),
+    this.strokeWidth = 2,
+    this.letterRadius = 20,
+    this.lineStrokeWidth = 3,
+  });
+
+  /// Creates a copy of this theme with the given fields replaced with new values
+  LetterCircleTheme copyWith({
+    Color? backgroundColor,
+    Color? circleFillColor,
+    Color? selectedCircleFillColor,
+    Color? borderColor,
+    Color? selectedBorderColor,
+    Color? lineColor,
+    TextStyle? normalTextStyle,
+    TextStyle? selectedTextStyle,
+    double? strokeWidth,
+    double? letterRadius,
+    double? lineStrokeWidth,
+  }) {
+    return LetterCircleTheme(
+      backgroundColor: backgroundColor ?? this.backgroundColor,
+      circleFillColor: circleFillColor ?? this.circleFillColor,
+      selectedCircleFillColor: selectedCircleFillColor ?? this.selectedCircleFillColor,
+      borderColor: borderColor ?? this.borderColor,
+      selectedBorderColor: selectedBorderColor ?? this.selectedBorderColor,
+      lineColor: lineColor ?? this.lineColor,
+      normalTextStyle: normalTextStyle ?? this.normalTextStyle,
+      selectedTextStyle: selectedTextStyle ?? this.selectedTextStyle,
+      strokeWidth: strokeWidth ?? this.strokeWidth,
+      letterRadius: letterRadius ?? this.letterRadius,
+      lineStrokeWidth: lineStrokeWidth ?? this.lineStrokeWidth,
+    );
+  }
+}
+
+/// A custom painter that draws an interactive circle of letters
 class LetterCirclePainter extends CustomPainter {
   final List<String> letters;
   final List<int> selectedIndices;
   final List<LetterCirclePosition> letterPositions;
   final Offset? currentLineEnd;
-  final Size size;
+  final LetterCircleTheme theme;
+  final double radiusMultiplier;
 
-  // Cache for frequently used values
+  // Cached paint objects
+  late final Paint _backgroundPaint;
   late final Paint _circlePaint;
   late final Paint _selectedCirclePaint;
   late final Paint _borderPaint;
   late final Paint _selectedBorderPaint;
   late final Paint _linePaint;
-  late final TextStyle _normalTextStyle;
-  late final TextStyle _selectedTextStyle;
 
   LetterCirclePainter({
     required this.letters,
     required this.selectedIndices,
     required this.letterPositions,
-    required this.currentLineEnd,
-    required this.size,
+    this.currentLineEnd,
+    this.theme = const LetterCircleTheme(),
+    this.radiusMultiplier = 0.35,
   }) {
-    // Initialize cached paint objects
+    _initializePaints();
+  }
+
+  void _initializePaints() {
+    _backgroundPaint = Paint()
+      ..color = theme.backgroundColor
+      ..style = PaintingStyle.fill;
+
     _circlePaint = Paint()
-      ..color = Colors.white
+      ..color = theme.circleFillColor
       ..style = PaintingStyle.fill;
 
     _selectedCirclePaint = Paint()
-      ..color = Colors.blue
+      ..color = theme.selectedCircleFillColor
       ..style = PaintingStyle.fill;
 
     _borderPaint = Paint()
-      ..color = Colors.green.withAlpha(102) // equivalent to withValues(alpha: 0.4)
+      ..color = theme.borderColor
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 2;
+      ..strokeWidth = theme.strokeWidth;
 
     _selectedBorderPaint = Paint()
-      ..color = Colors.blue
+      ..color = theme.selectedBorderColor
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 2;
+      ..strokeWidth = theme.strokeWidth;
 
     _linePaint = Paint()
-      ..color = Colors.blue
-      ..strokeWidth = 3;
-
-    _normalTextStyle = const TextStyle(
-      color: Colors.black,
-      fontSize: 20,
-      fontWeight: FontWeight.bold,
-    );
-
-    _selectedTextStyle = const TextStyle(
-      color: Colors.white,
-      fontSize: 20,
-      fontWeight: FontWeight.bold,
-    );
+      ..color = theme.lineColor
+      ..strokeWidth = theme.lineStrokeWidth
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
   }
 
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
-    final radius = min(size.width, size.height) * 0.35;
+    final radius = min(size.width, size.height) * radiusMultiplier;
 
-    // Draw background circle
-    canvas.drawCircle(
-      center,
-      radius,
-      Paint()
-        ..color = Colors.green.withAlpha(51) // equivalent to withValues(alpha: 0.2)
-        ..style = PaintingStyle.fill,
-    );
+    _drawBackground(canvas, center, radius);
+    _drawLetterCircles(canvas, center, radius);
+    _drawConnectingLines(canvas);
+  }
 
-    // Calculate and draw letter circles
-    final letterRadius = 25.0;
+  void _drawBackground(Canvas canvas, Offset center, double radius) {
+    canvas.drawCircle(center, radius, _backgroundPaint);
+  }
+
+  void _drawLetterCircles(Canvas canvas, Offset center, double radius) {
     letterPositions.clear();
 
     for (var i = 0; i < letters.length; i++) {
-      final letter = letters[i];
       final angle = -pi / 2 + (2 * pi * i / letters.length);
       final letterPos = Offset(
         center.dx + radius * cos(angle),
@@ -99,59 +164,61 @@ class LetterCirclePainter extends CustomPainter {
       );
 
       final isSelected = selectedIndices.contains(i);
+      _drawLetterCircle(canvas, letterPos, letters[i], isSelected);
 
-      // Draw letter circles
-      canvas.drawCircle(
-        letterPos,
-        letterRadius,
-        isSelected ? _selectedCirclePaint : _circlePaint,
-      );
-
-      // Draw letter circle borders
-      canvas.drawCircle(
-        letterPos,
-        letterRadius,
-        isSelected ? _selectedBorderPaint : _borderPaint,
-      );
-
-      // Draw letters
-      final textPainter = TextPainter(
-        text: TextSpan(
-          text: letter,
-          style: isSelected ? _selectedTextStyle : _normalTextStyle,
-        ),
-        textDirection: TextDirection.ltr,
-      )..layout();
-
-      textPainter.paint(
-        canvas,
-        letterPos.translate(-textPainter.width / 2, -textPainter.height / 2),
-      );
-
-      // Store position with index
       letterPositions.add(LetterCirclePosition(
-        letter: letter,
+        letter: letters[i],
         index: i,
         position: letterPos,
+        radius: theme.letterRadius,
       ));
     }
+  }
 
-    // Draw lines between selected indices
-    if (selectedIndices.isNotEmpty) {
-      for (var i = 0; i < selectedIndices.length - 1; i++) {
-        final startIndex = selectedIndices[i];
-        final endIndex = selectedIndices[i + 1];
-        final startPos = letterPositions[startIndex].position;
-        final endPos = letterPositions[endIndex].position;
-        canvas.drawLine(startPos, endPos, _linePaint);
-      }
+  void _drawLetterCircle(Canvas canvas, Offset position, String letter, bool isSelected) {
+    // Draw circle background
+    canvas.drawCircle(
+      position,
+      theme.letterRadius,
+      isSelected ? _selectedCirclePaint : _circlePaint,
+    );
 
-      // Draw line to current touch position if available
-      if (currentLineEnd != null && selectedIndices.isNotEmpty) {
-        final lastIndex = selectedIndices.last;
-        final lastPos = letterPositions[lastIndex].position;
-        canvas.drawLine(lastPos, currentLineEnd!, _linePaint);
-      }
+    // Draw circle border
+    canvas.drawCircle(
+      position,
+      theme.letterRadius,
+      isSelected ? _selectedBorderPaint : _borderPaint,
+    );
+
+    // Draw letter
+    final textPainter = TextPainter(
+      text: TextSpan(
+        text: letter,
+        style: isSelected ? theme.selectedTextStyle : theme.normalTextStyle,
+      ),
+      textDirection: TextDirection.ltr,
+    )..layout();
+
+    textPainter.paint(
+      canvas,
+      position.translate(-textPainter.width / 2, -textPainter.height / 2),
+    );
+  }
+
+  void _drawConnectingLines(Canvas canvas) {
+    if (selectedIndices.isEmpty) return;
+
+    // Draw lines between selected circles
+    for (var i = 0; i < selectedIndices.length - 1; i++) {
+      final startPos = letterPositions[selectedIndices[i]].position;
+      final endPos = letterPositions[selectedIndices[i + 1]].position;
+      canvas.drawLine(startPos, endPos, _linePaint);
+    }
+
+    // Draw line to current touch position
+    if (currentLineEnd != null && selectedIndices.isNotEmpty) {
+      final lastPos = letterPositions[selectedIndices.last].position;
+      canvas.drawLine(lastPos, currentLineEnd!, _linePaint);
     }
   }
 
@@ -159,159 +226,7 @@ class LetterCirclePainter extends CustomPainter {
   bool shouldRepaint(covariant LetterCirclePainter oldDelegate) {
     return oldDelegate.selectedIndices != selectedIndices ||
         oldDelegate.currentLineEnd != currentLineEnd ||
-        oldDelegate.letters != letters;
+        oldDelegate.letters != letters ||
+        oldDelegate.theme != theme;
   }
 }
-
-
-
-
-
-/*class LetterCirclePainter extends CustomPainter {
-  final List<String> letters;
-  final List<String> selectedLetters;
-  final Map<String, Offset> letterPositions;
-  final Offset? currentLineEnd;
-  final Size size;
-
-  // Cache for frequently used values
-  late final Paint _circlePaint;
-  late final Paint _selectedCirclePaint;
-  late final Paint _borderPaint;
-  late final Paint _selectedBorderPaint;
-  late final Paint _linePaint;
-  late final TextStyle _normalTextStyle;
-  late final TextStyle _selectedTextStyle;
-
-  LetterCirclePainter({
-    required this.letters,
-    required this.selectedLetters,
-    required this.letterPositions,
-    required this.currentLineEnd,
-    required this.size,
-  }) {
-    // Initialize cached paint objects
-    _circlePaint = Paint()
-      ..color = Colors.white
-      ..style = PaintingStyle.fill;
-
-    _selectedCirclePaint = Paint()
-      ..color = Colors.blue
-      ..style = PaintingStyle.fill;
-
-    _borderPaint = Paint()
-      ..color = Colors.green.withValues(alpha: 0.4)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2;
-
-    _selectedBorderPaint = Paint()
-      ..color = Colors.blue
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2;
-
-    _linePaint = Paint()
-      ..color = Colors.blue
-      ..strokeWidth = 3;
-
-    _normalTextStyle = const TextStyle(
-      color: Colors.black,
-      fontSize: 20,
-      fontWeight: FontWeight.bold,
-    );
-
-    _selectedTextStyle = const TextStyle(
-      color: Colors.white,
-      fontSize: 20,
-      fontWeight: FontWeight.bold,
-    );
-  }
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 2, size.height / 2);
-    final radius = min(size.width, size.height) * 0.35;
-
-    // Draw background circle with proper opacity
-    canvas.drawCircle(
-      center,
-      radius,
-      Paint()
-        ..color = Colors.green.withValues(alpha: 0.2)
-        ..style = PaintingStyle.fill,
-    );
-
-    // Calculate and store letter positions
-    letterPositions.clear();
-    final letterRadius = 25.0;
-
-    for (var i = 0; i < letters.length; i++) {
-      final letter = letters[i];
-      final angle = -pi / 2 + (2 * pi * i / letters.length);
-      final letterPos = Offset(
-        center.dx + radius * cos(angle),
-        center.dy + radius * sin(angle),
-      );
-      letterPositions[letter] = letterPos;
-
-      final isSelected = selectedLetters.contains(letter);
-
-      // Draw letter circles more efficiently
-      canvas.drawCircle(
-        letterPos,
-        letterRadius,
-        isSelected ? _selectedCirclePaint : _circlePaint,
-      );
-
-      // Draw letter circle borders
-      canvas.drawCircle(
-        letterPos,
-        letterRadius,
-        isSelected ? _selectedBorderPaint : _borderPaint,
-      );
-
-      // Draw letters with cached text painter
-      final textPainter = TextPainter(
-        text: TextSpan(
-          text: letter,
-          style: isSelected ? _selectedTextStyle : _normalTextStyle,
-        ),
-        textDirection: TextDirection.ltr,
-      )..layout();
-
-      textPainter.paint(
-        canvas,
-        letterPos.translate(-textPainter.width / 2, -textPainter.height / 2),
-      );
-    }
-
-    // Draw lines between selected letters more efficiently
-    if (selectedLetters.isNotEmpty) {
-      Path linePath = Path();
-      bool isFirst = true;
-
-      for (final letter in selectedLetters) {
-        final pos = letterPositions[letter]!;
-        if (isFirst) {
-          linePath.moveTo(pos.dx, pos.dy);
-          isFirst = false;
-        } else {
-          linePath.lineTo(pos.dx, pos.dy);
-        }
-      }
-
-      // Add current touch position to path if available
-      if (currentLineEnd != null) {
-        linePath.lineTo(currentLineEnd!.dx, currentLineEnd!.dy);
-      }
-
-      canvas.drawPath(linePath, _linePaint);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant LetterCirclePainter oldDelegate) {
-    return oldDelegate.selectedLetters != selectedLetters ||
-        oldDelegate.currentLineEnd != currentLineEnd ||
-        oldDelegate.letters != letters;
-  }
-}*/

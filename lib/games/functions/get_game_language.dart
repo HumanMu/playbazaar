@@ -6,10 +6,10 @@ import '../../helper/sharedpreferences/sharedpreferences.dart';
 
 // English
 //List<String> gamePagesPath = ['Quiz', 'Hangman'];
-List<String> gamePagesPath = ['quiz', 'hangman'];
-List<String> gameNamesFarsi = ['مسابقات آزمونی', 'بازی جلاد'];
-List<String> gameNamesArabic = ['قائمة الألعاب', 'لعبة الجلاد'];
-List<String> gameNamesDanish = ['Quiz', 'Galgespil'];
+List<String> gamePagesPath = ['quiz', 'hangman', 'wordconnector'];
+List<String> gameNamesFarsi = ['مسابقات آزمونی', 'بازی جلاد', 'پیوند حروف'];
+List<String> gameNamesArabic = ['قائمة الألعاب', 'لعبة الجلاد', 'ربط الحروف'];
+List<String> gameNamesDanish = ['Quiz', 'Galgespil', 'Word Connector'];
 
 List<String> ludoTypes = ['Online', 'Robots'];
 

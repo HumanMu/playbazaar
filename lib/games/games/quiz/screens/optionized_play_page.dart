@@ -47,160 +47,182 @@ class _QuizPlayScreen extends State<OptionizedPlayScreen>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         centerTitle: true,
         elevation: 0,
+        backgroundColor: Colors.red,
         title: Text(
           widget.quizTitle,
-          style: const TextStyle(
+          style: TextStyle(
             color: Colors.white,
-            fontSize: 30
+            fontSize: 24,
+            fontWeight: FontWeight.w600,
           ),
         ),
-        backgroundColor: Colors.red,
         leading: IconButton(
-          icon: const Icon(
+          icon: Icon(
             Icons.arrow_back,
-            color: Colors.white
+            color: Colors.white,
           ),
           onPressed: () {
             Navigator.of(context).pop();
           },
         ),
       ),
-      body:Obx(() => playController.isLoading.value
-        ? const Center(child: CircularProgressIndicator())
-        : Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Container(
-              padding: EdgeInsets.all(4),
-              color: Colors.teal[900],
-              child: AdaptiveBannerAd(
-                onAdLoaded: (isLoaded) {
-                  if (isLoaded) {
-                    debugPrint('Ad loaded in Quiz Screen');
-                  } else {
-                    debugPrint('Ad failed to load in Quiz Screen');
-                  }
-                },
-              ),
-            ),  // Banner
-            const SizedBox(height: 20),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(15, 0, 16, 20),
-                child: playController.questionData.isEmpty
-                  ? Center(
-                    child: Text(
-                      'empty_quizz_message'.tr,
-                      style: const TextStyle(fontSize: 16),
-                    ),
-                  )
-                  : Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      playController.showAnswer.value && playController.currentDescription.value != null
-                        ? Text(
-                          playController.currentDescription.value?? playController.currentQuestion.value,
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.white,
+              Colors.blue.shade50,
+            ],
+          ),
+        ),
+        child: Obx(() => playController.isLoading.value
+            ? const Center(child: CircularProgressIndicator())
+            : Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(4),
+                  color: Colors.blueGrey.shade50,
+                  child: AdaptiveBannerAd(
+                    onAdLoaded: (isLoaded) {
+                      debugPrint(isLoaded
+                          ? 'Ad loaded in Quiz Screen'
+                          : 'Ad failed to load in Quiz Screen'
+                      );
+                    },
+                  ),
+                ),
+              const SizedBox(height: 20),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(15, 0, 16, 20),
+                  child: playController.questionData.isEmpty
+                    ? Center(
+                      child: Text(
+                        'empty_quizz_message'.tr,
+                        style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.blueGrey.shade700
+                        ),
+                      ),
+                    )
+                    : Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        // Question Text
+                        playController.showAnswer.value && playController.currentDescription.value != null
+                            ? Text(
+                          playController.currentDescription.value ?? playController.currentQuestion.value,
                           style: GoogleFonts.actor(
-                            textStyle: const TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                              fontStyle: FontStyle.italic,
-                              color: Colors.green
+                            textStyle: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                                fontStyle: FontStyle.italic,
+                                color: Colors.green.shade700
                             ),
-                            ),
-                          )
-                        : Text(
+                          ),
+                        )
+                            : Text(
                           playController.currentQuestion.value,
-                            style: GoogleFonts.actor(
-                              textStyle: const TextStyle(
+                          style: GoogleFonts.actor(
+                            textStyle: TextStyle(
                                 fontSize: 19,
                                 fontWeight: FontWeight.bold,
                                 fontStyle: FontStyle.italic,
-                              ),
+                                color: Colors.blueGrey.shade900
                             ),
                           ),
-                      const SizedBox(height: 15),
-                      Container(
-                        constraints: BoxConstraints(maxWidth: 700),
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: playController.currentAnswer.length,
-                          itemBuilder: (context, index) {
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 4.0),
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  playController.checkAnswer(index);
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: playController.getButtonColor(index),
-                                ),
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(vertical: 10),
-                                  child: Text(
-                                    playController.currentAnswer[index],
-                                    style: GoogleFonts.actor(
-                                      textStyle: TextStyle(
-                                        fontSize: 17,
-                                        color: playController.isCorrect.value != null
-                                            ? Colors.white
-                                            : Colors.black,
+                        ),
+                        const SizedBox(height: 15),
+
+                        // Answer Buttons
+                        Container(
+                          constraints: const BoxConstraints(maxWidth: 700),
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: playController.currentAnswer.length,
+                            itemBuilder: (context, index) {
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 4.0),
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    playController.checkAnswer(index);
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: playController.getButtonColor(index),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                  ),
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(vertical: 10),
+                                    child: Text(
+                                      playController.currentAnswer[index],
+                                      style: GoogleFonts.actor(
+                                        textStyle: TextStyle(
+                                          fontSize: 17,
+                                          color: playController.isCorrect.value != null
+                                              ? Colors.white
+                                              : Colors.blueGrey.shade900,
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            );
-                          },
+                              );
+                            },
+                          ),
                         ),
-                      ),
-                      playController.isCorrect.value != null && playController.isCorrect.value!
+
+                        // Feedback Text
+                        playController.isCorrect.value != null
                         ? Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Text(
-                            "correct_answer".tr,
-                            style: const TextStyle(
-                              color: Colors.green,
-                              fontSize: 20
+                            playController.isCorrect.value!
+                                ? "correct_answer".tr
+                                : "${"wrong_answer".tr} ",
+                            style: TextStyle(
+                                color: playController.isCorrect.value!
+                                    ? Colors.green.shade700
+                                    : Colors.red.shade700,
+                                fontSize: 20
                             ),
                           ),
                         )
                         : Container(),
-                          playController.isCorrect.value != null && !playController.isCorrect.value!
-                          ? Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                            "${"wrong_answer".tr} ",
-                            style: const TextStyle(
-                              color: Colors.red,
-                              fontSize: 20
-                            ),
-                          ),
-                         )
-                          : Container(),
-                    ],
-                  ),
+                      ],
+                    ),
+                ),
+              ),
 
-              ),
-            ) ,
-            Container(
-              margin: EdgeInsets.only(bottom: 20),
-              child: ElevatedButton(
-                onPressed: ()=> playController.nextQuestion(true, context),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: playController.selectedAnswerIndex.value != null
-                      ? Colors.green
-                      : Colors.white70,
+              // Next Button
+              Container(
+                margin: const EdgeInsets.only(bottom: 20),
+                child: ElevatedButton(
+                  onPressed: () => playController.nextQuestion(true, context),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: playController.selectedAnswerIndex.value != null
+                        ? Colors.green.shade600
+                        : Colors.blueGrey.shade300,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: Text(
+                    "btn_next".tr,
+                    style: const TextStyle(color: Colors.white),
+                  ),
                 ),
-                child: Text("btn_next".tr,
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-            )
-          ],
+              )
+            ],
+          ),
         ),
       ),
     );

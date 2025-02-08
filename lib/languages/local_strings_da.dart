@@ -62,7 +62,7 @@ class LocalStringsDa extends Translations {
       'zero_player_error': 'Tilføj venligst mindst to spiller eller deaktiver multiplayer-switch',
       'pick_difficulty': 'Vælg Sværhedsgrad',
       'add_words': 'Tilføjelse af ord',
-      'add_words_label': 'Tilføj ordene og adskil med et komma',
+      'add_words_label': 'Tilføj ord, og brug ikke specialtegn eller mellemrum',
       'add_words_hint': 'Tilføj et hint',
       'guess_a_word': 'Gæt et ord',
       'guess_a_word_description': 'Ordet må ikke indeholde ekstra mellemrum, bryde skriveregler eller inkludere specialtegn',
@@ -80,9 +80,16 @@ class LocalStringsDa extends Translations {
       'msg_game_not_found': 'Kunne ikke finde et spil med den angivne kode.',
       'msg_game_creator_deleted': 'Spillet blev ikke fundet, skaberen har muligvis slettet spillet.',
       'game_hint_has_changed': 'Spillets ledetråd blev ændret',
-
-
-
+      'wordconnector': 'Ordsammenkobler',
+      'word_connector_settings': 'Indstillinger for Ordsammenkobler',
+      'remember_game_level': 'Vælg spilniveauet, og tryk derefter på "Start" for at begynde.',
+      'add_letters': 'Tilføj bogstaver',
+      'add_letters_label': 'Tilføj bogstaver og adskil med et komma',
+      'score': 'Score',
+      'level': 'Niveau',
+      'your_level': 'Dit niveau',
+      'reset_your_level': 'Ved at trykke på knappen nedenfor nulstilles dit spilleniveau til starten, som den første dag.',
+      'round_result': 'Scoret i denne runde: %1 point\Vil du spille flere spil?',
 
 
       //Personal information
@@ -129,6 +136,9 @@ class LocalStringsDa extends Translations {
 
       // Others
       'language': 'Languages',
+      'language1': 'Sprog',
+      'choose_language': 'Vælg sprog',
+      'pick_a_language': 'Vælg først et sprog',
       'account': 'Konto',
       'farsi': 'فارسی , دری',
       'english': 'Engelsk',
@@ -147,7 +157,6 @@ class LocalStringsDa extends Translations {
       'msg_friend_not_found': 'Kunne ikke finde en ven med det navn',
       'search_groups': 'Søg efter grupper ...',
       'search': 'Søg',
-      'choose_language': 'Vælg sprog',
       'not_have_account': 'Har du ikke en konto? ',
       'make_account_here': 'Opret din konto her ',
       'not_valid_email': 'Indtast venligst en gyldig e-mail',
@@ -175,8 +184,15 @@ class LocalStringsDa extends Translations {
       'write_here': 'Skriv her...',
       'copy': 'Kopiér',
       'copied_to_clipboard': 'Koden er kopieret til udklipsholderen: ',
-
-
+      'current_data': 'Nuværende data',
+      'words': 'Ord',
+      'letters': 'Bogstaver',
+      'empty_field': 'Feltet er tomt',
+      'word_already_exist': 'Ordet eksisterer allerede',
+      'nothing_to_save': 'Intet nyt at gemme',
+      'max_level_100': 'Niveauet skal være mindre end 100 og større end 0',
+      'yes': 'Ja',
+      'no': 'Nej',
 
 
       // friends
@@ -219,8 +235,9 @@ class LocalStringsDa extends Translations {
       'btn_start': 'Start',
       'btn_send_words': 'Send os ord',
       'btn_leave': 'Forlad',
-
-
+      'btn_add': 'Tilføj',
+      'btn_update': 'Opdater',
+      'btn_reset': 'Nulstil',
 
 
       // Settings
@@ -292,7 +309,7 @@ class LocalStringsDa extends Translations {
       'auto_destractor_message': 'Beskeder bliver automatisk slettet efter 5 dage',
       'chat_creation_failed': 'Oprettelse af chat mislykkedes',
       'failed_to_accept_friend_request': 'Kunne ikke acceptere venneanmodning',
-
+      'adding_word_succed': 'Tilføjelse af nye ord lykkedes',
 
 
       // Policy
@@ -374,6 +391,10 @@ class LocalStringsDa extends Translations {
           .map((line) => line.trim()) // Remove leading and trailing spaces from each line
           .join('\n') // Rejoin the lines into a string
           .trim(), // Remove any extra spaces from the start and end of the entire string
+
+
+      // Word Connector
+      'word_connector_play_rules': 'Når du starter spillet, vil en liste med skjulte ord vises øverst på skærmen. Længden af hvert ord bestemmes af antallet af bokse i rækken. Nederst på skærmen ser du de bogstaver, du kan bruge til at finde de skjulte ord. Du skal finde alle de skjulte ord for at komme videre til næste ord. Husk at vælge et niveau, før du starter spillet.',
 
     }
   };

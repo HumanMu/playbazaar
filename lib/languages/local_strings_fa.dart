@@ -62,7 +62,7 @@ class LocalStringsFa extends Translations {
       'zero_player_error': 'لطفاً حداقل دو بازیکن اضافه کنید یا گزینه‌های چندنفره را غیرفعال کنید',
       'pick_difficulty': 'سطح دشواری را انتخاب کنید',
       'add_words': 'اضافه کردن لغات',
-      'add_words_label': 'کلمات را اضافه کنید و با کاما جدا کنید',
+      'add_words_label': 'کلمات را اضافه کنید و از هیچ کاراکتر ویژه یا فاصله‌ای استفاده نکنید',
       'add_words_hint': 'یک راهنما اضافه کنید',
       'guess_a_word': 'حدس یک کلمه',
       'guess_a_word_description': 'کلمه نباید فاصله اضافی، قوانین نوشتاری را نقض کند یا شامل کاراکترهای خاص باشد',
@@ -80,9 +80,16 @@ class LocalStringsFa extends Translations {
       'msg_game_not_found': 'بازی با کد داده شده یافت نشد.',
       'msg_game_creator_deleted': 'بازی پیدا نشد، ممکن است سازنده بازی را حذف کرده باشد.',
       'game_hint_has_changed': 'راهنمای بازی تغییر کرد',
-
-
-
+      'wordconnector': 'اتصال کلمات',
+      'word_connector_settings': 'تنظیمات اتصال کلمات',
+      'remember_game_level': 'سطح بازی را انتخاب کنید و سپس روی "شروع" کلیک کنید.',
+      'add_letters': 'افزودن حروف',
+      'add_letters_label': 'حروف ها را اضافه کرده و با کاما جدا کنید',
+      'score': 'امتیاز',
+      'level': 'سطح',
+      'your_level': 'سطح شما',
+      'reset_your_level': 'با فشار دادن دکمه پایین سطح بازی‌تان به اول برمی‌گردد، مثل روز اول.',
+      'round_result': 'امتیاز در این دور: %1 امتیاز\nآیا می‌خواهید بازی‌های بیشتری انجام دهید؟',
 
 
       //Personal information
@@ -128,6 +135,9 @@ class LocalStringsFa extends Translations {
 
       // Others
       'language' : 'Languages',
+      'language1': 'زبان',
+      'choose_language' : 'انتخاب زبان',
+      'pick_a_language': 'ابتدا یک زبان انتخاب کنید',
       'account': 'حساب کاربری',
       'farsi' : 'فارسی , دری',
       'english' : 'English',
@@ -145,7 +155,6 @@ class LocalStringsFa extends Translations {
       'msg_friend_not_found': 'دوستی با این نام پیدا نشد',
       'search_groups' : 'جستجو به دنبال گروه جدید ...',
       'search' : 'جستجو',
-      'choose_language' : 'انتخاب زبان',
       'not_have_account' : 'تا حالا ثبت نام نیستی؟  ',
       'make_account_here' : 'اینجا ثبت نام کن  ',
       'not_valid_email' : 'یک ایمیل معتبر وارد کن لطفا',
@@ -173,6 +182,16 @@ class LocalStringsFa extends Translations {
       'write_here': 'اینجا بنویسید...',
       'copy': 'کپی',
       'copied_to_clipboard': 'کد در کلیپ‌بورد کپی شد: ',
+      'current_data': 'داده‌های فعلی',
+      'words': 'کلمات',
+      'letters': 'حروف',
+      'empty_field': 'فیلد خالی است',
+      'word_already_exist': 'این کلمه قبلاً وجود دارد',
+      'nothing_to_save': 'چیز جدیدی برای ذخیره وجود ندارد',
+      'max_level_100': 'سطح باید کمتر از ۱۰۰ و بزرگتر از ۰ باشد',
+      'yes': 'بله',
+      'no': 'خیر',
+
 
       // Friends
       'friends' : 'دوستان',
@@ -214,8 +233,9 @@ class LocalStringsFa extends Translations {
       'btn_start': 'شروع',
       'btn_send_words': 'کلمات را برای ما ارسال کنید',
       'btn_leave': 'ترک',
-
-
+      'btn_add': 'افزودن',
+      'btn_update': 'به‌روزرسانی',
+      'btn_reset': 'بازگشت به اول',
 
 
       //  Settings
@@ -286,7 +306,7 @@ class LocalStringsFa extends Translations {
       'auto_destractor_message': 'پیام‌ها به طور خودکار پس از ۵ روز حذف می‌شوند',
       'chat_creation_failed': 'ایجاد چت ناموفق بود',
       'failed_to_accept_friend_request': 'قبول درخواست دوستی ناموفق بود',
-
+      'adding_word_succed': 'افزودن کلمات جدید با موفقیت انجام شد',
 
 
       // سیاست حفظ حریم خصوصی
@@ -357,7 +377,7 @@ class LocalStringsFa extends Translations {
           .join('\n') // Rejoin the lines into a string
           .trim(), // Remove any extra spaces from the start and end of the entire string,
 
-      'play_rules_title': 'قوانین بازی:',
+      'play_rules_title': 'قوانین بازی',
       'play_rules_description': '''
         قانون ساده است: شما باید کلمه مخفی را پیدا کنید. شما دو راهنما دارید:
         
@@ -373,6 +393,9 @@ class LocalStringsFa extends Translations {
           .join('\n') // Rejoin the lines into a string
           .trim(), // Remove any extra spaces from the start and end of the entire string
 
+
+      // Word connector
+        'word_connector_play_rules': 'وقتی بازی را شروع می‌کنید، لیستی از کلمات مخفی در بالای صفحه نمایش داده می‌شود. طول هر کلمه با توجه به تعداد جعبه‌های موجود در ردیف تعیین می‌شود. در پایین صفحه، حروفی را مشاهده خواهید کرد که می‌توانید برای پیدا کردن کلمات مخفی از آن‌ها استفاده کنید. باید تمام کلمات مخفی را پیدا کنید تا به مرحله بعد بروید. فراموش نکنید که قبل از شروع بازی یک سطح انتخاب کنید.',
 
     }
   };
