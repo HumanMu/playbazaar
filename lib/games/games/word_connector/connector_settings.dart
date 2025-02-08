@@ -159,6 +159,7 @@ class _WordConnectorSettingsScreenState extends State<WordConnectorSettingsScree
                 ],
               ),
             ),
+            SizedBox(width: 40),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,

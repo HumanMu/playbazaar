@@ -48,7 +48,6 @@ class _QuizMainPage extends State<QuizMainPage> {
       quizLength = result['quizLength'];
       quizNames = result['quizNames'];
     });
-
   }
 
 

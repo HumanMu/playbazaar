@@ -4,6 +4,8 @@ import 'package:playbazaar/games/games/word_connector/controller/connector_play_
 import 'package:playbazaar/games/games/word_connector/widgets/letter_circle.dart';
 import 'package:playbazaar/games/games/word_connector/widgets/word_connector_grid.dart';
 
+import '../../../admob/adaptive_banner_ad.dart';
+
 
 class WordConnectorPlayScreen extends StatelessWidget {
   const WordConnectorPlayScreen({super.key});
@@ -59,6 +61,18 @@ class WordConnectorPlayScreen extends StatelessWidget {
         child: SafeArea(
           child: Column(
             children: [
+              Container(
+                padding: const EdgeInsets.all(4),
+                color: Colors.blueGrey.shade50,
+                child: AdaptiveBannerAd(
+                  onAdLoaded: (isLoaded) {
+                    debugPrint(isLoaded
+                        ? 'Ad loaded in Quiz Screen'
+                        : 'Ad failed to load in Quiz Screen'
+                    );
+                  },
+                ),
+              ),
               Container(
                 margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                 padding: const EdgeInsets.all(10),
