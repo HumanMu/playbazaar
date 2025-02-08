@@ -62,7 +62,7 @@ class LocalStringsEn extends Translations {
       'zero_player_error': 'Please add at least one player or deactivate the multiplayer options',
       'pick_difficulty': 'Pick Difficulty',
       'add_words': 'Adding Words',
-      'add_words_label': 'Add the words & separate by a comma',
+      'add_words_label': 'Add words and do not use any special characters or any space',
       'add_words_hint': 'Add a hint',
       'guess_a_word': 'Guess a word',
       'guess_a_word_description': 'The word should not contain any extra spacing, violate writing rules, or include special characters',
@@ -80,9 +80,16 @@ class LocalStringsEn extends Translations {
       'msg_game_not_found': 'Failed to find a game with the given code.',
       'msg_game_creator_deleted': 'Game not found, the creator might have deleted the game.',
       'game_hint_has_changed': 'The game hint has been changed',
-
-
-
+      'wordconnector': 'Word Connector',
+      'word_connector_settings': 'Word Connector Settings',
+      'remember_game_level': 'Select the game level and then press "Start" to begin.',
+      'add_letters': 'Add Letters',
+      'add_letters_label': 'Add letters and separate with a comma',
+      'score': 'Score',
+      'level': 'Level',
+      'your_level': 'Your level',
+      'reset_your_level': 'By pressing the button below, your game level will reset to the beginning, like day one.',
+      'round_result': 'Scored in this round: %1 points\ndo you want to play more games?',
 
 
       //Personal information
@@ -128,6 +135,9 @@ class LocalStringsEn extends Translations {
 
       // Others
       'language' : 'Language',
+      'language1': 'Language',
+      'choose_language' : 'Choose language',
+      'pick_a_language': 'First pick a language',
       'account': 'Account',
       'farsi' : 'فارسی , دری',
       'english' : 'English',
@@ -146,7 +156,6 @@ class LocalStringsEn extends Translations {
       'msg_friend_not_found': 'Could not find a friend with that name',
       'search_groups' : 'Search for groups ...',
       'search' : 'Search',
-      'choose_language' : 'Choose language',
       'not_have_account' : 'Do not have an account? ',
       'make_account_here' : 'Create your account here  ',
       'not_valid_email' : 'Enter a valid email please',
@@ -174,7 +183,15 @@ class LocalStringsEn extends Translations {
       'write_here': 'Write here...',
       'copy': 'Copy',
       'copied_to_clipboard': 'Code copied to clipboard: ',
-
+      'current_data': 'Current Data',
+      'words': 'Words',
+      'letters': 'Letters',
+      'empty_field': 'The field is empty',
+      'word_already_exist': 'The word already exists',
+      'nothing_to_save': 'Nothing new to save',
+      'max_level_100': 'The level must be less than 100 and greater than 0',
+      'yes': 'Yes',
+      'no': 'No',
 
 
       // friends
@@ -217,7 +234,9 @@ class LocalStringsEn extends Translations {
       'btn_start': 'Start',
       'btn_send_words': 'Send us words',
       'btn_leave': 'Leave',
-
+      'btn_add': 'Add',
+      'btn_update': 'Update',
+      'btn_reset': 'Reset',
 
 
       // Settings
@@ -289,7 +308,7 @@ class LocalStringsEn extends Translations {
       'auto_destractor_message': 'Messages will be automatically deleted after 5 days',
       'chat_creation_failed': 'Chat creation failed',
       'failed_to_accept_friend_request': 'Failed to accept friend request',
-
+      'adding_word_succed': 'Adding new words succeeded',
 
 
 
@@ -377,6 +396,10 @@ class LocalStringsEn extends Translations {
           .map((line) => line.trim()) // Remove leading and trailing spaces from each line
           .join('\n') // Rejoin the lines into a string
           .trim(), // Remove any extra spaces from the start and end of the entire string
+
+
+      // Word connector
+        'word_connector_play_rules': 'When you start the game, a list of hidden words will appear at the top of the screen. The length of each word is determined by the number of boxes in the row. At the bottom of the screen, you’ll see the available letters to use for finding the hidden words. You must discover all the hidden words to proceed to the next words. Don’t forget to select a level before starting the game.',
 
     }
   };

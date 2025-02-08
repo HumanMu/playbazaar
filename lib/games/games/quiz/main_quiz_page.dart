@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:playbazaar/constants/enums.dart';
 import 'package:playbazaar/controller/user_controller/user_controller.dart';
-import 'package:playbazaar/global_widgets/accept_dialog.dart';
+import 'package:playbazaar/global_widgets/dialog/accept_dialog.dart';
 import '../../../api/Authentication/auth_service.dart';
 import '../../../screens/widgets/sidebar_drawer.dart';
 import '../../widgets/game_list_box.dart';
@@ -55,29 +55,42 @@ class _QuizMainPage extends State<QuizMainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey.shade300,
       appBar: AppBar(
-        backgroundColor: Colors.red,
         centerTitle: true,
-        title: Text("quiz_list".tr,
-          style: const TextStyle(
+        elevation: 0,
+        backgroundColor: Colors.red,
+        title: Text(
+          "quiz_list".tr,
+          style: TextStyle(
             color: Colors.white,
-            fontWeight:
-            FontWeight.bold,
-            fontSize: 25
+            fontWeight: FontWeight.w600,
+            fontSize: 24,
           ),
         ),
         iconTheme: IconThemeData(
-          color: Colors.white
+          color: Colors.white,
         ),
       ),
-
       drawer: SidebarDrawer(
         authService: authService,
-        parentContext: context
+        parentContext: context,
       ),
-      body: quizPath.isEmpty && quizLength == 0
-        ? const Center(child: CircularProgressIndicator())
-        : _quizList(),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.white,
+              Colors.blue.shade50,
+            ],
+          ),
+        ),
+        child: quizPath.isEmpty && quizLength == 0
+            ? const Center(child: CircularProgressIndicator())
+            : _quizList(),
+      ),
     );
   }
 
@@ -88,7 +101,7 @@ class _QuizMainPage extends State<QuizMainPage> {
         Expanded(
           child: Center(
             child: Container(
-              constraints: BoxConstraints(maxWidth: 600),
+              constraints: const BoxConstraints(maxWidth: 600),
               child: ListView.builder(
                 itemCount: quizNames.length,
                 itemBuilder: (context, index) {
@@ -107,66 +120,97 @@ class _QuizMainPage extends State<QuizMainPage> {
         ),
         TextButton(
           onPressed: () => acceptDialog(
-            context,
-            'guide'.tr,
-            'quiz_play_guide'.tr
+              context,
+              'guide'.tr,
+              'quiz_play_guide'.tr
           ),
-          child: Text('guide'.tr,
-            style: TextStyle(
-              color: Colors.red,
-              fontSize: 20,
-            )
+          style: TextButton.styleFrom(
+            foregroundColor: Colors.white,
+            backgroundColor: Colors.blue.shade500,
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
+            ),
+          ),
+          child: Text(
+            'guide'.tr,
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
-
         Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 10.0,
-                vertical: 3
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Colors.blue.shade50,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: Colors.blue.shade100),
               ),
-              child: Text("add_question_hint".tr),
+              child: Text(
+                "add_question_hint".tr,
+                style: TextStyle(
+                  color: Colors.blue.shade800,
+                  fontStyle: FontStyle.italic,
+                ),
+                textAlign: TextAlign.center,
+              ),
             ),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              constraints: BoxConstraints(maxWidth: 600),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              constraints: const BoxConstraints(maxWidth: 600),
               child: Row(
                 children: [
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: () {
-                        Get.toNamed('/addQuestion');
-                      },
+                      onPressed: () => Get.toNamed('/addQuestion'),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(5))
+                        backgroundColor: Colors.green.shade600,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
                         ),
+                        elevation: 3,
                       ),
-                      child: Text("btn_send_question".tr,
-                        style: TextStyle(color: Colors.white),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        child: Text(
+                          "btn_send_question".tr,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                  const SizedBox(width: 4),
-                  userRole != UserRole.normal? Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Get.toNamed('/questionReviewPage');
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(5))
-                        )
-                      ),
-                      child: Text("btn_review_question".tr,
-                        style: TextStyle(color: Colors.white),
+                  const SizedBox(width: 8),
+                  if (userRole != UserRole.normal)
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () => Get.toNamed('/questionReviewPage'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green.shade600,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          elevation: 3,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          child: Text(
+                            "btn_review_question".tr,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
-                  ) : const Text(""),
                 ],
               ),
             )
@@ -175,5 +219,6 @@ class _QuizMainPage extends State<QuizMainPage> {
       ],
     );
   }
+
 
 }

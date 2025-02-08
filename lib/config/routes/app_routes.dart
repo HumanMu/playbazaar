@@ -5,6 +5,7 @@ import 'package:playbazaar/games/games/hangman/hangman_play_screen.dart';
 import 'package:playbazaar/games/games/hangman/hangman_play_settings_screen.dart';
 import 'package:playbazaar/games/games/quiz/screens/add_question.dart';
 import 'package:playbazaar/games/games/quiz/screens/optionized_play_page.dart';
+import 'package:playbazaar/games/games/word_connector/play_screen.dart';
 import 'package:playbazaar/games/main_screen_games.dart';
 import 'package:playbazaar/screens/main_screens/group_chat_page.dart';
 import 'package:playbazaar/screens/main_screens/edit_page.dart';
@@ -29,6 +30,8 @@ import '../../games/games/hangman/add_hangman_screen.dart';
 import '../../games/games/quiz/main_quiz_page.dart';
 import '../../games/games/quiz/screens/none_optionized_play_page.dart';
 import '../../games/games/quiz/screens/review_question_page.dart';
+import '../../games/games/word_connector/add_words_screen.dart';
+import '../../games/games/word_connector/connector_settings.dart';
 import '../../languages/local_strings.dart';
 import '../../middleware/auth_guard.dart';
 
@@ -193,6 +196,18 @@ class _PlayBazaarState extends State<AppRoutes> {
                           quizTitle: args['quizTitle'],
                         );
                       },
+                    ),
+                    GetPage(
+                        name: '/wordConnectorPlayScreen',
+                        page: () => WordConnectorPlayScreen()
+                    ),
+                    GetPage(
+                        name: '/wordConnectorSettingScreen',
+                        page: () => WordConnectorSettingsScreen()
+                    ),
+                    GetPage(
+                        name: '/addWordConnectorScreen',
+                        page: () => AddWordConnectorScreen()
                     ),
                     GetPage(
                         name: '/resetPassword',

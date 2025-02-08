@@ -179,28 +179,45 @@ class _GroupChatPageState extends State<GroupChatPage> {
   Widget showMessages() {
     return Obx(() {
       if (_messageController.messages.isEmpty) {
-        return const Center(
-          child: Text(''),
+        return Center(
+          child: Text(
+            'No messages yet',
+            style: TextStyle(
+              color: Colors.blueGrey.shade300,
+              fontSize: 16,
+              fontWeight: FontWeight.w300,
+            ),
+          ),
         );
       }
       return Container(
-          constraints: BoxConstraints(
-            maxWidth: 600,
+        constraints: BoxConstraints(
+          maxWidth: 600,
+        ),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Colors.white,
+              Colors.blueGrey.shade50,
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
-          child: ListView.builder(
-            itemCount: _messageController.messages.length,
-            controller: _scrollController,
-            physics: const AlwaysScrollableScrollPhysics(),
-            padding: EdgeInsets.only(bottom: 20),
-            itemBuilder: (context, index) {
-              final message = _messageController.messages[index];
-              return MessageTileGroup(
-                message: message.text,
-                sender: message.senderName,
-                sendByMe: message.senderId == currentUserId? true: false,
-              );
-            },
-          ),
+        ),
+        child: ListView.builder(
+          itemCount: _messageController.messages.length,
+          controller: _scrollController,
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: EdgeInsets.only(bottom: 20),
+          itemBuilder: (context, index) {
+            final message = _messageController.messages[index];
+            return MessageTileGroup(
+              message: message.text,
+              sender: message.senderName,
+              sendByMe: message.senderId == currentUserId ? true : false,
+            );
+          },
+        ),
       );
     });
   }
@@ -224,7 +241,6 @@ class _GroupChatPageState extends State<GroupChatPage> {
 
   void _onFocusChange() {
     if (_messageFocusNode.hasFocus) {
-      // Slight delay to allow keyboard to fully open
       Future.delayed(Duration(milliseconds: 300), () {
         scrollToBottom();
       });

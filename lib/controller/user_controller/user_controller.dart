@@ -73,28 +73,6 @@ class UserController extends GetxController {
     );
   }
 
- /* RxList<FriendModel> searchLocalFriends(String query) {
-    if (query.isEmpty) return RxList<FriendModel>();
-
-    return RxList<FriendModel>(
-        _hiveUserService.getRecentUsers()
-            .where((user) =>
-            user.fullname.toLowerCase().contains(query.toLowerCase())
-        )
-          .map(recentFriend2FriendModel)
-          .toList()
-    );
-  }
-
-  void searchFriends(String query, {bool localOnly = false}) {
-    // First, always search locally in Hive
-    searchedFriends.value = searchLocalFriends(query);
-
-    // Only search Firestore if not local-only mode and search icon is clicked
-    if (!localOnly && query.isNotEmpty) {
-      searchInFirestore(query);
-    }
-  }*/
 
   Future<bool> searchInFirestore(String friendName) async {
     isLoading.value = true;
@@ -148,26 +126,6 @@ class UserController extends GetxController {
       }
     });
   }
-
-
-
-  /*Future<void> getFriendList(String userId) async {
-    isLoading.value = true;
-    try {
-      final querySnapshot = await UserServices(userId: userId).getFriendList();
-      if (querySnapshot.docs.isNotEmpty) {
-        friendList.assignAll(querySnapshot.docs.map((doc) => FriendModel.fromFirestore(doc)).toList());
-      } else {
-        friendList.clear();
-      }
-    } catch (e) {
-      if (kDebugMode) {
-        print("Error fetching friends: $e");
-      }
-    }
-    isLoading.value = false;
-  }*/
-
 
 
   Future<bool> sendFriendRequest(FriendModel friend, int index) async {

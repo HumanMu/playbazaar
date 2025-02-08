@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:playbazaar/global_widgets/show_custom_snackbar.dart';
 import '../../../constants/enums.dart';
 import '../../../controller/user_controller/user_controller.dart';
-import '../../../global_widgets/accept_dialog.dart';
+import '../../../global_widgets/dialog/accept_dialog.dart';
 import '../../../global_widgets/tiles/custom_switch_tile.dart';
 import 'package:playbazaar/games/games/hangman/controller/play_controller.dart';
 import '../../widgets/custom_switch_textbox_tile.dart';
@@ -110,7 +110,7 @@ class _HangmanPlaySettingsScreenState extends State<HangmanPlaySettingsScreen> {
                       ),
                       child: Text('guide'.tr,
                           style: const TextStyle(
-                            color: Colors.red,
+                            color: Colors.blue,
                             fontSize: 20,
                           )
                       ),

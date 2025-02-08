@@ -60,7 +60,7 @@ class LocalStringsAr extends Translations {
       'players_name_here': 'أضف أسماء اللاعبين هنا...',
       'zero_player_error': 'يرجى إضافة لاعبين على الأقل أو إلغاء تفعيل خيارات اللعب الجماعي',
       'add_words': 'إضافة كلمات',
-      'add_words_label': 'أضف الكلمات وافصلها بفاصلة',
+      'add_words_label': 'أضف الكلمات ولا تستخدم أي أحرف خاصة أو مسافات',
       'add_words_hint': 'أضف تلميحًا',
       'guess_a_word': 'حدس یک کلمه',
       'guess_a_word_description': 'کلمه نباید فاصله اضافی، قوانین نوشتاری را نقض کند یا شامل کاراکترهای خاص باشد',
@@ -78,9 +78,16 @@ class LocalStringsAr extends Translations {
       'msg_game_not_found': 'فشل في العثور على لعبة بالكود المعطى.',
       'msg_game_creator_deleted': 'اللعبة غير موجودة، ربما قام المنشئ بحذف اللعبة.',
       'game_hint_has_changed': 'تم تغيير تلميح اللعبة.',
-
-
-
+      'wordconnector': 'صل الكلمات',
+      'word_connector_settings': 'إعدادات موصل الكلمات',
+      'remember_game_level': 'اختر مستوى اللعبة ثم اضغط على "ابدأ" للبدء.',
+      'add_letters': 'إضافة الحروف',
+      'add_letters_label': 'أضف الحروف وافصل بينها بفاصلة',
+      'score': 'النتيجة',
+      'level': 'المستوى',
+      'your_level': 'مستواك',
+      'reset_your_level': 'بالضغط على الزر أدناه، ستتم إعادة مستوى لعبك إلى البداية، مثل اليوم الأول.',
+      'round_result': 'النقاط في هذه الجولة: %1 نقطة\nهل تريد لعب المزيد من الألعاب؟',
 
 
       //Personal information
@@ -128,6 +135,9 @@ class LocalStringsAr extends Translations {
 
       // Others
       'language': 'Languages',
+      'language1': 'اللغة',
+      'choose_language': 'اختر لغتك المفضلة',
+      'pick_a_language': 'اختر لغة أولاً',
       'account': 'الحساب',
       'farsi': 'الفارسية , الدارية',
       'english': 'الإنجليزية',
@@ -146,7 +156,6 @@ class LocalStringsAr extends Translations {
       'msg_friend_not_found': 'تعذّر العثور على صديق بهذا الاسم',
       'search_groups': 'البحث عن مجموعات ...',
       'search': 'بحث',
-      'choose_language': 'اختر لغتك المفضلة',
       'not_have_account': 'ليس لديك حساب؟',
       'make_account_here': 'أنشئ حسابك هنا',
       'not_valid_email': 'يرجى إدخال بريد إلكتروني صالح',
@@ -176,7 +185,15 @@ class LocalStringsAr extends Translations {
       'write_here': 'اكتب هنا...',
       'copy': 'نسخ',
       'copied_to_clipboard': 'تم نسخ الكود إلى الحافظة: ',
-
+      'current_data': 'البيانات الحالية',
+      'words': 'كلمات',
+      'letters': 'حروف',
+      'empty_field': 'الحقل فارغ',
+      'word_already_exist': 'الكلمة موجودة بالفعل',
+      'nothing_to_save': 'لا يوجد شيء جديد للحفظ',
+      'max_level_100': 'يجب أن يكون المستوى أقل من 100 وأكبر من 0',
+      'yes': 'نعم',
+      'no': 'لا',
 
 
       // friends
@@ -217,7 +234,9 @@ class LocalStringsAr extends Translations {
       'btn_start': 'ابدأ',
       'btn_send_words': 'أرسل لنا الكلمات',
       'btn_leave': 'غادر',
-
+      'btn_add': 'إضافة',
+      'btn_update': 'تحديث',
+      'btn_reset': 'إعادة تعيين',
 
 
       // Settings
@@ -290,6 +309,7 @@ class LocalStringsAr extends Translations {
       'auto_destractor_message': 'سيتم حذف الرسائل تلقائياً بعد 5 أيام',
       'chat_creation_failed': 'فشل في إنشاء المحادثة',
       'failed_to_accept_friend_request': 'فشل في قبول طلب الصداقة',
+      'adding_word_succed': 'تمت إضافة الكلمات الجديدة بنجاح',
 
 
 
@@ -374,6 +394,9 @@ class LocalStringsAr extends Translations {
           .map((line) => line.trim()) // Remove leading and trailing spaces from each line
           .join('\n') // Rejoin the lines into a string
           .trim(), // Remove any extra spaces from the start and end of the entire string
+
+      // Word Connector
+        'word_connector_play_rules': 'عند بدء اللعبة، ستظهر قائمة بالكلمات المخفية في أعلى الشاشة. يتم تحديد طول كل كلمة بناءً على عدد المربعات في الصف. في أسفل الشاشة، سترى الأحرف المتاحة لاستخدامها للعثور على الكلمات المخفية. يجب عليك اكتشاف جميع الكلمات المخفية للانتقال إلى المستوى التالي. لا تنسَ اختيار مستوى قبل بدء اللعبة.',
 
     }
   };

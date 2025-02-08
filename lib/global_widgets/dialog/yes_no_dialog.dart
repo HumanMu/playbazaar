@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class YesNoDialog extends StatelessWidget {
   final String title;
@@ -17,16 +18,28 @@ class YesNoDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(title),
+      title: Center(
+        child: Text(title),
+      ),
       content: Text(description),
       actions: [
         TextButton(
           onPressed: onNo,
-          child: const Text('No'),
+          child: Text('no'.tr,
+            style: TextStyle(
+              color: Colors.red,
+              fontSize: 20
+            ),
+          ),
         ),
         TextButton(
           onPressed: onYes,
-          child: const Text('Yes'),
+          child: Text('yes'.tr,
+            style: TextStyle(
+              color: Colors.green,
+              fontSize: 20,
+            ),
+          ),
         ),
       ],
     );

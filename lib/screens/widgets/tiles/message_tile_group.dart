@@ -4,7 +4,6 @@ class MessageTileGroup extends StatelessWidget {
   final String message;
   final String sender;
   final bool sendByMe;
-
   const MessageTileGroup({
     super.key,
     required this.message,
@@ -15,41 +14,82 @@ class MessageTileGroup extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(top: 4),
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 8),
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.only(
-            topLeft: const Radius.circular(10),
-            topRight: const Radius.circular(10),
-            bottomLeft: const Radius.circular(10),
-            bottomRight: sendByMe ? Radius.zero : const Radius.circular(10),
+      padding: const EdgeInsets.only(top: 5.0),
+      child: Align(
+        alignment: sendByMe ? Alignment.centerRight : Alignment.centerLeft,
+        child: Container(
+          margin: EdgeInsets.only(
+            left: sendByMe ? 30.0 : 8.0,
+            right: sendByMe ? 8.0 : 30.0,
           ),
-          color: sendByMe ? Colors.red : Colors.green,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              sender,
-              style: const TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: -0.2,
-                  color: Colors.white54
-              ),
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
+          decoration: BoxDecoration(
+            gradient: sendByMe
+                ? LinearGradient(
+              colors: [Color(0xFF6A11CB), Color(0xFF2575FC)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            )
+                : LinearGradient(
+              colors: [Colors.white, Colors.grey.shade100],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
-            const SizedBox(height: 4),
-            Text(
-              message,
-              style: const TextStyle(
-                fontSize: 15,
-                color: Colors.white,
-              ),
-              softWrap: true, // Enable text wrapping
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(30),
+              topRight: Radius.circular(30),
+              bottomLeft: sendByMe ? Radius.circular(30) : Radius.circular(5),
+              bottomRight: sendByMe ? Radius.circular(5) : Radius.circular(30),
             ),
-          ],
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withValues(alpha: 0.3),
+                spreadRadius: 1,
+                blurRadius: 4,
+                offset: Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (!sendByMe)
+                Padding(
+                  padding: EdgeInsets.only(right: 8.0),
+                  child: CircleAvatar(
+                    backgroundImage: NetworkImage('URL_TO_USER_PROFILE_IMAGE'),
+                    radius: 15,
+                  ),
+                ),
+              Flexible(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      sender,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: sendByMe ? Colors.white : Colors.blueGrey.shade800,
+                      ),
+                    ),
+                    SizedBox(width: 8),
+                    Flexible(
+                      child: Text(
+                        message,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: sendByMe ? Colors.white : Colors.blueGrey.shade900,
+                          fontWeight: FontWeight.w400,
+                        ),
+                        softWrap: true,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
