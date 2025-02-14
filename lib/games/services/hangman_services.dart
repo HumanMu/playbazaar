@@ -73,6 +73,7 @@ class HangmanService extends GetxService {
         name: user.displayName ?? "",
         image: user.photoURL,
         numberOfWin: 0,
+        gameState: 'Play'
       );
 
       OnlineCompetitionDocModel gameData = OnlineCompetitionDocModel(
@@ -83,7 +84,7 @@ class HangmanService extends GetxService {
         gameState: "waiting",
         wordToGuess: word,
         createdAt: Timestamp.now(),
-        wordHint: hint ?? ""
+        wordHint: hint ?? "",
       );
 
       await gameRef.set(gameData.toFirestore());
@@ -130,6 +131,7 @@ class HangmanService extends GetxService {
         name: user.displayName ?? "",
         image: user.photoURL,
         numberOfWin: 0,
+        gameState: 'Play',
       );
 
       await gameDoc.reference.update({
@@ -165,18 +167,15 @@ class HangmanService extends GetxService {
   }
 
 
-  Future<bool> handleGameWin(String gameId, int winCount, List<GameParticipantModel> participants) async {
+  Future<bool> handleGameWin(String gameId, List<GameParticipantModel> participants) async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return false;
 
     try {
       List<GameParticipantModel> updatedParticipants = participants.map((participant) {
         if (participant.uid == user.uid) {
-          return GameParticipantModel(
-            uid: participant.uid,
-            name: participant.name,
-            image: participant.image,
-            numberOfWin: participant.numberOfWin + 1,
+          return participant.copyWith(
+            numberOfWin: participant.numberOfWin + 1
           );
         }
         return participant;
@@ -204,16 +203,53 @@ class HangmanService extends GetxService {
     }
   }
 
-  Future<bool> handleNextGameStart(GameStateChangeModel nextGameData) async {
+  Future<bool> gameLost(String gameId, List<GameParticipantModel> participants) async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return false;
 
     try {
+      List<GameParticipantModel> updatedParticipants = participants.map((participant) {
+        if (participant.uid == user.uid) {
+          return participant.copyWith(
+            gameState: 'Lost',
+          );
+        }
+        return participant;
+      }).toList();
+
+      // Prepare update data
+      Map<String, dynamic> updateData = {
+        'participants': updatedParticipants.map(
+                (p) => p.toFirestore()).toList(),
+      };
+
+      await hangmanReference
+          .collection('inProgressGames')
+          .doc(gameId)
+          .update(updateData);
+
+      return true;
+    } catch (e) {
+      debugPrint("Error incrementing gameLost: $e");
+      return false;
+    }
+  }
+
+  Future<bool> handleNextGameStart(GameStateChangeModel nextGameData, List<GameParticipantModel>  participants) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return false;
+
+    try {
+      List<GameParticipantModel> updatedParticipants = participants.map((participant) {
+        return participant.copyWith(gameState: 'Play');
+      }).toList();
+
       Map<String, dynamic> updateData = {
         'gameState': 'playing',
         'winner': null,
         'wordHint': nextGameData.wordHint,
-        'wordToGuess': nextGameData.word
+        'wordToGuess': nextGameData.word,
+        'participants': updatedParticipants.map((participant) => participant.toFirestore()).toList(),
       };
 
       await hangmanReference
@@ -228,19 +264,40 @@ class HangmanService extends GetxService {
   }
 
 
-  Future<bool> destroyGame(String gameId) async {
+  Future<bool> removeUserOrDestroyGame(String gameId, String userId) async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return false;
 
     try {
-        await hangmanReference
-            .collection('inProgressGames')
-            .doc(gameId)
-            .delete();
+      final gameDoc = await hangmanReference
+          .collection('inProgressGames')
+          .doc(gameId)
+          .get();
+
+      if (gameDoc.exists) {
+        List<dynamic> participants = gameDoc['participants'];
+        participants.removeWhere((participant) => participant['uid'] == userId);
+        String hostId = gameDoc['hostId'];
+
+        if (hostId == userId) {
+          await hangmanReference
+              .collection('inProgressGames')
+              .doc(gameId)
+              .delete();
+
+        } else {
+          await hangmanReference
+              .collection('inProgressGames')
+              .doc(gameId)
+              .update({
+            'participants': participants,
+          });
+        }
+      }
 
       return true;
     } catch (e) {
-      debugPrint("Error in leaveCompetition: $e");
+      debugPrint("Error in removeOrDestroyGame: $e");
       return false;
     }
   }

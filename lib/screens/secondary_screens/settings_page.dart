@@ -40,7 +40,11 @@ class _SettingsState extends State<SettingsPage> {
       appBar: AppBar(
         title: Text(
           "settings".tr,
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 25
+          ),
         ),
         centerTitle: true,
         backgroundColor: Colors.red,
@@ -88,13 +92,13 @@ class _SettingsState extends State<SettingsPage> {
                         children: [
                           Icon(
                             categories[index].icon,
-                            color: isSelected ? Colors.red : Colors.grey,
+                            color: isSelected ? Colors.red : Colors.black87,
                           ),
                           SizedBox(width: 8),
                           Text(
                             categories[index].title.tr,
                             style: TextStyle(
-                              color: isSelected ? Colors.red : Colors.grey,
+                              color: isSelected ? Colors.red : Colors.black87,
                               fontWeight: isSelected
                                   ? FontWeight.bold
                                   : FontWeight.normal,

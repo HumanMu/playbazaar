@@ -54,7 +54,6 @@ class _WordConnectorSettingsScreenState extends State<WordConnectorSettingsScree
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade200,
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.red,
@@ -100,7 +99,7 @@ class _WordConnectorSettingsScreenState extends State<WordConnectorSettingsScree
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [Colors.blueGrey.shade50, Colors.white],
+          colors: [Colors.white54, Colors.white],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -172,7 +171,7 @@ class _WordConnectorSettingsScreenState extends State<WordConnectorSettingsScree
                   ElevatedButton(
                     onPressed: () => controller.resetUserLevel(),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blueGrey.shade100,
+                      backgroundColor: Colors.white,
                       foregroundColor: Colors.blueGrey.shade800,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
@@ -194,7 +193,7 @@ class _WordConnectorSettingsScreenState extends State<WordConnectorSettingsScree
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [Colors.blue.shade50, Colors.white],
+          colors: [Colors.white54, Colors.white],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -224,7 +223,7 @@ class _WordConnectorSettingsScreenState extends State<WordConnectorSettingsScree
         ),
         trailing: Icon(
           Icons.play_circle_outline,
-          color: Colors.blue.shade700,
+          color: Colors.green.shade700,
           size: 40,
         ),
         onTap: () {
@@ -245,7 +244,7 @@ class _WordConnectorSettingsScreenState extends State<WordConnectorSettingsScree
             ElevatedButton(
               onPressed: () => Get.toNamed('/addWordConnectorScreen'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blueGrey.shade100,
+                backgroundColor: Colors.white,//green.shade100,
                 foregroundColor: Colors.blueGrey.shade800,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -262,7 +261,7 @@ class _WordConnectorSettingsScreenState extends State<WordConnectorSettingsScree
             child: Text(
               'guide'.tr,
               style: TextStyle(
-                color: Colors.blue.shade700,
+                color: Colors.green.shade700,
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
               ),

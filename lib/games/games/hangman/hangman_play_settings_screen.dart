@@ -110,7 +110,7 @@ class _HangmanPlaySettingsScreenState extends State<HangmanPlaySettingsScreen> {
                       ),
                       child: Text('guide'.tr,
                           style: const TextStyle(
-                            color: Colors.blue,
+                            color: Colors.green,
                             fontSize: 20,
                           )
                       ),
@@ -139,7 +139,6 @@ class _HangmanPlaySettingsScreenState extends State<HangmanPlaySettingsScreen> {
       additionalInfo: controller.gameCode.value,
       additionalActionIcon: Icons.copy,
       onAdditionalActionPressed: () {
-        // Copy functionality
         Clipboard.setData(ClipboardData(text: controller.gameCode.value));
         showCustomSnackbar("copied_to_clipboard".tr, true);
       },

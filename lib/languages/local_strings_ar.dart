@@ -88,7 +88,8 @@ class LocalStringsAr extends Translations {
       'your_level': 'مستواك',
       'reset_your_level': 'بالضغط على الزر أدناه، ستتم إعادة مستوى لعبك إلى البداية، مثل اليوم الأول.',
       'round_result': 'النقاط في هذه الجولة: %1 نقطة\nهل تريد لعب المزيد من الألعاب؟',
-
+      'waiting_players_to_finish': 'في انتظار انتهاء اللاعبين الآخرين من اللعبة',
+      'winner': 'الفائز',
 
       //Personal information
       'aboutme': 'نبذة عني',
@@ -236,6 +237,7 @@ class LocalStringsAr extends Translations {
       'btn_leave': 'غادر',
       'btn_add': 'إضافة',
       'btn_update': 'تحديث',
+      'btn_remove': 'إزالة',
       'btn_reset': 'إعادة تعيين',
 
 

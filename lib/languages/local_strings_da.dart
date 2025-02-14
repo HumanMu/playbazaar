@@ -90,6 +90,8 @@ class LocalStringsDa extends Translations {
       'your_level': 'Dit niveau',
       'reset_your_level': 'Ved at trykke på knappen nedenfor nulstilles dit spilleniveau til starten, som den første dag.',
       'round_result': 'Scoret i denne runde: %1 point\Vil du spille flere spil?',
+      'waiting_players_to_finish': 'Venter på, at andre spillere afslutter spillet',
+      'winner': 'Vinder',
 
 
       //Personal information
@@ -237,6 +239,7 @@ class LocalStringsDa extends Translations {
       'btn_leave': 'Forlad',
       'btn_add': 'Tilføj',
       'btn_update': 'Opdater',
+      'btn_remove': 'Fjern',
       'btn_reset': 'Nulstil',
 
 

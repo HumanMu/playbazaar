@@ -18,7 +18,7 @@ import '../widgets/waiting_screen.dart';
 
 
 class PlayController extends GetxController {
-  // static
+
   HangmanService hangmanService = Get.put(HangmanService());
   final authController = Get.find<AuthController>();
   final RxList<String> difficultyNiveaus = <String>[].obs;
@@ -36,22 +36,23 @@ class PlayController extends GetxController {
   Rx<String> dbpath = "".obs;
 
   //dynamic
-  RxList<String> guessedLetters = <String>[].obs;
+  final RxList<String> guessedLetters = <String>[].obs;
   final List<String> words = [];
-  RxInt incorrectGuesses = 0.obs;
-  RxString wordToGuess = ''.obs;
-  RxBool gameLost = false.obs;
-  RxBool gameWon = false.obs;
-  RxInt currentIndex = 0.obs;
-  RxString wordHint = ''.obs;
-  RxInt playerTurn = 0.obs;
+  final RxInt incorrectGuesses = 0.obs;
+  final RxString wordToGuess = ''.obs;
+  final RxBool gameLost = false.obs;
+  final RxBool gameWon = false.obs;
+  final RxInt currentIndex = 0.obs;
+  final RxString wordHint = ''.obs;
+  final RxInt playerTurn = 0.obs;
 
-  // online playing
-  RxList<GameParticipantModel> participants = <GameParticipantModel>[].obs;
+  final RxList<GameParticipantModel> participants = <GameParticipantModel>[].obs;
+  final Rxn<GameParticipantModel> winner = Rxn<GameParticipantModel>();
   StreamSubscription<OnlineCompetitionDocModel?>? _gameSubscription;
   final RxString currentGameId = ''.obs;
   final RxBool gameState = true.obs;
   final RxBool isHost = false.obs;
+  final RxBool canStart = true.obs;
 
 
   @override
@@ -68,54 +69,49 @@ class PlayController extends GetxController {
   @override
   void onClose() {
     _gameSubscription?.cancel();
-    leaveOnlineCompetition();
+    leaveOnlineCompetition(user!.uid);
     super.onClose();
   }
 
 
-  String buildHiddenWord() {
-    String hiddenWord = '';
-    String normalizedWord = normalizeAlphabet(wordToGuess.value);
-
-    for (int i = 0; i < normalizedWord.length; i++) {
-      if (guessedLetters.contains(normalizedWord[i])) {
-        hiddenWord += '${normalizedWord[i]} ';
-      } else {
-        hiddenWord += '_ ';
+  void _subscribeToGame(String inviteCode) {
+    _gameSubscription?.cancel();
+    _gameSubscription = hangmanService.streamGameByInviteCode(inviteCode).listen((gameData) {
+      if (gameData == null) {
+        showCustomSnackbar("msg_game_not_found".tr, false);
+        Get.back();
+        return;
       }
-    }
-    return hiddenWord.trim();
-  }
 
+      if(gameData.hostId == user!.uid) isHost.value = true;
+      currentGameId.value = gameData.gameId;
+      gameState.value = gameData.gameState == "waiting";
+      participants.value = gameData.participants;
 
-  Future<void> checkGuess(String letter) async{
-    if (!guessedLetters.contains(letter)) {
-      guessedLetters.add(letter);
-      String normalizedWord = normalizeAlphabet(wordToGuess.value);
+      if (gameData.gameState == "playing") {
+        wordHint.value = gameData.wordHint ?? "";
+        wordToGuess.value = gameData.wordToGuess;
+        winner.value = null;
+        resetGameStates();
 
-      if(!normalizedWord.contains(letter)) incorrectGuesses.value++;
-      if(!buildHiddenWord().contains('_')) {
-        gameWon.value = true;
-        if(isOnlineMode.value || isJoiningMode.value){
-          await handleOnlineGameWin(participants);
+        if (Get.currentRoute != '/hangman') {
+          Get.offNamed('/hangman');
         }
-      }
-      if (incorrectGuesses.value >= maxIncorrectGuesses){
-        gameLost.value = true;
-        if(isOnlineMode.value || isJoiningMode.value){
-          showWaitingRoom();
-        }
-      }
-    }
-  }
 
-  void prepareNewGame() {
-    if(words.isEmpty) return;
-    wordToGuess.value = normalizeAlphabet(words[currentIndex.value]);
-    guessedLetters.clear();
-    incorrectGuesses.value = 0;
-    gameLost.value = false;
-    gameWon.value = false;
+        bool allLost = gameData.participants.every((participant) => participant.gameState == 'Lost');
+        canStart.value = allLost;
+
+        bool isCurrentUserPlaying = gameData.participants.any((p) => p.uid == user!.uid && p.gameState == 'Play');
+        isCurrentUserPlaying? closeWaitingRoom() : showWaitingRoom();
+
+      } else if (gameData.gameState == "waiting") {
+        if(gameData.winner != null) canStart.value = true;
+        if(gameData.winner != null) winner.value = gameData.winner;
+        guessedLetters.clear();
+        showWaitingRoom();
+        prepareNewGame();
+      }
+    });
   }
 
 
@@ -141,12 +137,57 @@ class PlayController extends GetxController {
     }
   }
 
+  Future<void> checkGuess(String letter) async{
+    if (!guessedLetters.contains(letter)) {
+      guessedLetters.add(letter);
+      String normalizedWord = normalizeAlphabet(wordToGuess.value);
 
-  Future<void> startNextOnlineGame(BuildContext context) async {
+      if(!normalizedWord.contains(letter)) incorrectGuesses.value++;
+      if(!buildHiddenWord().contains('_')) {
+        gameWon.value = true;
+        if(isOnlineMode.value || isJoiningMode.value){
+          await handleOnlineGameWin(participants);
+        }
+      }
+      if (incorrectGuesses.value >= maxIncorrectGuesses){
+        gameLost.value = true;
+        if(isOnlineMode.value || isJoiningMode.value){
+          await hangmanService.gameLost(currentGameId.value, participants);
+          showWaitingRoom();
+        }
+      }
+    }
+  }
+
+  void showWaitingRoom() {
+    if (Get.isDialogOpen == true) {
+      debugPrint("A dialog is already open.");
+    } else {
+      Get.dialog(
+        WaitingRoomDialog(),
+        barrierDismissible: false,
+      );
+    }
+  }
+
+  void closeWaitingRoom() {
+    if (Get.isDialogOpen == true) {
+      Get.back();
+    } else {
+      debugPrint("No dialog is currently open to close.");
+    }
+  }
+
+  Future<void> startNextOnlineGame() async {
     if (currentGameId.isEmpty) return;
+    if(!canStart.value) {
+      showCustomSnackbar("waiting_players_to_finish".tr, false);
+      return;
+    }
+    currentIndex.value++;
 
     try {
-      currentIndex.value++;
+      resetGameStates();
       if (words.isEmpty || currentIndex.value >= words.length) {
         await _loadWordsFromFirestore();
       } else {
@@ -158,107 +199,50 @@ class PlayController extends GetxController {
         return;
       }
 
-      // Create game state model
       final GameStateChangeModel newGameData = GameStateChangeModel(
-          gameId: currentGameId.value,
-          wordHint: wordHint.value,
-          word: wordToGuess.value,
+        gameId: currentGameId.value,
+        wordHint: wordHint.value,
+        word: wordToGuess.value,
       );
 
-      final success = await hangmanService.handleNextGameStart(newGameData);
+      final success = await hangmanService.handleNextGameStart(newGameData, participants);
       if (!success) {
         showCustomSnackbar("unexpected_result".tr, false);
         return;
       }
 
-      resetGameStates();
     } catch (e) {
       showCustomSnackbar("unexpected_result".tr, false);
     }
   }
 
-  Future<void> leaveOnlineCompetition() async{
+  Future<void> leaveOnlineCompetition(String userId) async{
     try{
-      _gameSubscription?.cancel();
-      closeWaitingRoom();
-      if(isHost.value){
-        final success = await hangmanService.destroyGame(currentGameId.value);
-        if(success){
-          showCustomSnackbar("msg_game_destruction_succed".tr, true);
-        }
+      await hangmanService.removeUserOrDestroyGame(currentGameId.value, userId);
+      if(userId == participants[0].uid ||userId == user!.uid){
+        _gameSubscription?.cancel();
+        closeWaitingRoom();
+        Get.offNamed('/mainGames');
+        showCustomSnackbar("msg_game_destruction_succed".tr, true);
       }
     }catch(e){
       showCustomSnackbar("unexpected_result".tr, false);
-    }finally{
-      closeWaitingRoom();
-      Get.offNamed('/mainGames');
-    }
-  }
-
-
-  void _subscribeToGame(String inviteCode) {
-    _gameSubscription?.cancel();
-    _gameSubscription = hangmanService.streamGameByInviteCode(inviteCode)
-        .listen((gameData) {
-      if (gameData == null) {
-        showCustomSnackbar("msg_game_not_found".tr, false);
-        Get.back();
-        return;
-      }
-
-      if(gameData.hostId == user!.uid) isHost.value = true;
-      currentGameId.value = gameData.gameId;
-      gameState.value = gameData.gameState == "waiting";
-      participants.value = gameData.participants;
-
-      if (gameData.gameState == "playing") {
-        if (Get.currentRoute != '/hangman') {
-          Get.offNamed('/hangman');
-        }
-        wordToGuess.value = gameData.wordToGuess;
-        wordHint.value = gameData.wordHint??"";
-        gameWon.value = false;
-        gameLost.value = false;
-        closeWaitingRoom();
-      }
-      if(gameData.gameState == "waiting"){
-        guessedLetters.clear();
-        showWaitingRoom();
-      }
-    });
-  }
-
-  void showWaitingRoom() { // Dont touch this or dialog will got problem
-    if (Get.isDialogOpen == true) {
-      debugPrint("A dialog is already open.");
-    } else {
-      Get.dialog(
-        WaitingRoomDialog(),
-        barrierDismissible: false,
-      );
-    }
-  }
-
-  void closeWaitingRoom() { // Dont touch this or dialog will got problem
-    if (Get.isDialogOpen == true) {
-      Get.back();
-    } else {
-      debugPrint("No dialog is currently open to close.");
     }
   }
 
 
   Future<void> startTeamPlayGame(BuildContext context) async {
     if (isOfflineMode.value) {
+      _gameSubscription?.cancel();
       if(localPlayers.length < 2){
         showCustomSnackbar("zero_player_error".tr, false);
         return;
       }
+      prepareNewGame();
       wordHint.value = "";
       await getPlayerGuess(context);
-      prepareNewGame();
-      closeWaitingRoom();
       Get.toNamed('/hangman');
+      closeWaitingRoom();
     }
 
     if(isOnlineMode.value){
@@ -278,16 +262,12 @@ class PlayController extends GetxController {
 
 
   Future<void> handleOnlineGameWin(List<GameParticipantModel> participants) async {
-    final numberOfWins = participants
-        .firstWhere((p) => p.uid == user!.uid)
-        .numberOfWin;
-
     gameLost.value = false;
     gameWon.value = true;
+    canStart.value = true;
     if (currentGameId.value.isNotEmpty) {
       final success = await hangmanService.handleGameWin(
           currentGameId.value,
-          numberOfWins,
           participants
       );
 
@@ -331,6 +311,7 @@ class PlayController extends GetxController {
   Future<void> joinGameWithCode(String code) async {
     final uppercasedCode = code.toUpperCase();
     final success = await hangmanService.joinGame(uppercasedCode);
+    canStart.value = true;
     if (success) {
       gameCode.value = uppercasedCode;
       _subscribeToGame(uppercasedCode);
@@ -363,20 +344,34 @@ class PlayController extends GetxController {
     }
   }
 
-  // Static functions
-  Future<void> getAppLanguage() async{
-    if(authController.language[0] == "fa" || authController.language[0]=="ar"){
-      isAlphabetRTL.value = true;
-    }else{
-      isAlphabetRTL.value = false;
+
+  String buildHiddenWord() {
+    String hiddenWord = '';
+    String normalizedWord = normalizeAlphabet(wordToGuess.value);
+
+    for (int i = 0; i < normalizedWord.length; i++) {
+      if (guessedLetters.contains(normalizedWord[i])) {
+        hiddenWord += '${normalizedWord[i]} ';
+      } else {
+        hiddenWord += '_ ';
+      }
     }
+    return hiddenWord.trim();
   }
 
-  Future<void> getDifficultyAndPath() async {
-    final result = await getHangmanDifficulty();
-    difficultyNiveaus.value = result['difficultyNivea'] as List<String>;
-    difficultyLabels.value = result['difficultyLabels'] as List<String>;
-    dbpath.value = result['firestorePath'];
+
+  void prepareNewGame() {
+    if(words.isEmpty) return;
+    wordToGuess.value = normalizeAlphabet(words[currentIndex.value]);
+    resetGameStates();
+  }
+
+
+  void resetGameStates() {
+    guessedLetters.clear();
+    incorrectGuesses.value = 0;
+    gameLost.value = false;
+    gameWon.value = false;
   }
 
   void addLocalPlayer(String playerName) {
@@ -421,6 +416,23 @@ class PlayController extends GetxController {
   void generateGameCode() => gameCode.value = generateStrings(6);
   void clearGameCode() => gameCode.value = '';
 
+
+  Future<void> getAppLanguage() async{
+    if(authController.language[0] == "fa" || authController.language[0]=="ar"){
+      isAlphabetRTL.value = true;
+    }else{
+      isAlphabetRTL.value = false;
+    }
+  }
+
+  Future<void> getDifficultyAndPath() async {
+    final result = await getHangmanDifficulty();
+    difficultyNiveaus.value = result['difficultyNivea'] as List<String>;
+    difficultyLabels.value = result['difficultyLabels'] as List<String>;
+    dbpath.value = result['firestorePath'];
+  }
+
+
   void _initializeAlphabet(){
     final Map<String, List<String>> alphabetMap = {
       "fa": Alphabets.persian,
@@ -443,13 +455,5 @@ class PlayController extends GetxController {
           .replaceAll(RegExp(r'[\u202A-\u202E\u2066-\u2069]'), '');
     }
     return isRtlLanguage? normalized : normalized.toUpperCase();
-  }
-
-  void resetGameStates() {
-    guessedLetters.clear();
-    incorrectGuesses.value = 0;
-    gameLost.value = false;
-    gameWon.value = false;
-    wordHint.value = "";
   }
 }

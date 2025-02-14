@@ -46,22 +46,7 @@ class SidebarDrawerState extends State<SidebarDrawer> {
       width: 250,
       child:  SingleChildScrollView(
         child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Colors.blue.shade100, Colors.white],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ),
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.blueGrey.shade100.withValues(alpha: 0.5),
-                spreadRadius: 1,
-                blurRadius: 5,
-                offset: const Offset(0, 3),
-              ),
-            ],
-          ),
+          color: Colors.white54,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
@@ -82,30 +67,35 @@ class SidebarDrawerState extends State<SidebarDrawer> {
                   ListTileWidget(
                     iconColor: Colors.red,
                     title: "my_friends".tr,
+                    boldTitle: true,
                     icon: Icons.group,
                     action: ()=> navigateTo('friendsList'),
                   ),
                   ListTileWidget(
                     iconColor: Colors.red,
                     title: "my_page".tr,
+                    boldTitle: true,
                     icon: Icons.home,
                     action: () => navigateTo('profile'),
                   ),
                   ListTileWidget(
                     iconColor: Colors.red,
                     title: "groups".tr,
+                    boldTitle: true,
                     icon: Icons.mark_unread_chat_alt,
                     action: () => navigateTo('home'),
                   ),
                   ListTileWidget(
                     iconColor: Colors.red,
                     title: "games".tr,
+                    boldTitle: true,
                     icon: Icons.games_sharp,
                     action: () => navigateTo('mainGames'),
                   ),
                   ListTileWidget(
                     iconColor: Colors.red,
                     title: "logout".tr,
+                    boldTitle: true,
                     icon: Icons.logout,
                     action: logoutAction,
                   ),
@@ -118,12 +108,14 @@ class SidebarDrawerState extends State<SidebarDrawer> {
                   ListTileWidget(
                     iconColor: Colors.red,
                     title: "settings".tr,
+                    boldTitle: true,
                     icon: Icons.settings,
                     action: () => navigateTo('settings'),
                   ),
                   ListTileWidget(
                     iconColor: Colors.red,
                     title: "policy_title".tr,
+                    boldTitle: true,
                     icon: Icons.policy_outlined,
                     action: () => navigateTo('policy'),
                   ),

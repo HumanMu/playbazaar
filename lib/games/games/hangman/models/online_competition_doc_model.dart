@@ -80,7 +80,7 @@ class OnlineCompetitionDocModel {
       'wordToGuess': wordToGuess,
       'winner': winner?.toFirestore(),
       'createdAt': createdAt,
-      'wordHint': wordHint
+      'wordHint': wordHint,
     };
   }
 

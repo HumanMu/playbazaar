@@ -90,7 +90,8 @@ class LocalStringsFa extends Translations {
       'your_level': 'سطح شما',
       'reset_your_level': 'با فشار دادن دکمه پایین سطح بازی‌تان به اول برمی‌گردد، مثل روز اول.',
       'round_result': 'امتیاز در این دور: %1 امتیاز\nآیا می‌خواهید بازی‌های بیشتری انجام دهید؟',
-
+      'waiting_players_to_finish': 'در انتظار پایان بازی سایر بازیکنان',
+      'winner': 'برنده',
 
       //Personal information
       'name': ' نام  ',
@@ -235,6 +236,7 @@ class LocalStringsFa extends Translations {
       'btn_leave': 'ترک',
       'btn_add': 'افزودن',
       'btn_update': 'به‌روزرسانی',
+      'btn_remove': 'حذف',
       'btn_reset': 'بازگشت به اول',
 
 

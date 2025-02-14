@@ -90,7 +90,8 @@ class LocalStringsEn extends Translations {
       'your_level': 'Your level',
       'reset_your_level': 'By pressing the button below, your game level will reset to the beginning, like day one.',
       'round_result': 'Scored in this round: %1 points\ndo you want to play more games?',
-
+      'waiting_players_to_finish': 'Waiting for other players to finish the game',
+      'winner': 'Winner',
 
       //Personal information
       'aboutme' : 'About me ',
@@ -236,6 +237,7 @@ class LocalStringsEn extends Translations {
       'btn_leave': 'Leave',
       'btn_add': 'Add',
       'btn_update': 'Update',
+      'btn_remove': 'Remove',
       'btn_reset': 'Reset',
 
 

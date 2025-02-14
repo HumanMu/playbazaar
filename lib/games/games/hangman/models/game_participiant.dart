@@ -3,10 +3,12 @@ class GameParticipantModel {
   final String name;
   final String? image;
   final int numberOfWin;
+  final String gameState;
 
   GameParticipantModel({
     required this.uid,
     required this.name,
+    required this.gameState,
     this.image,
     this.numberOfWin = 0,
   });
@@ -17,6 +19,7 @@ class GameParticipantModel {
       name: map['name']?.toString() ?? '',
       image: map['image']?.toString(),
       numberOfWin: (map['numberOfWin'] as num?)?.toInt() ?? 0,
+      gameState: map['gameState']
     );
   }
 
@@ -26,6 +29,7 @@ class GameParticipantModel {
       'name': name,
       'image': image,
       'numberOfWin': numberOfWin,
+      'gameState': gameState
     };
   }
 
@@ -36,12 +40,14 @@ class GameParticipantModel {
     String? image,
     int? incurrectGuess,
     int? numberOfWin,
+    String? gameState,
   }) {
     return GameParticipantModel(
       uid: uid ?? this.uid,
       name: name ?? this.name,
       image: image ?? this.image,
       numberOfWin: numberOfWin ?? this.numberOfWin,
+      gameState: gameState?? this.gameState
     );
   }
 }

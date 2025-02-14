@@ -141,11 +141,11 @@ class ConnectorPlayController extends GetxController {
         final updatedWords = List<WordConnectorModel>.from(words);
         updatedWords[wordIndex] = updatedWords[wordIndex].copyWith(isFound: true);
         words.value = updatedWords;
-        points.value +=15;
+        points.value +=50;
 
         // Update points by creating a new instance of SharedpreferencesDto
         gameState.value = gameState.value.copyWith(
-          points: gameState.value.points + 15,
+          points: gameState.value.points + 50,
         );
 
         // Check if this was the last word

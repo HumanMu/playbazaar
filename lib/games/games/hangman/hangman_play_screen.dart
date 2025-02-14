@@ -2,7 +2,7 @@ import 'dart:math' as math;
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import '../../../admob/adaptive_banner_ad.dart';
-import 'animated_hangman_painter.dart';
+import 'widgets/animated_hangman_painter.dart';
 import 'package:flutter/material.dart';
 import 'controller/play_controller.dart';
 import '../../../emojies/tear_drop_with_sound.dart';
@@ -79,6 +79,7 @@ class _HangmanPlayScreenState extends State<HangmanPlayScreen> with SingleTicker
                               children: [
                                 _buildHiddenWord(),
                                 _buildGameStatus(),
+                                _buildHintButtons(),
                                 _buildKeyboard(),
                               ],
                             )),
@@ -102,7 +103,7 @@ class _HangmanPlayScreenState extends State<HangmanPlayScreen> with SingleTicker
     return AppBar(
       leading: IconButton(
         onPressed: () => Get.offNamed('/hangmanPlaySettings'),
-        icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
+        icon: const Icon(Icons.arrow_back, color: Colors.white),
       ),
       title: Text(
         'hangman'.tr,
@@ -152,15 +153,9 @@ class _HangmanPlayScreenState extends State<HangmanPlayScreen> with SingleTicker
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 8.0),
-      child: Column(
-        children: [
-          Text(
-            '${"incorrect_guess".tr} ${_controller.incorrectGuesses}/${_controller.maxIncorrectGuesses}',
-            style: const TextStyle(color: Colors.black38),
-          ),
-          const SizedBox(height: 8),
-          _buildHintButtons(),
-        ],
+      child:  Text(
+        '${"incorrect_guess".tr} ${_controller.incorrectGuesses}/${_controller.maxIncorrectGuesses}',
+        style: const TextStyle(color: Colors.black38),
       ),
     );
   }

@@ -108,7 +108,8 @@ class _QuizMainPage extends State<QuizMainPage> {
                     children: [
                       GameListBox(
                         title: quizNames[index],
-                        quizPath: quizPath[index],
+                        gamePath: quizPath[index],
+
                       ),
                     ],
                   );
@@ -125,7 +126,7 @@ class _QuizMainPage extends State<QuizMainPage> {
           ),
           style: TextButton.styleFrom(
             foregroundColor: Colors.white,
-            backgroundColor: Colors.blue.shade500,
+            backgroundColor: Colors.green.shade500,
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(15),
@@ -153,7 +154,7 @@ class _QuizMainPage extends State<QuizMainPage> {
               child: Text(
                 "add_question_hint".tr,
                 style: TextStyle(
-                  color: Colors.blue.shade800,
+                  color: Colors.grey.shade800,
                   fontStyle: FontStyle.italic,
                 ),
                 textAlign: TextAlign.center,

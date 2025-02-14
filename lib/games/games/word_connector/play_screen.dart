@@ -74,7 +74,7 @@ class WordConnectorPlayScreen extends StatelessWidget {
                 ),
               ),
               Container(
-                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   color: Colors.blueGrey.shade100.withValues(alpha: 0.5),

@@ -36,7 +36,7 @@ class _MainScreenGamesState extends State<MainScreenGames> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade200,
+      //backgroundColor: Colors.grey.shade200,
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.red,
@@ -59,16 +59,7 @@ class _MainScreenGamesState extends State<MainScreenGames> {
       ),
       body: Center(
         child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Colors.white,
-                Colors.grey.shade100,
-              ],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ),
-          ),
+          margin: EdgeInsets.all(16),
           child: _gameList(),
         ),
       ),
@@ -98,41 +89,24 @@ class _MainScreenGamesState extends State<MainScreenGames> {
     );
   }
 
+
   Widget _buildGameTile({
     required String title,
     required String gamePath,
   }) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.blue.shade50, Colors.white],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.blueGrey.shade100.withValues(alpha: 0.5),
-            spreadRadius: 1,
-            blurRadius: 5,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      child: ListTile(
-        contentPadding: const EdgeInsets.all(16),
-        title: Center(
-          child: Text(
-            gamePath.tr,
+    return Card(
+      child: Container(
+        padding: EdgeInsets.all(10.0),
+        child: ListTile(
+          title: Text(gamePath.tr,
             style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.blueGrey.shade900,
+                fontSize: 20,
+                fontWeight: FontWeight.bold
             ),
           ),
+          trailing: const Icon(Icons.arrow_forward),
+          onTap: () => navigateToGamePage(gamePath),
         ),
-        onTap: () => navigateToGamePage(gamePath),
       ),
     );
   }
@@ -152,5 +126,8 @@ class _MainScreenGamesState extends State<MainScreenGames> {
         showCustomSnackbar('Please, pick a game first', false);
     }
   }
+
+
+
 }
 

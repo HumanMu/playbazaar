@@ -9,6 +9,7 @@ class CustomSwitchTile extends StatelessWidget {
   final String? additionalInfoTitle;
   final String? additionalInfo;
   final IconData? additionalActionIcon;
+  final Color? additionalIconColor;
   final VoidCallback? onAdditionalActionPressed;
   final Color? inactiveThumbColor;
   final Color? activColor;
@@ -26,6 +27,7 @@ class CustomSwitchTile extends StatelessWidget {
     this.additionalInfoTitle,
     this.additionalInfo,
     this.additionalActionIcon,
+    this.additionalIconColor,
     this.onAdditionalActionPressed,
     this.inactiveThumbColor = Colors.black,
     this.activColor = Colors.green,
@@ -83,6 +85,7 @@ class CustomSwitchTile extends StatelessWidget {
                   if (additionalActionIcon != null)
                     IconButton(
                       icon: Icon(additionalActionIcon),
+                      color: additionalIconColor?? Colors.black,
                       onPressed: onAdditionalActionPressed,
                     ),
                 ],

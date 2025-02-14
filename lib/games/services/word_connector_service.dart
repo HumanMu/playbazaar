@@ -90,7 +90,7 @@ class WordConnectorService {
 
 
 
-  Future<void> addWord(AddWordModel words, String language) async {
+  Future<AddWordModel?> addWord(AddWordModel words, String language) async {
     String directory = "$_gameDirectory$language";
 
     try {
@@ -104,9 +104,11 @@ class WordConnectorService {
       words.count = length +1;
 
       await collection.add(words.toFirestore());
-
+      return words;
+      
     } catch (e) {
-      throw Exception('Failed to add word: $e');
+      debugPrint('Failed to add word: $e');
+      return null;
     }
   }
 

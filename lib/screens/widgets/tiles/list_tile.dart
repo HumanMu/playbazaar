@@ -7,11 +7,17 @@ class ListTileWidget extends StatefulWidget{
   final IconData? icon;
   final int? length;
   final bool? hasFriends;
+  final bool boldTitle;
   final Function()? action;
 
   const ListTileWidget({super.key,
-    this.iconColor, required this.title, this.icon,
-    this.action, this.length, this.hasFriends
+    this.iconColor,
+    required this.title,
+    this.icon,
+    this.action,
+    this.length,
+    this.hasFriends,
+    this.boldTitle = false
   });
 
   @override
@@ -31,7 +37,10 @@ class _ListTileState extends State<ListTileWidget> {
       const EdgeInsets.symmetric(horizontal: 20, vertical: 1),
       leading: Icon(widget.icon),
       title: Text(widget.hasFriends == true? '${widget.title}   ${widget.length.toString()}' : widget.title,
-        style: const TextStyle(color: Colors.black),
+        style: TextStyle(
+          color: Colors.black,
+          fontWeight: widget.boldTitle? FontWeight.bold : FontWeight.normal,
+        ),
       ),
     );
   }

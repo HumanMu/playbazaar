@@ -105,7 +105,7 @@ class AddWordController extends GetxController {
           level: wordLevel ?? 0,
       );
 
-      await firebaseService.addWord(newWords, languageDirectory.value ??"");
+      final word = await firebaseService.addWord(newWords, languageDirectory.value ??"");
       showCustomSnackbar("quetion_added_title".tr, true);
       currentWords.clear();
       currentLetters.clear();
