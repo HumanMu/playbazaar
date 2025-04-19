@@ -89,7 +89,6 @@ class AuthController extends GetxController {
     }
   }
 
-
   Future<void> sendPasswordResetEmail(String email) async {
     try {
       await _auth.sendPasswordResetEmail(email: email);
@@ -127,14 +126,4 @@ class AuthController extends GetxController {
     }
   }
 }
-
-
-/*void listenToVerification() {
-    _auth.userChanges().listen((User? user) async {
-      if (user != null) {
-        isEmailVerified.value = user.emailVerified;
-        update();
-      }
-    });
-  }*/
 

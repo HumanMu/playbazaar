@@ -13,11 +13,14 @@ class LocalStringsFa extends Translations {
       'games' : 'بازیها',
       'quiz': 'مسابقات آزمونی',
       'hangman': 'بازی جلاد',
+      'brain_teaser' : 'چیستان',
       'games_list' : 'فهرست بازیها',
       'wall_blaster': 'دیوار شکن',
-      'ludo_world_war' : 'جنگ جهانی لودو',
+      'ludo_missions': 'لودو ماموریت',
+      'enable_robots': 'فعال‌سازی ربات‌ها',
+      'play_in_team': 'بازی گروهی',
       'quiz_list': 'فهرست بازی‌هایی لغتی',
-      'add_question_hint' : 'سوالی دآری که میخواهی در هر کدام از این بازیها اضافه شود؟ دکمه پایین را بزن',
+      'add_question_hint' : 'بازیها به کمک شما نیاز دارد!',
       'question_hint' : 'سؤال',
       'add_question_title': 'ارسال سؤال',
       'correct_answer_hint' : 'جواب درست',
@@ -48,7 +51,7 @@ class LocalStringsFa extends Translations {
       'you_lost_word_was': 'شما باختید! کلمه این بود:',
       'incorrect_guess': 'حدس اشتباه:',
       'hangman_play_settings': 'تنظیمات بازی جلاد',
-      'share_hangman_play_code': 'کد را با کسانی که می‌خواهید در بازی شرکت کنند به اشتراک بگذارید',
+      'share_game_code': 'کد را با کسانی که می‌خواهید در بازی شرکت کنند به اشتراک بگذارید',
       'deactive_other_options': 'غیرفعال کردن گزینه‌های دیگر',
       'deactive_play_with_friends': 'آیا می‌خواهید تنها بازی کنید؟ اگر بله، لطفاً دو گزینه بالا را غیرفعال کنید تا به بازی ادامه دهید',
       'add_player': 'اضافه کردن بازیکن',
@@ -58,6 +61,8 @@ class LocalStringsFa extends Translations {
       'this_generating_code': 'این یک کد تولید می‌کند که می‌توانید با دوستان خود به اشتراک بگذارید تا بپیوندند',
       'play_solo': 'تک‌نفره بازی کن',
       'play_solo_description': 'اگر تنهایی این گزینه را انتخاب کن',
+      'choose_player_numbers': 'تعداد بازیکنان را انتخاب کنید',
+      'players': 'بازیکن',
       'players_name_here': 'نام بازیکنان را اینجا اضافه کنید...',
       'zero_player_error': 'لطفاً حداقل دو بازیکن اضافه کنید یا گزینه‌های چندنفره را غیرفعال کنید',
       'pick_difficulty': 'سطح دشواری را انتخاب کنید',
@@ -73,8 +78,8 @@ class LocalStringsFa extends Translations {
       'waiting_start': 'در انتظار شروع میزبان...',
       'host': 'میزبان',
       'first_letter': 'شروع با حرف: ',
-      'join_hangman_with_code': 'ورود با کد',
-      'join_hangman_with_code_description': 'اگر یک کد برای پیوستن به دیگران دارید، این گزینه را انتخاب کنید',
+      'join_with_code': 'ورود با کد',
+      'join_with_code_description': 'اگر یک کد برای پیوستن به دیگران دارید، این گزینه را انتخاب کنید',
       'waiting_participants': 'منتظر شرکت‌کنندگان...',
       'msg_game_destruction_succed': 'بازی با موفقیت حذف شد.',
       'msg_game_not_found': 'بازی با کد داده شده یافت نشد.',
@@ -147,6 +152,7 @@ class LocalStringsFa extends Translations {
       'my_chat' : 'پیامها',
       'logout' : 'خروج ',
       'my_friends': 'لیست دوستان ',
+      'customize': 'شخصی‌سازی',
       'delete_friend' : 'حذف از دوستی',
       'delete_friendship': 'حذف دوستی با',
       'my_memberships' : "عضویت های من",
@@ -192,6 +198,7 @@ class LocalStringsFa extends Translations {
       'max_level_100': 'سطح باید کمتر از ۱۰۰ و بزرگتر از ۰ باشد',
       'yes': 'بله',
       'no': 'خیر',
+      'computer': 'کامپیوتر',
 
 
       // Friends
@@ -218,7 +225,7 @@ class LocalStringsFa extends Translations {
       'btn_send_question' : 'ارسال سؤال',
       'btn_send' : 'ارسال',
       'btn_continue' : 'ادامه',
-      'btn_review_question' : 'بازبینی درخواست ها',
+      'btn_review' : 'بازبینی',
       'btn_approve' : 'تایید',
       'btn_reject' : 'رد کن',
       'btn_resent' : 'ارسال مجدد ایمیل',
@@ -399,6 +406,9 @@ class LocalStringsFa extends Translations {
       // Word connector
         'word_connector_play_rules': 'وقتی بازی را شروع می‌کنید، لیستی از کلمات مخفی در بالای صفحه نمایش داده می‌شود. طول هر کلمه با توجه به تعداد جعبه‌های موجود در ردیف تعیین می‌شود. در پایین صفحه، حروفی را مشاهده خواهید کرد که می‌توانید برای پیدا کردن کلمات مخفی از آن‌ها استفاده کنید. باید تمام کلمات مخفی را پیدا کنید تا به مرحله بعد بروید. فراموش نکنید که قبل از شروع بازی یک سطح انتخاب کنید.',
 
+      // Ludo
+      'ludo_home_screen_guide_title': 'راهنمای صفحه اصلی لودو',
+       'ludo_home_screen_guide': 'صفحه اصلی چهار گزینه برای انتخاب ارائه می‌دهد: ۲، ۳ و ۴ بازیکن که نمایانگر تعداد شرکت‌کنندگان است. اگر کمتر از چهار نفر هستید، می‌توانید گزینه \'فعال‌سازی ربات‌ها\' را انتخاب کنید تا مکان‌های خالی پر شوند. در غیر این صورت، اگر تنها بازی می‌کنید و می‌خواهید مقابل کامپیوتر بازی کنید، می‌توانید گزینه \'کامپیوتر\' را انتخاب کنید بدون اینکه نیازی به فعال‌سازی ربات‌ها باشد.\n\n گزینه دیگر \'بازی گروهی\'است. با انتخاب این گزینه هر گروه شامل ۲ بازیکن میشود که برای برنده شدن باید گروه رقیب را شکست دهد.\n\n لطفاً توجه داشته باشید که بازی آنلاین فعلاً در دسترس نیست، زیرا هنوز در حال تکمیل نسخه آنلاین هستیم. ما در تلاشیم تا مسابقات آنلاین را در اسرع وقت ارائه دهیم، بنابراین از شما خواهش می‌کنیم که صبور باشید.'
     }
   };
 

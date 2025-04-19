@@ -3,6 +3,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:playbazaar/games/games/hangman/hangman_play_screen.dart';
 import 'package:playbazaar/games/games/hangman/hangman_play_settings_screen.dart';
+import 'package:playbazaar/games/games/ludo/play_screen.dart';
 import 'package:playbazaar/games/games/quiz/screens/add_question.dart';
 import 'package:playbazaar/games/games/quiz/screens/optionized_play_page.dart';
 import 'package:playbazaar/games/games/word_connector/play_screen.dart';
@@ -27,6 +28,7 @@ import '../../controller/settings_controller/notification_settings_controller.da
 import '../../controller/user_controller/auth_controller.dart';
 import '../../controller/user_controller/user_controller.dart';
 import '../../games/games/hangman/add_hangman_screen.dart';
+import '../../games/games/ludo/home_screen.dart';
 import '../../games/games/quiz/main_quiz_page.dart';
 import '../../games/games/quiz/screens/none_optionized_play_page.dart';
 import '../../games/games/quiz/screens/review_question_page.dart';
@@ -151,6 +153,21 @@ class _PlayBazaarState extends State<AppRoutes> {
                     GetPage(
                         name: '/mainGames',
                         page: () => const MainScreenGames()
+                    ),
+                    GetPage(
+                        name: '/ludoLobby',
+                        page: () => LudoHomeScreen()
+                    ),
+                    GetPage(name: '/ludoPlayScreen',
+                      page: () {
+                        final args = Get.arguments as Map<String, dynamic>;
+                        return LudoPlayScreen(
+                          numberOfPlayer: args['numberOfPlayer'],
+                          enabledRobots: args['enabledRobots'],
+                          teamPlay: args['teamPlay']
+                        );
+                      },
+                        //page: ()=> LudoPlayScreen(),
                     ),
                     GetPage(
                         name: '/mainQuiz',

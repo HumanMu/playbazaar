@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:playbazaar/controller/sound_controller/sound_controller.dart';
-import 'package:playbazaar/games/games/controller/quiz_play_controller.dart';
 import '../../../../admob/adaptive_banner_ad.dart';
+import '../controller/quiz_play_controller.dart';
 
 
 class OptionizedPlayScreen extends StatefulWidget {

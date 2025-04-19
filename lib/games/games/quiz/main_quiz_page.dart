@@ -101,6 +101,7 @@ class _QuizMainPage extends State<QuizMainPage> {
           child: Center(
             child: Container(
               constraints: const BoxConstraints(maxWidth: 600),
+              margin: EdgeInsets.only(top: 15),
               child: ListView.builder(
                 itemCount: quizNames.length,
                 itemBuilder: (context, index) {
@@ -115,28 +116,6 @@ class _QuizMainPage extends State<QuizMainPage> {
                   );
                 },
               ),
-            ),
-          ),
-        ),
-        TextButton(
-          onPressed: () => acceptDialog(
-              context,
-              'guide'.tr,
-              'quiz_play_guide'.tr
-          ),
-          style: TextButton.styleFrom(
-            foregroundColor: Colors.white,
-            backgroundColor: Colors.green.shade500,
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15),
-            ),
-          ),
-          child: Text(
-            'guide'.tr,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
             ),
           ),
         ),
@@ -165,6 +144,21 @@ class _QuizMainPage extends State<QuizMainPage> {
               constraints: const BoxConstraints(maxWidth: 600),
               child: Row(
                 children: [
+                  TextButton(
+                    onPressed: () => acceptDialog(
+                        context,
+                        'guide'.tr,
+                        'quiz_play_guide'.tr
+                    ),
+                    child: Text(
+                      'guide'.tr,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.green
+                      ),
+                    ),
+                  ),
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () => Get.toNamed('/addQuestion'),
@@ -202,7 +196,7 @@ class _QuizMainPage extends State<QuizMainPage> {
                         child: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 12),
                           child: Text(
-                            "btn_review_question".tr,
+                            "btn_review".tr,
                             style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.w600,

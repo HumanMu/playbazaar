@@ -7,6 +7,7 @@ import 'package:playbazaar/constants/alphabets.dart';
 import 'package:playbazaar/controller/user_controller/auth_controller.dart';
 import 'package:playbazaar/games/games/hangman/models/game_participiant.dart';
 import 'package:playbazaar/games/games/hangman/models/game_state_change_model.dart';
+import 'package:playbazaar/games/helper/helper.dart';
 import 'package:playbazaar/games/services/hangman_services.dart';
 import 'package:playbazaar/global_widgets/show_custom_snackbar.dart';
 import 'package:playbazaar/global_widgets/dialog/string_return_dialog.dart';
@@ -131,7 +132,7 @@ class PlayController extends GetxController {
       retrievedWords.words.shuffle(random);
       words.addAll(retrievedWords.words.map((word) => word.trim().toUpperCase()));
       wordHint.value = retrievedWords.hint;
-      wordToGuess.value = normalizeAlphabet(words[currentIndex.value]);
+      wordToGuess.value = normalizeAlphabet(words[currentIndex.value], authController.language[0]);
     } catch (e) {
       showCustomSnackbar("Failed to load words", false);
     }
@@ -140,7 +141,7 @@ class PlayController extends GetxController {
   Future<void> checkGuess(String letter) async{
     if (!guessedLetters.contains(letter)) {
       guessedLetters.add(letter);
-      String normalizedWord = normalizeAlphabet(wordToGuess.value);
+      String normalizedWord = normalizeAlphabet(wordToGuess.value, authController.language[0]);
 
       if(!normalizedWord.contains(letter)) incorrectGuesses.value++;
       if(!buildHiddenWord().contains('_')) {
@@ -347,7 +348,7 @@ class PlayController extends GetxController {
 
   String buildHiddenWord() {
     String hiddenWord = '';
-    String normalizedWord = normalizeAlphabet(wordToGuess.value);
+    String normalizedWord = normalizeAlphabet(wordToGuess.value, authController.language[0]);
 
     for (int i = 0; i < normalizedWord.length; i++) {
       if (guessedLetters.contains(normalizedWord[i])) {
@@ -362,7 +363,7 @@ class PlayController extends GetxController {
 
   void prepareNewGame() {
     if(words.isEmpty) return;
-    wordToGuess.value = normalizeAlphabet(words[currentIndex.value]);
+    wordToGuess.value = normalizeAlphabet(words[currentIndex.value], authController.language[0] );
     resetGameStates();
   }
 
@@ -443,7 +444,7 @@ class PlayController extends GetxController {
     update();
   }
 
-  String normalizeAlphabet(String guessWord) {
+  /*String normalizeAlphabet(String guessWord) {
     String normalized = guessWord.replaceAll(RegExp(r'\s+'), '').trim(); // First remove any extra spaces
     bool isRtlLanguage = authController.language[0] == "fa" || authController.language[0] == "ar";
 
@@ -455,5 +456,5 @@ class PlayController extends GetxController {
           .replaceAll(RegExp(r'[\u202A-\u202E\u2066-\u2069]'), '');
     }
     return isRtlLanguage? normalized : normalized.toUpperCase();
-  }
+  }*/
 }

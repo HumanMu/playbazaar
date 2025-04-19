@@ -10,7 +10,7 @@ class AdManagerService {
   AdManagerService._internal();
 
   // Configure your ad unit IDs
-  static const String androidAdUnitId = 'ca-app-pub-xxxxxxxx/xxxxxxxx';
+  static const String androidAdUnitId = 'ca-app-pub-8489114651875477/8702898430';
   static const String iosAdUnitId = 'ca-app-pub-xxxxxxxx/xxxxxxxx';
 
 

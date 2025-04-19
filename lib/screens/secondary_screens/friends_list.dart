@@ -79,7 +79,7 @@ class _FriendsList extends State<FriendsList> {
         ],
         backgroundColor: Colors.red,
         centerTitle: true,
-        title: Text("my_friends".tr,
+        title: Text("friends".tr,
           style: const TextStyle(
               color: Colors.white,
               fontWeight:

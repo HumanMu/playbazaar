@@ -14,10 +14,13 @@ class LocalStringsEn extends Translations {
       'games' : 'Games',
       'quiz': 'Quiz',
       'hangman': 'Hangman',
+      'brain_teaser': 'Brain Teaser',
       'games_list': 'Games list',
       'wall_blaster': 'Wall Blaster',
-      'ludo_world_war' : 'Ludo World War',
-      'add_question_hint' : 'Do you have a question you would like to add to any of these games? Press the button below!',
+      'ludo_missions': 'Ludo Missions',
+      'enable_robots': 'Enable Robots',
+      'play_in_team': 'Play in Team',
+      'add_question_hint' : 'Want to add a question? Press the button below!',
       'question_hint' : 'Question',
       'add_question_title' : 'Sending Question',
       'pick_quiz_hint' : 'Which quiz should this be added to?',
@@ -48,7 +51,7 @@ class LocalStringsEn extends Translations {
       'you_lost_word_was': 'You lost! The word was:',
       'incorrect_guess': 'Incorrect guess:',
       'hangman_play_settings': 'Hangman Play Settings',
-      'share_hangman_play_code': 'Share the code with those you want to join the game',
+      'share_game_code': 'Share the code with those you want to join the game',
       'deactive_other_options': 'Deactivate other options',
       'deactive_play_with_friends': 'Do you want to play alone? If so, please deactivate the two options above to continue the game',
       'add_player': 'Add Player',
@@ -58,6 +61,8 @@ class LocalStringsEn extends Translations {
       'this_generating_code': 'This will generate a code to share with friends to join',
       'play_solo': 'Play Solo',
       'play_solo_description': 'If you want to play by yourself, choose this option',
+      'choose_player_numbers': 'Choose Number of Players',
+      'players': 'Players',
       'players_name_here': 'Add players name here...',
       'zero_player_error': 'Please add at least one player or deactivate the multiplayer options',
       'pick_difficulty': 'Pick Difficulty',
@@ -73,8 +78,8 @@ class LocalStringsEn extends Translations {
       'waiting_start': 'Waiting for host to start...',
       'host': 'Host',
       'first_letter': 'Start with letter: ',
-      'join_hangman_with_code': 'Join with code',
-      'join_hangman_with_code_description': 'If you have a code to join others, pick this one',
+      'join_with_code': 'Join with code',
+      'join_with_code_description': 'If you have a code to join others, pick this one',
       'waiting_participants': 'Waiting for participants...',
       'msg_game_destruction_succed': 'The game has been successfully destroyed.',
       'msg_game_not_found': 'Failed to find a game with the given code.',
@@ -147,6 +152,7 @@ class LocalStringsEn extends Translations {
       'logout' : 'Logout',
       'my_chat' : 'Messages',
       'my_friends': 'My Friends',
+      'customize': 'Customize',
       'request_friendship' : 'Friend request',
       'delete_friend': 'Delete',
       'delete_friendship': 'Delete friendship with',
@@ -193,7 +199,7 @@ class LocalStringsEn extends Translations {
       'max_level_100': 'The level must be less than 100 and greater than 0',
       'yes': 'Yes',
       'no': 'No',
-
+      'computer': 'Computer',
 
       // friends
       'friends' : 'Friends',
@@ -219,7 +225,7 @@ class LocalStringsEn extends Translations {
       'btn_send_question' : 'Send Questions',
       'btn_send' : 'Send',
       'btn_continue' : 'Continue',
-      'btn_review_question' : 'Review Question',
+      'btn_review' : 'Review',
       'btn_approve' : 'Approve',
       'btn_reject' : 'Reject',
       'btn_resent' : 'Resent Email',
@@ -403,6 +409,10 @@ class LocalStringsEn extends Translations {
       // Word connector
         'word_connector_play_rules': 'When you start the game, a list of hidden words will appear at the top of the screen. The length of each word is determined by the number of boxes in the row. At the bottom of the screen, you’ll see the available letters to use for finding the hidden words. You must discover all the hidden words to proceed to the next words. Don’t forget to select a level before starting the game.',
 
+
+      // Ludo
+      'ludo_home_screen_guide_title': 'Ludo Home Screen Guide',
+      'ludo_home_screen_guide': 'The home screen offers four options to choose from: 2, 3, and 4 players, which represent the number of participants. If you have fewer than four players, you can select the \'Enable Robots\' option to fill the remaining spots. Alternatively, if you\'re playing solo and wish to compete against the computer, you can select the \'Computer\' option without needing to enable robots. Another option, \'Play in Team,\' allows you to play in teams of two.Please note that online gameplay is not yet available, as we are still working on finishing the online version. We are making every effort to bring online competition to you as soon as possible, so we kindly ask for your patience.'
     }
   };
 

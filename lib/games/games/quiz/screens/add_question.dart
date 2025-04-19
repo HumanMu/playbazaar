@@ -19,6 +19,7 @@ class AddQuestionState extends State<AddQuestion> {
   List<String>? language = [];
   List<String> quizPath = [];
   int? selectedQuizIndex;
+  bool addingQuiz = false;
 
   final TextEditingController _quizC = TextEditingController();
   final TextEditingController _questionC = TextEditingController();
@@ -165,6 +166,7 @@ class AddQuestionState extends State<AddQuestion> {
       _wrongAnswer2C.clear();
       _wrongAnswer3C.clear();
       _quetionDescriptionC.clear();
+      _questionC.clear();
     });
   }
 
@@ -185,7 +187,7 @@ class AddQuestionState extends State<AddQuestion> {
               maxLines: isMultiLine ? null : 1,
               style: const TextStyle(color: Colors.black),
               decoration: InputDecoration(
-                hintText: "enter_your_answer_here".tr, // Add hintText here
+                hintText: "enter_your_answer_here".tr,
                 hintStyle: const TextStyle(
                   color: Colors.grey,
                   fontStyle: FontStyle.italic,

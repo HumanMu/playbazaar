@@ -78,7 +78,6 @@ class _MainScreenGamesState extends State<MainScreenGames> {
               itemCount: gameNames.length,
               itemBuilder: (context, index) {
                 return _buildGameTile(
-                  title: gameNames[index],
                   gamePath: gamePath[index],
                 );
               },
@@ -91,7 +90,7 @@ class _MainScreenGamesState extends State<MainScreenGames> {
 
 
   Widget _buildGameTile({
-    required String title,
+    //required String title,
     required String gamePath,
   }) {
     return Card(
@@ -121,6 +120,9 @@ class _MainScreenGamesState extends State<MainScreenGames> {
         break;
       case 'wordconnector':
         Get.toNamed('/wordConnectorSettingScreen');
+        break;
+      case 'ludo_missions':
+        Get.toNamed('/ludoLobby');
         break;
       default:
         showCustomSnackbar('Please, pick a game first', false);

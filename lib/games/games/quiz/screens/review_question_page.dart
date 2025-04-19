@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
-import 'package:googleapis/firebaserules/v1.dart';
 import 'package:playbazaar/constants/enums.dart';
 import 'package:playbazaar/controller/user_controller/user_controller.dart';
 import 'package:playbazaar/games/games/quiz/widgets/drop_down_list_tile.dart';
@@ -115,7 +114,7 @@ class ReviewQuestionsPageState extends State<ReviewQuestionsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("btn_review_question".tr,
+        title: Text("btn_review".tr,
           style: TextStyle(
             color: Colors.white
           ),

@@ -14,10 +14,13 @@ class LocalStringsAr extends Translations {
       'games': 'الألعاب',
       'quiz': 'قائمة الألعاب',
       'hangman': 'لعبة الجلاد',
+      'brain_teaser': 'لغز',
       'games_list': 'قائمة الألعاب',
       'wall_blaster': 'محطم الجدران',
-      'ludo_world_war': 'حرب لودو العالمية',
-      'add_question_hint': 'هل لديك سؤال ترغب في إضافته إلى أي من هذه الألعاب؟ اضغط على الزر أدناه!',
+      'ludo_missions': 'مهام اللودو',
+      'enable_robots': 'تمكين الروبوتات',
+      'play_in_team': 'العب في الفريق',
+      'add_question_hint': 'هل تريد إضافة سؤال؟ اضغط الزر!',
       'question_hint': 'سؤال',
       'add_question_title': 'إرسال السؤال',
       'pick_quiz_hint': 'إلى أي اختبار يجب إضافة هذا؟',
@@ -47,7 +50,7 @@ class LocalStringsAr extends Translations {
       'you_lost_word_was': 'لقد خسرت! الكلمة كانت:',
       'incorrect_guess': 'تخمين غير صحيح:',
       'hangman_play_settings': 'إعدادات لعبة الرجل المشنوق',
-      'share_hangman_play_code': 'شارك الكود مع من تريد أن ينضم إلى اللعبة',
+      'share_game_code': 'شارك الكود مع من تريد أن ينضم إلى اللعبة',
       'deactive_other_options': 'تعطيل الخيارات الأخرى',
       'deactive_play_with_friends': 'هل تريد اللعب بمفردك؟ إذاً يرجى تعطيل الخيارين أعلاه للمتابعة إلى اللعبة',
       'add_player': 'إضافة لاعب',
@@ -57,6 +60,8 @@ class LocalStringsAr extends Translations {
       'this_generating_code': 'سيقوم هذا بإنشاء رمز لمشاركته مع الأصدقاء للانضمام',
       'play_solo': 'العب بمفردك',
       'play_solo_description': 'إذا كنت تريد اللعب بمفردك، اختر هذا الخيار',
+      'choose_player_numbers': 'اختر عدد اللاعبين',
+      'players': 'اللاعبون',
       'players_name_here': 'أضف أسماء اللاعبين هنا...',
       'zero_player_error': 'يرجى إضافة لاعبين على الأقل أو إلغاء تفعيل خيارات اللعب الجماعي',
       'add_words': 'إضافة كلمات',
@@ -71,8 +76,8 @@ class LocalStringsAr extends Translations {
       'waiting_start': 'في انتظار المضيف للبدء...',
       'host': 'المضيف',
       'first_letter': 'ابدأ بالحرف: ',
-      'join_hangman_with_code': 'الانضمام باستخدام الكود',
-      'join_hangman_with_code_description': 'إذا كان لديك كود للانضمام إلى الآخرين، اختر هذا الخيار',
+      'join_with_code': 'الانضمام باستخدام الكود',
+      'join_with_code_description': 'إذا كان لديك كود للانضمام إلى الآخرين، اختر هذا الخيار',
       'waiting_participants': 'في انتظار المشاركين...',
       'msg_game_destruction_succed': 'تم تدمير اللعبة بنجاح.',
       'msg_game_not_found': 'فشل في العثور على لعبة بالكود المعطى.',
@@ -147,6 +152,7 @@ class LocalStringsAr extends Translations {
       'logout': 'تسجيل الخروج',
       'my_chat': 'الرسائل',
       'my_friends': 'أصدقائي',
+      'customize': 'تخصيص',
       'request_friendship': 'طلب صداقة',
       'delete_friend': 'حذف',
       'delete_friendship': 'حذف الصداقة مع',
@@ -195,6 +201,7 @@ class LocalStringsAr extends Translations {
       'max_level_100': 'يجب أن يكون المستوى أقل من 100 وأكبر من 0',
       'yes': 'نعم',
       'no': 'لا',
+      'computer': 'كمبيوتر',
 
 
       // friends
@@ -220,7 +227,7 @@ class LocalStringsAr extends Translations {
       'btn_send_question': 'إرسال الأسئلة',
       'btn_send': 'إرسال',
       'btn_continue': 'متابعة',
-      'btn_review_question': 'مراجعة السؤال',
+      'btn_review': 'مراجعة',
       'btn_approve': 'موافقة',
       'btn_reject': 'رفض',
       'btn_resent': 'إعادة إرسال البريد الإلكتروني',
@@ -399,6 +406,10 @@ class LocalStringsAr extends Translations {
 
       // Word Connector
         'word_connector_play_rules': 'عند بدء اللعبة، ستظهر قائمة بالكلمات المخفية في أعلى الشاشة. يتم تحديد طول كل كلمة بناءً على عدد المربعات في الصف. في أسفل الشاشة، سترى الأحرف المتاحة لاستخدامها للعثور على الكلمات المخفية. يجب عليك اكتشاف جميع الكلمات المخفية للانتقال إلى المستوى التالي. لا تنسَ اختيار مستوى قبل بدء اللعبة.',
+
+      // Ludo
+      'ludo_home_screen_guide_title': 'دليل شاشة البداية للودو',
+      'ludo_home_screen_guide': 'تقدم شاشة البداية أربع خيارات للاختيار من بينها: 2، 3، و 4 لاعبين، والتي تمثل عدد المشاركين. إذا كنت لديك أقل من أربعة لاعبين، يمكنك اختيار خيار \'تفعيل الروبوتات\' لملء الأماكن المتبقية. بدلاً من ذلك، إذا كنت تلعب بمفردك وترغب في التنافس ضد الكمبيوتر، يمكنك اختيار خيار \'الكمبيوتر\' دون الحاجة إلى تفعيل الروبوتات. الخيار الآخر \'اللعب في الفريق\' يتيح لك اللعب في فريق مكون من اثنين.\n\nيرجى ملاحظة أنه لا يمكن اللعب عبر الإنترنت حالياً، حيث أننا ما زلنا نعمل على الانتهاء من النسخة عبر الإنترنت. نحن نبذل جهدنا لإطلاق المنافسة عبر الإنترنت في أقرب وقت ممكن، لذا نطلب منك التحلي بالصبر.'
 
     }
   };

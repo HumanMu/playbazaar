@@ -16,9 +16,12 @@ class LocalStringsDa extends Translations {
       'quiz': 'Quiz',
       'hangman': 'Galgespil',
       'games_list': 'Spilliste',
+      'brain_teaser' : 'Gåde',
       'wall_blaster': 'Vægknuser',
-      'ludo_world_war': 'Ludo World War',
-      'add_question_hint': 'Har du et spørgsmål, du gerne vil tilføje til et af disse spil? Tryk på knappen nedenfor!',
+      'ludo_missions': 'Ludo Missions',
+      'enable_robots': 'Aktivér robotter',
+      'play_in_team': 'Spil i hold',
+      'add_question_hint': 'Vil du tilføje sprøgsmål til quizen?',
       'question_hint': 'Spørgsmål',
       'add_question_title': 'Send Spørgsmål',
       'pick_quiz_hint': 'Hvilket quiz skal dette tilføjes til?',
@@ -48,7 +51,7 @@ class LocalStringsDa extends Translations {
       'you_lost_word_was': 'Du tabte! Ordet var:',
       'incorrect_guess': 'Forkert gæt:',
       'hangman_play_settings': 'Indstillinger for Galgespil',
-      'share_hangman_play_code': 'Del koden med dem, du vil have med i spillet',
+      'share_game_code': 'Del koden med dem, du vil have med i spillet',
       'deactive_other_options': 'Deaktiver andre muligheder',
       'deactive_play_with_friends': 'Vil du spille alene? Hvis ja, deaktiver venligst de to ovenstående muligheder for at fortsætte spillet',
       'add_player': 'Tilføj spiller',
@@ -58,6 +61,8 @@ class LocalStringsDa extends Translations {
       'this_generating_code': 'Dette vil generere en kode, som du kan dele med venner for at deltage',
       'play_solo': 'Spil alene',
       'play_solo_description': 'Hvis du vil spille alene, så vælg denne mulighed',
+      'choose_player_numbers': 'Vælg antal spillere',
+      'players': 'Spillere',
       'players_name_here': 'Tilføj spillerens navn her...',
       'zero_player_error': 'Tilføj venligst mindst to spiller eller deaktiver multiplayer-switch',
       'pick_difficulty': 'Vælg Sværhedsgrad',
@@ -73,8 +78,8 @@ class LocalStringsDa extends Translations {
       'waiting_start': 'Venter på at værten starter...',
       'host': 'Vært',
       'first_letter': 'Starter med bogstav: ',
-      'join_hangman_with_code': 'Deltag med kode',
-      'join_hangman_with_code_description': 'Hvis du har en kode for at deltage med andre, vælg denne',
+      'join_with_code': 'Deltag med kode',
+      'join_with_code_description': 'Hvis du har en kode for at deltage med andre, vælg denne',
       'waiting_participants': 'Venter på deltagere...',
       'msg_game_destruction_succed': 'Spillet er blevet succesfuldt ødelagt.',
       'msg_game_not_found': 'Kunne ikke finde et spil med den angivne kode.',
@@ -149,6 +154,7 @@ class LocalStringsDa extends Translations {
       'logout': 'Log ud',
       'my_chat': 'Beskeder',
       'my_friends': 'Mine venner',
+      'customize': 'Tilpas',
       'request_friendship': 'Venneanmodning',
       'delete_friend': 'Slet',
       'delete_friendship': 'Slet venskab med',
@@ -195,7 +201,7 @@ class LocalStringsDa extends Translations {
       'max_level_100': 'Niveauet skal være mindre end 100 og større end 0',
       'yes': 'Ja',
       'no': 'Nej',
-
+      'computer': 'Computer',
 
       // friends
       'friends': 'Venner',
@@ -221,7 +227,7 @@ class LocalStringsDa extends Translations {
       'btn_send_question': 'Send spørgsmål',
       'btn_send': 'Send',
       'btn_continue': 'Fortsæt',
-      'btn_review_question': 'Gennemgå spørgsmål',
+      'btn_review': 'Gennemgå',
       'btn_approve': 'Godkend',
       'btn_reject': 'Afvis',
       'btn_resent': 'Send e-mail igen',
@@ -398,6 +404,10 @@ class LocalStringsDa extends Translations {
 
       // Word Connector
       'word_connector_play_rules': 'Når du starter spillet, vil en liste med skjulte ord vises øverst på skærmen. Længden af hvert ord bestemmes af antallet af bokse i rækken. Nederst på skærmen ser du de bogstaver, du kan bruge til at finde de skjulte ord. Du skal finde alle de skjulte ord for at komme videre til næste ord. Husk at vælge et niveau, før du starter spillet.',
+
+      // Ludo
+      'ludo_home_screen_guide_title': 'Indstillinger for Ludo-Missions',
+      'ludo_home_screen_guide': 'Hjemmeskærmen tilbyder fire valgmuligheder: 2, 3 og 4 spillere, som repræsenterer antallet af deltagere. Hvis du har færre end fire spillere, kan du vælge muligheden \'Aktivér Robotter\' for at fylde de resterende pladser. Alternativt, hvis du spiller alene og ønsker at konkurrere mod computeren, kan du vælge muligheden \'Computer\' uden at skulle aktivere robotter. En anden mulighed, \'Spil i hold\', giver dig mulighed for at spille i hold af to.\n\nBemærk venligst, at online-spil ikke er tilgængeligt endnu, da vi stadig arbejder på at færdiggøre den online version. Vi arbejder hårdt på at bringe online-konkurrence til dig så hurtigt som muligt, så vi beder om din tålmodighed.'
 
     }
   };

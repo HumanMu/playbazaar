@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 
 
 class WordConnectorService {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  //final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final DocumentReference _gameCollection
   = FirebaseFirestore.instance.collection("games").doc('word_connector');
   final String _gameDirectory = 'connector_';

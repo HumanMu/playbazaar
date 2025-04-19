@@ -24,19 +24,19 @@ class _HangmanPlaySettingsScreenState extends State<HangmanPlaySettingsScreen> {
   final TextEditingController gameCodeController = TextEditingController();
 
   final userController = Get.find<UserController>();
-  late UserRole userRole;
+  //late UserRole userRole;
 
   @override
   void initState() {
     super.initState();
-    _initializeUserRole();
+    //_initializeUserRole();
   }
 
-  Future<void> _initializeUserRole() async {
+  /*Future<void> _initializeUserRole() async {
     setState(() {
       userRole = userController.userData.value!.role;
     });
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +90,7 @@ class _HangmanPlaySettingsScreenState extends State<HangmanPlaySettingsScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    if(userRole != UserRole.normal)
+                    if(userController.userData.value!.role != UserRole.normal)
                       Obx(() => !controller.isOfflineMode.value && !controller.isJoiningMode.value
                         ? ElevatedButton(
                             onPressed: () => Get.toNamed('/hangmanAddWords'),
@@ -135,7 +135,7 @@ class _HangmanPlaySettingsScreenState extends State<HangmanPlaySettingsScreen> {
         controller.setOfflineMode(false);
       },
       showAdditionalInfo: controller.isOnlineMode.value,
-      additionalInfoTitle: 'share_hangman_play_code'.tr,
+      additionalInfoTitle: 'share_game_code'.tr,
       additionalInfo: controller.gameCode.value,
       additionalActionIcon: Icons.copy,
       onAdditionalActionPressed: () {
@@ -165,8 +165,8 @@ class _HangmanPlaySettingsScreenState extends State<HangmanPlaySettingsScreen> {
 
   Widget _buildJoinGame() {
     return Obx(() => CustomSwitchTextboxTile(
-      title: 'join_hangman_with_code'.tr,
-      subtitle: 'join_hangman_with_code_description'.tr,
+      title: 'join_with_code'.tr,
+      subtitle: 'join_with_code_description'.tr,
       value: controller.isJoiningMode.value,
       onSwitchChanged: (value) {
         controller.setOfflineMode(false);

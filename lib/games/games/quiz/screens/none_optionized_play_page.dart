@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:playbazaar/admob/adaptive_banner_ad.dart';
-import '../../controller/quiz_play_controller.dart';
+
+import '../controller/quiz_play_controller.dart';
 
 class NoneOptionizedPlayScreen extends StatelessWidget {
   final String selectedQuiz;

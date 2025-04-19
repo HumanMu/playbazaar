@@ -99,13 +99,16 @@ class AddWordController extends GetxController {
 
     try {
       int? wordLevel = int.tryParse(wordLevelController.text);
+      final shuffledLetters = RxList<String>.from(currentLetters);
+      shuffledLetters.shuffle();
+
       AddWordModel newWords = AddWordModel(
           words: currentWords,
-          letters: currentLetters,
+          letters: shuffledLetters,
           level: wordLevel ?? 0,
       );
 
-      final word = await firebaseService.addWord(newWords, languageDirectory.value ??"");
+      await firebaseService.addWord(newWords, languageDirectory.value ??"");
       showCustomSnackbar("quetion_added_title".tr, true);
       currentWords.clear();
       currentLetters.clear();
