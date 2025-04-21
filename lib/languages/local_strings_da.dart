@@ -406,7 +406,8 @@ class LocalStringsDa extends Translations {
       'word_connector_play_rules': 'Når du starter spillet, vil en liste med skjulte ord vises øverst på skærmen. Længden af hvert ord bestemmes af antallet af bokse i rækken. Nederst på skærmen ser du de bogstaver, du kan bruge til at finde de skjulte ord. Du skal finde alle de skjulte ord for at komme videre til næste ord. Husk at vælge et niveau, før du starter spillet.',
 
       // Ludo
-      'ludo_home_screen_guide_title': 'Indstillinger for Ludo-Missions',
+      'ludo_home_screen_guide_title': 'Ludo-Missions',
+      'ludo_game_start_guide': 'For at starte et holdspil, bedes du enten aktivere robotter eller vælge 4 spillere.',
       'ludo_home_screen_guide': 'Hjemmeskærmen tilbyder fire valgmuligheder: 2, 3 og 4 spillere, som repræsenterer antallet af deltagere. Hvis du har færre end fire spillere, kan du vælge muligheden \'Aktivér Robotter\' for at fylde de resterende pladser. Alternativt, hvis du spiller alene og ønsker at konkurrere mod computeren, kan du vælge muligheden \'Computer\' uden at skulle aktivere robotter. En anden mulighed, \'Spil i hold\', giver dig mulighed for at spille i hold af to.\n\nBemærk venligst, at online-spil ikke er tilgængeligt endnu, da vi stadig arbejder på at færdiggøre den online version. Vi arbejder hårdt på at bringe online-konkurrence til dig så hurtigt som muligt, så vi beder om din tålmodighed.'
 
     }

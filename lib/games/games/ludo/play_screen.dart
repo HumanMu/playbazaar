@@ -37,8 +37,7 @@ class _LudoPlayScreenState extends State<LudoPlayScreen> {
   }
 
   Future<void> initializeServices() async {
-    final numberPlayer2Build = widget.enabledRobots? 4 : widget.numberOfPlayer;
-    await Get.putAsync(() => GameService().init(numberPlayer2Build));
+    Get.put(GameService());
     Get.put(GameController());
     Get.put(DiceController());
 

@@ -20,23 +20,17 @@ class GameController extends GetxController {
   final RxBool isTeamPlay = RxBool(false);
   final RxBool isLoading = RxBool(false);
   final RxBool isRobotOn = RxBool(false);
-  int numberOfHumanPlayers = 4;
-
+  final RxInt numberOfHumanPlayers = RxInt(4);
 
 
 
   @override
-  void onInit() {
+  void onInit() async{
     isLoading.value = true;
     super.onInit();
 
-    if (Get.arguments != null) {
-      numberOfHumanPlayers = Get.arguments['numberOfPlayer'] ?? 4;
-      isRobotOn.value = Get.arguments['enabledRobots'] ?? false;
-      isTeamPlay.value = Get.arguments['teamPlay'] ?? false;
-    }
-
-    _initializePlayers();
+    await _initializeServices();
+    await _initializePlayers();
 
     // Add post frame callback to set boardBuild
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -53,6 +47,19 @@ class GameController extends GetxController {
   }
 
 
+  Future<void> _initializeServices() async {
+    if (Get.arguments != null) {
+      numberOfHumanPlayers.value = Get.arguments['numberOfPlayer'] ?? 4;
+      isRobotOn.value = Get.arguments['enabledRobots'] ?? false;
+      isTeamPlay.value = Get.arguments['teamPlay'] ?? false;
+    }
+
+    final numberOfPlayer = (isTeamPlay.value || isRobotOn.value)? 4 : numberOfHumanPlayers.value;
+
+    gameService.init(numberOfPlayer, teamPlay: isTeamPlay.value);
+  }
+
+
   List<Token> getTokensAtPosition(Position position) {
     return gameTokens.whereType<Token>().where((token) =>
     token.tokenPosition.row == position.row &&
@@ -60,44 +67,6 @@ class GameController extends GetxController {
     ).toList();
   }
 
-
-  Offset getTokenOffsetAtPosition(Token token) {
-    final tokensAtSamePosition = getTokensAtPosition(token.tokenPosition);
-
-    // If only one token at this position
-    if (tokensAtSamePosition.length <= 1) {
-      return Offset.zero;
-    }
-
-    // Find other tokens in this x position
-    final indexInStack = tokensAtSamePosition.indexWhere((t) => t.id == token.id);
-    if (indexInStack == -1) return Offset.zero; // Safety check
-
-    // This creates a diagonal pattern where tokens are slightly shifted
-    final offsetX = indexInStack * 8.0;
-    final offsetY = indexInStack * 8.0;
-
-    return Offset(offsetX, offsetY);
-  }
-
-  List<double> getPosition(int row, int column, GlobalKey keyBar) {
-    final cellBoxKey = keyReferences[row][column];
-    if (cellBoxKey.currentContext == null) {
-      return [0, 0, 0, 0];
-    }
-
-    final RenderBox renderBoxBar = keyBar.currentContext!.findRenderObject() as RenderBox;
-    final sizeBar = renderBoxBar.size;
-    final RenderBox renderBoxCell = cellBoxKey.currentContext!.findRenderObject() as RenderBox;
-    final positionCell = renderBoxCell.localToGlobal(Offset.zero);
-
-    final double x = positionCell.dx + 1;
-    final double y = positionCell.dy - sizeBar.height + 1;
-    final double w = renderBoxCell.size.width - 1;
-    final double h = renderBoxCell.size.height - 1;
-
-    return [x, y, w, h];
-  }
 
 
   Future<void> handleTokenTap(Token token) async {
@@ -153,31 +122,40 @@ class GameController extends GetxController {
       }
     }
     controller.dice.giveAnotherTurn = didKill || hasReached || (controller.diceValue == 6);
-    /*if (controller.diceValue == 6 && controller.consecvative6 >= 3) {
-      controller.dice.rxConsecutiveSixes = 0;
-      controller.dice.giveAnotherTurn = false;
-    } else {
-      controller.dice.giveAnotherTurn = didKill || hasReached || (controller.diceValue == 6);
-    }*/
   }
+
 
   void updateReachedHome(Token token) {
     final index = players.indexWhere((e) => e.tokenType == token.type);
     if (index != -1) {
-      final user = players[index];
-      players[index] = LudoPlayer(
-          tokenType: user.tokenType,
-          reachedHome: user.reachedHome + 1,
-          hasFinished: user.reachedHome + 1 == 4,
-          name: user.name,
-          isRobot: user.isRobot
-      );
-    }
+      final player = players[index];
+      final newReachedHome = player.reachedHome + 1;
+      final hasFinished = newReachedHome >= 4;
 
-    wasLastToken.value = players[index].hasFinished;
+      // Update player with copyWith for immutability
+      players[index] = player.copyWith(
+        reachedHome: newReachedHome,
+        hasFinished: hasFinished,
+      );
+
+      wasLastToken.value = players[index].hasFinished;
+
+      // Update team progress if in team play mode
+      if (isTeamPlay.value && player.teamId != null) {
+        updateTeamProgress(player.teamId!);
+      }
+
+      // Check game over condition
+      final isGameOver = checkForGameOver();
+      if (isGameOver) {
+        debugPrint('Game over! ${isTeamPlay.value ? "Team ${player.teamId}" : player.name} wins!');
+        // Trigger game over UI or logic
+      }
+    }
   }
 
-  void _initializePlayers() {
+
+  Future<void> _initializePlayers() async{
     players.clear();
 
     // Create a map to store which colors should be robots
@@ -191,10 +169,9 @@ class GameController extends GetxController {
     List<TokenType> tokensToUse = [];
 
     if (isRobotOn.value) {
-      // Always use all four colors when robots are enabled
       tokensToUse = [TokenType.red, TokenType.green, TokenType.yellow, TokenType.blue];
 
-      switch (numberOfHumanPlayers) {
+      switch (numberOfHumanPlayers.value) {
         case 1:
         // Red is human, rest are robots
           isRobot[TokenType.green] = true;
@@ -202,7 +179,6 @@ class GameController extends GetxController {
           isRobot[TokenType.blue] = true;
           break;
         case 2:
-        // Red and Yellow are human, Green and Blue are robots
           isRobot[TokenType.green] = true;
           isRobot[TokenType.blue] = true;
           break;
@@ -212,20 +188,23 @@ class GameController extends GetxController {
       // All human for case 4
       }
     } else {
-      switch (numberOfHumanPlayers) {
-        case 1:
-          tokensToUse = [TokenType.red];
-          break;
-        case 2:
-          tokensToUse = [TokenType.red, TokenType.yellow];
-          break;
-        case 3:
-          tokensToUse = [TokenType.red, TokenType.green, TokenType.blue];
-          break;
-        case 4:
-          tokensToUse = [TokenType.red, TokenType.green, TokenType.yellow, TokenType.blue];
-          break;
+      switch (numberOfHumanPlayers.value) {
+        case 1: tokensToUse = [TokenType.red]; break;
+        case 2: tokensToUse = [TokenType.red, TokenType.yellow]; break;
+        case 3: tokensToUse = [TokenType.red, TokenType.green, TokenType.blue]; break;
+        case 4: tokensToUse = [TokenType.red, TokenType.green, TokenType.yellow, TokenType.blue]; break;
       }
+    }
+
+    // Assign team IDs if team play is enabled
+    Map<TokenType, int> teamAssignments = {};
+    if (isTeamPlay.value) {
+      teamAssignments = {
+        TokenType.red: 1,
+        TokenType.yellow: 1,
+        TokenType.green: 2,
+        TokenType.blue: 2,
+      };
     }
 
     // Create all necessary players
@@ -233,17 +212,105 @@ class GameController extends GetxController {
       String colorName = tokenType.toString().split('.').last;
       String name = "${colorName[0].toUpperCase()}${colorName.substring(1).toLowerCase()} Player";
 
-      players.add(LudoPlayer(
-        tokenType: tokenType,
-        name: name,
-        isRobot: isRobot[tokenType] ?? false,
-      ));
+      // Add team name if team play is enabled
+      if (isTeamPlay.value && teamAssignments.containsKey(tokenType)) {
+        int teamId = teamAssignments[tokenType]!;
+
+        players.add(LudoPlayer(
+          tokenType: tokenType,
+          name: name,
+          isRobot: isRobot[tokenType] ?? false,
+          teamId: teamId,
+        ));
+      } else {
+        players.add(LudoPlayer(
+          tokenType: tokenType,
+          name: name,
+          isRobot: isRobot[tokenType] ?? false,
+        ));
+      }
+    }
+
+
+    // Set team assignments in game service
+    if (isTeamPlay.value) {
+      Map<TokenType, int?> teamAssignments = {};
+      for (var player in players) {
+        teamAssignments[player.tokenType] = player.teamId;
+      }
+      gameService.setTeamAssignments(teamAssignments);
     }
   }
 
 
+
+
+  Offset getTokenOffsetAtPosition(Token token) {
+    final tokensAtSamePosition = getTokensAtPosition(token.tokenPosition);
+
+    // If only one token at this position
+    if (tokensAtSamePosition.length <= 1) {
+      return Offset.zero;
+    }
+
+    // Find other tokens in this x position
+    final indexInStack = tokensAtSamePosition.indexWhere((t) => t.id == token.id);
+    if (indexInStack == -1) return Offset.zero; // Safety check
+
+    // This creates a diagonal pattern where tokens are slightly shifted
+    final offsetX = indexInStack * 6.5;
+    final offsetY = indexInStack * 6.5;
+
+    return Offset(offsetX, offsetY);
+  }
+
+  List<double> getPosition(int row, int column, GlobalKey keyBar) {
+    final cellBoxKey = keyReferences[row][column];
+    if (cellBoxKey.currentContext == null) {
+      return [0, 0, 0, 0];
+    }
+
+    final RenderBox renderBoxBar = keyBar.currentContext!.findRenderObject() as RenderBox;
+    final sizeBar = renderBoxBar.size;
+    final RenderBox renderBoxCell = cellBoxKey.currentContext!.findRenderObject() as RenderBox;
+    final positionCell = renderBoxCell.localToGlobal(Offset.zero);
+
+    final double x = positionCell.dx + 1;
+    final double y = positionCell.dy - sizeBar.height + 1;
+    final double w = renderBoxCell.size.width - 1;
+    final double h = renderBoxCell.size.height - 1;
+
+    return [x, y, w, h];
+  }
+
+
   bool checkForGameOver() {
-    return players.where((users) => users.hasFinished == true).length == 1;
+    if (!isTeamPlay.value) {
+      return players.where((player) => player.hasFinished == true).length == 1;
+    } else {
+      // Team play logic - check if any team has all their tokens home
+      Map<int, int> teamMemberCount = {};
+      Map<int, int> teamFinishedCount = {};
+
+      // Count total members and finished members for each team
+      for (var player in players) {
+        if (player.teamId != null) {
+          teamMemberCount[player.teamId!] = (teamMemberCount[player.teamId!] ?? 0) + 1;
+          if (player.hasFinished) {
+            teamFinishedCount[player.teamId!] = (teamFinishedCount[player.teamId!] ?? 0) + 1;
+          }
+        }
+      }
+
+      // Check if any team has all members finished
+      for (var teamId in teamMemberCount.keys) {
+        if (teamFinishedCount[teamId] == teamMemberCount[teamId]) {
+          return true;
+        }
+      }
+
+      return false;
+    }
   }
 
   bool getMovableTokens(TokenType type, int diceValue) {
@@ -256,6 +323,26 @@ class GameController extends GetxController {
 
   bool _hasEnoughSpaceToMove (Token token, int diceValue) {
     return token.positionInPath + diceValue <= 56;
+  }
+
+  void updateTeamProgress(int teamId) {
+    // Get completed tokens count for this team
+    int totalHomeTokens = 0;
+    int totalTeamTokens = 0;
+
+    for (var player in players.where((p) => p.teamId == teamId)) {
+      totalHomeTokens += player.reachedHome;
+      totalTeamTokens += 4; // Each player has 4 tokens
+    }
+
+    // Calculate percentage complete
+    double progressPercentage = totalTeamTokens > 0
+        ? (totalHomeTokens / totalTeamTokens) * 100
+        : 0;
+
+    debugPrint('Team $teamId progress: $totalHomeTokens/$totalTeamTokens tokens (${progressPercentage.toStringAsFixed(1)}%)');
+
+    // You could update UI with team progress here
   }
 
 }

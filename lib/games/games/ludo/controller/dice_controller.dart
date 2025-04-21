@@ -27,28 +27,32 @@ class DiceController extends GetxController {
     super.onReady();
   }
 
-  void initializeFirstPlayer(List<LudoPlayer> players) {
-    for (var player in players) {
+  void initializeFirstPlayer(List<LudoPlayer> currentPlayers) {
+    dice.rxConsecutiveSixes = 0;
+    dice.giveAnotherTurn = false;
+
+    for (var player in currentPlayers) {
       if (!player.hasFinished) {
         dice.diceColor = player.tokenType;
-        dice.isRobotTurn = player.isRobot ?? false;
-
-        // Prepare initial state
-        dice.isInteractive = true;
+        dice.isRobotTurn = (player.isRobot ?? false) && gameController.isRobotOn.value;
+        dice.isInteractive = !dice.isRobotTurn;
         dice.isAwaitingMove = false;
         dice.isRolling = false;
 
-        // If robot starts, trigger its turn
-        if (dice.isRobotTurn && gameController.isRobotOn.value) {
-          Future.delayed(Duration(milliseconds: 800), () => playRobotTurn());
+        if (dice.isRobotTurn) {
+          Future.delayed(Duration(milliseconds: 800), () {
+            if (dice.isRobotTurn && dice.diceColor == player.tokenType) {
+              playRobotTurn();
+            }
+          });
         }
-        break;
+        break; // Found the first active player
       }
     }
   }
 
+
   Future<void> rollDice() async {
-    // Skip if conditions not met based on who's rolling
     if ((dice.isRobotTurn && !dice.canBeRolledByRobot) ||
         (!dice.isRobotTurn && !dice.canBeRolledByHuman)) {
       return;
@@ -61,7 +65,6 @@ class DiceController extends GetxController {
         dice.isInteractive = false;
       }
 
-      // Generate random values with animation delay
       int finalValue = 0;
       for (int i = 0; i < 6; i++) {
         await Future.delayed(Duration(milliseconds: i == 0 ? 0 : 200));
@@ -77,7 +80,7 @@ class DiceController extends GetxController {
           dice.rxConsecutiveSixes = 0;
           dice.giveAnotherTurn = false;
           await nextPlayer();
-          return; // Critical to return here and skip token selection
+          return;
         }
       }else{
         dice.rxConsecutiveSixes = 0;
@@ -90,7 +93,6 @@ class DiceController extends GetxController {
     }
   }
 
-  // Generate a random dice value between 1-6
   int _generateRandomDiceValue() {
     return Random().nextInt(6) + 1;
   }
@@ -128,36 +130,54 @@ class DiceController extends GetxController {
 
   Future<void> nextPlayer() async {
     dice.giveAnotherTurn = false;
-    await Future.delayed(const Duration(milliseconds: 500));
-    final players = gameController.players;
-
-    // Find the next player
-    int currentIndex = players.indexWhere((player) => player.tokenType == dice.diceColor);
-    int nextIndex = (currentIndex + 1) % players.length;
-    int checkedCount = 0;
-
-    while (checkedCount < players.length) {
-      if (!players[nextIndex].hasFinished) break;
-      nextIndex = (nextIndex + 1) % players.length;
-      checkedCount++;
-    }
-
-    // Set the dice for next player
-    dice.diceColor = players[nextIndex].tokenType;
-    dice.isInteractive = true;
     dice.isAwaitingMove = false;
     dice.isRolling = false;
 
-    // Check if robot player
-    final isNextRobot = players[nextIndex].isRobot ?? false;
-    dice.isRobotTurn = isNextRobot && gameController.isRobotOn.value;
+    await Future.delayed(const Duration(milliseconds: 500));
+    final players = gameController.players;
+
+    // Find current player index
+    int currentIndex = players.indexWhere((player) => player.tokenType == dice.diceColor);
+    if (currentIndex == -1) {
+      initializeFirstPlayer(players);
+      return;
+    }
+
+    // Find the next *active* player in sequence
+    int nextIndex = currentIndex;
+    int checkedCount = 0;
+
+    do {
+      nextIndex = (nextIndex + 1) % players.length;
+      checkedCount++;
+      // Break if we found an unfinished player or checked everyone
+      if (!players[nextIndex].hasFinished || checkedCount >= players.length) {
+        break;
+      }
+    } while (true);
+
+
+    if (checkedCount >= players.length && players.every((p) => p.hasFinished)) {
+      dice.isInteractive = false;
+      return;
+    }
+
+    final nextPlayer = players[nextIndex];
+    dice.diceColor = nextPlayer.tokenType;
+    dice.isInteractive = true;
+    dice.isRobotTurn = (nextPlayer.isRobot ?? false) && gameController.isRobotOn.value;
+    dice.rxConsecutiveSixes = 0;
 
     // Auto-play for robot
     if (dice.isRobotTurn) {
+      dice.isInteractive = false;
       await Future.delayed(const Duration(milliseconds: 800));
       await playRobotTurn();
+    } else {
+      // Human turn, dice is already set to interactive
     }
   }
+
 
   Future<void> playRobotTurn() async {
     dice.isRobotTurn = true;
@@ -165,7 +185,6 @@ class DiceController extends GetxController {
 
     await rollDice();
 
-    // Handle token selection if needed
     if (dice.isAwaitingMove) {
       await _selectRobotToken();
     }
@@ -185,7 +204,6 @@ class DiceController extends GetxController {
     // AI logic for token selection
     Token? tokenToMove;
 
-    // Priority 1: Get tokens out of home with a 6
     if (diceValue == 6) {
       tokenToMove = tokens.firstWhereOrNull(
               (token) => token.tokenState == TokenState.initial

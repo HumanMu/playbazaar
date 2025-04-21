@@ -7,6 +7,9 @@ import '../models/token.dart';
 
 
 class GameService extends GetxService {
+  final Map<TokenType, int?> teamAssignments = <TokenType, int?>{};
+  late bool isTeamPlayEnabled = false;
+
   final RxList<Token?> gameTokens = RxList<Token?>(List<Token?>.filled(16, null));
   final Set<TokenType> activeTokenTypes = <TokenType>{};
 
@@ -30,9 +33,11 @@ class GameService extends GetxService {
   final RxList<Position> redInitial = RxList<Position>([]);
 
 
-  Future<GameService> init(int numberOfPlayer) async {
+  Future<GameService> init(int numberOfPlayer, {bool teamPlay = false}) async {
     _pathCache.clear();
     activeTokenTypes.clear();
+    teamAssignments.clear();
+    isTeamPlayEnabled = teamPlay;
 
     // Prepare token lists
     List<Token?> allTokens = List<Token?>.filled(16, null);
@@ -54,7 +59,6 @@ class GameService extends GetxService {
     }
 
     // Initialize tokens based on active types
-    //int tokenIndex = 0;
     for (final type in activeTypes) {
       final tokenPositions = _getInitialPositions(type);
       final tokens = _createInitialTokens(type, tokenPositions[0], tokenPositions[1]);
@@ -66,6 +70,7 @@ class GameService extends GetxService {
     }
 
     gameTokens.value = allTokens;
+    print("Is teamplay on - from service: $isTeamPlayEnabled");
     return this;
   }
   // Ensure path is initialized - loads path only when needed
@@ -85,6 +90,30 @@ class GameService extends GetxService {
   }
 
 
+  // Add a method to set team assignments
+  void setTeamAssignments(Map<TokenType, int?> assignments) {
+    teamAssignments.clear();
+    teamAssignments.addAll(assignments);
+    print("Is teamplay enabled: $teamAssignments");
+  }
+
+  // Add helper method to check teammates
+  bool areTeammates(TokenType type1, TokenType type2) {
+    if (!isTeamPlayEnabled) return false;
+    if (type1 == type2) return true;
+
+    final team1 = teamAssignments[type1];
+    final team2 = teamAssignments[type2];
+
+    // For debugging
+    if (team1 != null && team2 != null) {
+      print("Team check: $type1 (Team $team1) and $type2 (Team $team2) - ${team1 == team2 ? 'Same team' : 'Different teams'}");
+    }
+
+    return team1 != null && team2 != null && team1 == team2;
+  }
+
+
   List<Token> _createInitialTokens(TokenType type, int startX, int startY) {
     return List.generate(4, (index) {
       return Token(
@@ -96,7 +125,7 @@ class GameService extends GetxService {
     });
   }
 
-  
+
   Future<bool> moveToken(Token token, int steps) async {
     if (!_isValidToken(token)) return false;
 
@@ -223,7 +252,7 @@ class GameService extends GetxService {
 
     return gameTokens
         .where((element) =>
-        element?.type == type &&
+    element?.type == type &&
         element?.tokenState != TokenState.initial &&
         element != null &&
         (57 - (element.positionInPath + diceRoll) > 0))
@@ -259,25 +288,25 @@ class GameService extends GetxService {
       return null;
     }
 
-    // Same Type Tokens at Destination
-    final sameTypeTokens = tokensAtDestination
-        .where((tkn) => tkn.type == token.type)
-        .toList();
+    // Check for same team tokens
+    final safeTokens = tokensAtDestination.where((tkn) =>
+        areTeammates(token.type, tkn.type)
+    ).toList();
 
-    if (sameTypeTokens.length == tokensAtDestination.length) {
-      for (final tkn in sameTypeTokens) {
+    if (safeTokens.length == tokensAtDestination.length) {
+      for (final tkn in safeTokens) {
         gameTokens[tkn.id]?.tokenState = TokenState.safeinpair;
       }
       gameTokens[token.id]?.tokenState = TokenState.safeinpair;
       return null;
     }
 
-    // Different Type Tokens at Destination
+    // Different Type Tokens (not teammates)
     Token? resetToken;
     for (final tkn in tokensAtDestination) {
-      if (tkn.type != token.type && tkn.tokenState != TokenState.safeinpair) {
+      if (!areTeammates(token.type, tkn.type) && tkn.tokenState != TokenState.safeinpair) {
         resetToken = tkn;
-      } else if (tkn.type == token.type) {
+      } else if (areTeammates(token.type, tkn.type)) {
         gameTokens[tkn.id]?.tokenState = TokenState.safeinpair;
       }
     }
@@ -289,6 +318,7 @@ class GameService extends GetxService {
 
     return resetToken;
   }
+
 
   void _updateTokenState(Token token, TokenState newState, {Position? newPosition}) {
     final index = gameTokens.indexWhere((t) => t?.id == token.id);
@@ -339,4 +369,3 @@ class GameService extends GetxService {
   }
 
 }
-

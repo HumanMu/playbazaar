@@ -411,7 +411,8 @@ class LocalStringsEn extends Translations {
 
 
       // Ludo
-      'ludo_home_screen_guide_title': 'Ludo Home Screen Guide',
+      'ludo_home_screen_guide_title': 'Ludo Missions',
+      'ludo_game_start_guide': 'To start a team game, please either enable robots or select 4 players.',
       'ludo_home_screen_guide': 'The home screen offers four options to choose from: 2, 3, and 4 players, which represent the number of participants. If you have fewer than four players, you can select the \'Enable Robots\' option to fill the remaining spots. Alternatively, if you\'re playing solo and wish to compete against the computer, you can select the \'Computer\' option without needing to enable robots. Another option, \'Play in Team,\' allows you to play in teams of two.Please note that online gameplay is not yet available, as we are still working on finishing the online version. We are making every effort to bring online competition to you as soon as possible, so we kindly ask for your patience.'
     }
   };
