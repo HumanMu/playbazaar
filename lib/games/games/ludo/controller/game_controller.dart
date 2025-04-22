@@ -7,12 +7,14 @@ import '../helper/enums.dart';
 import '../models/position.dart';
 import '../services/game_service.dart';
 import '../models/token.dart';
+import '../widgets/game_over.dart';
 import 'dice_controller.dart';
 
 class GameController extends GetxController {
   final DiceModel diceModel = DiceModel();
   final List<List<GlobalKey>> keyReferences = LudoHelper.getGlobalKeys();
   final GameService gameService = Get.find<GameService>();
+
   List<Token?> get gameTokens => gameService.gameTokens;
   RxList<LudoPlayer> players = <LudoPlayer>[].obs;
   final RxBool wasLastToken = RxBool(false);
@@ -23,9 +25,8 @@ class GameController extends GetxController {
   final RxInt numberOfHumanPlayers = RxInt(4);
 
 
-
   @override
-  void onInit() async{
+  void onInit() async {
     isLoading.value = true;
     super.onInit();
 
@@ -54,7 +55,9 @@ class GameController extends GetxController {
       isTeamPlay.value = Get.arguments['teamPlay'] ?? false;
     }
 
-    final numberOfPlayer = (isTeamPlay.value || isRobotOn.value)? 4 : numberOfHumanPlayers.value;
+    final numberOfPlayer = (isTeamPlay.value || isRobotOn.value)
+        ? 4
+        : numberOfHumanPlayers.value;
 
     gameService.init(numberOfPlayer, teamPlay: isTeamPlay.value);
   }
@@ -68,12 +71,12 @@ class GameController extends GetxController {
   }
 
 
-
   Future<void> handleTokenTap(Token token) async {
     final diceController = Get.find<DiceController>();
 
     if (token.tokenState == TokenState.home
-        || (token.tokenState == TokenState.initial && diceController.diceValue != 6)
+        || (token.tokenState == TokenState.initial &&
+            diceController.diceValue != 6)
         || !diceController.moveState
         || token.type != diceController.diceColor) {
       return;
@@ -89,43 +92,48 @@ class GameController extends GetxController {
     await moveToken(token, diceController);
     bool giveAnotherTurn = diceController.giveAnotherTurn;
 
-    if ( !giveAnotherTurn || wasLastToken.value ) {
+    if (!giveAnotherTurn || wasLastToken.value) {
       await Future.delayed(const Duration(milliseconds: 500), () {
         diceController.nextPlayer();
       });
-
     } else if (giveAnotherTurn) {
       diceController.dice.giveAnotherTurn = false;
-      final currentPlayerIndex = players.indexWhere((p) => p.tokenType == diceController.diceColor);
+      final currentPlayerIndex = players.indexWhere((p) =>
+      p.tokenType == diceController.diceColor);
 
-      if (currentPlayerIndex >= 0 && players[currentPlayerIndex].isRobot == true && isRobotOn.value) {
+      if (currentPlayerIndex >= 0 &&
+          players[currentPlayerIndex].isRobot == true && isRobotOn.value) {
         await Future.delayed(const Duration(milliseconds: 800), () {
           diceController.playRobotTurn();
         });
       }
-      else{
+      else {
         diceController.setDiceState(true);
       }
     }
   }
 
 
-  Future<void> moveToken(Token token, DiceController controller) async { // int diceValue
+  Future<void> moveToken(Token token, DiceController controller) async {
+    // int diceValue
     final didKill = await gameService.moveToken(token, controller.diceValue);
 
     bool hasReached = token.positionInPath + controller.diceValue == 56;
-    if(hasReached){
-      updateReachedHome(token);
+    if (hasReached) {
+      await updateReachedHome(token);
       final isOver = checkForGameOver();
-      if(isOver){
-
+      if (isOver) {
+        Future.delayed(const Duration(milliseconds: 800), () {
+          showGameOverDialog();
+        });
       }
     }
-    controller.dice.giveAnotherTurn = didKill || hasReached || (controller.diceValue == 6);
+    controller.dice.giveAnotherTurn =
+        didKill || hasReached || (controller.diceValue == 6);
   }
 
 
-  void updateReachedHome(Token token) {
+  Future<void> updateReachedHome(Token token) async {
     final index = players.indexWhere((e) => e.tokenType == token.type);
     if (index != -1) {
       final player = players[index];
@@ -140,22 +148,22 @@ class GameController extends GetxController {
 
       wasLastToken.value = players[index].hasFinished;
 
-      // Update team progress if in team play mode
-      if (isTeamPlay.value && player.teamId != null) {
-        updateTeamProgress(player.teamId!);
-      }
-
       // Check game over condition
       final isGameOver = checkForGameOver();
       if (isGameOver) {
-        debugPrint('Game over! ${isTeamPlay.value ? "Team ${player.teamId}" : player.name} wins!');
+        await Future.delayed(const Duration(), () {
+          showGameOverDialog();
+        });
+        debugPrint(
+            'Game over! ${isTeamPlay.value ? "Team ${player.teamId}" : player
+                .name} wins!');
         // Trigger game over UI or logic
       }
     }
   }
 
 
-  Future<void> _initializePlayers() async{
+  Future<void> _initializePlayers() async {
     players.clear();
 
     // Create a map to store which colors should be robots
@@ -169,7 +177,8 @@ class GameController extends GetxController {
     List<TokenType> tokensToUse = [];
 
     if (isRobotOn.value) {
-      tokensToUse = [TokenType.red, TokenType.green, TokenType.yellow, TokenType.blue];
+      tokensToUse =
+      [TokenType.red, TokenType.green, TokenType.yellow, TokenType.blue];
 
       switch (numberOfHumanPlayers.value) {
         case 1:
@@ -189,10 +198,19 @@ class GameController extends GetxController {
       }
     } else {
       switch (numberOfHumanPlayers.value) {
-        case 1: tokensToUse = [TokenType.red]; break;
-        case 2: tokensToUse = [TokenType.red, TokenType.yellow]; break;
-        case 3: tokensToUse = [TokenType.red, TokenType.green, TokenType.blue]; break;
-        case 4: tokensToUse = [TokenType.red, TokenType.green, TokenType.yellow, TokenType.blue]; break;
+        case 1:
+          tokensToUse = [TokenType.red];
+          break;
+        case 2:
+          tokensToUse = [TokenType.red, TokenType.yellow];
+          break;
+        case 3:
+          tokensToUse = [TokenType.red, TokenType.green, TokenType.blue];
+          break;
+        case 4:
+          tokensToUse =
+          [TokenType.red, TokenType.green, TokenType.yellow, TokenType.blue];
+          break;
       }
     }
 
@@ -209,8 +227,12 @@ class GameController extends GetxController {
 
     // Create all necessary players
     for (var tokenType in tokensToUse) {
-      String colorName = tokenType.toString().split('.').last;
-      String name = "${colorName[0].toUpperCase()}${colorName.substring(1).toLowerCase()} Player";
+      String colorName = tokenType
+          .toString()
+          .split('.')
+          .last;
+      String name = "${colorName[0].toUpperCase()}${colorName.substring(1)
+          .toLowerCase()} Player";
 
       // Add team name if team play is enabled
       if (isTeamPlay.value && teamAssignments.containsKey(tokenType)) {
@@ -243,8 +265,6 @@ class GameController extends GetxController {
   }
 
 
-
-
   Offset getTokenOffsetAtPosition(Token token) {
     final tokensAtSamePosition = getTokensAtPosition(token.tokenPosition);
 
@@ -254,7 +274,8 @@ class GameController extends GetxController {
     }
 
     // Find other tokens in this x position
-    final indexInStack = tokensAtSamePosition.indexWhere((t) => t.id == token.id);
+    final indexInStack = tokensAtSamePosition.indexWhere((t) =>
+    t.id == token.id);
     if (indexInStack == -1) return Offset.zero; // Safety check
 
     // This creates a diagonal pattern where tokens are slightly shifted
@@ -270,9 +291,11 @@ class GameController extends GetxController {
       return [0, 0, 0, 0];
     }
 
-    final RenderBox renderBoxBar = keyBar.currentContext!.findRenderObject() as RenderBox;
+    final RenderBox renderBoxBar = keyBar.currentContext!
+        .findRenderObject() as RenderBox;
     final sizeBar = renderBoxBar.size;
-    final RenderBox renderBoxCell = cellBoxKey.currentContext!.findRenderObject() as RenderBox;
+    final RenderBox renderBoxCell = cellBoxKey.currentContext!
+        .findRenderObject() as RenderBox;
     final positionCell = renderBoxCell.localToGlobal(Offset.zero);
 
     final double x = positionCell.dx + 1;
@@ -286,7 +309,9 @@ class GameController extends GetxController {
 
   bool checkForGameOver() {
     if (!isTeamPlay.value) {
-      return players.where((player) => player.hasFinished == true).length == 1;
+      return players
+          .where((player) => player.hasFinished == true)
+          .length == 1;
     } else {
       // Team play logic - check if any team has all their tokens home
       Map<int, int> teamMemberCount = {};
@@ -295,9 +320,11 @@ class GameController extends GetxController {
       // Count total members and finished members for each team
       for (var player in players) {
         if (player.teamId != null) {
-          teamMemberCount[player.teamId!] = (teamMemberCount[player.teamId!] ?? 0) + 1;
+          teamMemberCount[player.teamId!] =
+              (teamMemberCount[player.teamId!] ?? 0) + 1;
           if (player.hasFinished) {
-            teamFinishedCount[player.teamId!] = (teamFinishedCount[player.teamId!] ?? 0) + 1;
+            teamFinishedCount[player.teamId!] =
+                (teamFinishedCount[player.teamId!] ?? 0) + 1;
           }
         }
       }
@@ -321,9 +348,55 @@ class GameController extends GetxController {
     return gameService.hasInitialToken(type);
   }
 
-  bool _hasEnoughSpaceToMove (Token token, int diceValue) {
+  bool _hasEnoughSpaceToMove(Token token, int diceValue) {
     return token.positionInPath + diceValue <= 56;
   }
+
+  void restartGame() async {
+    isLoading.value = true;
+
+    // Reset game state
+    boardBuild.value = false;
+    wasLastToken.value = false;
+
+    // Initialize services and players again
+    await _initializeServices();
+    await _initializePlayers();
+
+    // Reset board
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      boardBuild.value = true;
+      initializeGameState();
+      isLoading.value = false;
+    });
+  }
+
+
+  void showGameOverDialog() {
+    Get.dialog(
+      GameOverDialog(
+        players: players,
+        isTeamPlay: isTeamPlay.value,
+        onPlayAgain: () {
+          Get.back();
+          restartGame();
+        },
+        onExit: () {
+          Get.back();
+          Get.back(); // Exit to menu
+        },
+      ),
+      barrierDismissible: false,
+    );
+  }
+}
+
+
+  /*
+        // Update team progress if in team play mode - put it before gameOVer check
+      /*if (isTeamPlay.value && player.teamId != null) {
+        updateTeamProgress(player.teamId!);
+      }*/
 
   void updateTeamProgress(int teamId) {
     // Get completed tokens count for this team
@@ -345,4 +418,4 @@ class GameController extends GetxController {
     // You could update UI with team progress here
   }
 
-}
+}*/

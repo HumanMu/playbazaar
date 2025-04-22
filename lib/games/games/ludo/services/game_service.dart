@@ -1,7 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'dart:async';
 import '../helper/enums.dart';
 import '../helper/path.dart';
+import '../models/move_result.dart';
 import '../models/position.dart';
 import '../models/token.dart';
 
@@ -70,7 +72,6 @@ class GameService extends GetxService {
     }
 
     gameTokens.value = allTokens;
-    print("Is teamplay on - from service: $isTeamPlayEnabled");
     return this;
   }
   // Ensure path is initialized - loads path only when needed
@@ -94,7 +95,6 @@ class GameService extends GetxService {
   void setTeamAssignments(Map<TokenType, int?> assignments) {
     teamAssignments.clear();
     teamAssignments.addAll(assignments);
-    print("Is teamplay enabled: $teamAssignments");
   }
 
   // Add helper method to check teammates
@@ -107,7 +107,7 @@ class GameService extends GetxService {
 
     // For debugging
     if (team1 != null && team2 != null) {
-      print("Team check: $type1 (Team $team1) and $type2 (Team $team2) - ${team1 == team2 ? 'Same team' : 'Different teams'}");
+      debugPrint("Team check: $type1 (Team $team1) and $type2 (Team $team2) - ${team1 == team2 ? 'Same team' : 'Different teams'}");
     }
 
     return team1 != null && team2 != null && team1 == team2;
@@ -173,61 +173,174 @@ class GameService extends GetxService {
     // Check if move is valid
     if (newPositionInPath >= pathLength) return false;
     final destination = _getPosition(token.type, newPositionInPath);
-    final resetToken = _updateBoardState(token, destination);
 
-    // Create a list to store all animation futures
+    // Calculate what will happen at destination
+    final moveResult = _calculateMoveResult(token, destination);
+
+    // Animate the token movement
+    await _animateTokenMovement(token, steps);
+
+    // Handle the result based on the calculation
+    bool didKill = await _handleMoveResult(token, newPositionInPath, destination, moveResult);
+
+    return didKill;
+  }
+
+
+  MoveResult _calculateMoveResult(Token token, Position destination) {
+    // Check if destination is a star position (safe)
+    if (starPositions.contains(destination)) {
+      return MoveResult(finalState: TokenState.safe);
+    }
+
+    // Find tokens at destination
+    final tokensAtDestination = gameTokens
+        .where((tkn) => tkn != null && tkn.id != token.id &&
+        tkn.tokenPosition == destination &&
+        tkn.tokenState != TokenState.home)
+        .cast<Token>()
+        .toList();
+
+    if (tokensAtDestination.isEmpty) {
+      return MoveResult(finalState: TokenState.normal);
+    }
+
+    // Separate teammates and opponents
+    final List<Token> teammatesAtDestination = [];
+    final List<Token> opponentsAtDestination = [];
+
+    for (final tkn in tokensAtDestination) {
+      if (areTeammates(token.type, tkn.type)) {
+        teammatesAtDestination.add(tkn);
+      } else {
+        opponentsAtDestination.add(tkn);
+      }
+    }
+
+    // Apply game rules
+    if (opponentsAtDestination.length >= 2) {
+      // Self-kill if 2+ opponents
+      return MoveResult(
+          tokenToReset: token,
+          isSelfKill: true,
+          finalState: TokenState.normal
+      );
+    } else if (opponentsAtDestination.isNotEmpty) {
+      // Kill one opponent
+      return MoveResult(
+          tokenToReset: opponentsAtDestination.first,
+          finalState: TokenState.normal
+      );
+    } else if (teammatesAtDestination.isNotEmpty) {
+      // Safe with teammates
+      return MoveResult(finalState: TokenState.safeinpair);
+    }
+
+    return MoveResult(finalState: TokenState.normal);
+  }
+
+// Animate token movement step by step
+  Future<void> _animateTokenMovement(Token token, int steps) async {
     List<Future<void>> animationFutures = [];
-    int duration = 0;
 
-    // Create all step animations
     for (int i = 1; i <= steps; i++) {
-      duration = duration + 200;
-      final stepDelay = Duration(milliseconds: duration);
+      final stepDelay = Duration(milliseconds: 200 * i);
+      final stepPosition = token.positionInPath + i;
+
       final stepFuture = Future.delayed(stepDelay, () {
-        final stepLoc = token.positionInPath + i;
         _updateTokenState(
           token,
           token.tokenState,
-          newPosition: _getPosition(token.type, stepLoc),
+          newPosition: _getPosition(token.type, stepPosition),
         );
-        gameTokens[token.id]?.positionInPath = stepLoc;
+        gameTokens[token.id]?.positionInPath = stepPosition;
       });
+
       animationFutures.add(stepFuture);
     }
 
-    if (resetToken != null) {
-      // Handle reset token animation
-      for (int i = 1; i <= resetToken.positionInPath; i++) {
-        duration = duration + 70;
-        final resetDelay = Duration(milliseconds: duration);
-        final resetStepFuture = Future.delayed(resetDelay, () {
-          final stepLoc = resetToken.positionInPath - i;
-          _updateTokenState(
-            resetToken,
-            resetToken.tokenState,
-            newPosition: _getPosition(resetToken.type, stepLoc),
-          );
-          gameTokens[resetToken.id]?.positionInPath = stepLoc;
-        });
-        animationFutures.add(resetStepFuture);
+    await Future.wait(animationFutures);
+  }
+
+// Handle the result of token movement
+  Future<bool> _handleMoveResult(Token token, int newPositionInPath, Position destination, MoveResult result) async {
+    final pathLength = _getPathLength(token.type);
+
+    // Update token state for normal movement (not self-kill)
+    if (!result.isSelfKill) {
+      final finalState = newPositionInPath == pathLength - 1
+          ? TokenState.home
+          : result.finalState;
+
+      _updateTokenState(token, finalState, newPosition: destination);
+
+      // Update teammates if forming a safe pair
+      if (result.finalState == TokenState.safeinpair) {
+        _updateTeammatesState(token, destination);
+      }
+    }
+
+    // Handle token reset (either opponent or self)
+    if (result.tokenToReset != null) {
+      if (result.isSelfKill) {
+        // Brief pause for self-kill visual feedback
+        await Future.delayed(const Duration(milliseconds: 100));
       }
 
-      final resetFinalFuture = Future.delayed(Duration(milliseconds: duration), () {
-        _resetToken(resetToken);
-      });
-      animationFutures.add(resetFinalFuture);
+      // Immediate reset animation with no delay between steps
+      await _animateTokenReset(result.tokenToReset!);
+      return true;
     }
 
-    if (newPositionInPath == pathLength - 1) {
-      _updateTokenState(token, TokenState.home);
-    }
-
-    // Wait for ALL animations to complete before returning
-    await Future.wait(animationFutures);
-
-    bool didKill = resetToken != null;
-    return didKill;
+    return false;
   }
+
+// Update teammates at destination to be safe in pair
+  void _updateTeammatesState(Token token, Position destination) {
+    final teammatesAtDestination = gameTokens
+        .where((tkn) => tkn != null && tkn.id != token.id &&
+        tkn.tokenPosition == destination &&
+        areTeammates(token.type, tkn.type))
+        .cast<Token>()
+        .toList();
+
+    for (final teammate in teammatesAtDestination) {
+      final teammateIndex = gameTokens.indexWhere((t) => t?.id == teammate.id);
+      if (teammateIndex != -1) {
+        final currentTeammate = gameTokens[teammateIndex];
+        if(currentTeammate != null){
+          gameTokens[teammateIndex] = currentTeammate.copyWith(tokenState: TokenState.safeinpair);
+        }
+      }
+    }
+    gameTokens.refresh();
+  }
+
+// Animate token reset with faster animation
+  Future<void> _animateTokenReset(Token tokenToReset) async {
+    List<Future<void>> resetFutures = [];
+
+    // Use faster animation for reset (40ms per step instead of 70ms)
+    for (int i = 1; i <= tokenToReset.positionInPath; i++) {
+      final stepLoc = tokenToReset.positionInPath - i;
+      final resetDelay = Duration(milliseconds: 40 * i);
+
+      final resetStepFuture = Future.delayed(resetDelay, () {
+        _updateTokenState(
+          tokenToReset,
+          tokenToReset.tokenState,
+          newPosition: _getPosition(tokenToReset.type, stepLoc),
+        );
+        gameTokens[tokenToReset.id]?.positionInPath = stepLoc;
+      });
+
+      resetFutures.add(resetStepFuture);
+    }
+
+    await Future.wait(resetFutures);
+    _resetToken(tokenToReset);
+  }
+
 
   // Get path length with safety check
   int _getPathLength(TokenType type) {
@@ -247,7 +360,6 @@ class GameService extends GetxService {
   }
 
   bool getMovableTokens(TokenType type, int diceRoll) {
-    // Only check if token type is active
     if (!activeTokenTypes.contains(type)) return false;
 
     return gameTokens
@@ -260,7 +372,6 @@ class GameService extends GetxService {
   }
 
   bool hasInitialToken(TokenType type) {
-    // Only check if token type is active
     if (!activeTokenTypes.contains(type)) return false;
 
     return gameTokens
@@ -269,71 +380,23 @@ class GameService extends GetxService {
   }
 
 
-  Token? _updateBoardState(Token token, Position destination) {
-    // Star Check
-    if (starPositions.contains(destination)) {
-      gameTokens[token.id]?.tokenState = TokenState.safe;
-      return null;
-    }
-
-    // Find Tokens at Destination
-    final tokensAtDestination = gameTokens
-        .where((tkn) => tkn != null && tkn.tokenPosition == destination)
-        .cast<Token>()
-        .toList();
-
-    // Empty Destination
-    if (tokensAtDestination.isEmpty) {
-      gameTokens[token.id]?.tokenState = TokenState.normal;
-      return null;
-    }
-
-    // Check for same team tokens
-    final safeTokens = tokensAtDestination.where((tkn) =>
-        areTeammates(token.type, tkn.type)
-    ).toList();
-
-    if (safeTokens.length == tokensAtDestination.length) {
-      for (final tkn in safeTokens) {
-        gameTokens[tkn.id]?.tokenState = TokenState.safeinpair;
-      }
-      gameTokens[token.id]?.tokenState = TokenState.safeinpair;
-      return null;
-    }
-
-    // Different Type Tokens (not teammates)
-    Token? resetToken;
-    for (final tkn in tokensAtDestination) {
-      if (!areTeammates(token.type, tkn.type) && tkn.tokenState != TokenState.safeinpair) {
-        resetToken = tkn;
-      } else if (areTeammates(token.type, tkn.type)) {
-        gameTokens[tkn.id]?.tokenState = TokenState.safeinpair;
-      }
-    }
-
-    // Place Token
-    gameTokens[token.id]?.tokenState = tokensAtDestination.isNotEmpty
-        ? TokenState.safeinpair
-        : TokenState.normal;
-
-    return resetToken;
-  }
-
-
+  // Husk at opdatere _updateTokenState til at bruge copyWith og refresh() for RxList
   void _updateTokenState(Token token, TokenState newState, {Position? newPosition}) {
     final index = gameTokens.indexWhere((t) => t?.id == token.id);
     if (index != -1) {
-      final updatedToken = token.copyWith(
-        tokenState: newState,
-        tokenPosition: newPosition,
-      );
-
-      // Update the gameTokens list with the updated token
-      final newList = List<Token?>.from(gameTokens);
-      newList[index] = updatedToken;
-      gameTokens.value = newList;
+      final currentToken = gameTokens[index];
+      if (currentToken != null) {
+        gameTokens[index] = currentToken.copyWith(
+          tokenState: newState,
+          tokenPosition: newPosition ?? currentToken.tokenPosition,
+        );
+        gameTokens.refresh();
+      }
+    } else {
+      debugPrint("Error: Token with ID ${token.id} not found in gameTokens for state update.");
     }
   }
+
 
   void _updateInitialPositions(Token token) {
     switch (token.type) {
