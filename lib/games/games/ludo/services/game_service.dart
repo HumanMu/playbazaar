@@ -205,6 +205,12 @@ class GameService extends GetxService {
       return MoveResult(finalState: TokenState.normal);
     }
 
+    // If ALL tokens at destination are the same type as the incoming token, don't kill
+    final allSameType = tokensAtDestination.every((tkn) => tkn.type == token.type);
+    if (allSameType) {
+      return MoveResult(finalState: TokenState.safeinpair); // or .normal if you want
+    }
+
     // Separate teammates and opponents
     final List<Token> teammatesAtDestination = [];
     final List<Token> opponentsAtDestination = [];

@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart';
 import 'package:playbazaar/games/games/ludo/helper/functions.dart';
 import 'package:playbazaar/games/games/ludo/models/dice_model.dart';
 import 'package:playbazaar/games/games/ludo/models/ludo_player.dart';
@@ -289,10 +288,8 @@ class GameController extends GetxController {
 
 // Add this method to your GameController class
   List<double> getPosition(int row, int column, GlobalKey appBarKey) {
-    // Get the reference to the cell by its coordinates
-    final cellKey = keyReferences[row][column];
 
-    // If the cell widget hasn't been rendered yet, return zeros
+    final cellKey = keyReferences[row][column];
     if (cellKey.currentContext == null) {
       return [0, 0, 0, 0];
     }
@@ -300,8 +297,6 @@ class GameController extends GetxController {
     try {
       // Get the render box of the cell
       final RenderBox cellRenderBox = cellKey.currentContext!.findRenderObject() as RenderBox;
-
-      // Get the size of the cell
       final cellSize = cellRenderBox.size;
 
       // Find the board container
@@ -346,7 +341,7 @@ class GameController extends GetxController {
             cellSize.height
           ];
         } catch (e) {
-          print('Error calculating local position: $e');
+          debugPrint('Error calculating local position: $e');
         }
       }
 
@@ -366,32 +361,10 @@ class GameController extends GetxController {
       ];
     } catch (e) {
       // If anything goes wrong, return zeros
-      print('Error in getPosition: $e');
+      debugPrint('Error in getPosition: $e');
       return [0, 0, 0, 0];
     }
   }
-
-  /*List<double> getPosition(int row, int column, GlobalKey keyBar) {
-    final cellBoxKey = keyReferences[row][column];
-    if (cellBoxKey.currentContext == null) {
-      return [0, 0, 0, 0];
-    }
-
-    final RenderBox renderBoxBar = keyBar.currentContext!
-        .findRenderObject() as RenderBox;
-    final sizeBar = renderBoxBar.size;
-    final RenderBox renderBoxCell = cellBoxKey.currentContext!
-        .findRenderObject() as RenderBox;
-    final positionCell = renderBoxCell.localToGlobal(Offset.zero);
-
-    final double x = positionCell.dx + 1;
-    final double y = positionCell.dy - sizeBar.height + 1;
-    final double w = renderBoxCell.size.width - 1;
-    final double h = renderBoxCell.size.height - 1;
-
-    return [x, y, w, h];
-  }*/
-
 
   bool getMovableTokens(TokenType type, int diceValue) {
     return gameService.getMovableTokens(type, diceValue);
