@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../config/orientation_manager.dart';
 import '../../../constants/app_colors.dart';
 import 'controller/dice_controller.dart';
 import 'controller/game_controller.dart';
@@ -54,6 +55,8 @@ class _LudoPlayScreenState extends State<LudoPlayScreen> {
     Get.delete<GameController>(force: true);
     Get.delete<DiceController>(force: true);
     Get.delete<GameService>(force: true);
+    OrientationManager.resetOrientations(); // Reset orientation after leaving
+
     super.dispose();
   }
 
@@ -89,10 +92,11 @@ class _LudoPlayScreenState extends State<LudoPlayScreen> {
         ),
         iconTheme: const IconThemeData(color: AppColors.white),
       ),
-      body: Container(
-        child: isLoading
-          ? CircularProgressIndicator()
-          : GamePlay(keyBar),
+      body: Center(
+          child: isLoading
+              ? CircularProgressIndicator()
+              : GamePlay(keyBar),
+
       ),
       bottomNavigationBar: isLoading
         ? null

@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
 import 'package:playbazaar/games/games/ludo/helper/functions.dart';
 import 'package:playbazaar/games/games/ludo/models/dice_model.dart';
 import 'package:playbazaar/games/games/ludo/models/ludo_player.dart';
@@ -285,7 +286,92 @@ class GameController extends GetxController {
     return Offset(offsetX, offsetY);
   }
 
-  List<double> getPosition(int row, int column, GlobalKey keyBar) {
+
+// Add this method to your GameController class
+  List<double> getPosition(int row, int column, GlobalKey appBarKey) {
+    // Get the reference to the cell by its coordinates
+    final cellKey = keyReferences[row][column];
+
+    // If the cell widget hasn't been rendered yet, return zeros
+    if (cellKey.currentContext == null) {
+      return [0, 0, 0, 0];
+    }
+
+    try {
+      // Get the render box of the cell
+      final RenderBox cellRenderBox = cellKey.currentContext!.findRenderObject() as RenderBox;
+
+      // Get the size of the cell
+      final cellSize = cellRenderBox.size;
+
+      // Find the board container
+      RenderBox? boardBox;
+      BuildContext? currentContext = cellKey.currentContext;
+      int searchAttempts = 0;
+
+      // Try to find the board container by walking up the widget tree
+      // Limit the search to avoid infinite loops
+      while (currentContext != null && boardBox == null && searchAttempts < 10) {
+        searchAttempts++;
+
+        // Check if this context has a RenderBox
+        final renderObject = currentContext.findRenderObject();
+        if (renderObject is RenderBox) {
+          // Check if this might be our board container
+          // by looking at its properties/size
+          final size = renderObject.size;
+          if (size.width > cellSize.width * 10 && size.height > cellSize.height * 10) {
+            // This is likely our board container
+            boardBox = renderObject;
+            break;
+          }
+        }
+
+        // Move up to parent context
+        currentContext = currentContext.findAncestorStateOfType<State>() as BuildContext?;
+      }
+
+      // If we found the board container, use it for positioning
+      if (boardBox != null) {
+        try {
+          final localPosition = cellRenderBox.localToGlobal(
+              Offset.zero,
+              ancestor: boardBox
+          );
+
+          return [
+            localPosition.dx,
+            localPosition.dy,
+            cellSize.width,
+            cellSize.height
+          ];
+        } catch (e) {
+          print('Error calculating local position: $e');
+        }
+      }
+
+      // Fallback to global positioning if board wasn't found
+      final globalPosition = cellRenderBox.localToGlobal(Offset.zero);
+
+      // Adjust for app bar height
+      final double appBarHeight = appBarKey.currentContext != null
+          ? (appBarKey.currentContext!.findRenderObject() as RenderBox).size.height
+          : 0.0;
+
+      return [
+        globalPosition.dx,
+        globalPosition.dy - appBarHeight,
+        cellSize.width,
+        cellSize.height
+      ];
+    } catch (e) {
+      // If anything goes wrong, return zeros
+      print('Error in getPosition: $e');
+      return [0, 0, 0, 0];
+    }
+  }
+
+  /*List<double> getPosition(int row, int column, GlobalKey keyBar) {
     final cellBoxKey = keyReferences[row][column];
     if (cellBoxKey.currentContext == null) {
       return [0, 0, 0, 0];
@@ -304,8 +390,39 @@ class GameController extends GetxController {
     final double h = renderBoxCell.size.height - 1;
 
     return [x, y, w, h];
+  }*/
+
+
+  bool getMovableTokens(TokenType type, int diceValue) {
+    return gameService.getMovableTokens(type, diceValue);
   }
 
+  bool checkForInitialTokens(TokenType type) {
+    return gameService.hasInitialToken(type);
+  }
+
+  bool _hasEnoughSpaceToMove(Token token, int diceValue) {
+    return token.positionInPath + diceValue <= 56;
+  }
+
+  void restartGame() async {
+    isLoading.value = true;
+
+    // Reset game state
+    boardBuild.value = false;
+    wasLastToken.value = false;
+
+    // Initialize services and players again
+    await _initializeServices();
+    await _initializePlayers();
+
+    // Reset board
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      boardBuild.value = true;
+      initializeGameState();
+      isLoading.value = false;
+    });
+  }
 
   bool checkForGameOver() {
     if (!isTeamPlay.value) {
@@ -340,37 +457,6 @@ class GameController extends GetxController {
     }
   }
 
-  bool getMovableTokens(TokenType type, int diceValue) {
-    return gameService.getMovableTokens(type, diceValue);
-  }
-
-  bool checkForInitialTokens(TokenType type) {
-    return gameService.hasInitialToken(type);
-  }
-
-  bool _hasEnoughSpaceToMove(Token token, int diceValue) {
-    return token.positionInPath + diceValue <= 56;
-  }
-
-  void restartGame() async {
-    isLoading.value = true;
-
-    // Reset game state
-    boardBuild.value = false;
-    wasLastToken.value = false;
-
-    // Initialize services and players again
-    await _initializeServices();
-    await _initializePlayers();
-
-    // Reset board
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      boardBuild.value = true;
-      initializeGameState();
-      isLoading.value = false;
-    });
-  }
-
 
   void showGameOverDialog() {
     Get.dialog(
@@ -390,32 +476,3 @@ class GameController extends GetxController {
     );
   }
 }
-
-
-  /*
-        // Update team progress if in team play mode - put it before gameOVer check
-      /*if (isTeamPlay.value && player.teamId != null) {
-        updateTeamProgress(player.teamId!);
-      }*/
-
-  void updateTeamProgress(int teamId) {
-    // Get completed tokens count for this team
-    int totalHomeTokens = 0;
-    int totalTeamTokens = 0;
-
-    for (var player in players.where((p) => p.teamId == teamId)) {
-      totalHomeTokens += player.reachedHome;
-      totalTeamTokens += 4; // Each player has 4 tokens
-    }
-
-    // Calculate percentage complete
-    double progressPercentage = totalTeamTokens > 0
-        ? (totalHomeTokens / totalTeamTokens) * 100
-        : 0;
-
-    debugPrint('Team $teamId progress: $totalHomeTokens/$totalTeamTokens tokens (${progressPercentage.toStringAsFixed(1)}%)');
-
-    // You could update UI with team progress here
-  }
-
-}*/

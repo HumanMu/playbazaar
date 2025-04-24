@@ -33,5 +33,12 @@ class OrientationManager {
       DeviceOrientation.landscapeLeft,
     ]);
   }
+
+  static void fixedOriantation() {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+  }
 }
 

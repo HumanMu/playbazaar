@@ -43,7 +43,7 @@ class SidebarDrawerState extends State<SidebarDrawer> {
   Widget build(BuildContext context) {
     return Drawer(
       backgroundColor: Colors.white,
-      width: 250,
+      width: MediaQuery.of(context).size.width * 0.65,
       child:  SingleChildScrollView(
         child: Container(
           color: Colors.white54,
@@ -92,13 +92,6 @@ class SidebarDrawerState extends State<SidebarDrawer> {
                     icon: Icons.games_sharp,
                     action: () => navigateTo('mainGames'),
                   ),
-                  ListTileWidget(
-                    iconColor: Colors.red,
-                    title: "logout".tr,
-                    boldTitle: true,
-                    icon: Icons.logout,
-                    action: logoutAction,
-                  ),
                   const Divider(
                     color: Colors.redAccent,
                     thickness: 1,
@@ -118,6 +111,19 @@ class SidebarDrawerState extends State<SidebarDrawer> {
                     boldTitle: true,
                     icon: Icons.policy_outlined,
                     action: () => navigateTo('policy'),
+                  ),
+                  const Divider(
+                    color: Colors.redAccent,
+                    thickness: 1,
+                    indent: 20,
+                    endIndent: 20,
+                  ),
+                  ListTileWidget(
+                    iconColor: Colors.red,
+                    title: "logout".tr,
+                    boldTitle: true,
+                    icon: Icons.logout,
+                    action: logoutAction,
                   ),
                 ],
               ),
