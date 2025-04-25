@@ -218,7 +218,7 @@ class LudoBoardPainter extends CustomPainter {
 
     // Draw token circles
     for (final colorSet in tokenPositions) {
-      fillPaint.color = colorSet["color"] as Color;
+      fillPaint.color = (colorSet["color"] as Color).withValues(alpha: 0.2);
 
       for (final pos in colorSet["positions"] as List<List<double>>) {
         final center = Offset(cellSize * pos[0], cellSize * pos[1]);

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:playbazaar/games/games/ludo/widgets/player_profile_image.dart';
 import '../controller/game_controller.dart';
+import '../helper/enums.dart';
 import '../models/token.dart';
 import 'board.dart';
 import 'token_widget.dart';
@@ -30,65 +32,110 @@ class _GamePlayState extends State<GamePlay> {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     final gameController = Get.find<GameController>();
 
     return LayoutBuilder(
       builder: (context, constraints) {
-
         final screenWidth = constraints.maxWidth;
-        final boardSize = screenWidth * 0.98; // 98% of screen width for smaller screens
+        final boardSize = screenWidth * 0.98;
 
-        return Center(
-          child: Container(
-            key: boardContainerKey,
-            width: boardSize,
-            height: boardSize,
-            constraints: BoxConstraints(
-              maxWidth: boardSize,
-              maxHeight: boardSize,
-            ),
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                // The board widget - always visible
-                Positioned.fill(
-                  child: LudoBoard(
-                    keyReferences: gameController.keyReferences,
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Top row player profiles
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 10),
+              child: Obx(() => Directionality(textDirection: TextDirection.ltr,
+                  child: _buildFixedPositionPlayerRow(
+                      gameController,
+                      [TokenType.green, TokenType.yellow]
                   ),
-                ),
-
-                // Tokens - only visible once board is built
-                if (boardBuilt)
-                  Obx(() {
-                    final tokens = gameController.gameTokens
-                        .whereType<Token>()
-                        .toList();
-
-                    return Stack(
-                      fit: StackFit.expand,
-                      children: tokens.map((token) {
-                        // Get position data for this token
-                        final dimensions = _getTokenPosition(
-                            token,
-                            gameController,
-                            boardSize
-                        );
-
-                        return TokenWidget(
-                          token: token,
-                          dimensions: dimensions,
-                        );
-                      }).toList(),
-                    );
-                  }),
-              ],
+              )),
             ),
-          ),
+            // Board container
+            Container(
+              key: boardContainerKey,
+              width: boardSize,
+              height: boardSize,
+              constraints: BoxConstraints(
+                maxWidth: boardSize,
+                maxHeight: boardSize,
+              ),
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  // The board widget - always visible
+                  Positioned.fill(
+                    child: LudoBoard(
+                      keyReferences: gameController.keyReferences,
+                    ),
+                  ),
+
+                  // Tokens - only visible once board is built
+                  if (boardBuilt)
+                    Obx(() {
+                      final tokens = gameController.gameTokens
+                          .whereType<Token>()
+                          .toList();
+
+                      return Stack(
+                        fit: StackFit.expand,
+                        children: tokens.map((token) {
+                          // Get position data for this token
+                          final dimensions = _getTokenPosition(
+                              token,
+                              gameController,
+                              boardSize
+                          );
+
+                          return TokenWidget(
+                            token: token,
+                            dimensions: dimensions,
+                          );
+                        }).toList(),
+                      );
+                    }),
+                ],
+              ),
+            ),
+            // Bottom row player profiles
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 10),
+              child: Obx(() => Directionality(
+                  textDirection: TextDirection.ltr,
+                  child: _buildFixedPositionPlayerRow(
+                    gameController,
+                    [TokenType.red, TokenType.blue]
+                )
+              )),
+            ),
+          ],
         );
       },
+    );
+  }
+
+  // Build row with fixed position placeholders for player profiles
+  Widget _buildFixedPositionPlayerRow(
+      GameController gameController,
+      List<TokenType> tokenTypes
+      ) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: tokenTypes.map((tokenType) {
+        // Find player with this token type (if exists)
+        final player = gameController.players.firstWhereOrNull(
+                (player) => player.tokenType == tokenType
+        );
+
+        // If player exists, show their profile, otherwise show an empty container
+        // with the same size to maintain layout
+        return player != null
+            ? PlayerProfileWidget(player: player)
+            : const SizedBox(width: 60, height: 60); // Adjust size to match your PlayerProfileWidget
+      }).toList(),
     );
   }
 
@@ -126,54 +173,3 @@ class _GamePlayState extends State<GamePlay> {
     return [clampedX, clampedY, cellSize, cellSize];
   }
 }
-
-/*class GamePlay extends StatefulWidget {
-  final GlobalKey keyBar;
-
-  const GamePlay(this.keyBar, {super.key});
-
-  @override
-  State<GamePlay> createState() => _GamePlayState();
-}
-
-class _GamePlayState extends State<GamePlay> {
-  bool boardBuilt = false;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {
-        boardBuilt = true;
-      });
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final gameController = Get.find<GameController>();
-
-    return Obx(() {
-      final tokens = gameController.gameTokens.whereType<Token>().toList();
-
-      return Directionality(
-        textDirection: TextDirection.ltr,  // Force LTR layout
-        child: Stack(
-          children: [
-            Board(gameController.keyReferences), // the old way
-            if (boardBuilt) // Only show tokens after board is built
-              ...tokens.map((token) =>
-                  TokenWidget(
-                    token: token,
-                    dimensions: gameController.getPosition(
-                      token.tokenPosition.row,
-                      token.tokenPosition.column,
-                      widget.keyBar,
-                    ),
-                  )),
-          ],
-        ),
-      );
-    });
-  }
-}*/

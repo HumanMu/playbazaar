@@ -286,7 +286,7 @@ class GameController extends GetxController {
   }
 
 
-// Add this method to your GameController class
+  // Add this method to your GameController class
   List<double> getPosition(int row, int column, GlobalKey appBarKey) {
 
     final cellKey = keyReferences[row][column];
