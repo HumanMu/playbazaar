@@ -2,12 +2,10 @@ import 'package:get/get.dart';
 import '../../controller/user_controller/auth_controller.dart';
 
 
-// English
-//List<String> gamePagesPath = ['Quiz', 'Hangman'];
-List<String> gamePagesPath = ['quiz', 'ludo_missions', 'hangman', 'wordconnector', 'brain_teaser',];
+List<String> gamePagesPath = ['quiz', 'ludo_missions', 'hangman', 'wordconnector']; //, 'brain_teaser',
 List<String> gamePagesEn = ['quiz', 'hangman', 'wordconnector'];
-List<String> gameNamesFarsi = ['مسابقات آزمونی', 'لودو', 'بازی جلاد', 'پیوند حروف', 'چیستان',];
-List<String> gameNamesArabic = ['قائمة الألعاب', 'لودو', 'لعبة الجلاد', 'ربط الحروف'];
+List<String> gameNamesFarsi = ['مسابقات آزمونی', 'لودو', 'بازی جلاد', 'پیوند حروف']; //, 'چیستان',
+List<String> gameNamesArabic = ['قائمة الألعاب', 'لودو', 'لعبة الجلاد']; //, 'ربط الحروف'
 List<String> gameNamesDanish = ['Quiz', 'Ludo', 'Galgespil', 'Word Connector'];
 
 List<String> ludoTypes = ['Online', 'Robots'];
@@ -16,7 +14,6 @@ List<String> ludoTypes = ['Online', 'Robots'];
 Future<Map<String, dynamic>> getGameLanguage() async {
 
   final authController = Get.find<AuthController>();
-  //List<String>? value = await SharedPreferencesManager.getStringList(SharedPreferencesKeys.appLanguageKey);
   List<String> gamePath;
   List<String> gameNames;
 

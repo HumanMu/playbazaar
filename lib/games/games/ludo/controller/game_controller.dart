@@ -1,3 +1,6 @@
+import 'dart:math';
+import 'dart:math' as math;
+
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:playbazaar/games/games/ludo/helper/functions.dart';
@@ -266,27 +269,33 @@ class GameController extends GetxController {
 
 
   Offset getTokenOffsetAtPosition(Token token) {
-    final tokensAtSamePosition = getTokensAtPosition(token.tokenPosition);
+    final tokensAtPosition = getTokensAtPosition(token.tokenPosition);
 
-    // If only one token at this position
-    if (tokensAtSamePosition.length <= 1) {
+    if (tokensAtPosition.length <= 1) {
       return Offset.zero;
     }
 
-    // Find other tokens in this x position
-    final indexInStack = tokensAtSamePosition.indexWhere((t) =>
-    t.id == token.id);
+    // Find this token's index among those at the same position
+    final indexInStack = tokensAtPosition.indexWhere((t) => t.id == token.id);
     if (indexInStack == -1) return Offset.zero; // Safety check
 
-    // This creates a diagonal pattern where tokens are slightly shifted
-    final offsetX = indexInStack * 6.5;
-    final offsetY = indexInStack * 6.5;
+    // Calculate offset amount - make it large enough to not overlap
+    final baseOffset = 10.0;
 
-    return Offset(offsetX, offsetY);
+    // Calculate angle based on position in stack - create a spiral
+    final angle = (indexInStack * (2 * math.pi / 8)) % (2 * math.pi);
+
+    // Distance increases with each token to create a spiral
+    final distance = baseOffset * (1 + indexInStack * 0.3);
+
+    // Convert polar coordinates (angle, distance) to Cartesian (x, y)
+    return Offset(
+        math.cos(angle) * distance,
+        math.sin(angle) * distance
+    );
   }
 
 
-  // Add this method to your GameController class
   List<double> getPosition(int row, int column, GlobalKey appBarKey) {
 
     final cellKey = keyReferences[row][column];
@@ -312,11 +321,8 @@ class GameController extends GetxController {
         // Check if this context has a RenderBox
         final renderObject = currentContext.findRenderObject();
         if (renderObject is RenderBox) {
-          // Check if this might be our board container
-          // by looking at its properties/size
           final size = renderObject.size;
           if (size.width > cellSize.width * 10 && size.height > cellSize.height * 10) {
-            // This is likely our board container
             boardBox = renderObject;
             break;
           }
@@ -326,7 +332,6 @@ class GameController extends GetxController {
         currentContext = currentContext.findAncestorStateOfType<State>() as BuildContext?;
       }
 
-      // If we found the board container, use it for positioning
       if (boardBox != null) {
         try {
           final localPosition = cellRenderBox.localToGlobal(
@@ -345,7 +350,6 @@ class GameController extends GetxController {
         }
       }
 
-      // Fallback to global positioning if board wasn't found
       final globalPosition = cellRenderBox.localToGlobal(Offset.zero);
 
       // Adjust for app bar height
@@ -360,7 +364,6 @@ class GameController extends GetxController {
         cellSize.height
       ];
     } catch (e) {
-      // If anything goes wrong, return zeros
       debugPrint('Error in getPosition: $e');
       return [0, 0, 0, 0];
     }

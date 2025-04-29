@@ -21,13 +21,10 @@ class TokenWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final gameController = Get.find<GameController>();
-
-    // Calculate offset based on token index at this position
     final offset = gameController.getTokenOffsetAtPosition(token);
 
     return AnimatedPositioned(
       duration: const Duration(milliseconds: 100),
-      // Add offset to position tokens slightly apart from each other
       left: dimensions[0] + offset.dx,
       top: dimensions[1] + offset.dy,
       width: dimensions[2],
