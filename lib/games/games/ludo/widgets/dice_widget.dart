@@ -5,7 +5,12 @@ import '../helper/functions.dart';
 import '../controller/dice_controller.dart';
 
 class ModernDiceWidget extends StatefulWidget {
-  const ModernDiceWidget({super.key});
+  final double? size;
+
+  const ModernDiceWidget({
+    super.key,
+    this.size,
+  });
 
   @override
   State<ModernDiceWidget> createState() => _ModernDiceWidgetState();
@@ -93,6 +98,13 @@ class _ModernDiceWidgetState extends State<ModernDiceWidget>
       final isInteractive = diceController.dice.isInteractive && !isRobotTurn;
       final color = LudoHelper.getTokenColor(diceColor);
 
+      // Calculate dice size with constraints
+      // Default is 15% of screen width
+      double calculatedSize = widget.size ?? (MediaQuery.of(context).size.width * 0.15);
+
+      // Apply min/max constraints
+      calculatedSize = calculatedSize.clamp(55.0, 70.0);
+
       return GestureDetector(
         onTap: _handleDiceTap,
         child: AnimatedOpacity(
@@ -107,11 +119,11 @@ class _ModernDiceWidgetState extends State<ModernDiceWidget>
                   elevation: isInteractive ? 10 : 5,
                   shadowColor: color.withValues(alpha: 0.5),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(calculatedSize * 0.2),
                   ),
                   child: SizedBox(
-                    height: 60,
-                    width: 60,
+                    height: calculatedSize,
+                    width: calculatedSize,
                     child: Stack(
                       children: [
                         // Shadow under dice
@@ -119,7 +131,7 @@ class _ModernDiceWidgetState extends State<ModernDiceWidget>
                           Positioned.fill(
                             child: Container(
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(calculatedSize * 0.2),
                                 boxShadow: [
                                   BoxShadow(
                                     color: Colors.black.withValues(alpha: 0.2),
@@ -140,7 +152,7 @@ class _ModernDiceWidgetState extends State<ModernDiceWidget>
                               animationValue: _animation.value,
                               isRolling: isRolling,
                             ),
-                            size: Size.square(60),
+                            size: Size.square(calculatedSize),
                           ),
                         ),
                         // Robot indicator
@@ -149,11 +161,11 @@ class _ModernDiceWidgetState extends State<ModernDiceWidget>
                             child: Container(
                               decoration: BoxDecoration(
                                 color: Colors.black.withValues(alpha: 0.1),
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(calculatedSize * 0.2),
                               ),
                               child: Icon(
                                 Icons.smart_toy,
-                                size: 24,
+                                size: calculatedSize * 0.4,
                                 color: Colors.black45,
                               ),
                             ),
@@ -164,11 +176,11 @@ class _ModernDiceWidgetState extends State<ModernDiceWidget>
                             child: Container(
                               decoration: BoxDecoration(
                                 color: Colors.black.withValues(alpha: 0.05),
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(calculatedSize * 0.2),
                               ),
                               child: Icon(
                                 Icons.not_interested,
-                                size: 24,
+                                size: calculatedSize * 0.4,
                                 color: Colors.black26,
                               ),
                             ),
@@ -186,6 +198,7 @@ class _ModernDiceWidgetState extends State<ModernDiceWidget>
   }
 }
 
+// DicePainter class remains the same
 class DicePainter extends CustomPainter {
   final int value;
   final Color color;
@@ -366,73 +379,4 @@ class DicePainter extends CustomPainter {
   }
 }
 
-
-/*
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import '../controller/dice_controller.dart';
-import '../constants/token_constants.dart';
-
- class DiceWidget extends StatelessWidget {
-  const DiceWidget({super.key});
-
-  String _splitByPoint(TokenType tokenType) {
-    switch (tokenType) {
-      case TokenType.green:
-        return "green";
-      case TokenType.yellow:
-        return "yellow";
-      case TokenType.blue:
-        return "blue";
-      case TokenType.red:
-        return "red";
-    }
-  }
-
-  Image _diceImagePathFinder(int diceNumber, TokenType diceColor) {
-    String color = _splitByPoint(diceColor);
-    String dicePath = "assets/games/ludo/dice/$color/$diceNumber.png";
-
-    return Image.asset(
-      dicePath,
-      gaplessPlayback: true,
-      fit: BoxFit.fill,
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final diceController = Get.find<DiceController>();
-
-    return Obx(() {
-      final diceNumber = diceController.diceValue;
-      final diceColor = diceController.diceColor;
-      final img = _diceImagePathFinder(diceNumber, diceColor);
-
-      return Card(
-        elevation: 10,
-        child: SizedBox(
-          height: 40,
-          width: 40,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () => diceController.rollDice(),
-                      child: img,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      );
-    });
-  }
-}
-*/
 

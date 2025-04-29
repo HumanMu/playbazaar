@@ -55,7 +55,7 @@ class _LudoPlayScreenState extends State<LudoPlayScreen> {
     Get.delete<GameController>(force: true);
     Get.delete<DiceController>(force: true);
     Get.delete<GameService>(force: true);
-    OrientationManager.resetOrientations(); // Reset orientation after leaving
+    OrientationManager.resetOrientations();
 
     super.dispose();
   }
@@ -94,11 +94,11 @@ class _LudoPlayScreenState extends State<LudoPlayScreen> {
       ),
       body: Center(
           child: isLoading
-              ? CircularProgressIndicator()
-              : GamePlay(keyBar),
+            ? CircularProgressIndicator()
+            : GamePlay(keyBar),
 
       ),
-      bottomNavigationBar: isLoading
+      /*bottomNavigationBar: isLoading
         ? null
         : BottomAppBar(
             color: AppColors.primary,
@@ -122,7 +122,7 @@ class _LudoPlayScreenState extends State<LudoPlayScreen> {
           ),
             child: const ModernDiceWidget(),
         ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,*/
     );
   }
 

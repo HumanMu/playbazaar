@@ -1,11 +1,15 @@
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:playbazaar/games/games/ludo/widgets/player_profile_image.dart';
+import 'package:playbazaar/games/games/ludo/widgets/dice_widget.dart';
+import '../controller/dice_controller.dart';
 import '../controller/game_controller.dart';
+import 'package:flutter/material.dart';
+import 'player_profile_widget.dart';
+import 'package:get/get.dart';
 import '../helper/enums.dart';
 import '../models/token.dart';
-import 'board.dart';
 import 'token_widget.dart';
+import 'board.dart';
+
+
 
 class GamePlay extends StatefulWidget {
   final GlobalKey appBarKey;
@@ -19,6 +23,8 @@ class GamePlay extends StatefulWidget {
 class _GamePlayState extends State<GamePlay> {
   bool boardBuilt = false;
   final GlobalKey boardContainerKey = GlobalKey();
+  final gameController = Get.find<GameController>();
+  final diceController = Get.find<DiceController>();
 
   @override
   void initState() {
@@ -32,110 +38,190 @@ class _GamePlayState extends State<GamePlay> {
     });
   }
 
+
   @override
   Widget build(BuildContext context) {
-    final gameController = Get.find<GameController>();
-
     return LayoutBuilder(
       builder: (context, constraints) {
+        final screenHeight = constraints.maxHeight;
         final screenWidth = constraints.maxWidth;
-        final boardSize = screenWidth * 0.98;
+        final boardSize = screenWidth * 0.99;
 
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+
+        // Correctly assign player types
+        final greenPlayer = gameController.players.firstWhereOrNull(
+              (player) => player.tokenType == TokenType.green,
+        );
+        final yellowPlayer = gameController.players.firstWhereOrNull(
+              (player) => player.tokenType == TokenType.yellow,
+        );
+        final redPlayer = gameController.players.firstWhereOrNull(
+              (player) => player.tokenType == TokenType.red,
+        );
+        final bluePlayer = gameController.players.firstWhereOrNull(
+              (player) => player.tokenType == TokenType.blue,
+        );
+
+        return Stack(
           children: [
-            // Top row player profiles
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 10),
-              child: Obx(() => Directionality(textDirection: TextDirection.ltr,
-                  child: _buildFixedPositionPlayerRow(
-                      gameController,
-                      [TokenType.green, TokenType.yellow]
-                  ),
-              )),
-            ),
-            // Board container
-            Container(
-              key: boardContainerKey,
-              width: boardSize,
-              height: boardSize,
-              constraints: BoxConstraints(
-                maxWidth: boardSize,
-                maxHeight: boardSize,
-              ),
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  // The board widget - always visible
-                  Positioned.fill(
-                    child: LudoBoard(
-                      keyReferences: gameController.keyReferences,
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Top row player profiles
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.015),
+                  child: Directionality(
+                    textDirection: TextDirection.ltr,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        // Green player
+                        Expanded(
+                          child: Row(
+                            children: [
+                              if(greenPlayer != null)
+                                PlayerProfileWidget(player: greenPlayer),
+                            ],
+                          ),
+                        ),
+
+                        // Yellow player
+                        Expanded(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              if(yellowPlayer != null)
+                                PlayerProfileWidget(player: yellowPlayer),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ),
+                ),
 
-                  // Tokens - only visible once board is built
-                  if (boardBuilt)
-                    Obx(() {
-                      final tokens = gameController.gameTokens
-                          .whereType<Token>()
-                          .toList();
+                // Board without dice
+                Container(
+                  key: boardContainerKey,
+                  width: boardSize,
+                  height: boardSize,
+                  constraints: BoxConstraints(
+                    maxWidth: boardSize,
+                    maxHeight: boardSize,
+                  ),
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      // The board
+                      Positioned.fill(
+                        child: LudoBoard(
+                          keyReferences: gameController.keyReferences,
+                        ),
+                      ),
 
-                      return Stack(
-                        fit: StackFit.expand,
-                        children: tokens.map((token) {
-                          // Get position data for this token
-                          final dimensions = _getTokenPosition(
-                              token,
-                              gameController,
-                              boardSize
+                      // Tokens - only visible once board is built
+                      if (boardBuilt)
+                        Obx(() {
+                          final tokens = gameController.gameTokens
+                              .whereType<Token>()
+                              .toList();
+
+                          return Stack(
+                            fit: StackFit.expand,
+                            children: tokens.map((token) {
+                              final dimensions = _getTokenPosition(
+                                token,
+                                gameController,
+                                boardSize,
+                              );
+
+                              return TokenWidget(
+                                token: token,
+                                dimensions: dimensions,
+                              );
+                            }).toList(),
                           );
+                        }),
+                    ],
+                  ),
+                ),
 
-                          return TokenWidget(
-                            token: token,
-                            dimensions: dimensions,
-                          );
-                        }).toList(),
-                      );
-                    }),
-                ],
-              ),
-            ),
-            // Bottom row player profiles
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 10),
-              child: Obx(() => Directionality(
-                  textDirection: TextDirection.ltr,
-                  child: _buildFixedPositionPlayerRow(
-                    gameController,
-                    [TokenType.red, TokenType.blue]
+                // Bottom row player profiles
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: boardSize * 0.015),
+                  child: Directionality(
+                    textDirection: TextDirection.ltr,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        // Red player
+                        Expanded(
+                          child: Row(
+                            children: [
+                              if(redPlayer != null)
+                                PlayerProfileWidget(player: redPlayer),
+                            ],
+                          ),
+                        ),
+
+                        // Blue player
+                        Expanded(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              if(bluePlayer != null)
+                                PlayerProfileWidget(player: bluePlayer),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 )
-              )),
+              ],
             ),
+
+            // Single dice that animates to player positions
+            Obx(() {
+              final diceColor = diceController.diceColor;
+              final double calculatedSize = screenWidth * 0.08;
+              final double profileDimension = calculatedSize.clamp(55.0, 70.0);
+              final double diceFromSide = profileDimension + (screenWidth * 0.02);
+              final double diceFromCenter = (screenHeight * 0.5) - (screenWidth * 0.5 + profileDimension + 3); // 3 pixels gap
+              double? left, right, top, bottom;
+
+              switch (diceColor) {
+                case TokenType.green:
+                  left = diceFromSide;
+                  top = diceFromCenter;
+                  break;
+                case TokenType.yellow:
+                  right = diceFromSide;
+                  top = diceFromCenter;
+                  break;
+                case TokenType.red:
+                  left = diceFromSide;
+                  bottom = diceFromCenter;
+                  break;
+                case TokenType.blue:
+                  right = diceFromSide;
+                  bottom = diceFromCenter;
+                  break;
+              }
+
+              return AnimatedPositioned(
+                duration: const Duration(milliseconds: 500),
+                curve: Curves.easeInOut,
+                left: left,
+                right: right,
+                top: top,
+                bottom: bottom,
+                child: const ModernDiceWidget(),
+              );
+            }),
           ],
         );
       },
-    );
-  }
-
-  // Build row with fixed position placeholders for player profiles
-  Widget _buildFixedPositionPlayerRow(
-      GameController gameController,
-      List<TokenType> tokenTypes
-      ) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: tokenTypes.map((tokenType) {
-        // Find player with this token type (if exists)
-        final player = gameController.players.firstWhereOrNull(
-                (player) => player.tokenType == tokenType
-        );
-
-        // If player exists, show their profile, otherwise show an empty container
-        // with the same size to maintain layout
-        return player != null
-            ? PlayerProfileWidget(player: player)
-            : const SizedBox(width: 60, height: 60); // Adjust size to match your PlayerProfileWidget
-      }).toList(),
     );
   }
 
@@ -143,7 +229,7 @@ class _GamePlayState extends State<GamePlay> {
   List<double> _getTokenPosition(
       Token token,
       GameController gameController,
-      double boardSize
+      double boardSize,
       ) {
     // Get raw position from game controller
     final position = gameController.getPosition(
@@ -162,7 +248,7 @@ class _GamePlayState extends State<GamePlay> {
         token.tokenPosition.column * cellSize,
         token.tokenPosition.row * cellSize,
         cellSize,
-        cellSize
+        cellSize,
       ];
     }
 
@@ -173,3 +259,4 @@ class _GamePlayState extends State<GamePlay> {
     return [clampedX, clampedY, cellSize, cellSize];
   }
 }
+
