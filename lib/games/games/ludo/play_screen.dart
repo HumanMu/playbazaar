@@ -5,7 +5,6 @@ import '../../../constants/app_colors.dart';
 import 'controller/dice_controller.dart';
 import 'controller/game_controller.dart';
 import 'services/game_service.dart';
-import 'widgets/dice_widget.dart';
 import 'widgets/game_play.dart';
 
 class LudoPlayScreen extends StatefulWidget {
@@ -98,31 +97,6 @@ class _LudoPlayScreenState extends State<LudoPlayScreen> {
             : GamePlay(keyBar),
 
       ),
-      /*bottomNavigationBar: isLoading
-        ? null
-        : BottomAppBar(
-            color: AppColors.primary,
-            shape: const CircularNotchedRectangle(),
-            elevation: 8,
-            notchMargin: 8,
-            child: Container(height: 50.0),
-          ),
-      floatingActionButton: isLoading
-        ? null
-        : Container(
-          decoration: BoxDecoration(
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.blue.withValues(alpha: 0.5),
-                spreadRadius: 2,
-                blurRadius: 10,
-                offset: const Offset(0, 3),
-              ),
-            ],
-          ),
-            child: const ModernDiceWidget(),
-        ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,*/
     );
   }
 

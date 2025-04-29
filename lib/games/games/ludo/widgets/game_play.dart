@@ -1,4 +1,5 @@
 import 'package:playbazaar/games/games/ludo/widgets/dice_widget.dart';
+import '../../../../admob/adaptive_banner_ad.dart';
 import '../controller/dice_controller.dart';
 import '../controller/game_controller.dart';
 import 'package:flutter/material.dart';
@@ -42,7 +43,7 @@ class _GamePlayState extends State<GamePlay> {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
-      builder: (context, constraints) {
+        builder: (context, constraints) {
         final screenHeight = constraints.maxHeight;
         final screenWidth = constraints.maxWidth;
         final boardSize = screenWidth * 0.99;
@@ -64,12 +65,24 @@ class _GamePlayState extends State<GamePlay> {
 
         return Stack(
           children: [
+            Container(
+              color: Colors.teal[900],
+              width: MediaQuery.of(context).size.width,
+              child: AdaptiveBannerAd(
+                onAdLoaded: (isLoaded) {
+                  if (isLoaded) {
+                    debugPrint('Ad loaded in Quiz Screen');
+                  } else {
+                    debugPrint('Ad failed to load in Quiz Screen');
+                  }
+                },
+              ),  // The BannerAd widget
+            ),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Top row player profiles
                 Container(
-                  margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.015),
+                  margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.015, vertical: boardSize * 0.01),
                   child: Directionality(
                     textDirection: TextDirection.ltr,
                     child: Row(
@@ -148,7 +161,7 @@ class _GamePlayState extends State<GamePlay> {
 
                 // Bottom row player profiles
                 Container(
-                  margin: EdgeInsets.symmetric(horizontal: boardSize * 0.015),
+                  margin: EdgeInsets.symmetric(horizontal: boardSize * 0.015, vertical: boardSize * 0.01),
                   child: Directionality(
                     textDirection: TextDirection.ltr,
                     child: Row(
@@ -187,7 +200,7 @@ class _GamePlayState extends State<GamePlay> {
               final double calculatedSize = screenWidth * 0.08;
               final double profileDimension = calculatedSize.clamp(55.0, 70.0);
               final double diceFromSide = profileDimension + (screenWidth * 0.02);
-              final double diceFromCenter = (screenHeight * 0.5) - (screenWidth * 0.5 + profileDimension + 3); // 3 pixels gap
+              final double diceFromCenter = (screenHeight * 0.5) - (screenWidth * 0.5 + profileDimension + 10); // 3 pixels gap
               double? left, right, top, bottom;
 
               switch (diceColor) {
