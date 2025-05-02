@@ -93,7 +93,6 @@ class PlayController extends GetxController {
         wordHint.value = gameData.wordHint ?? "";
         wordToGuess.value = gameData.wordToGuess;
         winner.value = null;
-        resetGameStates();
 
         if (Get.currentRoute != '/hangman') {
           Get.offNamed('/hangman');
@@ -101,9 +100,12 @@ class PlayController extends GetxController {
 
         bool allLost = gameData.participants.every((participant) => participant.gameState == 'Lost');
         canStart.value = allLost;
+        if(allLost) {
+          resetGameStates();
+        }
 
         bool isCurrentUserPlaying = gameData.participants.any((p) => p.uid == user!.uid && p.gameState == 'Play');
-        isCurrentUserPlaying? closeWaitingRoom() : showWaitingRoom();
+        isCurrentUserPlaying? closeWaitingRoom() :  showWaitingRoom();
 
       } else if (gameData.gameState == "waiting") {
         if(gameData.winner != null) canStart.value = true;
@@ -173,6 +175,7 @@ class PlayController extends GetxController {
 
   void closeWaitingRoom() {
     if (Get.isDialogOpen == true) {
+      resetGameStates(); // Dont remove this
       Get.back();
     } else {
       debugPrint("No dialog is currently open to close.");
@@ -234,6 +237,7 @@ class PlayController extends GetxController {
 
   Future<void> startTeamPlayGame(BuildContext context) async {
     if (isOfflineMode.value) {
+      resetGameStates();
       _gameSubscription?.cancel();
       if(localPlayers.length < 2){
         showCustomSnackbar("zero_player_error".tr, false);
@@ -279,11 +283,11 @@ class PlayController extends GetxController {
   }
 
   Future<void> startNextGame(BuildContext context) async {
-    if(isOnlineMode.value) return;
+    if(isOnlineMode.value ) return;
 
     if(isOfflineMode.value) {
       await getPlayerGuess(context);
-      prepareNewGame();
+      resetGameStates();
       return;
     }
     if(currentIndex.value == words.length -1){
@@ -317,7 +321,7 @@ class PlayController extends GetxController {
       gameCode.value = uppercasedCode;
       _subscribeToGame(uppercasedCode);
     } else {
-      showCustomSnackbar("Failed to join game", false);
+      showCustomSnackbar("Failed to join the game", false);
       return;
     }
   }
@@ -393,6 +397,7 @@ class PlayController extends GetxController {
     _gameSubscription?.cancel();
     isOfflineMode.value = value;
     isJoiningMode.value = false;
+    resetGameStates();
     if (!value) {
       clearLocalPlayers();
     }
@@ -443,18 +448,4 @@ class PlayController extends GetxController {
     alphabet.value = alphabetMap[authController.language[0]] ?? Alphabets.english;
     update();
   }
-
-  /*String normalizeAlphabet(String guessWord) {
-    String normalized = guessWord.replaceAll(RegExp(r'\s+'), '').trim(); // First remove any extra spaces
-    bool isRtlLanguage = authController.language[0] == "fa" || authController.language[0] == "ar";
-
-    // For Arabic and Persian, also remove special RTL characters
-    if (isRtlLanguage) {
-      normalized = normalized
-          .replaceAll('\u200C', '')
-          .replaceAll(RegExp(r'[\u200B-\u200F\u061C\uFEFF\u200D]'), '')
-          .replaceAll(RegExp(r'[\u202A-\u202E\u2066-\u2069]'), '');
-    }
-    return isRtlLanguage? normalized : normalized.toUpperCase();
-  }*/
 }

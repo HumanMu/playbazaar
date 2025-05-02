@@ -1,4 +1,5 @@
 import 'package:playbazaar/games/games/ludo/widgets/dice_widget.dart';
+import 'package:playbazaar/games/games/ludo/widgets/tokens/token_widget_2.dart';
 import '../../../../admob/adaptive_banner_ad.dart';
 import '../controller/dice_controller.dart';
 import '../controller/game_controller.dart';
@@ -7,7 +8,7 @@ import 'player_profile_widget.dart';
 import 'package:get/get.dart';
 import '../helper/enums.dart';
 import '../models/token.dart';
-import 'token_widget.dart';
+import 'tokens/token_widget.dart';
 import 'board.dart';
 
 

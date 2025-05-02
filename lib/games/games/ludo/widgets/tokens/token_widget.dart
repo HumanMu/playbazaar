@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:playbazaar/games/games/ludo/helper/functions.dart';
 import 'package:playbazaar/games/games/ludo/widgets/animated_token.dart';
-import '../controller/game_controller.dart';
-import '../models/token.dart';
+import '../../controller/game_controller.dart';
+import '../../models/token.dart';
 
 
 

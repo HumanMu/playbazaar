@@ -13,6 +13,7 @@ class CustomSwitchTextboxTile extends StatelessWidget {
   final List<String> items;
   final Function(int)? onItemRemove;
   final bool showRemoveButton;
+  //final IconData? icon;
 
   const CustomSwitchTextboxTile({
     super.key,
@@ -26,6 +27,7 @@ class CustomSwitchTextboxTile extends StatelessWidget {
     this.textFieldHeader,
     this.textFieldHint,
     this.onItemRemove,
+    //this.icon,
     this.showRemoveButton = true,
   });
 
@@ -76,7 +78,7 @@ class CustomSwitchTextboxTile extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                   IconButton(
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.add,
                       color: Colors.green,
                       size: 40,

@@ -276,7 +276,6 @@ class HangmanService extends GetxService {
 
       if (gameDoc.exists) {
         List<dynamic> participants = gameDoc['participants'];
-        participants.removeWhere((participant) => participant['uid'] == userId);
         String hostId = gameDoc['hostId'];
 
         if (hostId == userId) {
@@ -286,6 +285,8 @@ class HangmanService extends GetxService {
               .delete();
 
         } else {
+          participants.removeWhere((participant) => participant['uid'] == userId);
+
           await hangmanReference
               .collection('inProgressGames')
               .doc(gameId)

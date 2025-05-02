@@ -24,19 +24,14 @@ class _HangmanPlaySettingsScreenState extends State<HangmanPlaySettingsScreen> {
   final TextEditingController gameCodeController = TextEditingController();
 
   final userController = Get.find<UserController>();
-  //late UserRole userRole;
 
   @override
-  void initState() {
-    super.initState();
-    //_initializeUserRole();
+  void dispose() {
+    playerNameController.dispose();
+    gameCodeController.dispose();
+    super.dispose();
   }
 
-  /*Future<void> _initializeUserRole() async {
-    setState(() {
-      userRole = userController.userData.value!.role;
-    });
-  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -178,6 +173,7 @@ class _HangmanPlaySettingsScreenState extends State<HangmanPlaySettingsScreen> {
       textFieldHint: 'game_code_hint'.tr,
       onItemAdd: controller.joinGameWithCode,
       items: controller.localPlayers,
+      //icon: Icons.play_arrow,
     ));
   }
 
