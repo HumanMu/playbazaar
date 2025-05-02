@@ -47,8 +47,6 @@ class _GroupChatPageState extends State<GroupChatPage> {
     _messageController.listenToMessages(widget.chatId);
     _scrollController = ScrollController();
 
-    /*_messageController.listenToMessages();
-    ever(_messageController.messages, (_) => scrollToBottom());*/
     _messageController.messages.listen((_) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         scrollToBottom();

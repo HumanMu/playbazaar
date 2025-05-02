@@ -69,100 +69,100 @@ class _EditPage extends State<EditPage> {
           ),
         ),
         iconTheme: IconThemeData(
-          color: Colors.white
+            color: Colors.white
         ),
       ),
       backgroundColor: Colors.white,
       body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : _profileInformation(context),
-    );
-  }
-
-  Widget _profileInformation(context) {
-    return CustomScrollView(
-      scrollDirection: Axis.vertical,
-      slivers: [
-        SliverFillRemaining(
-          hasScrollBody: false,
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Flexible(child: Image.asset('assets/images/playbazaar_caffe.png',
-                  height: 300,
-                  width: 300,
-                ),),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child:Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'aboutme'.tr,
-                        style: const TextStyle(color: Colors.black, fontSize: 45),
+      ? const Center(child: CircularProgressIndicator())
+      : SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Image.asset('assets/images/playbazaar_caffe.png',
+                      height: 300,
+                      width: 300,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'aboutme'.tr,
+                            style: const TextStyle(color: Colors.black, fontSize: 45),
+                          ),
+                          Form(
+                            autovalidateMode: AutovalidateMode.always,
+                            onChanged: () {
+                              setState(() {
+                                Form.of(primaryFocus!.context!).save();
+                              });
+                            },
+                            child: Column(
+                              children: [
+                                CustomTextFormField(controller: fullnameCon, labelText: 'name'.tr),
+                                CustomTextFormField(controller: aboutCon, maxLine: 6, labelText: 'aboutme'.tr),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: 20),
+                        ],
                       ),
-                      Form(
-                        autovalidateMode: AutovalidateMode.always,
-                        onChanged: () {
-                          setState(() {
-                            Form.of(primaryFocus!.context!).save();
-                          });
-                        },
-                        child: Column(
-                          children: [
-                            CustomTextFormField(controller: fullnameCon, labelText: 'name'.tr),
-                            CustomTextFormField(controller: aboutCon, maxLine: 6, labelText: 'aboutme'.tr),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                        height: 50,
-                        child: _saveButton(),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
+            // Fixed save button at bottom
+            Container(
+              margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+              height: 50,
+              child: _saveButton(),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 
   Widget _saveButton() {
     return SizedBox(
       width: double.infinity,
-        child: ElevatedButton(
-          style: ButtonStyle(
-            shape: WidgetStateProperty.all(
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
-            ),
-            backgroundColor:
-            WidgetStateProperty.resolveWith((Set<WidgetState> states) {
-              if (states.contains(WidgetState.pressed)) {
-                return Colors.redAccent;
-              } else {
-                return Colors.green;
-              }
-            }),
+      child: ElevatedButton(
+        style: ButtonStyle(
+          shape: WidgetStateProperty.all(
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
           ),
-          onPressed: () {
-            saveUserData();
-          },
-          child: Text('btn_save'.tr,
-            style: TextStyle(color: Colors.white),
-          ),
+          backgroundColor:
+          WidgetStateProperty.resolveWith((Set<WidgetState> states) {
+            if (states.contains(WidgetState.pressed)) {
+              return Colors.redAccent;
+            } else {
+              return Colors.green;
+            }
+          }),
         ),
+        onPressed: () {
+          saveUserData();
+        },
+        child: Text('btn_save'.tr,
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
     );
   }
+
 
   Future<void> saveUserData() async {
     int messageLength = aboutCon.text.length;
     if(messageLength > 300){
       showCustomSnackbar(
           "${"current_message_length".tr}: $messageLength "
-              "${"allowed_message_length_300".tr}", false, timing: 6
+          "${"allowed_message_length_300".tr}", false, timing: 6
       );
       return;
     }

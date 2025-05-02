@@ -83,27 +83,22 @@ class _ProfilePage extends State<ProfilePage> {
         parentContext: context,
       ),
       backgroundColor: Colors.white,
-      body:
-      Obx(() {
-        if(userController.isLoading.value){
-          return Center(child: CircularProgressIndicator());
-        }
-        return CustomScrollView(
-          scrollDirection: Axis.vertical,
-          shrinkWrap: true,
-          slivers: [
-            SliverFillRemaining(
-              hasScrollBody: false,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Image.asset('assets/images/playbazaar_caffe.png',
-                    height: 300,
-                    width: 300,
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
+      body: SafeArea(
+        child: Obx(() {
+          if(userController.isLoading.value){
+            return Center(child: CircularProgressIndicator());
+          }
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
                     children: [
+                      Image.asset('assets/images/playbazaar_caffe.png',
+                        height: 300,
+                        width: 300,
+                      ),
                       Text(
                         'aboutme'.tr,
                         style: const TextStyle(color: Colors.white, fontSize: 45),
@@ -111,8 +106,8 @@ class _ProfilePage extends State<ProfilePage> {
                       Column(
                         children: [
                           CustomTextInputs(
-                              description: "name".tr,
-                              value: capitalizeFullname(user?.displayName ?? ""),
+                            description: "name".tr,
+                            value: capitalizeFullname(user?.displayName ?? ""),
                           ),
                           CustomTextInputs(
                               description: "email".tr,
@@ -129,19 +124,20 @@ class _ProfilePage extends State<ProfilePage> {
                         ],
                       ),
                       SizedBox(height: 30),
-                      Container(
-                        margin: const EdgeInsets.fromLTRB(30, 10, 30, 10),
-                        height: 50,
-                        child: _editPage(),
-                      ), // Edit and chatpage buttons
                     ],
                   ),
-                ],
+                ),
               ),
-            ),
-          ],
-        );
-      }),
+              // Fixed button at bottom
+              Container(
+                padding: const EdgeInsets.fromLTRB(30, 10, 30, 10),
+                width: double.infinity,
+                child: _editPage(),
+              ),
+            ],
+          );
+        }),
+      ),
     );
   }
 
