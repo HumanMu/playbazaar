@@ -16,6 +16,7 @@
         android:icon="@mipmap/launcher_icon">
         <activity
             android:name="play.bazaar.playbazaar.MainActivity"
+            android:theme="@style/LaunchTheme"
             android:exported="true"
             android:launchMode="singleTop"
             android:taskAffinity=""

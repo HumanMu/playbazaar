@@ -67,6 +67,7 @@ dependencies:
   glassmorphism: ^3.0.0
   flame: ^1.25.0
   equatable: ^2.0.7
+  flutter_native_splash: ^2.4.6
 
 
 dev_dependencies:
@@ -74,7 +75,6 @@ dev_dependencies:
     sdk: flutter
 
   flutter_launcher_icons: ^0.14.2
-  flutter_native_splash: ^2.4.3
   #The "flutter_lints" package offers recommended lints for good coding,
   #activated in analysis_options.yaml, where you can customize them.
 

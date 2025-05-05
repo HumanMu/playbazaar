@@ -18,7 +18,6 @@ import 'package:playbazaar/services/push_notification_service/push_notification_
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  //await AppConfig.initializeFirebase();
 
   final notificationService = NotificationService();
   await notificationService.init();
@@ -39,10 +38,8 @@ Future<void> main() async {
 
 
   runApp(
-    const AppRoutes(),
+    const PlayBazaar(),
   );
 }
-// Lottie splash
-// https://lottiefiles.com/tutorials/flutter/flutter-lottie-animation-tutorial-or-stunning-animations-in-flutter-using-lottie-3sIVBs6v5FE
 
 

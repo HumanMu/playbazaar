@@ -36,16 +36,19 @@ import '../../games/games/word_connector/add_words_screen.dart';
 import '../../games/games/word_connector/connector_settings.dart';
 import '../../languages/local_strings.dart';
 import '../../middleware/auth_guard.dart';
+import '../../screens/widgets/splash_screen_wrapper.dart';
 
-class AppRoutes extends StatefulWidget {
-  const AppRoutes({super.key});
+class PlayBazaar extends StatefulWidget {
+  const PlayBazaar({super.key});
 
   @override
-  State<AppRoutes> createState() => _PlayBazaarState();
+  State<PlayBazaar> createState() => _PlayBazaarState();
 }
 
-class _PlayBazaarState extends State<AppRoutes> {
+class _PlayBazaarState extends State<PlayBazaar> {
   String? _initialRoute;
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  FlutterLocalNotificationsPlugin();
 
   @override
   void initState() {
@@ -55,7 +58,7 @@ class _PlayBazaarState extends State<AppRoutes> {
 
   Future<void> _checkNotificationLaunch() async {
     // First check if app was launched from notification
-    final notificationAppLaunch = await FlutterLocalNotificationsPlugin()
+    final notificationAppLaunch = await flutterLocalNotificationsPlugin
         .getNotificationAppLaunchDetails();
 
     // Only proceed if app was launched from notification
@@ -110,13 +113,20 @@ class _PlayBazaarState extends State<AppRoutes> {
                     controller.language[0],
                     controller.language[1]
                 );
+
+
                 return GetMaterialApp(
                   debugShowCheckedModeBanner: false,
                   translations: LocalStrings(),
                   locale: locale,
-                  initialRoute: _initialRoute ?? '/profile',
+                  initialRoute: _initialRoute ?? '/splash',
 
                   getPages: [
+                    GetPage(
+                      name: '/splash',
+                      page: () => const SplashScreenWrapper(),
+                      transition: Transition.fade,
+                    ),
                     GetPage(
                         name: '/login',
                         page: () => const LoginPage()
@@ -282,7 +292,7 @@ class _PlayBazaarState extends State<AppRoutes> {
                   ],
                   navigatorKey: Get.key,
                   onReady: () {
-                    // Clear any stored routes to prevent unwanted navigation like notification navigation
+                    // Clear any stored routes to prevent unwanted navigation
                     SharedPreferences.getInstance().then((prefs) {
                       prefs.remove('pending_notification_route');
                     });
