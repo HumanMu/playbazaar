@@ -33,7 +33,7 @@ class CustomLanguage extends StatelessWidget {
     final currentCountryCode = authController.language[1];
 
     final currentLocale = locale.firstWhere(
-      (element) =>
+          (element) =>
       element['locale'].languageCode == currentLanguageCode &&
           element['locale'].countryCode == currentCountryCode,
       orElse: () => locale[0],
@@ -76,7 +76,7 @@ class CustomLanguage extends StatelessWidget {
               itemBuilder: (context, index) {
                 final currentLocale = locale[index]['locale'] as Locale;
                 final isSelected
-                    = currentLocale.languageCode == authController.language[0]
+                = currentLocale.languageCode == authController.language[0]
                     && currentLocale.countryCode == authController.language[1];
 
                 return InkWell(

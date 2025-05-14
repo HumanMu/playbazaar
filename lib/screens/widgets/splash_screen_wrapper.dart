@@ -22,7 +22,7 @@ class SplashScreenWrapper extends StatelessWidget {
   Widget determineNextScreen() {
     try {
       final authController = Get.find<AuthController>();
-      if (authController.initialized) {
+      if (authController.isSignedIn.value) {
         return const ProfilePage();
       } else {
         return const LoginPage();

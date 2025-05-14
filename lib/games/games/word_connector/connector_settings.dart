@@ -235,39 +235,51 @@ class _WordConnectorSettingsScreenState extends State<WordConnectorSettingsScree
   }
 
   Widget _buildFancyControlBar() {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          if (userRole != UserRole.normal)
-            ElevatedButton(
-              onPressed: () => Get.toNamed('/addWordConnectorScreen'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,//green.shade100,
-                foregroundColor: Colors.blueGrey.shade800,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+    return Container(
+      width: double.infinity,
+      color: Colors.green,
+      child: Padding(
+      padding: const EdgeInsets.only(bottom: 15),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            if (userRole != UserRole.normal)
+              ElevatedButton(
+                onPressed: () => Get.toNamed('/addWordConnectorScreen'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  foregroundColor: Colors.blueGrey.shade800,
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: Text(
+                  "btn_send_words".tr,
+                  style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600
+                  ),
                 ),
               ),
-              child: Text("btn_send_words".tr),
-            ),
-          TextButton(
-            onPressed: () => acceptDialog(
-              context,
-              'play_rules_title'.tr,
-              'word_connector_play_rules'.tr,
-            ),
-            child: Text(
-              'guide'.tr,
-              style: TextStyle(
-                color: Colors.green.shade700,
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
+            TextButton(
+              onPressed: () => acceptDialog(
+                context,
+                'play_rules_title'.tr,
+                'word_connector_play_rules'.tr,
+              ),
+              child: Text(
+                'guide'.tr,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

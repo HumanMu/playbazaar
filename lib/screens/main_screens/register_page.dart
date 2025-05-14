@@ -29,7 +29,10 @@ class _RegisterPage extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      body: Obx(() {
+      body: SafeArea(
+        top: false,
+        bottom: true,
+        child: Obx(() {
         return accountController.isLoading.value ? const Center(
           child: CircularProgressIndicator(color: Colors.red),
         )
@@ -180,7 +183,7 @@ class _RegisterPage extends State<RegisterPage> {
               ),
             );
         }
-      )
+      ))
     );
   }
 
