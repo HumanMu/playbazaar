@@ -53,10 +53,10 @@ class _PlayBazaarState extends State<PlayBazaar> {
   @override
   void initState() {
     super.initState();
-    _checkNotificationLaunch();
+    _checkInitialRoute();
   }
 
-  Future<void> _checkNotificationLaunch() async {
+  Future<void> _checkInitialRoute() async {
     // First check if app was launched from notification
     final notificationAppLaunch = await flutterLocalNotificationsPlugin
         .getNotificationAppLaunchDetails();
@@ -67,10 +67,13 @@ class _PlayBazaarState extends State<PlayBazaar> {
       final prefs = await SharedPreferences.getInstance();
       final pendingRoute = prefs.getString('pending_notification_route');
       if (pendingRoute != null) {
-        setState(() {
-          _initialRoute = pendingRoute;
+        // Use WidgetsBinding to ensure this happens after build
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          setState(() {
+            _initialRoute = pendingRoute;
+          });
+          prefs.remove('pending_notification_route');
         });
-        await prefs.remove('pending_notification_route');
       }
     }
   }

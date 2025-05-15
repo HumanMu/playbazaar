@@ -108,6 +108,7 @@ flutter:
     - assets/sounds/sad/baby_no_no_no.mp3
     - assets/sounds/end_game/
     - assets/config/
+    - assets/config/.env
     - assets/icons/splash_screen_960x960.png
     - assets/games/hangman/
     - assets/games/ludo/

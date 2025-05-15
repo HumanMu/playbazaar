@@ -29,8 +29,14 @@ class NotificationService {
   }
 
   Future<void> _initializeLocalNotifications() async {
+    const DarwinInitializationSettings iOSInitSettings = DarwinInitializationSettings(
+      requestAlertPermission: true,
+      requestBadgePermission: true,
+      requestSoundPermission: true,
+    );
     const initializationSettings = InitializationSettings(
       android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+      iOS: iOSInitSettings,
     );
 
     await _localNotificationsPlugin.initialize(
@@ -70,6 +76,12 @@ class NotificationService {
   }
 
   Future<void> _setupFirebaseMessaging() async {
+    await FirebaseMessaging.instance.requestPermission(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+
     RemoteMessage? initialMessage = await FirebaseMessaging.instance.getInitialMessage();
 
     if (initialMessage != null) {
@@ -147,24 +159,41 @@ class NotificationService {
     String? route,
     String? title,
   }) async {
-    final NotificationDetails platformDetails;
+
+    // iOS notification details
+    final DarwinNotificationDetails iOSDetails =  const DarwinNotificationDetails(
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+    );
+
+    NotificationDetails platformDetails;
     List<String>? languageData = await SharedPreferencesManager.getStringList(
         SharedPreferencesKeys.appLanguageKey);
     final String languageCode = languageData?.first ?? 'en';
 
     switch (channelId) {
       case 'friend_request':
-        platformDetails = const NotificationDetails(android: PushNotificationHelper.friendRequestDetails);
+        platformDetails = NotificationDetails(
+            android: PushNotificationHelper.friendRequestDetails,
+            iOS: iOSDetails,
+        );
         title = NotificationTranslations.getTranslation('received_friend_request_title', languageCode);
         body = '${NotificationTranslations.getTranslation('received_friend_request_body', languageCode)} $body';
         break;
       case 'new_message':
-        platformDetails = const NotificationDetails(android: PushNotificationHelper.messageDetails);
+        platformDetails = NotificationDetails(
+            android: PushNotificationHelper.messageDetails,
+            iOS: iOSDetails
+        );
         title ??= NotificationTranslations.getTranslation('received_new_message_title', languageCode);
         body = '$senderName: $body';
         break;
       default:
-        platformDetails = const NotificationDetails(android: PushNotificationHelper.friendRequestDetails);
+        platformDetails = NotificationDetails(
+            android: PushNotificationHelper.friendRequestDetails,
+            iOS: iOSDetails
+        );
         title ??= NotificationTranslations.getTranslation('notification', languageCode);
     }
 

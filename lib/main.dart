@@ -1,4 +1,3 @@
-
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -9,6 +8,7 @@ import 'package:playbazaar/services/hive_services/hive_user_service.dart';
 import 'package:playbazaar/services/user_services.dart';
 import 'config/routes/app_routes.dart';
 import 'controller/message_controller/private_message_controller.dart';
+import 'controller/user_controller/account_controller.dart';
 import 'controller/user_controller/auth_controller.dart';
 import 'controller/user_controller/user_controller.dart';
 import 'helper/encryption/secure_key_storage.dart';
@@ -35,6 +35,7 @@ Future<void> main() async {
   Get.put(PrivateMessageController(), permanent: true);
   Get.put(UserController(), permanent: true);
   Get.put(AuthController(), permanent: true);
+  Get.put(AccountController(), permanent: true);
 
 
   runApp(

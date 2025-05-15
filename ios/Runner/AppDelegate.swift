@@ -1,11 +1,12 @@
 import Flutter
 import UIKit
 import Firebase
+import FirebaseCore
 import FirebaseMessaging
 import UserNotifications
 
 @main
-@objc class AppDelegate: FlutterAppDelegate {
+@objc class AppDelegate: FlutterAppDelegate, MessagingDelegate {
   override func application(
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
@@ -15,7 +16,7 @@ import UserNotifications
       UNUserNotificationCenter.current().delegate = self
 
       Messaging.messaging().delegate = self
-
+      
       application.registerForRemoteNotifications()
 
       GeneratedPluginRegistrant.register(with: self) // only this existed inside the Bool before cloud messaging
@@ -26,7 +27,7 @@ import UserNotifications
 
 
    // Handle incoming push notifications when app is in foreground
-  func userNotificationCenter(_ center: UNUserNotificationCenter,
+  override func userNotificationCenter(_ center: UNUserNotificationCenter,
                               willPresent notification: UNNotification,
                               withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
     // Show the notification alert, sound, and badge even when app is in the foreground
@@ -34,7 +35,7 @@ import UserNotifications
   }
 
   // Handle what happens when a user taps on the notification when the app is in the background or terminated
-  func userNotificationCenter(_ center: UNUserNotificationCenter,
+  override func userNotificationCenter(_ center: UNUserNotificationCenter,
                               didReceive response: UNNotificationResponse,
                               withCompletionHandler completionHandler: @escaping () -> Void) {
     // Here you can handle how you want to navigate or handle data when user taps on the notification
@@ -42,7 +43,7 @@ import UserNotifications
   }
 
   // Firebase Messaging Delegate method to handle FCM token refresh
-  func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
+ func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
     print("Firebase registration token: \(String(describing: fcmToken))")
 
     // You can send the FCM token to your server or store it in Firestore
