@@ -5,9 +5,11 @@
 *.swp
 .DS_Store
 .atom/
+.build/
 .buildlog/
 .history
 .svn/
+.swiftpm/
 migrate_working_dir/
 *.tmp
 *.bak
@@ -67,6 +69,8 @@ ios/Flutter/Flutter.framework/
 ios/Flutter/Flutter.podspec
 ios/ServiceDefinitions.json
 ios/Runner/GeneratedPluginRegistrant.*
+ios/Runner/Info.plist
+
 
 #others
 .flutter_secret
