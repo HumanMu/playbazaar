@@ -64,6 +64,8 @@ pubspec.lock
 /captures/
 .externalNativeBuild/
 
+
+
 # Files for iOS (Flutter projects)
 ios/Flutter/Flutter.framework/
 ios/Flutter/Flutter.podspec
@@ -83,3 +85,4 @@ key.properties
 # cloud functions
 functions/package.json
 Wrote push-notification/.eslintrc.js
+ios/Runner/GoogleService-Info.plist

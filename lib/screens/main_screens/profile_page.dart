@@ -46,7 +46,7 @@ class _ProfilePage extends State<ProfilePage> {
         isLoading = false;
       });
       await recentUsersService.init();
-      await AdManagerService().initialize(); // Admob
+      await AdManagerService().initialize();
     }
     else{
       Get.offNamed('/login');
@@ -84,6 +84,8 @@ class _ProfilePage extends State<ProfilePage> {
       ),
       backgroundColor: Colors.white,
       body: SafeArea(
+        bottom: true,
+        top: false,
         child: Obx(() {
           if(userController.isLoading.value){
             return Center(child: CircularProgressIndicator());

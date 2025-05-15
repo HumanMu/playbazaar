@@ -140,74 +140,82 @@ class _QuizMainPage extends State<QuizMainPage> {
               ),
             ),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              width: double.infinity,
               constraints: const BoxConstraints(maxWidth: 600),
-              child: Row(
-                children: [
-                  TextButton(
-                    onPressed: () => acceptDialog(
-                        context,
-                        'guide'.tr,
-                        'quiz_play_guide'.tr
-                    ),
-                    child: Text(
-                      'guide'.tr,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.green
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () => Get.toNamed('/addQuestion'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green.shade600,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
+              decoration: BoxDecoration(
+                color: Colors.green,
+                border: Border.all(color: Colors.blue.shade100),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 15),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: TextButton(
+                        onPressed: () => acceptDialog(
+                            context,
+                            'guide'.tr,
+                            'quiz_play_guide'.tr
                         ),
-                        elevation: 3,
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 12),
                         child: Text(
-                          "btn_send_question".tr,
+                          'guide'.tr,
                           style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white
                           ),
                         ),
                       ),
                     ),
-                  ),
-                  const SizedBox(width: 8),
-                  if (userRole != UserRole.normal)
                     Expanded(
                       child: ElevatedButton(
-                        onPressed: () => Get.toNamed('/questionReviewPage'),
+                        onPressed: () => Get.toNamed('/addQuestion'),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.green.shade600,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          elevation: 3,
+                          backgroundColor: Colors.green,
+                          side: BorderSide.none,
+                          elevation: 0,
                         ),
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          padding: const EdgeInsets.symmetric(vertical: 2),
                           child: Text(
-                            "btn_review".tr,
+                            "btn_send_question".tr,
                             style: const TextStyle(
+                              fontSize: 18,
                               color: Colors.white,
-                              fontWeight: FontWeight.w600,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
                       ),
                     ),
-                ],
+                    if (userRole != UserRole.normal)
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () => Get.toNamed('/questionReviewPage'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.green,
+                            side: BorderSide.none,
+                            elevation: 0,
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 2),
+                            child: Text(
+                              "btn_review".tr,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
               ),
-            )
+            ),
           ],
         )
       ],
