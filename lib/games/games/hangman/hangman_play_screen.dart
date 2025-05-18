@@ -98,6 +98,23 @@ class _HangmanPlayScreenState extends State<HangmanPlayScreen> with SingleTicker
     );
   }
 
+  Widget _admobBanner() {
+    return Container(
+      padding: EdgeInsets.all(4),
+      color: Colors.teal[900],
+      child: AdaptiveBannerAd(
+        onAdLoaded: (isLoaded) {
+          if (isLoaded) {
+            debugPrint('Ad loaded in Quiz Screen');
+          } else {
+            debugPrint('Ad failed to load in Quiz Screen');
+          }
+        },
+      ),
+    );
+  }
+
+
 
   Widget _buildAppBar() {
     return AppBar(
@@ -316,19 +333,5 @@ class _HangmanPlayScreenState extends State<HangmanPlayScreen> with SingleTicker
     );
   }
 
-  Widget _admobBanner() {
-    return Container(
-      padding: EdgeInsets.all(4),
-      color: Colors.teal[900],
-      child: AdaptiveBannerAd(
-        onAdLoaded: (isLoaded) {
-          if (isLoaded) {
-            debugPrint('Ad loaded in Quiz Screen');
-          } else {
-            debugPrint('Ad failed to load in Quiz Screen');
-          }
-        },
-      ),
-    );
-  }
+
 }

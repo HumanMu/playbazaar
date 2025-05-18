@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
@@ -54,10 +56,28 @@ class _PlayBazaarState extends State<PlayBazaar> {
   void initState() {
     super.initState();
     _checkInitialRoute();
+    initializeAppTrackingTransparency();
+  }
+
+
+  /// InitiALIZING ADMOB TRACKING
+  Future<void> initializeAppTrackingTransparency() async {
+    // Only request tracking authorization on iOS devices
+    if (Platform.isIOS) {
+      try {
+        await Future.delayed(const Duration(milliseconds: 800));
+        final status = await AppTrackingTransparency.requestTrackingAuthorization();
+        debugPrint('App Tracking Transparency status: $status');
+      } catch (e) {
+        debugPrint('Failed to request tracking authorization: $e');
+      }
+    } else {
+      // On Android, no need to request tracking permission
+      debugPrint('App Tracking Transparency is only required for iOS devices');
+    }
   }
 
   Future<void> _checkInitialRoute() async {
-    // First check if app was launched from notification
     final notificationAppLaunch = await flutterLocalNotificationsPlugin
         .getNotificationAppLaunchDetails();
 
@@ -180,7 +200,6 @@ class _PlayBazaarState extends State<PlayBazaar> {
                           teamPlay: args['teamPlay']
                         );
                       },
-                        //page: ()=> LudoPlayScreen(),
                     ),
                     GetPage(
                         name: '/mainQuiz',

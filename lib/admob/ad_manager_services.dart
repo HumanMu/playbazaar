@@ -23,24 +23,22 @@ class AdManagerService {
 
   // Get the appropriate ad unit ID based on platform
   String get adUnitId {
-    if (kDebugMode) {
-      // Use test ad unit ID in debug mode
+    if (kDebugMode){
+      print("YOU ARE IN DEBUG MODE");
       return Platform.isAndroid
           ? 'ca-app-pub-3940256099942544/6300978111'
-          : 'ca-app-pub-3940256099942544/2934735716';
+          : 'ca-app-pub-3940256099942544/2435281174';
     }
     return Platform.isAndroid ? androidAdUnitId : iosAdUnitId;
   }
 
   // Initialize AdMob
   Future<void> initialize() async {
-    try {
-      await MobileAds.instance.initialize();
 
-      // Optional: Configure request configuration
+    try {
       await MobileAds.instance.updateRequestConfiguration(
         RequestConfiguration(
-          // Add your test device IDs
+          // Add phisycal test device IDs
           testDeviceIds: ['F46C538DC1EAAF5DA7A53D0C32CA5F02'],
         ),
       );
@@ -51,4 +49,5 @@ class AdManagerService {
     }
   }
 }
+
 

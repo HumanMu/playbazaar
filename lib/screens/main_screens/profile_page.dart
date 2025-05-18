@@ -46,7 +46,7 @@ class _ProfilePage extends State<ProfilePage> {
         isLoading = false;
       });
       await recentUsersService.init();
-      await AdManagerService().initialize();
+     /// await AdManagerService().initialize();
     }
     else{
       Get.offNamed('/login');

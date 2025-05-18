@@ -2,16 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 	<dict>
-	    <key>GADApplicationIdentifier</key>
-        <string>ca-app-pub-8489114651875477~4787193718</string>
-        <key>GADIsAdManagerApp</key>
-        <true/>
         <key>NSLocalNetworkUsageDescription</key>
         <string>This app needs access to the local network for debugging purposes.</string>
 		<key>CFBundleDevelopmentRegion</key>
 		<string>$(DEVELOPMENT_LANGUAGE)</string>
 		<key>CFBundleDisplayName</key>
-		<string>Playbazaar</string>
+		<string>Play Bazaar</string>
 		<key>CFBundleExecutable</key>
 		<string>$(EXECUTABLE_NAME)</string>
 		<key>CFBundleIdentifier</key>
@@ -19,7 +15,7 @@
 		<key>CFBundleInfoDictionaryVersion</key>
 		<string>6.0</string>
 		<key>CFBundleName</key>
-		<string>playbazaar</string>
+		<string>play_bazaar</string>
 		<key>CFBundlePackageType</key>
 		<string>APPL</string>
 		<key>CFBundleShortVersionString</key>
@@ -66,5 +62,99 @@
 		<string>This app needs to access the sound system to play game effects</string>
 		<key>UIViewControllerBasedStatusBarAppearance</key>
 		<false/>
+
+         <!-- AdMob Configuration -->
+         <key>GADApplicationIdentifier</key>
+         <string>ca-app-pub-8489114651875477~4787193718</string>
+
+        <!-- App Transport Security Settings for AdMob -->
+		<key>NSAppTransportSecurity</key>
+        <dict>
+            <key>NSAllowsArbitraryLoads</key>
+            <true/>
+            <key>NSAllowsArbitraryLoadsForMedia</key>
+            <true/>
+            <key>NSAllowsArbitraryLoadsInWebContent</key>
+            <true/>
+        </dict>
+
+        <!-- App Tracking Transparency -->
+        <key>NSUserTrackingUsageDescription</key>
+        <string>This identifier will be used to deliver personalized ads to you.</string>
+
+        <!--admob network -->
+        <key>SKAdNetworkItems</key>
+        <array>
+          <!-- Google -->
+          <dict>
+            <key>SKAdNetworkIdentifier</key>
+            <string>cstr6suwn9.skadnetwork</string>
+          </dict>
+          <!-- Facebook -->
+          <dict>
+            <key>SKAdNetworkIdentifier</key>
+            <string>n38lu8286q.skadnetwork</string>
+          </dict>
+          <!-- AdMob -->
+          <dict>
+            <key>SKAdNetworkIdentifier</key>
+            <string>4fzdc2evr5.skadnetwork</string>
+          </dict>
+          <!-- Unity Ads -->
+          <dict>
+            <key>SKAdNetworkIdentifier</key>
+            <string>4dzt52r2t5.skadnetwork</string>
+          </dict>
+          <!-- AppLovin -->
+          <dict>
+            <key>SKAdNetworkIdentifier</key>
+            <string>ludvb6z3bs.skadnetwork</string>
+          </dict>
+          <!-- IronSource -->
+          <dict>
+            <key>SKAdNetworkIdentifier</key>
+            <string>su67r6k2v3.skadnetwork</string>
+          </dict>
+          <!-- TikTok -->
+          <dict>
+            <key>SKAdNetworkIdentifier</key>
+            <string>238da6jt44.skadnetwork</string>
+          </dict>
+          <!-- Snap -->
+          <dict>
+            <key>SKAdNetworkIdentifier</key>
+            <string>424m5254lk.skadnetwork</string>
+          </dict>
+
+          <!-- Other importent -->
+          <dict>
+            <key>SKAdNetworkIdentifier</key>
+            <string>2u9pt9hc89.skadnetwork</string>
+          </dict>
+          <dict>
+            <key>SKAdNetworkIdentifier</key>
+            <string>4468km3ulz.skadnetwork</string>
+          </dict>
+          <dict>
+              <key>SKAdNetworkIdentifier</key>
+              <string>7ug5zh24hu.skadnetwork</string>
+            </dict>
+            <dict>
+              <key>SKAdNetworkIdentifier</key>
+              <string>8s468mfl3y.skadnetwork</string>
+            </dict>
+            <dict>
+              <key>SKAdNetworkIdentifier</key>
+              <string>9rd848q2bz.skadnetwork</string>
+            </dict>
+            <dict>
+              <key>SKAdNetworkIdentifier</key>
+              <string>9t245vhmpl.skadnetwork</string>
+            </dict>
+            <dict>
+              <key>SKAdNetworkIdentifier</key>
+              <string>c6k4g5qg8m.skadnetwork</string>
+            </dict>
+        </array>
 	</dict>
 </plist>

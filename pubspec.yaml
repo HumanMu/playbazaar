@@ -68,13 +68,14 @@ dependencies:
   flame: ^1.25.0
   equatable: ^2.0.7
   flutter_native_splash: ^2.4.6
+  app_tracking_transparency: ^2.0.6+1
+  flutter_launcher_icons: ^0.14.3
 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  flutter_launcher_icons: ^0.14.2
   #The "flutter_lints" package offers recommended lints for good coding,
   #activated in analysis_options.yaml, where you can customize them.
 
@@ -82,13 +83,27 @@ dev_dependencies:
   hive_generator: ^2.0.1
   build_runner: ^2.4.6
 
+# flutter pub run flutter_launcher_icons
 flutter_launcher_icons:
+  image_path: "assets/icons/play_bazaar_logo.png"
+
+  # Android configuration
   android: "launcher_icon"
+  min_sdk_android: 21
+  adaptive_icon_background: "#000000"  # Black background for adaptive icon
+  adaptive_icon_foreground: "assets/icons/play_bazaar_logo.png"
+
+  # iOS configuration
   ios: true
-  remove_alpha_ios: true
-  image_path: "icons/play_bazaar_logo.png"
-  adaptive_icon_background: "#000000"
-  adaptive_icon_foreground: "icons/play_bazaar_logo.png"
+  image_path_ios: "assets/icons/icon.png"
+  remove_alpha_channel_ios: true
+
+  web:
+    generate: false
+  windows:
+    generate: false
+  macos:
+    generate: false
 
 
 

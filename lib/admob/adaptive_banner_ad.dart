@@ -19,9 +19,15 @@ class _AdaptiveBannerAdState extends State<AdaptiveBannerAd> {
   bool _isAdLoaded = false;
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _loadAd();
+      _loadAd();
+
   }
 
   void _loadAd() async {
@@ -54,7 +60,7 @@ class _AdaptiveBannerAdState extends State<AdaptiveBannerAd> {
           widget.onAdLoaded?.call(true);
         },
         onAdFailedToLoad: (Ad ad, LoadAdError error) {
-          debugPrint('Banner ad failed to load: ${error.message}');
+          debugPrint('Banner ad failed to load: ${error}');
 
           // Dispose of the failed ad
           ad.dispose();
