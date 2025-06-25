@@ -45,7 +45,7 @@ class _RegisterPage extends State<RegisterPage> {
                   const HeaderStack(),
                   ConstrainedBox(
                     constraints: BoxConstraints(
-                      maxWidth: 600, // Maximum width of the textfields
+                      maxWidth: 600,
                     ),
                     child: Container(
                       padding: const EdgeInsets.all(20.0),

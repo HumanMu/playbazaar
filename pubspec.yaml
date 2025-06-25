@@ -14,7 +14,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+13 # This is the app version
 
 environment:
-  sdk: ^3.5.2
+  sdk: ^3.8.0
 
 dependencies:
   flutter:
@@ -32,7 +32,7 @@ dependencies:
   avatar_glow: ^3.0.1
   async: ^2.11.0
   grouped_list: ^6.0.0
-  intl: ^0.19.0
+  intl: ^0.20.2
   shared_preferences: ^2.0.15
   email_validator: ^3.0.0
   provider: ^6.0.5
@@ -79,7 +79,7 @@ dev_dependencies:
   #The "flutter_lints" package offers recommended lints for good coding,
   #activated in analysis_options.yaml, where you can customize them.
 
-  flutter_lints: ^5.0.0
+  flutter_lints: ^6.0.0
   hive_generator: ^2.0.1
   build_runner: ^2.4.6
 
@@ -124,6 +124,7 @@ flutter:
     - assets/sounds/end_game/
     - assets/config/
     - assets/config/.env
+    - assets/fonts/
     - assets/icons/splash_screen_960x960.png
     - assets/games/hangman/
     - assets/games/ludo/
@@ -139,4 +140,4 @@ flutter:
   fonts:
     - family: Schyler
       fonts:
-        - asset: assets/icons/add_person.ttf
+        - asset: assets/fonts/add_person.ttf

@@ -11,20 +11,44 @@ import UserNotifications
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
+
       FirebaseApp.configure()
+      GeneratedPluginRegistrant.register(with: self)
 
       UNUserNotificationCenter.current().delegate = self
-
       Messaging.messaging().delegate = self
-      
-      application.registerForRemoteNotifications()
 
-      GeneratedPluginRegistrant.register(with: self) // only this existed inside the Bool before cloud messaging
+      // 4. Request notification authorization from the user (Simplified for iOS 13+)
+      let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
+      UNUserNotificationCenter.current().requestAuthorization(
+        options: authOptions,
+        completionHandler: { _, error in
+          if let error = error {
+            print("Error requesting notification authorization: \(error.localizedDescription)")
+          }
+        }
+      )
+
+      application.registerForRemoteNotifications()
 
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
-  // None of the below existed before cloud messaging
+  override func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+    Messaging.messaging().apnsToken = deviceToken
+  }
+  override func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+    print("Failed to register for remote notifications: \(error.localizedDescription)")
+  }
 
+  override func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+      // Handle background data messages
+      completionHandler(.newData)
+  }
+
+  override func applicationDidBecomeActive(_ application: UIApplication) {
+    super.applicationDidBecomeActive(application)
+
+  }
 
    // Handle incoming push notifications when app is in foreground
   override func userNotificationCenter(_ center: UNUserNotificationCenter,
@@ -60,3 +84,4 @@ import UserNotifications
   }
 
 }
+

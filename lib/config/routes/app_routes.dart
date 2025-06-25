@@ -56,7 +56,7 @@ class _PlayBazaarState extends State<PlayBazaar> {
   void initState() {
     super.initState();
     _checkInitialRoute();
-    initializeAppTrackingTransparency();
+    //initializeAppTrackingTransparency();
   }
 
 

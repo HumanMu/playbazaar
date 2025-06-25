@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:playbazaar/config/firebase_options.dart';
 import 'package:playbazaar/services/hive_services/hive_user_service.dart';
 import 'package:playbazaar/services/user_services.dart';
 import 'admob/ad_manager_services.dart';
@@ -19,7 +20,9 @@ import 'package:playbazaar/services/push_notification_service/push_notification_
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   // Initialize MobileAds
   unawaited(MobileAds.instance.initialize());

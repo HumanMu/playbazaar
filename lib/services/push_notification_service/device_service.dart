@@ -208,8 +208,8 @@ class DeviceService {
         status = await Permission.notification.request();
         return status.isGranted;
       } else if (status.isPermanentlyDenied) {
-        await openAppSettings();
-        status = await Permission.notification.status;
+        //await openAppSettings();
+        //status = await Permission.notification.status;
         return status.isGranted;
       }
       return status.isGranted;
@@ -217,11 +217,17 @@ class DeviceService {
       var status = await Permission.notification.status;
       if (!status.isGranted) {
         status = await Permission.notification.request();
+        return status.isGranted;
       }
       // If denied, notify user to go to settings manually
-      if (status.isPermanentlyDenied || status.isDenied) {
-        await openAppSettings(); // Direct to settings if permanently denied
+      else if (status.isDenied) {
         status = await Permission.notification.status;
+        status.isGranted;
+      }
+      else if(status.isPermanentlyDenied) {
+        //await openAppSettings(); // Direct to settings if permanently denied
+        //status = await Permission.notification.status;
+        return status.isGranted;
       }
       return status.isGranted;
     }

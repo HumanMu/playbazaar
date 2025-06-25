@@ -63,7 +63,6 @@ class AccountController extends GetxController {
   }
 
 
-
   Future<void> loginUserWithEmailAndPassword( String email, String password) async{
     isLoading.value = true;
     try {
@@ -73,7 +72,6 @@ class AccountController extends GetxController {
       );
 
       if (userCredential.user != null) {
-        //bool permissionResult = await _deviceTokenService.requestLocationPermission();
         await SharedPreferencesManager.setBool(SharedPreferencesKeys.userLoggedInKey, true);
         await DeviceService().handleDeviceNotificationOnLogin();
         Get.offNamed('/profile');
