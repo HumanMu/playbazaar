@@ -60,7 +60,7 @@ class _AdaptiveBannerAdState extends State<AdaptiveBannerAd> {
           widget.onAdLoaded?.call(true);
         },
         onAdFailedToLoad: (Ad ad, LoadAdError error) {
-          debugPrint('Banner ad failed to load: ${error}');
+          debugPrint('Banner ad failed to load: $error');
 
           // Dispose of the failed ad
           ad.dispose();

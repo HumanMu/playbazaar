@@ -124,15 +124,15 @@ class PrivateMessageService extends GetxService {
       final verificationSnapshot = await messagesRef.limit(1).get();
       if (verificationSnapshot.docs.isEmpty) {
         await docRef.delete();
-        print("Successfully deleted all messages and chat document");
+        debugPrint("Successfully deleted all messages and chat document");
         return true;
       } else {
-        print("Warning: Some messages may remain");
+        debugPrint("Warning: Some messages may remain");
         return false;
       }
 
     } catch (e) {
-      print("Error in deletePrivateMessageCollection: ");
+      debugPrint("Error in deletePrivateMessageCollection: ");
       return false;
     }
   }

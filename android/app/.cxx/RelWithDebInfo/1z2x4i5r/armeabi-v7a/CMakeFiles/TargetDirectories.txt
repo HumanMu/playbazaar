@@ -1,2 +1,0 @@
-C:/my_apps/playbazaar/android/app/.cxx/RelWithDebInfo/1z2x4i5r/armeabi-v7a/CMakeFiles/edit_cache.dir
-C:/my_apps/playbazaar/android/app/.cxx/RelWithDebInfo/1z2x4i5r/armeabi-v7a/CMakeFiles/rebuild_cache.dir

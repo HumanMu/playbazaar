@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 
 class CollectionServices {
 
@@ -58,7 +59,7 @@ class CollectionServices {
       }
 
     } catch (e) {
-      print("Error in deletePrivateMessageCollection");
+      debugPrint("Error in deletePrivateMessageCollection");
       return false;
     }
   }

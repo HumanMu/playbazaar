@@ -22,6 +22,7 @@ class _FriendsList extends State<FriendsList> {
   final UserController userController = Get.find<UserController>();
   final PrivateMessageController pvMsgController = Get.put(PrivateMessageController());
   final HiveUserService _hiveUserService = Get.find();
+
   final String currentUserId = FirebaseAuth.instance.currentUser!.uid;
   late TextEditingController searchController = TextEditingController();
   String userName = "";
@@ -217,6 +218,7 @@ class _FriendsList extends State<FriendsList> {
       if (!_hiveUserService.isInitialized) {
         return const Center(child: CircularProgressIndicator());
       }
+      print("Calling firend list hvie");
 
       final recentUsers = _hiveUserService.recentUsers;
       if (recentUsers.isEmpty) {
@@ -243,7 +245,6 @@ class _FriendsList extends State<FriendsList> {
           ),
         );
     });
-
   }
 
 
@@ -308,11 +309,11 @@ class _FriendsList extends State<FriendsList> {
     });
   }
 
-  accept(String friendId) async {
+  void accept(String friendId) async {
     await userController.acceptFriendRequest(friendId);
   }
 
-  decline(String userId) async {
+  void decline(String userId) async {
     await userController.declineFriendRequest(userId);
   }
 

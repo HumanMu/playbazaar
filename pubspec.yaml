@@ -27,7 +27,6 @@ dependencies:
   firebase_auth: ^5.2.0
   cloud_firestore: ^5.3.0
   keyboard_dismisser: ^3.0.0
-  timeago: ^3.4.0
   validators: ^3.0.0
   avatar_glow: ^3.0.1
   async: ^2.11.0
@@ -41,7 +40,6 @@ dependencies:
   get: ^4.6.5
   flutter_advanced_switch: ^3.0.1
   encrypt: ^5.0.3
-  pointycastle: ^3.9.1
   just_audio: ^0.10.0
   permission_handler: ^12.0.0+1
   flutter_dotenv: ^5.1.0
@@ -57,19 +55,18 @@ dependencies:
   googleapis_auth: ^2.0.0
   #firebase_app_check: ^0.3.1+7
   device_info_plus: ^11.1.0
-  hive: ^2.2.3
-  hive_flutter: ^1.1.0
   http: ^1.2.2
   path: ^1.9.0
   flutter_svg: ^2.0.16
   lottie: ^3.3.0
-  analyzer: ^6.11.0
-  glassmorphism: ^3.0.0
+  analyzer: ^7.5.2
   flame: ^1.25.0
   equatable: ^2.0.7
   flutter_native_splash: ^2.4.6
   app_tracking_transparency: ^2.0.6+1
   flutter_launcher_icons: ^0.14.3
+  hive_ce: ^2.11.3
+  hive_ce_flutter: ^2.3.1
 
 
 dev_dependencies:
@@ -78,9 +75,8 @@ dev_dependencies:
 
   #The "flutter_lints" package offers recommended lints for good coding,
   #activated in analysis_options.yaml, where you can customize them.
-
+  hive_ce_generator: ^1.9.2
   flutter_lints: ^6.0.0
-  hive_generator: ^2.0.1
   build_runner: ^2.4.6
 
 # flutter pub run flutter_launcher_icons

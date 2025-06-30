@@ -1,12 +1,15 @@
-import 'package:hive_flutter/hive_flutter.dart';
+
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:hive_ce_flutter/adapters.dart';
 import 'dart:developer' as developer;
 import '../../models/DTO/recent_interacted_user_dto.dart';
 import '../../models/hive_models/recent_interacted_user_model.dart';
 
 class HiveUserService extends GetxService {
   static const String _boxName = 'recentUsers';
-  static const int _typeId = 0; // Make type ID a constant
+  static bool _adaptersRegistered = false;
+
 
   Box<RecentUser>? _box;
   final _recentUsers = <RecentUser>[].obs;
@@ -15,10 +18,32 @@ class HiveUserService extends GetxService {
   bool get isInitialized => _isInitialized.value;
   RxList<RecentUser> get recentUsers => _recentUsers;
 
-  @override
+  /*@override
   void onInit() {
     super.onInit();
     init();
+  }*/
+  @override
+  Future<void> onInit() async {
+    super.onInit();
+    await _registerAdapters();
+    await init();
+    await _openBox();
+  }
+
+  Future<void> _openBox() async {
+    try {
+      // Register adapter right before opening
+      if (!Hive.isAdapterRegistered(0)) {
+        Hive.registerAdapter(RecentUserAdapter());
+      }
+
+      _box = await Hive.openBox<RecentUser>(_boxName);
+      _isInitialized.value = true;
+    } catch (e) {
+      debugPrint('Error opening Hive box: $e');
+      _isInitialized.value = false;
+    }
   }
 
   @override
@@ -30,36 +55,39 @@ class HiveUserService extends GetxService {
   Future<void> init() async {
     if (_isInitialized.value) return;
     try {
-      try {
-        await Hive.initFlutter();
-      } catch (e) {
-        developer.log('Hive already initialized', error: e);
-      }
 
-      if (!Hive.isAdapterRegistered(_typeId)) {
+      /*if (!_adaptersRegistered) {
         Hive.registerAdapter(RecentUserAdapter());
       }
 
       try {
-        await Hive.box<RecentUser>(_boxName).close();
+        _box = await Hive.openBox<RecentUser>(_boxName);
+        debugPrint(recentUsers.toString());
       } catch (e) {
-        developer.log('Box was not open', error: e);
-      }
+        developer.log('Error opening box, attempting to delete and recreate', error: e);
+        await Hive.deleteBoxFromDisk(_boxName);
+        _box = await Hive.openBox<RecentUser>(_boxName);
+      }*/
 
+      _updateRecentUsersList();
+      _box?.listenable().addListener(_updateRecentUsersList);
+    } catch (e) {
+      developer.log('Fatal error initializing Hive', error: e);
+      rethrow;
+    }
+  }
+
+  Future<void> _registerAdapters() async {
+    if (!_adaptersRegistered) {
       try {
         _box = await Hive.openBox<RecentUser>(_boxName);
+        debugPrint("Opened friend box: ${recentUsers.toString()}");
       } catch (e) {
         developer.log('Error opening box, attempting to delete and recreate', error: e);
         await Hive.deleteBoxFromDisk(_boxName);
         _box = await Hive.openBox<RecentUser>(_boxName);
       }
-
-      _updateRecentUsersList();
-      _box?.listenable().addListener(_updateRecentUsersList);
-      _isInitialized.value = true;
-    } catch (e) {
-      developer.log('Fatal error initializing Hive', error: e);
-      rethrow;
+      _adaptersRegistered = true;
     }
   }
 

@@ -8,7 +8,7 @@ part of 'hive_message_model.dart';
 
 class HiveMessageModelAdapter extends TypeAdapter<HiveMessageModel> {
   @override
-  final int typeId = 2;
+  final typeId = 2;
 
   @override
   HiveMessageModel read(BinaryReader reader) {
@@ -21,8 +21,8 @@ class HiveMessageModelAdapter extends TypeAdapter<HiveMessageModel> {
       content: fields[1] as String,
       senderId: fields[2] as String,
       receiverId: fields[3] as String,
-      timestamp: fields[4] as int,
-      isRead: fields[5] as bool,
+      timestamp: (fields[4] as num).toInt(),
+      isRead: fields[5] == null ? false : fields[5] as bool,
     );
   }
 

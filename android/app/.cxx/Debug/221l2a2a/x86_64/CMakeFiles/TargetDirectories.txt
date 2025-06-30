@@ -1,2 +1,0 @@
-/Users/humanmuzaffari/development/projects/playbazaar/android/app/.cxx/Debug/221l2a2a/x86_64/CMakeFiles/edit_cache.dir
-/Users/humanmuzaffari/development/projects/playbazaar/android/app/.cxx/Debug/221l2a2a/x86_64/CMakeFiles/rebuild_cache.dir

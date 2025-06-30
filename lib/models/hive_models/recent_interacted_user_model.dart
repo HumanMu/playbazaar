@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:hive/hive.dart';
-
+import 'package:hive_ce/hive.dart';
 import '../DTO/recent_interacted_user_dto.dart';
-
 part 'recent_interacted_user_model.g.dart';
 
 @HiveType(typeId: 0)

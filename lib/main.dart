@@ -4,18 +4,18 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:hive_flutter/adapters.dart';
-import 'package:playbazaar/config/firebase_options.dart';
-import 'package:playbazaar/services/hive_services/hive_user_service.dart';
-import 'package:playbazaar/services/user_services.dart';
+import 'package:hive_ce_flutter/adapters.dart';
 import 'admob/ad_manager_services.dart';
+import 'config/firebase_options.dart';
 import 'config/routes/app_routes.dart';
 import 'controller/message_controller/private_message_controller.dart';
 import 'controller/user_controller/account_controller.dart';
 import 'controller/user_controller/auth_controller.dart';
 import 'controller/user_controller/user_controller.dart';
 import 'helper/encryption/secure_key_storage.dart';
-import 'package:playbazaar/services/push_notification_service/push_notification_service.dart';
+import 'services/hive_services/hive_user_service.dart';
+import 'services/push_notification_service/push_notification_service.dart';
+import 'services/user_services.dart';
 
 
 Future<void> main() async {
@@ -39,8 +39,8 @@ Future<void> main() async {
 
 
   await Hive.initFlutter();
-  await AdManagerService().initialize();
   Get.put(HiveUserService(), permanent: true);
+  await AdManagerService().initialize();
   Get.put(UserServices(), permanent: true);
   Get.put(PrivateMessageController(), permanent: true);
   Get.put(UserController(), permanent: true);

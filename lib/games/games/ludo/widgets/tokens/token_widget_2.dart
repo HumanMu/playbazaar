@@ -120,13 +120,11 @@ class _LudoTokenState extends State<LudoToken2> with SingleTickerProviderStateMi
         return _buildMinimalistToken();
       case LudoTokenStyle.glass:
         return _buildGlassToken();
-      default:
-        return _buildModernToken();
     }
   }
 
   Widget _buildModernToken() {
-    final Color shadowColor = widget.color.withOpacity(0.5);
+    final Color shadowColor = widget.color.withValues(alpha: 0.5);
 
     return Container(
       width: widget.size,
@@ -149,7 +147,7 @@ class _LudoTokenState extends State<LudoToken2> with SingleTickerProviderStateMi
           height: widget.size * 0.6,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: Colors.white.withOpacity(0.3),
+            color: Colors.white.withValues(alpha: 0.3),
           ),
           child: Center(
             child: Container(
@@ -216,10 +214,10 @@ class _LudoTokenState extends State<LudoToken2> with SingleTickerProviderStateMi
       height: widget.size,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: widget.color.withOpacity(0.7),
+        color: widget.color.withValues(alpha: 0.7),
         boxShadow: [
           BoxShadow(
-            color: widget.color.withOpacity(0.3),
+            color: widget.color.withValues(alpha: 0.3),
             blurRadius: 12,
             spreadRadius: 2,
           ),
@@ -235,7 +233,7 @@ class _LudoTokenState extends State<LudoToken2> with SingleTickerProviderStateMi
               height: widget.size * 0.1,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white.withOpacity(0.7),
+                color: Colors.white.withValues(alpha: 0.7),
               ),
             ),
           ),

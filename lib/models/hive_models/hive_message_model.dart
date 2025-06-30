@@ -1,4 +1,4 @@
-import 'package:hive/hive.dart';
+import 'package:hive_ce/hive.dart';
 import '../DTO/hive_message_dto.dart';
 
 part 'hive_message_model.g.dart';

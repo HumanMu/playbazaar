@@ -178,7 +178,7 @@ class UserServices extends GetxService {
       return recentUser;
 
     }catch(e) {
-      print('Error accepting friend request - service');
+      debugPrint('Error accepting friend request - service');
       return null;
     }
   }

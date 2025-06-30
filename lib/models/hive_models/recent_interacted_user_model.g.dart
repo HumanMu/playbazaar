@@ -8,7 +8,7 @@ part of 'recent_interacted_user_model.dart';
 
 class RecentUserAdapter extends TypeAdapter<RecentUser> {
   @override
-  final int typeId = 0;
+  final typeId = 0;
 
   @override
   RecentUser read(BinaryReader reader) {
@@ -21,7 +21,7 @@ class RecentUserAdapter extends TypeAdapter<RecentUser> {
       fullname: fields[1] as String,
       avatarImage: fields[2] as String?,
       lastMessage: fields[3] as String?,
-      lastMessageTime: fields[4] as int,
+      lastMessageTime: (fields[4] as num).toInt(),
       friendshipStatus: fields[5] as String,
       chatId: fields[6] as String?,
     );

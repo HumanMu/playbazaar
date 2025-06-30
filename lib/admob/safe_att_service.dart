@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:app_tracking_transparency/app_tracking_transparency.dart';
+import 'package:flutter/foundation.dart';
 
 // Remember: This file is just a safe way of running track transparency for admob to avoid app crash
 
@@ -23,11 +24,11 @@ class SafeATTService {
 
       // Check current status without requesting yet
       final status = await AppTrackingTransparency.trackingAuthorizationStatus;
-      print('ATT Status: $status');
+      debugPrint('ATT Status: $status');
 
       _initialized = true;
     } catch (e) {
-      print('ATT initialization failed (safe to ignore): $e');
+      debugPrint('ATT initialization failed (safe to ignore): $e');
       _initialized = true; // Mark as initialized even if failed
     }
   }
@@ -46,7 +47,7 @@ class SafeATTService {
 
       return status == TrackingStatus.authorized;
     } catch (e) {
-      print('ATT request failed (continuing without tracking): $e');
+      debugPrint('ATT request failed (continuing without tracking): $e');
       return false; // Continue without tracking - AdMob will work in limited ads mode
     }
   }
@@ -59,7 +60,7 @@ class SafeATTService {
       final status = await AppTrackingTransparency.trackingAuthorizationStatus;
       return status == TrackingStatus.authorized;
     } catch (e) {
-      print('ATT status check failed: $e');
+      debugPrint('ATT status check failed: $e');
       return false;
     }
   }
