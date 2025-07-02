@@ -1,2 +1,0 @@
-include ':settings.gradle.kts'
-project(':settings.gradle.kts').projectDir = new File(rootDir, 'android/settings.gradle.kts')

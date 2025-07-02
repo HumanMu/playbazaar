@@ -188,7 +188,7 @@ class _PlayBazaarState extends State<PlayBazaar> {
                         page: () => const MainScreenGames()
                     ),
                     GetPage(
-                        name: '/ludoLobby',
+                        name: '/ludoHome',
                         page: () => LudoHomeScreen()
                     ),
                     GetPage(name: '/ludoPlayScreen',

@@ -72,10 +72,10 @@ class _LudoPlayScreenState extends State<LudoPlayScreen> {
         elevation: 0,
         leading: IconButton(
             onPressed: () {
-              if (Get.previousRoute == '/ludoLobby') {
+              if (Get.previousRoute == '/ludoHome') {
                 Get.back();
               } else {
-                Get.offNamed('/ludoLobby');
+                Get.offNamed('/ludoHome');
               }
             },
             icon: const Icon(Icons.arrow_back, color: Colors.white),
