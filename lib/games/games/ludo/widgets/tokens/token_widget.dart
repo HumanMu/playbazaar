@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:playbazaar/games/games/ludo/helper/functions.dart';
 import 'package:playbazaar/games/games/ludo/widgets/animated_token.dart';
-import '../../controller/game_controller.dart';
+import '../../controller/offline_ludo_controller.dart';
 import '../../models/token.dart';
 
 
@@ -20,7 +20,7 @@ class TokenWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final gameController = Get.find<GameController>();
+    final gameController = Get.find<OfflineLudoController>();
     final offset = gameController.getTokenOffsetAtPosition(token);
 
     return AnimatedPositioned(

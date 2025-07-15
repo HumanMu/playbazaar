@@ -66,7 +66,7 @@ class ReviewQuestionsPageState extends State<ReviewQuestionsPage> {
   }
 
   Future<void> _initializeLanguageSettings() async {
-    final result = await getQuizLanguage();
+    final result = await getQuizLanguage('language_shortcut'.tr);
     setState(() {
       quizPaths = result['quizPath'];
       quizLabels = result['quizNames'];

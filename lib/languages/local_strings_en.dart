@@ -8,6 +8,7 @@ class LocalStringsEn extends Translations {
       //appName
       'app_name' : 'Play Bazaar',
       'notification_title' : 'Play Bazaar',
+      'language_shortcut': 'en',
 
 
       // Games

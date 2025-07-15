@@ -42,7 +42,7 @@ class _QuizMainPage extends State<QuizMainPage> {
 
 
   Future<void> _initializeLanguageSettings() async {
-    final result = await getQuizLanguage();
+    final result = await getQuizLanguage('language_shortcut'.tr);
     setState(() {
       quizPath = result['quizPath'];
       quizLength = result['quizLength'];

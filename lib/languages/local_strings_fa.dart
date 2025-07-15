@@ -7,6 +7,7 @@ class LocalStringsFa extends Translations {
     'fa_AF': {
       'app_name' : 'Play Bazaar',
       'notification_title' : 'Play Bazaar',
+      'language_shortcut': 'fa',
 
 
       // Games

@@ -8,6 +8,7 @@ class LocalStringsDa extends Translations {
       //app related
       'app_name': 'Play Bazaar',
       'notification_title': 'Play Bazaar',
+      'language_shortcut': 'da',
 
 
 

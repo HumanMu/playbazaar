@@ -8,6 +8,7 @@ class LocalStringsAr extends Translations {
       //appName
       'app_name': 'بازار اللعب',
       'notification_title': 'Play Bazaar',
+      'language_shortcut': 'ar',
 
 
       // Games

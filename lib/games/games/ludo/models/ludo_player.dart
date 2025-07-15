@@ -10,6 +10,9 @@ class LudoPlayer {
   final int? endedPosition;
   final bool? isRobot;
   final int? teamId;
+  final String? playerId;
+  final bool? isConnected;
+
 
   LudoPlayer({
     this.avatarImg,
@@ -20,6 +23,8 @@ class LudoPlayer {
     this.endedPosition,
     this.isRobot = false,
     this.teamId,
+    this.isConnected,
+    this.playerId,
   });
 
 
@@ -32,6 +37,9 @@ class LudoPlayer {
     int? endedPosition,
     bool? isRobot,
     int? teamId,
+    String? playerId,
+    bool? isConnected,
+
   }) {
     return LudoPlayer(
       avatarImg: avatarImg?? this.avatarImg,
@@ -42,6 +50,9 @@ class LudoPlayer {
       endedPosition: endedPosition ?? this.endedPosition,
       isRobot: isRobot ?? this.isRobot,
       teamId: teamId ?? this.teamId,
+      playerId: playerId ?? this.playerId,
+      isConnected: isConnected ?? this.isConnected,
+
     );
   }
 

@@ -47,7 +47,7 @@ class AddQuestionState extends State<AddHangmanWords> {
 
 
   Future<void> _initializeLanguageSettings() async {
-    final result = await getHangmanDifficulty();
+    final result = await getHangmanDifficulty("language_shortcut".tr);
     setState(() {
       difficultyNiveau = result['difficultyNivea'];
       difficultyLabels = result['difficultyLabels'];

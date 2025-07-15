@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../config/orientation_manager.dart';
 import '../../../constants/app_colors.dart';
+import 'controller/base_play_controller.dart';
 import 'controller/dice_controller.dart';
-import 'controller/game_controller.dart';
+import 'controller/offline_ludo_controller.dart';
 import 'services/game_service.dart';
 import 'widgets/game_play.dart';
 
@@ -37,9 +38,11 @@ class _LudoPlayScreenState extends State<LudoPlayScreen> {
   }
 
   Future<void> initializeServices() async {
-    Get.put(GameService());
-    Get.put(GameController());
-    Get.put(DiceController());
+    Get.lazyPut(() => GameService());
+    final controller = OfflineLudoController();
+    Get.lazyPut<BaseLudoController>(() => controller);
+    Get.lazyPut<OfflineLudoController>(() => controller);
+    Get.lazyPut(() => DiceController());
 
     // Now we can set loading to false
     if (mounted) {
@@ -51,7 +54,7 @@ class _LudoPlayScreenState extends State<LudoPlayScreen> {
 
   @override
   void dispose() {
-    Get.delete<GameController>(force: true);
+    Get.delete<OfflineLudoController>(force: true);
     Get.delete<DiceController>(force: true);
     Get.delete<GameService>(force: true);
     OrientationManager.resetOrientations();

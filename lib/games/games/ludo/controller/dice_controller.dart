@@ -1,16 +1,15 @@
 import 'dart:math';
-
 import 'package:get/get.dart';
 import 'dart:async';
 import '../models/dice_model.dart';
 import '../models/ludo_player.dart';
 import '../models/token.dart';
 import '../helper/enums.dart';
-import './game_controller.dart';
+import 'base_play_controller.dart';
 
 class DiceController extends GetxController {
   final DiceModel dice = DiceModel();
-  final GameController gameController = Get.find<GameController>();
+  final BaseLudoController gameController = Get.find<BaseLudoController>();
 
   // Expose getters for easier access
   bool get giveAnotherTurn => dice.giveAnotherTurn;

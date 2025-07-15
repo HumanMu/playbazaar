@@ -1,8 +1,8 @@
-import 'package:playbazaar/games/games/ludo/widgets/dice_widget.dart';
 import '../../../../admob/adaptive_banner_ad.dart';
 import '../controller/dice_controller.dart';
-import '../controller/game_controller.dart';
+import '../controller/offline_ludo_controller.dart';
 import 'package:flutter/material.dart';
+import 'dice_widget.dart';
 import 'player_profile_widget.dart';
 import 'package:get/get.dart';
 import '../helper/enums.dart';
@@ -24,7 +24,7 @@ class GamePlay extends StatefulWidget {
 class _GamePlayState extends State<GamePlay> {
   bool boardBuilt = false;
   final GlobalKey boardContainerKey = GlobalKey();
-  final gameController = Get.find<GameController>();
+  final gameController = Get.find<OfflineLudoController>();
   final diceController = Get.find<DiceController>();
 
   @override
@@ -122,40 +122,43 @@ class _GamePlayState extends State<GamePlay> {
                     maxWidth: boardSize,
                     maxHeight: boardSize,
                   ),
-                  child: Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      // The board
-                      Positioned.fill(
-                        child: LudoBoard(
-                          keyReferences: gameController.keyReferences,
+                  child: Directionality(
+                    textDirection: TextDirection.ltr,
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        // The board
+                        Positioned.fill(
+                          child: LudoBoard(
+                            keyReferences: gameController.keyReferences,
+                          ),
                         ),
-                      ),
 
-                      // Tokens - only visible once board is built
-                      if (boardBuilt)
-                        Obx(() {
-                          final tokens = gameController.gameTokens
-                              .whereType<Token>()
-                              .toList();
+                        // Tokens - only visible once board is built
+                        if (boardBuilt)
+                          Obx(() {
+                            final tokens = gameController.gameTokens
+                                .whereType<Token>()
+                                .toList();
 
-                          return Stack(
-                            fit: StackFit.expand,
-                            children: tokens.map((token) {
-                              final dimensions = _getTokenPosition(
-                                token,
-                                gameController,
-                                boardSize,
-                              );
+                            return Stack(
+                              fit: StackFit.expand,
+                              children: tokens.map((token) {
+                                final dimensions = _getTokenPosition(
+                                  token,
+                                  gameController,
+                                  boardSize,
+                                );
 
-                              return TokenWidget(
-                                token: token,
-                                dimensions: dimensions,
-                              );
-                            }).toList(),
-                          );
-                        }),
-                    ],
+                                return TokenWidget(
+                                  token: token,
+                                  dimensions: dimensions,
+                                );
+                              }).toList(),
+                            );
+                          }),
+                      ],
+                    ),
                   ),
                 ),
 
@@ -241,7 +244,7 @@ class _GamePlayState extends State<GamePlay> {
   // Helper method to calculate token position properly
   List<double> _getTokenPosition(
       Token token,
-      GameController gameController,
+      OfflineLudoController gameController,
       double boardSize,
       ) {
     // Get raw position from game controller
