@@ -1,6 +1,8 @@
+import 'package:playbazaar/games/games/ludo/controller/offline_ludo_controller.dart';
+
 import '../../../../admob/adaptive_banner_ad.dart';
+import '../controller/base_ludo_controller.dart';
 import '../controller/dice_controller.dart';
-import '../controller/offline_ludo_controller.dart';
 import 'package:flutter/material.dart';
 import 'dice_widget.dart';
 import 'player_profile_widget.dart';
@@ -24,14 +26,13 @@ class GamePlay extends StatefulWidget {
 class _GamePlayState extends State<GamePlay> {
   bool boardBuilt = false;
   final GlobalKey boardContainerKey = GlobalKey();
-  final gameController = Get.find<OfflineLudoController>();
+  final gameController = Get.find<BaseLudoController>();
   final diceController = Get.find<DiceController>();
 
   @override
   void initState() {
     super.initState();
 
-    // Set boardBuilt to true after the first frame is rendered
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
         boardBuilt = true;
@@ -244,7 +245,7 @@ class _GamePlayState extends State<GamePlay> {
   // Helper method to calculate token position properly
   List<double> _getTokenPosition(
       Token token,
-      OfflineLudoController gameController,
+      BaseLudoController gameController,
       double boardSize,
       ) {
     // Get raw position from game controller

@@ -1,4 +1,4 @@
-/*import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'dart:async';
 import '../helper/enums.dart';
@@ -7,8 +7,7 @@ import '../models/move_result.dart';
 import '../models/position.dart';
 import '../models/token.dart';
 
-
-class GameService extends GetxService {
+abstract class BaseLudoService extends GetxService {
   final Map<TokenType, int?> teamAssignments = <TokenType, int?>{};
   late bool isTeamPlayEnabled = false;
 
@@ -34,8 +33,12 @@ class GameService extends GetxService {
   final RxList<Position> blueInitial = RxList<Position>([]);
   final RxList<Position> redInitial = RxList<Position>([]);
 
+  // Abstract methods that must be implemented by subclasses
+  Future<BaseLudoService> init(int numberOfPlayer, {bool teamPlay = false});
+  Future<bool> moveToken(Token token, int steps);
 
-  Future<GameService> init(int numberOfPlayer, {bool teamPlay = false}) async {
+  // Common initialization logic
+  Future<void> initializeBase(int numberOfPlayer, {bool teamPlay = false}) async {
     _pathCache.clear();
     activeTokenTypes.clear();
     teamAssignments.clear();
@@ -72,8 +75,8 @@ class GameService extends GetxService {
     }
 
     gameTokens.value = allTokens;
-    return this;
   }
+
   // Ensure path is initialized - loads path only when needed
   void _ensurePathInitialized(TokenType type) {
     if (!_pathCache.containsKey(type)) {
@@ -89,7 +92,6 @@ class GameService extends GetxService {
       case TokenType.red: return [11, 2];
     }
   }
-
 
   // Add a method to set team assignments
   void setTeamAssignments(Map<TokenType, int?> assignments) {
@@ -113,7 +115,6 @@ class GameService extends GetxService {
     return team1 != null && team2 != null && team1 == team2;
   }
 
-
   List<Token> _createInitialTokens(TokenType type, int startX, int startY) {
     return List.generate(4, (index) {
       return Token(
@@ -125,69 +126,37 @@ class GameService extends GetxService {
     });
   }
 
-
-  Future<bool> moveToken(Token token, int steps) async {
-    if (!_isValidToken(token)) return false;
-
-    if (token.tokenState == TokenState.home) return false;
-    if (token.tokenState == TokenState.initial && steps != 6) return false;
-
-    bool didKill = false;
-
-    if (token.tokenState == TokenState.initial && steps == 6) {
-      await _moveTokenFromInitial(token);
-    } else {
-      didKill = await _moveTokenAlongPath(token, steps);
-    }
-
-    return didKill;
-  }
-
-  // Validate token to prevent errors
-  bool _isValidToken(Token token) {
+  // Common token validation logic
+  bool isValidToken(Token token) {
     return token.id >= 0 &&
         token.id < gameTokens.length &&
         gameTokens[token.id] != null &&
         activeTokenTypes.contains(token.type);
   }
 
+  // Common move validation logic
+  bool canMoveToken(Token token, int steps) {
+    if (!isValidToken(token)) return false;
+    if (token.tokenState == TokenState.home) return false;
+    if (token.tokenState == TokenState.initial && steps != 6) return false;
+    return true;
+  }
 
-  Future<void> _moveTokenFromInitial(Token token) async {
-    if (!_isValidToken(token)) return;
+  // Common logic for moving token from initial position
+  Future<void> moveTokenFromInitial(Token token) async {
+    if (!isValidToken(token)) return;
 
-    final destination = _getPosition(token.type, 0);
-    _updateInitialPositions(token);
-    _updateTokenState(token, TokenState.normal, newPosition: destination);
+    final destination = getPosition(token.type, 0);
+    updateInitialPositions(token);
+    updateTokenState(token, TokenState.normal, newPosition: destination);
     gameTokens[token.id]?.positionInPath = 0;
 
     // Add a small delay to simulate animation time
     await Future.delayed(const Duration(milliseconds: 300));
   }
 
-  Future<bool> _moveTokenAlongPath(Token token, int steps) async {
-    if (!_isValidToken(token)) return false;
-
-    final newPositionInPath = token.positionInPath + steps;
-    final pathLength = _getPathLength(token.type);
-
-    // Check if move is valid
-    if (newPositionInPath >= pathLength) return false;
-    final destination = _getPosition(token.type, newPositionInPath);
-
-    // Calculate what will happen at destination
-    final moveResult = _calculateMoveResult(token, destination);
-
-    // Animate the token movement
-    await _animateTokenMovement(token, steps);
-
-    // Handle the result based on the calculation
-    bool didKill = await _handleMoveResult(token, newPositionInPath, destination, moveResult);
-
-    return didKill;
-  }
-
-
-  MoveResult _calculateMoveResult(Token token, Position destination) {
+  // Common move result calculation
+  MoveResult calculateMoveResult(Token token, Position destination) {
     // Check if destination is a star position (safe)
     if (starPositions.contains(destination)) {
       return MoveResult(finalState: TokenState.safe);
@@ -208,7 +177,7 @@ class GameService extends GetxService {
     // If ALL tokens at destination are the same type as the incoming token, don't kill
     final allSameType = tokensAtDestination.every((tkn) => tkn.type == token.type);
     if (allSameType) {
-      return MoveResult(finalState: TokenState.safeinpair); // or .normal if you want
+      return MoveResult(finalState: TokenState.safeinpair);
     }
 
     // Separate teammates and opponents
@@ -245,8 +214,8 @@ class GameService extends GetxService {
     return MoveResult(finalState: TokenState.normal);
   }
 
-// Animate token movement step by step
-  Future<void> _animateTokenMovement(Token token, int steps) async {
+  // Common animation logic
+  Future<void> animateTokenMovement(Token token, int steps) async {
     List<Future<void>> animationFutures = [];
 
     for (int i = 1; i <= steps; i++) {
@@ -254,10 +223,10 @@ class GameService extends GetxService {
       final stepPosition = token.positionInPath + i;
 
       final stepFuture = Future.delayed(stepDelay, () {
-        _updateTokenState(
+        updateTokenState(
           token,
           token.tokenState,
-          newPosition: _getPosition(token.type, stepPosition),
+          newPosition: getPosition(token.type, stepPosition),
         );
         gameTokens[token.id]?.positionInPath = stepPosition;
       });
@@ -268,9 +237,9 @@ class GameService extends GetxService {
     await Future.wait(animationFutures);
   }
 
-// Handle the result of token movement
-  Future<bool> _handleMoveResult(Token token, int newPositionInPath, Position destination, MoveResult result) async {
-    final pathLength = _getPathLength(token.type);
+  // Common move result handling
+  Future<bool> handleMoveResult(Token token, int newPositionInPath, Position destination, MoveResult result) async {
+    final pathLength = getPathLength(token.type);
 
     // Update token state for normal movement (not self-kill)
     if (!result.isSelfKill) {
@@ -278,11 +247,11 @@ class GameService extends GetxService {
           ? TokenState.home
           : result.finalState;
 
-      _updateTokenState(token, finalState, newPosition: destination);
+      updateTokenState(token, finalState, newPosition: destination);
 
       // Update teammates if forming a safe pair
       if (result.finalState == TokenState.safeinpair) {
-        _updateTeammatesState(token, destination);
+        updateTeammatesState(token, destination);
       }
     }
 
@@ -294,15 +263,15 @@ class GameService extends GetxService {
       }
 
       // Immediate reset animation with no delay between steps
-      await _animateTokenReset(result.tokenToReset!);
+      await animateTokenReset(result.tokenToReset!);
       return true;
     }
 
     return false;
   }
 
-// Update teammates at destination to be safe in pair
-  void _updateTeammatesState(Token token, Position destination) {
+  // Update teammates at destination to be safe in pair
+  void updateTeammatesState(Token token, Position destination) {
     final teammatesAtDestination = gameTokens
         .where((tkn) => tkn != null && tkn.id != token.id &&
         tkn.tokenPosition == destination &&
@@ -322,8 +291,8 @@ class GameService extends GetxService {
     gameTokens.refresh();
   }
 
-// Animate token reset with faster animation
-  Future<void> _animateTokenReset(Token tokenToReset) async {
+  // Animate token reset with faster animation
+  Future<void> animateTokenReset(Token tokenToReset) async {
     List<Future<void>> resetFutures = [];
 
     // Use faster animation for reset (40ms per step instead of 70ms)
@@ -332,10 +301,10 @@ class GameService extends GetxService {
       final resetDelay = Duration(milliseconds: 40 * i);
 
       final resetStepFuture = Future.delayed(resetDelay, () {
-        _updateTokenState(
+        updateTokenState(
           tokenToReset,
           tokenToReset.tokenState,
-          newPosition: _getPosition(tokenToReset.type, stepLoc),
+          newPosition: getPosition(tokenToReset.type, stepLoc),
         );
         gameTokens[tokenToReset.id]?.positionInPath = stepLoc;
       });
@@ -344,17 +313,16 @@ class GameService extends GetxService {
     }
 
     await Future.wait(resetFutures);
-    _resetToken(tokenToReset);
+    resetToken(tokenToReset);
   }
 
-
   // Get path length with safety check
-  int _getPathLength(TokenType type) {
+  int getPathLength(TokenType type) {
     _ensurePathInitialized(type);
     return _pathCache[type]?.length ?? 0;
   }
 
-  Position _getPosition(TokenType type, int step) {
+  Position getPosition(TokenType type, int step) {
     _ensurePathInitialized(type);
 
     if (!_pathCache.containsKey(type) || step >= _pathCache[type]!.length) {
@@ -385,9 +353,8 @@ class GameService extends GetxService {
         .isNotEmpty;
   }
 
-
-  // Husk at opdatere _updateTokenState til at bruge copyWith og refresh() for RxList
-  void _updateTokenState(Token token, TokenState newState, {Position? newPosition}) {
+  // Common token state update logic
+  void updateTokenState(Token token, TokenState newState, {Position? newPosition}) {
     final index = gameTokens.indexWhere((t) => t?.id == token.id);
     if (index != -1) {
       final currentToken = gameTokens[index];
@@ -403,8 +370,7 @@ class GameService extends GetxService {
     }
   }
 
-
-  void _updateInitialPositions(Token token) {
+  void updateInitialPositions(Token token) {
     switch (token.type) {
       case TokenType.green:
         greenInitial.add(token.tokenPosition);
@@ -421,7 +387,7 @@ class GameService extends GetxService {
     }
   }
 
-  void _resetToken(Token token) {
+  void resetToken(Token token) {
     final colorMap = {
       TokenType.green: () => greenInitial.removeAt(0),
       TokenType.yellow: () => yellowInitial.removeAt(0),
@@ -436,5 +402,4 @@ class GameService extends GetxService {
       gameTokens[token.id]?.tokenPosition = position;
     }
   }
-
-}*/
+}

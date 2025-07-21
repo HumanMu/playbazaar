@@ -5,7 +5,7 @@ import '../models/dice_model.dart';
 import '../models/ludo_player.dart';
 import '../models/token.dart';
 import '../helper/enums.dart';
-import 'base_play_controller.dart';
+import 'base_ludo_controller.dart';
 
 class DiceController extends GetxController {
   final DiceModel dice = DiceModel();
@@ -58,7 +58,6 @@ class DiceController extends GetxController {
     }
 
     try {
-      // Start rolling animation
       dice.isRolling = true;
       if (!dice.isRobotTurn) {
         dice.isInteractive = false;

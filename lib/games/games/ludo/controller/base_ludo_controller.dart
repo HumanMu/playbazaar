@@ -6,31 +6,35 @@ import 'package:playbazaar/games/games/ludo/models/dice_model.dart';
 import 'package:playbazaar/games/games/ludo/models/ludo_player.dart';
 import '../helper/enums.dart';
 import '../interfaces/i_base_ludo_controller.dart';
+import '../locator/service_locator.dart';
 import '../models/position.dart';
-import '../services/game_service.dart';
 import '../models/token.dart';
+import '../services/base_ludo_service.dart';
 import '../widgets/game_over.dart';
+import 'dice_controller.dart';
 
 abstract class BaseLudoController extends GetxController implements IBaseLudoController {
-  // Core game state that both offline and online will need
+
+  BaseLudoService get gameService => LudoServiceLocator.get<BaseLudoService>();
+  DiceController get diceController => LudoServiceLocator.get<DiceController>();
+
   final DiceModel diceModel = DiceModel();
   final List<List<GlobalKey>> keyReferences = LudoHelper.getGlobalKeys();
-  final GameService gameService = Get.find<GameService>();
 
   // Common reactive variables
   List<Token?> get gameTokens => gameService.gameTokens;
   RxList<LudoPlayer> players = <LudoPlayer>[].obs;
-  final RxBool wasLastToken = RxBool(false);
-  final RxBool boardBuild = RxBool(false);
-  final RxBool isTeamPlay = RxBool(false);
-  final RxBool isLoading = RxBool(false);
-  final RxBool isRobotOn = RxBool(false);
-  final RxInt numberOfHumanPlayers = RxInt(4);
+  final RxBool wasLastToken = false.obs;
+  final RxBool boardBuild = false.obs;
+  final RxBool isTeamPlay = false.obs;
+  final RxBool isLoading = false.obs;
+  final RxBool isRobotOn = false.obs;
+  final RxInt numberOfHumanPlayers = 4.obs;
 
   @override
   void onInit() async {
-    isLoading.value = true;
     super.onInit();
+    isLoading.value = true;
 
     await initializeServices();
     await initializePlayers();
@@ -38,7 +42,7 @@ abstract class BaseLudoController extends GetxController implements IBaseLudoCon
     // Add post frame callback to set boardBuild
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       boardBuild.value = true;
-      await onBoardBuilt(); // Template method for subclasses
+      await onBoardBuilt();
     });
 
     isLoading.value = false;
@@ -46,6 +50,9 @@ abstract class BaseLudoController extends GetxController implements IBaseLudoCon
 
   // Template method - subclasses can override
   Future<void> onBoardBuilt() async {}
+  @override
+  Future<void> initializeServices();
+
 
   // Common game logic methods
   List<Token> getTokensAtPosition(Position position) {
@@ -65,7 +72,7 @@ abstract class BaseLudoController extends GetxController implements IBaseLudoCon
     final indexInStack = tokensAtPosition.indexWhere((t) => t.id == token.id);
     if (indexInStack == -1) return Offset.zero;
 
-    final baseOffset = 10.0;
+    final baseOffset = 9.0;
     final angle = (indexInStack * (2 * math.pi / 8)) % (2 * math.pi);
     final distance = baseOffset * (1 + indexInStack * 0.3);
 
@@ -101,7 +108,6 @@ abstract class BaseLudoController extends GetxController implements IBaseLudoCon
           }
         }
 
-        //currentContext = currentContext.findAncestorStateOfType<State>() as BuildContext?;
         final ancestorState = currentContext.findAncestorStateOfType<State>();
         currentContext = ancestorState?.context;
       }
@@ -215,7 +221,7 @@ abstract class BaseLudoController extends GetxController implements IBaseLudoCon
         isTeamPlay: isTeamPlay.value,
         onPlayAgain: () {
           Get.back();
-          //restartGame();
+          // Reset game function here
         },
         onExit: () {
           Get.back();

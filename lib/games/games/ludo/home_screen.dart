@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:playbazaar/constants/app_colors.dart';
 import '../../../global_widgets/dialog/accept_dialog.dart';
+import 'helper/enums.dart';
 import 'helper/utility_color.dart';
 
 class LudoHomeScreen extends StatefulWidget {
@@ -184,10 +185,11 @@ class _LudoHomeScreenState extends State<LudoHomeScreen> {
         crossAxisSpacing: 20,
         mainAxisSpacing: 20,
         children: [
-          _buildGameTypeContainer(2, LudoColors.red),
-          _buildGameTypeContainer(3, LudoColors.green),
-          _buildGameTypeContainer(4, LudoColors.blue),
-          _buildGameTypeContainer(1, LudoColors.yellow),
+          _buildGameTypeContainer(2, LudoColors.red, GameMode.offline),
+          _buildGameTypeContainer(3, LudoColors.green, GameMode.offline),
+          _buildGameTypeContainer(4, LudoColors.blue, GameMode.offline),
+          _buildGameTypeContainer(1, LudoColors.yellow, GameMode.offline),
+          _buildGameTypeContainer(10, LudoColors.yellow, GameMode.online),
           /*ElevatedButton(onPressed: () {
             Navigator.push(
               context,
@@ -221,7 +223,12 @@ class _LudoHomeScreenState extends State<LudoHomeScreen> {
     );
   }
 
-  void _handleGameSelection(int playerCount) {
+  void _handleGameSelection(int playerCount, GameMode mode) {
+    if(mode == GameMode.online){
+      _navigateToPlayScreen(4, mode);
+      return;
+    }
+
     if ((playerCount == 2 || playerCount == 3) && teamPlay && !enabledRobots) {
       acceptDialog(
         context,
@@ -251,16 +258,24 @@ class _LudoHomeScreenState extends State<LudoHomeScreen> {
     }
 
     // Navigate to game screen
+    _navigateToPlayScreen(playerCount, mode);
+  }
+
+  void _navigateToPlayScreen(int playerCount, GameMode mode){
+    debugPrint("Game mode: $mode");
+
     Get.toNamed('/ludoPlayScreen', arguments: {
+      'gameMode': mode,
       'numberOfPlayer': playerCount,
       'teamPlay': teamPlay,
       'enabledRobots': enabledRobots,
     });
   }
 
-  Widget _buildGameTypeContainer(int playerCount, Color color) {
+
+  Widget _buildGameTypeContainer(int playerCount, Color color, GameMode mode) {
     return GestureDetector(
-      onTap: () => _handleGameSelection(playerCount),
+      onTap: () => _handleGameSelection(playerCount, mode),
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,

@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import '../helper/enums.dart';
 import '../models/ludo_player.dart';
 import '../models/token.dart';
-import 'base_play_controller.dart';
+import 'base_ludo_controller.dart';
 import 'dice_controller.dart';
 
 class OfflineLudoController extends BaseLudoController {
@@ -25,12 +25,6 @@ class OfflineLudoController extends BaseLudoController {
       isRobotOn.value = Get.arguments['enabledRobots'] ?? false;
       isTeamPlay.value = Get.arguments['teamPlay'] ?? false;
     }
-
-    final numberOfPlayer = (isTeamPlay.value || isRobotOn.value)
-        ? 4
-        : numberOfHumanPlayers.value;
-
-    gameService.init(numberOfPlayer, teamPlay: isTeamPlay.value);
   }
 
   @override

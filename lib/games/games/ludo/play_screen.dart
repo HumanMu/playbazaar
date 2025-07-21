@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../config/orientation_manager.dart';
 import '../../../constants/app_colors.dart';
-import 'controller/base_play_controller.dart';
-import 'controller/dice_controller.dart';
-import 'controller/offline_ludo_controller.dart';
-import 'services/game_service.dart';
+import '../../../global_widgets/dialog/show_error_dialog_utils.dart';
+import 'helper/enums.dart';
+import 'locator/service_locator.dart';
 import 'widgets/game_play.dart';
 
 class LudoPlayScreen extends StatefulWidget {
+  final GameMode gameMode;
   final int numberOfPlayer;
   final bool enabledRobots;
   final bool teamPlay;
 
   const LudoPlayScreen({
     super.key,
+    required this.gameMode,
     required this.numberOfPlayer,
     required this.enabledRobots,
     required this.teamPlay
@@ -38,27 +38,35 @@ class _LudoPlayScreenState extends State<LudoPlayScreen> {
   }
 
   Future<void> initializeServices() async {
-    Get.lazyPut(() => GameService());
-    final controller = OfflineLudoController();
-    Get.lazyPut<BaseLudoController>(() => controller);
-    Get.lazyPut<OfflineLudoController>(() => controller);
-    Get.lazyPut(() => DiceController());
+    try {
+      await LudoServiceLocator.initialize(GameMode.offline);
 
-    // Now we can set loading to false
-    if (mounted) {
-      setState(() {
-        isLoading = false;
-      });
+      // Initialize the game with parameters
+      await LudoServiceLocator.initializeGame(
+        numberOfPlayers: widget.numberOfPlayer,
+        teamPlay: widget.teamPlay,
+        enableRobots: widget.enabledRobots,
+      );
+
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      debugPrint('Game initialization failed: $e');
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+        DialogUtils.showErrorDialog(context, 'Failed to initialize game: $e');
+      }
     }
   }
 
   @override
   void dispose() {
-    Get.delete<OfflineLudoController>(force: true);
-    Get.delete<DiceController>(force: true);
-    Get.delete<GameService>(force: true);
-    OrientationManager.resetOrientations();
-
+    LudoServiceLocator.cleanup();
     super.dispose();
   }
 

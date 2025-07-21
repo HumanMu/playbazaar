@@ -30,6 +30,7 @@ import '../../controller/settings_controller/notification_settings_controller.da
 import '../../controller/user_controller/auth_controller.dart';
 import '../../controller/user_controller/user_controller.dart';
 import '../../games/games/hangman/add_hangman_screen.dart';
+import '../../games/games/ludo/helper/enums.dart';
 import '../../games/games/ludo/home_screen.dart';
 import '../../games/games/quiz/main_quiz_page.dart';
 import '../../games/games/quiz/screens/none_optionized_play_page.dart';
@@ -195,6 +196,7 @@ class _PlayBazaarState extends State<PlayBazaar> {
                       page: () {
                         final args = Get.arguments as Map<String, dynamic>;
                         return LudoPlayScreen(
+                          gameMode: GameMode.online,
                           numberOfPlayer: args['numberOfPlayer'],
                           enabledRobots: args['enabledRobots'],
                           teamPlay: args['teamPlay']
