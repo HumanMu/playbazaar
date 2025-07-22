@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart' show WidgetsBinding;
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../helper/enums.dart';
 import '../models/ludo_player.dart';
@@ -172,6 +172,71 @@ class OfflineLudoController extends BaseLudoController {
     }
 
     diceController.dice.giveAnotherTurn = didKill || hasReached || (diceController.diceValue == 6);
+  }
+
+  List<double> getPosition(int row, int column, GlobalKey appBarKey) {
+    final cellKey = keyReferences[row][column];
+    if (cellKey.currentContext == null) {
+      return [0, 0, 0, 0];
+    }
+
+    try {
+      final RenderBox cellRenderBox = cellKey.currentContext!.findRenderObject() as RenderBox;
+      final cellSize = cellRenderBox.size;
+
+      RenderBox? boardBox;
+      BuildContext? currentContext = cellKey.currentContext;
+      int searchAttempts = 0;
+
+      while (currentContext != null && boardBox == null && searchAttempts < 10) {
+        searchAttempts++;
+
+        final renderObject = currentContext.findRenderObject();
+        if (renderObject is RenderBox) {
+          final size = renderObject.size;
+          if (size.width > cellSize.width * 10 && size.height > cellSize.height * 10) {
+            boardBox = renderObject;
+            break;
+          }
+        }
+
+        final ancestorState = currentContext.findAncestorStateOfType<State>();
+        currentContext = ancestorState?.context;
+      }
+
+      if (boardBox != null) {
+        try {
+          final localPosition = cellRenderBox.localToGlobal(
+              Offset.zero,
+              ancestor: boardBox
+          );
+
+          return [
+            localPosition.dx,
+            localPosition.dy,
+            cellSize.width,
+            cellSize.height
+          ];
+        } catch (e) {
+          debugPrint('Error calculating local position: $e');
+        }
+      }
+
+      final globalPosition = cellRenderBox.localToGlobal(Offset.zero);
+      final double appBarHeight = appBarKey.currentContext != null
+          ? (appBarKey.currentContext!.findRenderObject() as RenderBox).size.height
+          : 0.0;
+
+      return [
+        globalPosition.dx,
+        globalPosition.dy - appBarHeight,
+        cellSize.width,
+        cellSize.height
+      ];
+    } catch (e) {
+      debugPrint('Error in getPosition: $e');
+      return [0, 0, 0, 0];
+    }
   }
 
   @override

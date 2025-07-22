@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:playbazaar/games/games/ludo/controller/base_ludo_controller.dart';
 import 'package:playbazaar/games/games/ludo/helper/functions.dart';
+import 'package:playbazaar/games/games/ludo/services/base_ludo_service.dart';
 import 'package:playbazaar/games/games/ludo/widgets/animated_token.dart';
 import '../../models/token.dart';
 
@@ -18,7 +19,8 @@ class TokenWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final gameController = Get.find<BaseLudoController>();
-    final offset = gameController.getTokenOffsetAtPosition(token);
+    final gameSerivce = Get.find<BaseLudoService>();
+    final offset = gameSerivce.getTokenOffsetAtPosition(token);
 
     return AnimatedPositioned(
       duration: const Duration(milliseconds: 100),
@@ -54,7 +56,8 @@ class TokenWidget2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final gameController = Get.find<BaseLudoController>();
-    final offset = gameController.getTokenOffsetAtPosition(token);
+    final gameService = Get.find<BaseLudoService>();
+    final offset = gameService.getTokenOffsetAtPosition(token);
 
     return AnimatedPositioned(
       duration: const Duration(milliseconds: 100),

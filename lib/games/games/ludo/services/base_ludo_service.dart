@@ -1,4 +1,8 @@
+import 'dart:math' as math;
+import 'dart:ui' show Offset;
+
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'dart:async';
 import '../helper/enums.dart';
@@ -401,5 +405,59 @@ abstract class BaseLudoService extends GetxService {
       gameTokens[token.id]?.tokenState = TokenState.initial;
       gameTokens[token.id]?.tokenPosition = position;
     }
+  }
+
+  // Common game logic methods
+  List<Token> getTokensAtPosition(Position position) {
+    return gameTokens.whereType<Token>().where((token) =>
+    token.tokenPosition.row == position.row &&
+        token.tokenPosition.column == position.column
+    ).toList();
+  }
+
+  Offset getTokenOffsetAtPosition(Token token) {
+    final tokensAtPosition = getTokensAtPosition(token.tokenPosition);
+
+    if (tokensAtPosition.length <= 1) {
+      return Offset.zero;
+    }
+
+    final indexInStack = tokensAtPosition.indexWhere((t) => t.id == token.id);
+    if (indexInStack == -1) return Offset.zero;
+
+    final baseOffset = 9.0;
+    final angle = (indexInStack * (2 * math.pi / 8)) % (2 * math.pi);
+    final distance = baseOffset * (1 + indexInStack * 0.3);
+
+    return Offset(
+        math.cos(angle) * distance,
+        math.sin(angle) * distance
+    );
+  }
+
+  List<double> getTokenDisplayPosition(
+      Token token,
+      double boardSize,
+      List<double>? calculatedPosition, // Pass the calculated position
+      ) {
+    final cellSize = boardSize / 15;
+
+    // If no calculated position provided or calculation failed, use logical position
+    if (calculatedPosition == null ||
+        (calculatedPosition[0] == 0 && calculatedPosition[1] == 0 &&
+            calculatedPosition[2] == 0 && calculatedPosition[3] == 0)) {
+      return [
+        token.tokenPosition.column * cellSize,
+        token.tokenPosition.row * cellSize,
+        cellSize,
+        cellSize,
+      ];
+    }
+
+    // Ensure token stays within board boundaries
+    final clampedX = calculatedPosition[0].clamp(0.0, boardSize - cellSize);
+    final clampedY = calculatedPosition[1].clamp(0.0, boardSize - cellSize);
+
+    return [clampedX, clampedY, cellSize, cellSize];
   }
 }

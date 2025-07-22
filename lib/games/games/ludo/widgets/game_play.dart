@@ -1,9 +1,8 @@
-import 'package:playbazaar/games/games/ludo/controller/offline_ludo_controller.dart';
-
 import '../../../../admob/adaptive_banner_ad.dart';
 import '../controller/base_ludo_controller.dart';
 import '../controller/dice_controller.dart';
 import 'package:flutter/material.dart';
+import '../controller/offline_ludo_controller.dart';
 import 'dice_widget.dart';
 import 'player_profile_widget.dart';
 import 'package:get/get.dart';
@@ -147,7 +146,6 @@ class _GamePlayState extends State<GamePlay> {
                               children: tokens.map((token) {
                                 final dimensions = _getTokenPosition(
                                   token,
-                                  gameController,
                                   boardSize,
                                 );
 
@@ -242,7 +240,27 @@ class _GamePlayState extends State<GamePlay> {
     );
   }
 
-  // Helper method to calculate token position properly
+  List<double> _getTokenPosition(Token token, double boardSize) {
+    List<double>? calculatedPosition;
+
+    // Only use complex positioning for offline mode
+    if (gameController is OfflineLudoController) {
+      calculatedPosition = (gameController as OfflineLudoController).getPosition(
+        token.tokenPosition.row,
+        token.tokenPosition.column,
+        widget.appBarKey,
+      );
+    }
+
+    // Let service handle the positioning logic
+    return gameController.gameService.getTokenDisplayPosition(
+      token,
+      boardSize,
+      calculatedPosition,
+    );
+  }
+
+  /*// Helper method to calculate token position properly
   List<double> _getTokenPosition(
       Token token,
       BaseLudoController gameController,
@@ -274,6 +292,6 @@ class _GamePlayState extends State<GamePlay> {
     final clampedY = position[1].clamp(0.0, boardSize - cellSize);
 
     return [clampedX, clampedY, cellSize, cellSize];
-  }
+  }*/
 }
 

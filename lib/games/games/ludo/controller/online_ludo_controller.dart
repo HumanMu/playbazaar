@@ -1,5 +1,4 @@
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
-
 import '../models/token.dart';
 import 'base_ludo_controller.dart';
 
