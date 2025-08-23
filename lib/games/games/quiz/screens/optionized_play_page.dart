@@ -113,92 +113,94 @@ class _QuizPlayScreen extends State<OptionizedPlayScreen>{
                           ),
                         ),
                       )
-                      : Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          // Question Text
-                          playController.showAnswer.value && playController.currentDescription.value != null
-                              ? Text(
-                            playController.currentDescription.value ?? playController.currentQuestion.value,
-                            style: GoogleFonts.actor(
-                              textStyle: TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold,
-                                  fontStyle: FontStyle.italic,
-                                  color: Colors.green.shade700
+                      : SafeArea(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            // Question Text
+                            playController.showAnswer.value && playController.currentDescription.value != null
+                                ? Text(
+                              playController.currentDescription.value ?? playController.currentQuestion.value,
+                              style: GoogleFonts.actor(
+                                textStyle: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                    fontStyle: FontStyle.italic,
+                                    color: Colors.green.shade700
+                                ),
+                              ),
+                            )
+                                : Text(
+                              playController.currentQuestion.value,
+                              style: GoogleFonts.actor(
+                                textStyle: TextStyle(
+                                    fontSize: 19,
+                                    fontWeight: FontWeight.bold,
+                                    fontStyle: FontStyle.italic,
+                                    color: Colors.blueGrey.shade900
+                                ),
                               ),
                             ),
-                          )
-                              : Text(
-                            playController.currentQuestion.value,
-                            style: GoogleFonts.actor(
-                              textStyle: TextStyle(
-                                  fontSize: 19,
-                                  fontWeight: FontWeight.bold,
-                                  fontStyle: FontStyle.italic,
-                                  color: Colors.blueGrey.shade900
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 15),
+                            const SizedBox(height: 15),
 
-                          // Answer Buttons
-                          Container(
-                            constraints: const BoxConstraints(maxWidth: 700),
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: playController.currentAnswer.length,
-                              itemBuilder: (context, index) {
-                                return Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 4.0),
-                                  child: ElevatedButton(
-                                    onPressed: () {
-                                      playController.checkAnswer(index);
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: playController.getButtonColor(index),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(12),
+                            // Answer Buttons
+                            Container(
+                              constraints: const BoxConstraints(maxWidth: 700),
+                              child: ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: playController.currentAnswer.length,
+                                itemBuilder: (context, index) {
+                                  return Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 4.0),
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        playController.checkAnswer(index);
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: playController.getButtonColor(index),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(12),
+                                        ),
                                       ),
-                                    ),
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(vertical: 10),
-                                      child: Text(
-                                        playController.currentAnswer[index],
-                                        style: GoogleFonts.actor(
-                                          textStyle: TextStyle(
-                                            fontSize: 17,
-                                            color: playController.isCorrect.value != null
-                                                ? Colors.white
-                                                : Colors.blueGrey.shade900,
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(vertical: 10),
+                                        child: Text(
+                                          playController.currentAnswer[index],
+                                          style: GoogleFonts.actor(
+                                            textStyle: TextStyle(
+                                              fontSize: 17,
+                                              color: playController.isCorrect.value != null
+                                                  ? Colors.white
+                                                  : Colors.blueGrey.shade900,
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-
-                          // Feedback Text
-                          playController.isCorrect.value != null
-                          ? Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              playController.isCorrect.value!
-                                  ? "correct_answer".tr
-                                  : "${"wrong_answer".tr} ",
-                              style: TextStyle(
-                                  color: playController.isCorrect.value!
-                                      ? Colors.green.shade700
-                                      : Colors.red.shade700,
-                                  fontSize: 20
+                                  );
+                                },
                               ),
                             ),
-                          )
-                          : Container(),
-                        ],
+
+                            // Feedback Text
+                            playController.isCorrect.value != null
+                            ? Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                playController.isCorrect.value!
+                                    ? "correct_answer".tr
+                                    : "${"wrong_answer".tr} ",
+                                style: TextStyle(
+                                    color: playController.isCorrect.value!
+                                        ? Colors.green.shade700
+                                        : Colors.red.shade700,
+                                    fontSize: 20
+                                ),
+                              ),
+                            )
+                            : Container(),
+                          ],
+                        ),
                       ),
                   ),
                 ),

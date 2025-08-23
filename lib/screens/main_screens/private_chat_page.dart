@@ -64,99 +64,103 @@ class _PrivateChatPageState extends State<PrivateChatPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          elevation: 0,
-          title: Text(capitalizeFullname(widget.chatName),
-            style: TextStyle(color: Colors.white),
-          ),
-          backgroundColor: Colors.red,
-          iconTheme: IconThemeData(
-              color: Colors.white
-          ),
-        ),
-        body: Column(
-          children: [
-            Container(
-              //margin: EdgeInsets.all(3),
-              color: Colors.teal[900],
-              width: MediaQuery.of(context).size.width,
-              child: AdaptiveBannerAd(
-                onAdLoaded: (isLoaded) {
-                  if (isLoaded) {
-                    debugPrint('Ad loaded in Quiz Screen');
-                  } else {
-                    debugPrint('Ad failed to load in Quiz Screen');
-                  }
-                },
-              ),  // The BannerAd widget
+    return SafeArea(
+      top: false,
+      bottom: true,
+      child: Scaffold(
+          appBar: AppBar(
+            centerTitle: true,
+            elevation: 0,
+            title: Text(capitalizeFullname(widget.chatName),
+              style: TextStyle(color: Colors.white),
             ),
-            Expanded(
-              child: chatMessage(),
+            backgroundColor: Colors.red,
+            iconTheme: IconThemeData(
+                color: Colors.white
             ),
-            Container(
-              alignment: Alignment.bottomCenter,
-              width: MediaQuery.of(context).size.width,
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 10
-                ),
+          ),
+          body: Column(
+            children: [
+              Container(
+                //margin: EdgeInsets.all(3),
+                color: Colors.teal[900],
                 width: MediaQuery.of(context).size.width,
-                color: Colors.grey,
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: messageBox,
-                        maxLines: null, // Allow multiple lines
-                        keyboardType: TextInputType.multiline, // Enable multiline input
-                        style: const TextStyle(
-                          color: Colors.white,
-                        ),
-                        decoration: InputDecoration(
-                          hintText: "your_message_here".tr,
-                          hintStyle: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 15,
-                          ),
-                          // Add border to make it more flexible
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide.none,
-                          ),
-                          filled: true,
-                          fillColor: Colors.white24,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    GestureDetector(
-                      onTap: () {
-                        sendPrivateMessage();
-                      },
-                      child: Container(
-                        height: 40,
-                        width: 40,
-                        decoration: BoxDecoration(
-                          color: Colors.red,
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        child: const Center(
-                          child: Icon(
-                            Icons.send,
-                            color: Colors.white,
-                          ),
-
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                child: AdaptiveBannerAd(
+                  onAdLoaded: (isLoaded) {
+                    if (isLoaded) {
+                      debugPrint('Ad loaded in Quiz Screen');
+                    } else {
+                      debugPrint('Ad failed to load in Quiz Screen');
+                    }
+                  },
+                ),  // The BannerAd widget
               ),
-            )
-          ],)
+              Expanded(
+                child: chatMessage(),
+              ),
+              Container(
+                alignment: Alignment.bottomCenter,
+                width: MediaQuery.of(context).size.width,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 10
+                  ),
+                  width: MediaQuery.of(context).size.width,
+                  color: Colors.grey,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: messageBox,
+                          maxLines: null, // Allow multiple lines
+                          keyboardType: TextInputType.multiline, // Enable multiline input
+                          style: const TextStyle(
+                            color: Colors.white,
+                          ),
+                          decoration: InputDecoration(
+                            hintText: "your_message_here".tr,
+                            hintStyle: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 15,
+                            ),
+                            // Add border to make it more flexible
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide.none,
+                            ),
+                            filled: true,
+                            fillColor: Colors.white24,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      GestureDetector(
+                        onTap: () {
+                          sendPrivateMessage();
+                        },
+                        child: Container(
+                          height: 40,
+                          width: 40,
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: const Center(
+                            child: Icon(
+                              Icons.send,
+                              color: Colors.white,
+                            ),
+      
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            ],)
+      ),
     );
   }
 
@@ -247,7 +251,7 @@ class _PrivateChatPageState extends State<PrivateChatPage> {
   }
 
 
-  sendPrivateMessage() {
+  void sendPrivateMessage() {
       if(isMessageLengthAllowed()){
         PrivateMessage newMessage = PrivateMessage(
             senderId: currentUserId!,

@@ -173,7 +173,7 @@ class _ChatInfoState extends State<ChatInfo> {
   }
 
 
-  groupMemberList () {
+  Widget groupMemberList () {
       if (groupDetail.isEmpty) {
         return Center(
           child: Text("members_notfound".tr),

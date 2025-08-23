@@ -27,12 +27,10 @@ class PlayerProfileWidget extends StatelessWidget {
     final double profileDimension = calculatedSize.clamp(55.0, 70.0);
 
     return SizedBox(
-      // Use the clamped 'profileDimension' for width calculation
       width: showDice ? profileDimension * 2.5 : profileDimension,
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Use SizedBox to constrain the Stack's dimensions
           SizedBox(
             width: profileDimension,
             height: profileDimension,
@@ -59,7 +57,6 @@ class PlayerProfileWidget extends StatelessWidget {
                     ),
                     borderRadius: BorderRadius.circular(7),
                   ),
-                  // Icon display logic kept as is
                   child: player.avatarImg == null
                       ? Center( // Added Center for the Icon specifically
                     child: Icon(
@@ -72,8 +69,6 @@ class PlayerProfileWidget extends StatelessWidget {
                       : null,
                 ),
 
-
-                // Name label - Kept original logic using the 'size' parameter from constructor
                 Positioned(
                   bottom: 0,
                   left: 0,
@@ -81,9 +76,7 @@ class PlayerProfileWidget extends StatelessWidget {
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 2),
                     decoration: BoxDecoration(
-                      // Using withOpacity for transparency adjustment
                       color: Colors.black.withValues(alpha: 0.5),
-                      // Using original 'size' parameter for radius
                       borderRadius: BorderRadius.circular(size / 4),
                     ),
                     child: Text(
@@ -91,7 +84,6 @@ class PlayerProfileWidget extends StatelessWidget {
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.white,
-                        // Using original 'size' parameter for font size
                         fontSize: size / 8,
                         fontWeight: FontWeight.bold,
                       ),
@@ -106,8 +98,7 @@ class PlayerProfileWidget extends StatelessWidget {
           // Potential placeholder or widget for dice if showDice is true
           // Add your dice widget here if needed, adjusting layout as required
           if (showDice)
-          // Example: Add space or dice widget here
-            SizedBox(width: profileDimension * 1.5 /* Adjust as needed */),
+            SizedBox(width: profileDimension * 1.5),
 
         ],
       ),

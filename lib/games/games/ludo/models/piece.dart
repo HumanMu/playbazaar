@@ -1,4 +1,6 @@
 // core/models/piece.dart
+import '../helper/enums.dart';
+
 class Piece {
   final String id;
   final PlayerColor color;
@@ -46,5 +48,3 @@ class Position {
 
   Position(this.x, this.y);
 }
-
-enum PlayerColor { red, blue, green, yellow }

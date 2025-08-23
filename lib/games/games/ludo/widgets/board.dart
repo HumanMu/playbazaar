@@ -68,14 +68,14 @@ class _BuildLudoBoard extends StatelessWidget {
   Widget _buildCellPositionGrid(double cellSize) {
     return Column(
       children: List.generate(15, (row) {
-        return Expanded( // Changed from Flexible to Expanded
+        return Expanded(
           child: Row(
             children: List.generate(15, (col) {
-              return Expanded( // Changed from SizedBox to Expanded
+              return Expanded(
                 key: keyReferences[row][col],
                 child: SizedBox(
-                  height: double.infinity, // Fill available height
-                  width: double.infinity, // Fill available width
+                  height: double.infinity,
+                  width: double.infinity,
                   // Uncomment for debugging cell positions
                   //child: Text('$row,$col', style: TextStyle(fontSize: 8)),
                 ),

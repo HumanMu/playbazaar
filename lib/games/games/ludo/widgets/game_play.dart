@@ -15,7 +15,6 @@ import 'board.dart';
 
 class GamePlay extends StatefulWidget {
   final GlobalKey appBarKey;
-
   const GamePlay(this.appBarKey, {super.key});
 
   @override
@@ -71,9 +70,9 @@ class _GamePlayState extends State<GamePlay> {
               child: AdaptiveBannerAd(
                 onAdLoaded: (isLoaded) {
                   if (isLoaded) {
-                    debugPrint('Ad loaded in Quiz Screen');
+                    debugPrint('Ad loaded in Ludo Game Play');
                   } else {
-                    debugPrint('Ad failed to load in Quiz Screen');
+                    debugPrint('Ad failed to load in Ludo Game Play');
                   }
                 },
               ),  // The BannerAd widget
@@ -259,39 +258,5 @@ class _GamePlayState extends State<GamePlay> {
       calculatedPosition,
     );
   }
-
-  /*// Helper method to calculate token position properly
-  List<double> _getTokenPosition(
-      Token token,
-      BaseLudoController gameController,
-      double boardSize,
-      ) {
-    // Get raw position from game controller
-    final position = gameController.getPosition(
-      token.tokenPosition.row,
-      token.tokenPosition.column,
-      widget.appBarKey,
-    );
-
-    // Calculate cell size based on board size
-    final cellSize = boardSize / 15;
-
-    // If position calculation failed, use calculated position
-    if (position[0] == 0 && position[1] == 0 && position[2] == 0 && position[3] == 0) {
-      // Calculate position directly based on row/column
-      return [
-        token.tokenPosition.column * cellSize,
-        token.tokenPosition.row * cellSize,
-        cellSize,
-        cellSize,
-      ];
-    }
-
-    // Ensure token stays within the board boundaries
-    final clampedX = position[0].clamp(0.0, boardSize - cellSize);
-    final clampedY = position[1].clamp(0.0, boardSize - cellSize);
-
-    return [clampedX, clampedY, cellSize, cellSize];
-  }*/
 }
 

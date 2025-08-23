@@ -1,7 +1,4 @@
 import 'dart:math' as math;
-import 'dart:ui' show Offset;
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'dart:async';
@@ -15,7 +12,7 @@ abstract class BaseLudoService extends GetxService {
   final Map<TokenType, int?> teamAssignments = <TokenType, int?>{};
   late bool isTeamPlayEnabled = false;
 
-  final RxList<Token?> gameTokens = RxList<Token?>(List<Token?>.filled(16, null));
+  final RxList<Token?> gameTokens = RxList<Token?>([]);
   final Set<TokenType> activeTokenTypes = <TokenType>{};
 
   // Initialize paths once and cache them
@@ -41,61 +38,27 @@ abstract class BaseLudoService extends GetxService {
   Future<BaseLudoService> init(int numberOfPlayer, {bool teamPlay = false});
   Future<bool> moveToken(Token token, int steps);
 
-  // Common initialization logic
-  Future<void> initializeBase(int numberOfPlayer, {bool teamPlay = false}) async {
+  Future<void> initializeGame() async {
     _pathCache.clear();
     activeTokenTypes.clear();
     teamAssignments.clear();
-    isTeamPlayEnabled = teamPlay;
+    //gameTokens.value = List<Token?>.filled(16, null);
 
-    // Prepare token lists
-    List<Token?> allTokens = List<Token?>.filled(16, null);
-
-    // Map configurations for different player counts
-    final playerConfigs = {
-      2: [TokenType.yellow, TokenType.red],
-      3: [TokenType.green, TokenType.blue, TokenType.red],
-      4: [TokenType.green, TokenType.yellow, TokenType.blue, TokenType.red],
-    };
-
-    // Get active token types based on player count
-    final activeTypes = playerConfigs[numberOfPlayer] ?? playerConfigs[4]!;
-    activeTokenTypes.addAll(activeTypes);
-
-    // Initialize paths for active token types only
-    for (final type in activeTypes) {
-      _ensurePathInitialized(type);
+    // Clear and reinitialize with 16 null tokens
+    gameTokens.clear();
+    for (int i = 0; i < 16; i++) {
+      gameTokens.add(null);
     }
-
-    // Initialize tokens based on active types
-    for (final type in activeTypes) {
-      final tokenPositions = _getInitialPositions(type);
-      final tokens = _createInitialTokens(type, tokenPositions[0], tokenPositions[1]);
-
-      // Assign tokens to appropriate indices
-      for (int i = 0; i < 4; i++) {
-        allTokens[type.index * 4 + i] = tokens[i];
-      }
-    }
-
-    gameTokens.value = allTokens;
   }
 
+
   // Ensure path is initialized - loads path only when needed
-  void _ensurePathInitialized(TokenType type) {
+  void ensurePathInitialized(TokenType type) {
     if (!_pathCache.containsKey(type)) {
       _pathCache[type] = PathHelper.getPath(type);
     }
   }
 
-  List<int> _getInitialPositions(TokenType type) {
-    switch (type) {
-      case TokenType.green: return [2, 2];
-      case TokenType.yellow: return [2, 11];
-      case TokenType.blue: return [11, 11];
-      case TokenType.red: return [11, 2];
-    }
-  }
 
   // Add a method to set team assignments
   void setTeamAssignments(Map<TokenType, int?> assignments) {
@@ -119,16 +82,15 @@ abstract class BaseLudoService extends GetxService {
     return team1 != null && team2 != null && team1 == team2;
   }
 
-  List<Token> _createInitialTokens(TokenType type, int startX, int startY) {
-    return List.generate(4, (index) {
-      return Token(
-        type,
-        Position(startX + index % 2, startY + index ~/ 2),
-        TokenState.initial,
-        (type.index * 4) + index,
-      );
-    });
+  Position getTokenHomePosition(TokenType type) {
+    switch (type) {
+      case TokenType.green: return const Position(2, 2);
+      case TokenType.yellow: return const Position(11, 2);
+      case TokenType.blue: return const Position(11, 11);
+      case TokenType.red: return const Position(2, 11);
+    }
   }
+
 
   // Common token validation logic
   bool isValidToken(Token token) {
@@ -322,12 +284,12 @@ abstract class BaseLudoService extends GetxService {
 
   // Get path length with safety check
   int getPathLength(TokenType type) {
-    _ensurePathInitialized(type);
+    ensurePathInitialized(type);
     return _pathCache[type]?.length ?? 0;
   }
 
   Position getPosition(TokenType type, int step) {
-    _ensurePathInitialized(type);
+    ensurePathInitialized(type);
 
     if (!_pathCache.containsKey(type) || step >= _pathCache[type]!.length) {
       return Position(0, 0);
@@ -342,7 +304,7 @@ abstract class BaseLudoService extends GetxService {
 
     return gameTokens
         .where((element) =>
-    element?.type == type &&
+        element?.type == type &&
         element?.tokenState != TokenState.initial &&
         element != null &&
         (57 - (element.positionInPath + diceRoll) > 0))

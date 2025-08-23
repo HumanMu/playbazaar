@@ -27,134 +27,138 @@ class _LoginPage extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
-      backgroundColor: Colors.black,
-      body: Obx(() {
-        return accountController.isLoading.value
-            ? const Center(
-            child: CircularProgressIndicator(color: Colors.red))
-            : CustomScrollView(
-          scrollDirection: Axis.vertical,
-          slivers: [
-            SliverFillRemaining(
-              hasScrollBody: false,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const HeaderStack(),
-                  ConstrainedBox(
-                    constraints: BoxConstraints(
-                      maxWidth: 600,
-                    ),
-                    child: Container(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Form(
-                            key: formKey,
-                            child: Column(
-                              children: [
-                                TextFormField(
-                                  decoration: textInputDecoration.copyWith(
-                                    labelText: "email".tr,
-                                    prefixIcon: const Icon(
-                                        Icons.email,
-                                        color: Colors.green
-                                    ),
-                                  ),
-                                  onChanged: (val) {
-                                    setState(() {
-                                      email = val.toLowerCase();
-                                    });
-                                  },
-                                  validator: (val) {
-                                    bool isValid = EmailValidator.validate(email);
-                                    return isValid ? null : "not_valid_email".tr;
-                                  },
-
-                                ),
-                                const SizedBox(height: 10,),
-                                TextFormField(
-                                  obscureText: true,
-                                  decoration: textInputDecoration.copyWith(
-                                    labelText: "password".tr,
-                                    prefixIcon: const Icon(
-                                        Icons.lock,
-                                        color: Colors.green
-                                    ),
-                                  ),
-                                  onChanged: (val) {
-                                    setState(() {
-                                      password = val;
-                                    });
-                                  },
-
-                                ),
-                                TextButton(
-                                  onPressed: () {
-                                    Get.toNamed('/resetPassword');
-                                  },
-                                  child: Text('forgot_password'.tr),
-                                ),
-                                const SizedBox(height: 10),
-                                _submitButton(),
-                                const SizedBox(height: 15),
-                                Container(
-                                    alignment: Alignment.center,
-                                    child: TextButton(
-                                      onPressed: () {
-                                        CustomLanguage().languageDialog(context);
-                                      },
-                                      child: Text('language'.tr,
-                                          style: const TextStyle(
-                                            color: Colors.red,
-                                          )),
-                                    )
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
+    return  SafeArea(
+      top: false,
+      bottom: true,
+      child: Scaffold(
+        backgroundColor: Colors.black,
+        body: Obx(() {
+          return accountController.isLoading.value
+              ? const Center(
+              child: CircularProgressIndicator(color: Colors.red))
+              : CustomScrollView(
+            scrollDirection: Axis.vertical,
+            slivers: [
+              SliverFillRemaining(
+                hasScrollBody: false,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const HeaderStack(),
+                    ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxWidth: 600,
                       ),
-                    ),
-                  ),
-                  ConstrainedBox(
-                    constraints: BoxConstraints(
-                      maxWidth: 600, // Set the maximum width here
-                    ),
-                    child:Container(
-                      margin: const EdgeInsets.only(bottom: 10),
-                      child: RichText(
-                        text: TextSpan(
-                            text: "not_have_account".tr,
-                            style: const TextStyle(
-                              color: Colors.white,
-                            ),
-                            children: [
-                              TextSpan(
-                                  text: 'make_account_here'.tr,
-                                  style: const TextStyle(
-                                    color: Colors.redAccent,
-                                    fontWeight: FontWeight.bold,
+                      child: Container(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Form(
+                              key: formKey,
+                              child: Column(
+                                children: [
+                                  TextFormField(
+                                    decoration: textInputDecoration.copyWith(
+                                      labelText: "email".tr,
+                                      prefixIcon: const Icon(
+                                          Icons.email,
+                                          color: Colors.green
+                                      ),
+                                    ),
+                                    onChanged: (val) {
+                                      setState(() {
+                                        email = val.toLowerCase();
+                                      });
+                                    },
+                                    validator: (val) {
+                                      bool isValid = EmailValidator.validate(email);
+                                      return isValid ? null : "not_valid_email".tr;
+                                    },
+
                                   ),
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = () {
-                                      Get.offNamed('/register');
-                                    }),
-                            ]
+                                  const SizedBox(height: 10,),
+                                  TextFormField(
+                                    obscureText: true,
+                                    decoration: textInputDecoration.copyWith(
+                                      labelText: "password".tr,
+                                      prefixIcon: const Icon(
+                                          Icons.lock,
+                                          color: Colors.green
+                                      ),
+                                    ),
+                                    onChanged: (val) {
+                                      setState(() {
+                                        password = val;
+                                      });
+                                    },
+
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      Get.toNamed('/resetPassword');
+                                    },
+                                    child: Text('forgot_password'.tr),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  _submitButton(),
+                                  const SizedBox(height: 15),
+                                  Container(
+                                      alignment: Alignment.center,
+                                      child: TextButton(
+                                        onPressed: () {
+                                          CustomLanguage().languageDialog(context);
+                                        },
+                                        child: Text('language'.tr,
+                                            style: const TextStyle(
+                                              color: Colors.red,
+                                            )),
+                                      )
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
-                  ),
-                ],
+                    ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxWidth: 600, // Set the maximum width here
+                      ),
+                      child:Container(
+                        margin: const EdgeInsets.only(bottom: 10),
+                        child: RichText(
+                          text: TextSpan(
+                              text: "not_have_account".tr,
+                              style: const TextStyle(
+                                color: Colors.white,
+                              ),
+                              children: [
+                                TextSpan(
+                                    text: 'make_account_here'.tr,
+                                    style: const TextStyle(
+                                      color: Colors.redAccent,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () {
+                                        Get.offNamed('/register');
+                                      }),
+                              ]
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
-        );
-      }),
+            ],
+          );
+        }),
+      ),
     );
   }
 

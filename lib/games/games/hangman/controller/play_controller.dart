@@ -8,7 +8,7 @@ import 'package:playbazaar/controller/user_controller/auth_controller.dart';
 import 'package:playbazaar/games/games/hangman/models/game_participiant.dart';
 import 'package:playbazaar/games/games/hangman/models/game_state_change_model.dart';
 import 'package:playbazaar/games/helper/helper.dart';
-import 'package:playbazaar/games/services/hangman_services.dart';
+import 'package:playbazaar/games/games/hangman/services/hangman_services.dart';
 import 'package:playbazaar/global_widgets/show_custom_snackbar.dart';
 import 'package:playbazaar/global_widgets/dialog/string_return_dialog.dart';
 import '../../../../functions/generate_strings.dart';
@@ -168,7 +168,7 @@ class PlayController extends GetxController {
       debugPrint("A dialog is already open.");
     } else {
       Get.dialog(
-        WaitingRoomDialog(),
+        HangmanWaitingRoomDialog(),
         barrierDismissible: false,
       );
     }

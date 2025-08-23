@@ -28,6 +28,7 @@ abstract class BaseLudoController extends GetxController implements IBaseLudoCon
   final RxBool isLoading = false.obs;
   final RxBool isRobotOn = false.obs;
   final RxInt numberOfHumanPlayers = 4.obs;
+  late bool isHost = false;
 
   @override
   void onInit() async {
@@ -48,9 +49,9 @@ abstract class BaseLudoController extends GetxController implements IBaseLudoCon
 
   // Template method - subclasses can override
   Future<void> onBoardBuilt() async {}
+
   @override
   Future<void> initializeServices();
-
 
 
 
@@ -70,11 +71,11 @@ abstract class BaseLudoController extends GetxController implements IBaseLudoCon
     final index = players.indexWhere((e) => e.tokenType == token.type);
     if (index != -1) {
       final player = players[index];
-      final newReachedHome = player.reachedHome + 1;
+      final newReachedHome = player.numberOfreachedHome + 1;
       final hasFinished = newReachedHome >= 4;
 
       players[index] = player.copyWith(
-        reachedHome: newReachedHome,
+        numberOfreachedHome: newReachedHome,
         hasFinished: hasFinished,
       );
 

@@ -54,41 +54,45 @@ class _QuizMainPage extends State<QuizMainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade300,
-      appBar: AppBar(
-        centerTitle: true,
-        elevation: 0,
-        backgroundColor: Colors.red,
-        title: Text(
-          "quiz_list".tr,
-          style: TextStyle(
+        backgroundColor: Colors.grey.shade300,
+        appBar: AppBar(
+          centerTitle: true,
+          elevation: 0,
+          backgroundColor: Colors.red,
+          title: Text(
+            "quiz_list".tr,
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
+              fontSize: 24,
+            ),
+          ),
+          iconTheme: IconThemeData(
             color: Colors.white,
-            fontWeight: FontWeight.w600,
-            fontSize: 24,
           ),
         ),
-        iconTheme: IconThemeData(
-          color: Colors.white,
+        drawer: SidebarDrawer(
+          authService: authService,
+          parentContext: context,
         ),
-      ),
-      drawer: SidebarDrawer(
-        authService: authService,
-        parentContext: context,
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Colors.white,
-              Colors.blue.shade50,
-            ],
+        body: SafeArea(
+          top: false,
+          bottom: true,
+          child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Colors.white,
+                Colors.blue.shade50,
+              ],
+            ),
           ),
+          child: quizPath.isEmpty && quizLength == 0
+              ? const Center(child: CircularProgressIndicator())
+              : _quizList(),
         ),
-        child: quizPath.isEmpty && quizLength == 0
-            ? const Center(child: CircularProgressIndicator())
-            : _quizList(),
       ),
     );
   }

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:playbazaar/functions/string_cases.dart';
+import 'package:playbazaar/global_widgets/rarely_used/text_2_copy.dart';
 import '../controller/play_controller.dart';
 
-class WaitingRoomDialog extends StatelessWidget {
-  const WaitingRoomDialog({
+class HangmanWaitingRoomDialog extends StatelessWidget {
+  const HangmanWaitingRoomDialog({
     super.key,
   });
 
@@ -38,26 +38,9 @@ class WaitingRoomDialog extends StatelessWidget {
                 color: Colors.grey[200],
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "${"game_code".tr}: ${controller.gameCode.value}",
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.copy),
-                    onPressed: () {
-                      Clipboard.setData(ClipboardData(text: controller.gameCode.value));
-                      Get.snackbar(
-                        'copy'.tr,
-                        'copied_to_clipboard'.tr,
-                        snackPosition: SnackPosition.BOTTOM,
-                        duration: const Duration(milliseconds: 1500),
-                      );
-                    },
-                  ),
-                ],
+              child: Text2Copy(
+                inputText: controller.gameCode.value,
+                textDescription: "game_code".tr,
               ),
             ),
             const SizedBox(height: 16),

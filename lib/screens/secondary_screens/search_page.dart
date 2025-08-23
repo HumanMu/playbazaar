@@ -142,7 +142,7 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
-  initiateSearch(searchId) async {
+  Future<void> initiateSearch(String searchId) async {
     if(searchController.text.trim().isNotEmpty) {
       setState(() { isLoading = true; });
       if( widget.searchId =="group") {
@@ -166,7 +166,7 @@ class _SearchPageState extends State<SearchPage> {
     }
   }
 
-  searchedFriendList() {
+  Widget searchedFriendList() {
     return hasUserSearched
         ? userController.searchedUsersList.isEmpty
         ? Center(child: Text("search_not_found".tr))
@@ -199,7 +199,7 @@ class _SearchPageState extends State<SearchPage> {
         ): Container();
   }
 
-  searchedGroupList() {
+  Widget searchedGroupList() {
     return hasUserSearched
       ? searchSnapshot!.docs.isEmpty
       ? Center(child: Text("search_not_found".tr))

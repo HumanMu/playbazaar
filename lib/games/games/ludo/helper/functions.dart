@@ -1,13 +1,6 @@
 import 'package:flutter/material.dart';
 import 'enums.dart';
 
-
-String splitByPoint(TokenType type) {
-  List<String> splited = type.toString().split(".");
-
-  return splited[1].toString();
-}
-
 class LudoHelper {
 
   static List<List<GlobalKey>> getGlobalKeys() {

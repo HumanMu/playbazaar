@@ -136,7 +136,7 @@ class _HomePageState extends State<HomePage> {
   }
 
 
-  popUpDialog(BuildContext context) {
+  void popUpDialog(BuildContext context) {
     showDialog(
       barrierDismissible: false,
       context: context,
@@ -212,7 +212,7 @@ class _HomePageState extends State<HomePage> {
       });
   }
 
-  privatePublicToggler(controller) {
+  Container privatePublicToggler(ValueNotifier<bool> controller) {
     return Container(
       margin: const EdgeInsets.only(top: 8, bottom: 8),
       child: AdvancedSwitch(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-Future<void> acceptDialog(context, title, message) async {
+Future<void> acceptDialog(BuildContext context, String title, String message) async {
   return showDialog<void>(
     context: context,
     barrierDismissible: false, // user must tap button!

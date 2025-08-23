@@ -1,3 +1,4 @@
+
 import '../models/token.dart';
 
 abstract class IBaseLudoController {

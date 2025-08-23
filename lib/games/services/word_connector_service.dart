@@ -22,7 +22,7 @@ class WordConnectorService {
     String directory = "$_gameDirectory${pref.language}";
     try {
 
-      print("Recieved parameters: ${pref.toJson()}");
+      debugPrint("Recieved parameters: ${pref.toJson()}");
       final CollectionReference gameCollection = _gameCollection
           .collection(directory)
           .doc("levels")

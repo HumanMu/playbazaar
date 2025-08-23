@@ -1,5 +1,3 @@
-import 'dart:io';
-import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
@@ -26,11 +24,11 @@ import 'package:playbazaar/screens/secondary_screens/reset_password_page.dart';
 import 'package:playbazaar/screens/secondary_screens/search_page.dart';
 import 'package:playbazaar/screens/secondary_screens/settings_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../constants/device_dimensions.dart';
 import '../../controller/settings_controller/notification_settings_controller.dart';
 import '../../controller/user_controller/auth_controller.dart';
 import '../../controller/user_controller/user_controller.dart';
 import '../../games/games/hangman/add_hangman_screen.dart';
-import '../../games/games/ludo/helper/enums.dart';
 import '../../games/games/ludo/home_screen.dart';
 import '../../games/games/quiz/main_quiz_page.dart';
 import '../../games/games/quiz/screens/none_optionized_play_page.dart';
@@ -41,14 +39,14 @@ import '../../languages/local_strings.dart';
 import '../../middleware/auth_guard.dart';
 import '../../screens/widgets/splash_screen_wrapper.dart';
 
-class PlayBazaar extends StatefulWidget {
-  const PlayBazaar({super.key});
+class AppRoutes extends StatefulWidget {
+  const AppRoutes({super.key});
 
   @override
-  State<PlayBazaar> createState() => _PlayBazaarState();
+  State<AppRoutes> createState() => _AppRoutesState();
 }
 
-class _PlayBazaarState extends State<PlayBazaar> {
+class _AppRoutesState extends State<AppRoutes> {
   String? _initialRoute;
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
   FlutterLocalNotificationsPlugin();
@@ -57,26 +55,9 @@ class _PlayBazaarState extends State<PlayBazaar> {
   void initState() {
     super.initState();
     _checkInitialRoute();
-    //initializeAppTrackingTransparency();
   }
 
 
-  /// InitiALIZING ADMOB TRACKING
-  Future<void> initializeAppTrackingTransparency() async {
-    // Only request tracking authorization on iOS devices
-    if (Platform.isIOS) {
-      try {
-        await Future.delayed(const Duration(milliseconds: 800));
-        final status = await AppTrackingTransparency.requestTrackingAuthorization();
-        debugPrint('App Tracking Transparency status: $status');
-      } catch (e) {
-        debugPrint('Failed to request tracking authorization: $e');
-      }
-    } else {
-      // On Android, no need to request tracking permission
-      debugPrint('App Tracking Transparency is only required for iOS devices');
-    }
-  }
 
   Future<void> _checkInitialRoute() async {
     final notificationAppLaunch = await flutterLocalNotificationsPlugin
@@ -104,6 +85,7 @@ class _PlayBazaarState extends State<PlayBazaar> {
     final authController = Get.find<AuthController>();
     final userController = Get.find<UserController>();
     OrientationManager.setPreferredOrientations(context);
+    DeviceDimensions.init(context);
 
     return GetBuilder<AuthController>(
         init: authController,
@@ -196,7 +178,9 @@ class _PlayBazaarState extends State<PlayBazaar> {
                       page: () {
                         final args = Get.arguments as Map<String, dynamic>;
                         return LudoPlayScreen(
-                          gameMode: GameMode.online,
+                          gameMode: args['gameMode'],
+                          isHost: args['isHost'],
+                          gameCode: args['gameCode'],
                           numberOfPlayer: args['numberOfPlayer'],
                           enabledRobots: args['enabledRobots'],
                           teamPlay: args['teamPlay']
