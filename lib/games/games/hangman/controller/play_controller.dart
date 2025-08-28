@@ -8,7 +8,7 @@ import 'package:playbazaar/controller/user_controller/auth_controller.dart';
 import 'package:playbazaar/games/games/hangman/models/game_participiant.dart';
 import 'package:playbazaar/games/games/hangman/models/game_state_change_model.dart';
 import 'package:playbazaar/games/helper/helper.dart';
-import 'package:playbazaar/games/services/hangman_services.dart';
+import 'package:playbazaar/games/games/hangman/services/hangman_services.dart';
 import 'package:playbazaar/global_widgets/show_custom_snackbar.dart';
 import 'package:playbazaar/global_widgets/dialog/string_return_dialog.dart';
 import '../../../../functions/generate_strings.dart';
@@ -56,10 +56,11 @@ class PlayController extends GetxController {
   final RxBool canStart = true.obs;
 
 
+
   @override
   void onInit() async {
     super.onInit();
-    await getAppLanguage();
+    await getLanguageDirection();
     await getDifficultyAndPath();
     _initializeAlphabet();
     ever(authController.language, (_) {
@@ -134,7 +135,7 @@ class PlayController extends GetxController {
       retrievedWords.words.shuffle(random);
       words.addAll(retrievedWords.words.map((word) => word.trim().toUpperCase()));
       wordHint.value = retrievedWords.hint;
-      wordToGuess.value = normalizeAlphabet(words[currentIndex.value], authController.language[0]);
+      wordToGuess.value = normalizeAlphabet(words[currentIndex.value], "language_shortcut".tr);
     } catch (e) {
       showCustomSnackbar("Failed to load words", false);
     }
@@ -143,7 +144,7 @@ class PlayController extends GetxController {
   Future<void> checkGuess(String letter) async{
     if (!guessedLetters.contains(letter)) {
       guessedLetters.add(letter);
-      String normalizedWord = normalizeAlphabet(wordToGuess.value, authController.language[0]);
+      String normalizedWord = normalizeAlphabet(wordToGuess.value, "language_shortcut".tr);
 
       if(!normalizedWord.contains(letter)) incorrectGuesses.value++;
       if(!buildHiddenWord().contains('_')) {
@@ -167,7 +168,7 @@ class PlayController extends GetxController {
       debugPrint("A dialog is already open.");
     } else {
       Get.dialog(
-        WaitingRoomDialog(),
+        HangmanWaitingRoomDialog(),
         barrierDismissible: false,
       );
     }
@@ -352,7 +353,7 @@ class PlayController extends GetxController {
 
   String buildHiddenWord() {
     String hiddenWord = '';
-    String normalizedWord = normalizeAlphabet(wordToGuess.value, authController.language[0]);
+    String normalizedWord = normalizeAlphabet(wordToGuess.value, "language_shortcut".tr);
 
     for (int i = 0; i < normalizedWord.length; i++) {
       if (guessedLetters.contains(normalizedWord[i])) {
@@ -367,7 +368,7 @@ class PlayController extends GetxController {
 
   void prepareNewGame() {
     if(words.isEmpty) return;
-    wordToGuess.value = normalizeAlphabet(words[currentIndex.value], authController.language[0] );
+    wordToGuess.value = normalizeAlphabet(words[currentIndex.value], "language_shortcut".tr );
     resetGameStates();
   }
 
@@ -423,8 +424,9 @@ class PlayController extends GetxController {
   void clearGameCode() => gameCode.value = '';
 
 
-  Future<void> getAppLanguage() async{
-    if(authController.language[0] == "fa" || authController.language[0]=="ar"){
+  Future<void> getLanguageDirection() async{
+    //if(authController.language[0] == "fa" || authController.language[0]=="ar"){
+    if('language_shortcut'.tr == "fa" || "language_shortcut".tr =="ar"){
       isAlphabetRTL.value = true;
     }else{
       isAlphabetRTL.value = false;
@@ -432,7 +434,7 @@ class PlayController extends GetxController {
   }
 
   Future<void> getDifficultyAndPath() async {
-    final result = await getHangmanDifficulty();
+    final result = await getHangmanDifficulty('language_shortcut'.tr);
     difficultyNiveaus.value = result['difficultyNivea'] as List<String>;
     difficultyLabels.value = result['difficultyLabels'] as List<String>;
     dbpath.value = result['firestorePath'];
@@ -443,9 +445,9 @@ class PlayController extends GetxController {
     final Map<String, List<String>> alphabetMap = {
       "fa": Alphabets.persian,
       "ar": Alphabets.arabic,
-      "dk": Alphabets.danish,
+      "da": Alphabets.danish,
     };
-    alphabet.value = alphabetMap[authController.language[0]] ?? Alphabets.english;
+    alphabet.value = alphabetMap["language_shortcut".tr] ?? Alphabets.english;
     update();
   }
 }

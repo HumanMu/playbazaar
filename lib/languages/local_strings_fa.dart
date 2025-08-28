@@ -7,6 +7,7 @@ class LocalStringsFa extends Translations {
     'fa_AF': {
       'app_name' : 'Play Bazaar',
       'notification_title' : 'Play Bazaar',
+      'language_shortcut': 'fa',
 
 
       // Games
@@ -52,11 +53,14 @@ class LocalStringsFa extends Translations {
       'incorrect_guess': 'حدس اشتباه:',
       'hangman_play_settings': 'تنظیمات بازی جلاد',
       'share_game_code': 'کد را با کسانی که می‌خواهید در بازی شرکت کنند به اشتراک بگذارید',
+      'enter_game_code': 'کد بازی‌ای را که دوست تان با شما به اشتراک گذاشته را وارد کنید:',
+      'create_and_invite': 'ایجاد و دعوت از دوستان',
+      'you_will_receive_code': 'با زدن روی دکمه «بازی جدید»، یک کد بازی دریافت می‌کنید که می‌توانید آن را با دوستانتان به اشتراک بگذارید تا به شما بپیوندند!',
       'deactive_other_options': 'غیرفعال کردن گزینه‌های دیگر',
       'deactive_play_with_friends': 'آیا می‌خواهید تنها بازی کنید؟ اگر بله، لطفاً دو گزینه بالا را غیرفعال کنید تا به بازی ادامه دهید',
       'add_player': 'اضافه کردن بازیکن',
-      'compete_offline': 'رقابت با دوستان - آفلاین',
-      'compete_online': 'رقابت با دوستان - آنلاین',
+      'compete_offline': 'با دوستان - آفلاین',
+      'compete_online': 'با دوستان - آنلاین',
       'give_players_name': 'نام هر بازیکن را وارد کرده و "+" را فشار دهید',
       'this_generating_code': 'این یک کد تولید می‌کند که می‌توانید با دوستان خود به اشتراک بگذارید تا بپیوندند',
       'play_solo': 'تک‌نفره بازی کن',
@@ -310,6 +314,7 @@ class LocalStringsFa extends Translations {
       'error_while_sending_message': 'پیام شما ارسال نشد. دوباره تلاش کنید!',
       'allowed_message_length_1000' : 'لطفاً پیام خود را به کمتر از ۱۰۰۰ کاراکتر محدود کنید',
       'allowed_message_length_300' : 'لطفاً پیام خود را به کمتر از ۳۰۰ کاراکتر محدود کنید',
+      'exact_code_limit': 'طول کد باید دقیقاً %1 حروف باشد',
       'current_message_length' : 'طول فعلی پیام',
       'reached_start_of_conversation': 'به ابتدای گفتگو رسیده‌اید',
       'auto_destractor_message': 'پیام‌ها به طور خودکار پس از ۵ روز حذف می‌شوند',

@@ -17,9 +17,9 @@ class _PrimaryAvatarState extends State<PrimaryAvatarImage> {
 
   Uint8List? avatarimage;
   void selectAvatarImage() async {
-    Uint8List img = await selectAvatar(ImageSource.gallery);
+    Uint8List? imageBytes = await selectAvatar(ImageSource.gallery);
     setState(() {
-      avatarimage = img;
+      avatarimage = imageBytes;
     });
   }
 

@@ -4,9 +4,11 @@ import 'package:get/get.dart';
 import 'package:playbazaar/controller/user_controller/user_controller.dart';
 import 'package:playbazaar/functions/enum_converter.dart';
 import 'package:playbazaar/global_widgets/show_custom_snackbar.dart';
+import '../../api/Authentication/auth_service.dart';
 import '../../constants/enums.dart';
 import '../../controller/message_controller/private_message_controller.dart';
 import '../../services/hive_services/hive_user_service.dart';
+import '../widgets/sidebar_drawer.dart';
 import '../widgets/tiles/recieved_requests_tile.dart';
 import '../widgets/text_boxes/text_inputs.dart';
 import '../widgets/tiles/friends_list_tile.dart';
@@ -22,6 +24,8 @@ class _FriendsList extends State<FriendsList> {
   final UserController userController = Get.find<UserController>();
   final PrivateMessageController pvMsgController = Get.put(PrivateMessageController());
   final HiveUserService _hiveUserService = Get.find();
+  AuthService authService = AuthService();
+
 
   final String currentUserId = FirebaseAuth.instance.currentUser!.uid;
   late TextEditingController searchController = TextEditingController();
@@ -91,6 +95,10 @@ class _FriendsList extends State<FriendsList> {
         iconTheme: IconThemeData(
           color: Colors.white
         ),
+      ),
+      drawer: SidebarDrawer(
+        authService: authService,
+        parentContext: context,
       ),
 
       body: Material(
@@ -218,7 +226,6 @@ class _FriendsList extends State<FriendsList> {
       if (!_hiveUserService.isInitialized) {
         return const Center(child: CircularProgressIndicator());
       }
-      print("Calling firend list hvie");
 
       final recentUsers = _hiveUserService.recentUsers;
       if (recentUsers.isEmpty) {

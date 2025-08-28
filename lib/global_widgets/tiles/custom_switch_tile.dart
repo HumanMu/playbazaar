@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../rarely_used/text_2_copy.dart';
 
 class CustomSwitchTile extends StatelessWidget {
   final String title;
@@ -70,25 +71,9 @@ class CustomSwitchTile extends StatelessWidget {
                   style: const TextStyle(fontSize: 16),
                 ),
               const SizedBox(height: 8),
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      additionalInfo!,
-                      style: additionalInfoStyle ?? const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 2,
-                      ),
-                    ),
-                  ),
-                  if (additionalActionIcon != null)
-                    IconButton(
-                      icon: Icon(additionalActionIcon),
-                      color: additionalIconColor?? Colors.black,
-                      onPressed: onAdditionalActionPressed,
-                    ),
-                ],
+              Text2Copy(
+                inputText: additionalInfo!,
+                onCopyPressed: onAdditionalActionPressed,
               ),
             ],
           ],

@@ -2,8 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:playbazaar/constants/app_colors.dart';
+import '../../../functions/generate_strings.dart';
 import '../../../global_widgets/dialog/accept_dialog.dart';
+import 'helper/enums.dart';
 import 'helper/utility_color.dart';
+import 'widgets/online_game_creation_dialog.dart';
 
 class LudoHomeScreen extends StatefulWidget {
   const LudoHomeScreen({super.key});
@@ -53,9 +56,9 @@ class _LudoHomeScreenState extends State<LudoHomeScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const SizedBox(height: 20),
+          const SizedBox(height: 10),
           _buildLudoLogo(),
-          const SizedBox(height: 40),
+          const SizedBox(height: 30),
           Text(
             'choose_player_numbers'.tr,
             style: TextStyle(
@@ -64,7 +67,7 @@ class _LudoHomeScreenState extends State<LudoHomeScreen> {
               color: LudoColors.accent,
             ),
           ),
-          const SizedBox(height: 30),
+          const SizedBox(height: 10),
           _buildSettingsToggleRow(),
           _buildGameOptionsGrid(),
         ],
@@ -81,9 +84,9 @@ class _LudoHomeScreenState extends State<LudoHomeScreen> {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
+            color: Colors.red.withValues(alpha: 0.4),
             blurRadius: 10,
-            spreadRadius: 1,
+            spreadRadius: 10,
           )
         ],
       ),
@@ -110,19 +113,27 @@ class _LudoHomeScreenState extends State<LudoHomeScreen> {
           color: Colors.white,
           shape: BoxShape.circle,
           border: Border.all(color: Colors.grey.shade300, width: 2),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.green.withValues(alpha: 4),
+              blurRadius: 10,
+              spreadRadius: 7
+            ),
+          ]
         ),
         child: Center(
           child: GestureDetector(
             onTap: () => acceptDialog(
                 context,
                 'ludo_home_screen_guide_title'.tr,
-                'ludo_game_start_guide'.tr
+                'ludo_home_screen_guide'.tr
             ),
             child: Text(
               'guide'.tr,
               style: const TextStyle(
                 color: Colors.green,
                 fontSize: 12,
+                fontWeight: FontWeight.bold
               ),
               textAlign: TextAlign.center,
             ),
@@ -184,10 +195,11 @@ class _LudoHomeScreenState extends State<LudoHomeScreen> {
         crossAxisSpacing: 20,
         mainAxisSpacing: 20,
         children: [
-          _buildGameTypeContainer(2, LudoColors.red),
-          _buildGameTypeContainer(3, LudoColors.green),
-          _buildGameTypeContainer(4, LudoColors.blue),
-          _buildGameTypeContainer(1, LudoColors.yellow),
+          _buildGameTypeContainer(2, LudoColors.red, GameMode.offline),
+          _buildGameTypeContainer(3, LudoColors.green, GameMode.offline),
+          _buildGameTypeContainer(4, LudoColors.blue, GameMode.offline),
+          _buildGameTypeContainer(1, LudoColors.yellow, GameMode.offline),
+          _buildGameTypeContainer(10, Colors.orangeAccent, GameMode.online),
           /*ElevatedButton(onPressed: () {
             Navigator.push(
               context,
@@ -221,8 +233,32 @@ class _LudoHomeScreenState extends State<LudoHomeScreen> {
     );
   }
 
-  void _handleGameSelection(int playerCount) {
+  void _handleGameSelection(int playerCount, GameMode mode) {
+    if(mode == GameMode.online){
+      final String gameCode = generateStrings(6);
+
+      showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (context) => OnlineGameOptionsDialog(
+          title: 'compete_online'.tr,
+          joinButtonText: 'join_with_code'.tr,
+          createButtonText: 'btn_new_game'.tr,
+          codeHint: 'game_code'.tr,
+          gameCode: gameCode,
+          onJoinGame: (String code){
+            _navigateToPlayScreen(4, mode, false, code);
+        },
+          onCreateGame: (){
+            _navigateToPlayScreen(4, mode, true, gameCode);
+          },
+        ),
+      );
+      return;
+    }
+
     if ((playerCount == 2 || playerCount == 3) && teamPlay && !enabledRobots) {
+      debugPrint("Game start: mumber player: $playerCount - robot: $enabledRobots");
       acceptDialog(
         context,
           'ludo_home_screen_guide_title'.tr,
@@ -251,16 +287,30 @@ class _LudoHomeScreenState extends State<LudoHomeScreen> {
     }
 
     // Navigate to game screen
-    Get.toNamed('/ludoPlayScreen', arguments: {
-      'numberOfPlayer': playerCount,
-      'teamPlay': teamPlay,
-      'enabledRobots': enabledRobots,
-    });
+    _navigateToPlayScreen(playerCount, mode, false, "");
   }
 
-  Widget _buildGameTypeContainer(int playerCount, Color color) {
+  void _navigateToPlayScreen(
+      int playerCount,
+      GameMode gameMode,
+      bool isHost,
+      String? gameCode
+    ){
+      Get.toNamed('/ludoPlayScreen', arguments: {
+        'gameMode': gameMode,
+        'isHost': isHost,
+        'gameCode': gameCode,
+        'numberOfPlayer': playerCount,
+        'teamPlay': teamPlay,
+        'enabledRobots': enabledRobots,
+      }
+    );
+  }
+
+
+  Widget _buildGameTypeContainer(int playerCount, Color color, GameMode mode) {
     return GestureDetector(
-      onTap: () => _handleGameSelection(playerCount),
+      onTap: () => _handleGameSelection(playerCount, mode),
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
@@ -283,16 +333,22 @@ class _LudoHomeScreenState extends State<LudoHomeScreen> {
                 shape: BoxShape.circle,
               ),
               child: Icon(
-                playerCount == computerMode ? Icons.computer : Icons.people,
+                playerCount == computerMode
+                    ? Icons.computer
+                    : playerCount ==10
+                      ? Icons.online_prediction
+                      : Icons.people,
                 color: color,
                 size: 32,
               ),
             ),
             const SizedBox(height: 12),
             Text(
-              playerCount != computerMode
+              playerCount != computerMode && playerCount != 10
                   ? "$playerCount ${'players'.tr}"
-                  : "computer".tr,
+                  : mode == GameMode.online
+                    ? "compete_online".tr
+                    : "computer".tr,
               style: TextStyle(
                 color: Colors.grey[800],
                 fontSize: 16,

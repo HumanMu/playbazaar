@@ -1,7 +1,5 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:playbazaar/global_widgets/show_custom_snackbar.dart';
 import '../../../constants/enums.dart';
 import '../../../controller/user_controller/user_controller.dart';
 import '../../../global_widgets/dialog/accept_dialog.dart';
@@ -36,55 +34,54 @@ class _HangmanPlaySettingsScreenState extends State<HangmanPlaySettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.red,
-        centerTitle: true,
-        leading: IconButton(
-          onPressed: () {Get.offNamed('/mainGames');},
-          icon: const Icon(Icons.arrow_back),
-        ),
-        title: Text(
-          "hangman_play_settings".tr,
-          style: const TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 22,
+        appBar: AppBar(
+          backgroundColor: Colors.red,
+          centerTitle: true,
+          leading: IconButton(
+            onPressed: () {Get.offNamed('/mainGames');},
+            icon: const Icon(Icons.arrow_back),
           ),
+          title: Text(
+            "hangman_play_settings".tr,
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 22,
+            ),
+          ),
+          iconTheme: const IconThemeData(color: Colors.white),
         ),
-        iconTheme: const IconThemeData(color: Colors.white),
-      ),
-      body: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 700),
-          child: Column(
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        _buildOnlinePlayCard(),
-                        const SizedBox(height: 10),
-                        _buildJoinGame(),
-                        const SizedBox(height: 10),
-                        _buildLocalPlayCard(),
-                        const SizedBox(height: 10),
-                        _buildSoloPlayCard(),
-                        const SizedBox(height: 10),
-                        _buildStartGameButton(context),
-                      ],
+        body:SafeArea(
+          child:  Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 700),
+            child: Column(
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          _buildOnlinePlayCard(),
+                          const SizedBox(height: 10),
+                          _buildJoinGame(),
+                          const SizedBox(height: 10),
+                          _buildLocalPlayCard(),
+                          const SizedBox(height: 10),
+                          _buildSoloPlayCard(),
+                          const SizedBox(height: 10),
+                          _buildStartGameButton(context),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              Container(
-                margin: EdgeInsets.only(bottom: 0),
-                width: double.infinity,
-                color: Colors.green,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 15),
+                Container(
+                  margin: EdgeInsets.only(bottom: 0),
+                  width: double.infinity,
+                  color: Colors.green,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -127,8 +124,8 @@ class _HangmanPlaySettingsScreenState extends State<HangmanPlaySettingsScreen> {
                     ],
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -147,11 +144,6 @@ class _HangmanPlaySettingsScreenState extends State<HangmanPlaySettingsScreen> {
       showAdditionalInfo: controller.isOnlineMode.value,
       additionalInfoTitle: 'share_game_code'.tr,
       additionalInfo: controller.gameCode.value,
-      additionalActionIcon: Icons.copy,
-      onAdditionalActionPressed: () {
-        Clipboard.setData(ClipboardData(text: controller.gameCode.value));
-        showCustomSnackbar("copied_to_clipboard".tr, true);
-      },
     ));
   }
 

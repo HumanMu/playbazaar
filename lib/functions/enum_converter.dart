@@ -1,4 +1,5 @@
 import '../constants/enums.dart';
+import '../games/helper/enum.dart';
 
 UserRole string2UserRole(String s) {
   UserRole role = UserRole.values.firstWhere(
@@ -56,6 +57,17 @@ Difficulty string2Difficulty(String s) {
 
 String difficulty2String(Difficulty difficulty) {
   return difficulty.toString().split('.').last;
+}
+
+GameProgress string2Progress(String s) {
+  GameProgress progress = GameProgress.values.firstWhere(
+          (e) => e.toString().split('.').last == s
+  );
+  return progress;
+}
+
+String progress2String(GameProgress p) {
+  return p.toString().split('.').last;
 }
 
 

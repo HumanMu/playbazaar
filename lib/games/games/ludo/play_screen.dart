@@ -1,22 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../config/orientation_manager.dart';
 import '../../../constants/app_colors.dart';
-import 'controller/dice_controller.dart';
-import 'controller/game_controller.dart';
-import 'services/game_service.dart';
+import '../../../global_widgets/dialog/show_error_dialog_utils.dart';
+import 'helper/enums.dart';
+import 'locator/service_locator.dart';
 import 'widgets/game_play.dart';
 
 class LudoPlayScreen extends StatefulWidget {
+  final GameMode gameMode;
   final int numberOfPlayer;
   final bool enabledRobots;
   final bool teamPlay;
+  final bool isHost;
+  final String? gameCode;
 
   const LudoPlayScreen({
     super.key,
+    required this.gameMode,
     required this.numberOfPlayer,
     required this.enabledRobots,
-    required this.teamPlay
+    required this.teamPlay,
+    required this.isHost,
+    this.gameCode
   });
 
   @override
@@ -37,25 +42,36 @@ class _LudoPlayScreenState extends State<LudoPlayScreen> {
   }
 
   Future<void> initializeServices() async {
-    Get.put(GameService());
-    Get.put(GameController());
-    Get.put(DiceController());
+    try {
+      await LudoServiceLocator.initialize(widget.gameMode);
 
-    // Now we can set loading to false
-    if (mounted) {
-      setState(() {
-        isLoading = false;
-      });
+      await LudoServiceLocator.initializeGame(
+        numberOfPlayers: widget.numberOfPlayer,
+        teamPlay: widget.teamPlay,
+        enableRobots: widget.enabledRobots,
+        gameCode: widget.gameCode,
+        isHost: widget.isHost
+      );
+
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      debugPrint('Game initialization failed: $e');
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+        DialogUtils.showErrorDialog(context, 'Failed to initialize game: $e');
+      }
     }
   }
 
   @override
   void dispose() {
-    Get.delete<GameController>(force: true);
-    Get.delete<DiceController>(force: true);
-    Get.delete<GameService>(force: true);
-    OrientationManager.resetOrientations();
-
+    LudoServiceLocator.cleanup();
     super.dispose();
   }
 
@@ -65,7 +81,7 @@ class _LudoPlayScreenState extends State<LudoPlayScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBar(
+      appBar: AppBar(                                     // You can maybe remove this to fix dice positioning
         backgroundColor: AppColors.primary,
         key: keyBar,
         centerTitle: true,

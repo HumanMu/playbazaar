@@ -19,3 +19,14 @@ enum TokenState {
   safeinpair,
   home,
 }
+
+enum GameMode {
+  offline,
+  online
+}
+
+enum GameState {
+  waiting,
+  playing,
+  finished
+}

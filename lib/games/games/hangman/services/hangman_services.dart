@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:playbazaar/games/games/hangman/models/game_participiant.dart';
 import 'package:playbazaar/games/games/hangman/models/game_state_change_model.dart';
-import '../games/hangman/models/hangman_word_model.dart';
-import '../games/hangman/models/online_competition_doc_model.dart';
+import '../models/hangman_word_model.dart';
+import '../models/online_competition_doc_model.dart';
 
 class HangmanService extends GetxService {
   final DocumentReference hangmanReference

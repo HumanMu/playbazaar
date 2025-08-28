@@ -1,8 +1,9 @@
-import 'package:playbazaar/games/games/ludo/widgets/dice_widget.dart';
 import '../../../../admob/adaptive_banner_ad.dart';
+import '../controller/base_ludo_controller.dart';
 import '../controller/dice_controller.dart';
-import '../controller/game_controller.dart';
 import 'package:flutter/material.dart';
+import '../controller/offline_ludo_controller.dart';
+import 'dice_widget.dart';
 import 'player_profile_widget.dart';
 import 'package:get/get.dart';
 import '../helper/enums.dart';
@@ -14,7 +15,6 @@ import 'board.dart';
 
 class GamePlay extends StatefulWidget {
   final GlobalKey appBarKey;
-
   const GamePlay(this.appBarKey, {super.key});
 
   @override
@@ -24,14 +24,13 @@ class GamePlay extends StatefulWidget {
 class _GamePlayState extends State<GamePlay> {
   bool boardBuilt = false;
   final GlobalKey boardContainerKey = GlobalKey();
-  final gameController = Get.find<GameController>();
+  final gameController = Get.find<BaseLudoController>();
   final diceController = Get.find<DiceController>();
 
   @override
   void initState() {
     super.initState();
 
-    // Set boardBuilt to true after the first frame is rendered
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
         boardBuilt = true;
@@ -71,9 +70,9 @@ class _GamePlayState extends State<GamePlay> {
               child: AdaptiveBannerAd(
                 onAdLoaded: (isLoaded) {
                   if (isLoaded) {
-                    debugPrint('Ad loaded in Quiz Screen');
+                    debugPrint('Ad loaded in Ludo Game Play');
                   } else {
-                    debugPrint('Ad failed to load in Quiz Screen');
+                    debugPrint('Ad failed to load in Ludo Game Play');
                   }
                 },
               ),  // The BannerAd widget
@@ -122,40 +121,42 @@ class _GamePlayState extends State<GamePlay> {
                     maxWidth: boardSize,
                     maxHeight: boardSize,
                   ),
-                  child: Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      // The board
-                      Positioned.fill(
-                        child: LudoBoard(
-                          keyReferences: gameController.keyReferences,
+                  child: Directionality(
+                    textDirection: TextDirection.ltr,
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        // The board
+                        Positioned.fill(
+                          child: LudoBoard(
+                            keyReferences: gameController.keyReferences,
+                          ),
                         ),
-                      ),
 
-                      // Tokens - only visible once board is built
-                      if (boardBuilt)
-                        Obx(() {
-                          final tokens = gameController.gameTokens
-                              .whereType<Token>()
-                              .toList();
+                        // Tokens - only visible once board is built
+                        if (boardBuilt)
+                          Obx(() {
+                            final tokens = gameController.gameTokens
+                                .whereType<Token>()
+                                .toList();
 
-                          return Stack(
-                            fit: StackFit.expand,
-                            children: tokens.map((token) {
-                              final dimensions = _getTokenPosition(
-                                token,
-                                gameController,
-                                boardSize,
-                              );
+                            return Stack(
+                              fit: StackFit.expand,
+                              children: tokens.map((token) {
+                                final dimensions = _getTokenPosition(
+                                  token,
+                                  boardSize,
+                                );
 
-                              return TokenWidget(
-                                token: token,
-                                dimensions: dimensions,
-                              );
-                            }).toList(),
-                          );
-                        }),
-                    ],
+                                return TokenWidget(
+                                  token: token,
+                                  dimensions: dimensions,
+                                );
+                              }).toList(),
+                            );
+                          }),
+                      ],
+                    ),
                   ),
                 ),
 
@@ -238,38 +239,24 @@ class _GamePlayState extends State<GamePlay> {
     );
   }
 
-  // Helper method to calculate token position properly
-  List<double> _getTokenPosition(
-      Token token,
-      GameController gameController,
-      double boardSize,
-      ) {
-    // Get raw position from game controller
-    final position = gameController.getPosition(
-      token.tokenPosition.row,
-      token.tokenPosition.column,
-      widget.appBarKey,
-    );
+  List<double> _getTokenPosition(Token token, double boardSize) {
+    List<double>? calculatedPosition;
 
-    // Calculate cell size based on board size
-    final cellSize = boardSize / 15;
-
-    // If position calculation failed, use calculated position
-    if (position[0] == 0 && position[1] == 0 && position[2] == 0 && position[3] == 0) {
-      // Calculate position directly based on row/column
-      return [
-        token.tokenPosition.column * cellSize,
-        token.tokenPosition.row * cellSize,
-        cellSize,
-        cellSize,
-      ];
+    // Only use complex positioning for offline mode
+    if (gameController is OfflineLudoController) {
+      calculatedPosition = (gameController as OfflineLudoController).getPosition(
+        token.tokenPosition.row,
+        token.tokenPosition.column,
+        widget.appBarKey,
+      );
     }
 
-    // Ensure token stays within the board boundaries
-    final clampedX = position[0].clamp(0.0, boardSize - cellSize);
-    final clampedY = position[1].clamp(0.0, boardSize - cellSize);
-
-    return [clampedX, clampedY, cellSize, cellSize];
+    // Let service handle the positioning logic
+    return gameController.gameService.getTokenDisplayPosition(
+      token,
+      boardSize,
+      calculatedPosition,
+    );
   }
 }
 

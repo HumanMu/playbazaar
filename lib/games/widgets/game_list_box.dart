@@ -38,6 +38,7 @@ class StyledGameTileState extends State<GameListBox> with SingleTickerProviderSt
   void initState() {
     super.initState();
     showOptions = optionsPaths.contains(widget.gamePath);
+    //print("Game path: ${widget.gamePath}");
 
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 300),

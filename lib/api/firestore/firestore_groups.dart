@@ -20,7 +20,7 @@ class FirestoreGroups {
     return snapshot;
   }
 
-  getGroupsList() {
+  Stream<DocumentSnapshot<Object?>> getGroupsList() {
     return userCollection.doc(userId).snapshots();
   }
 
@@ -32,7 +32,7 @@ class FirestoreGroups {
   }
 
   // Returning search result
-  searchByGroupName(String groupName) async {
+  Future<QuerySnapshot<Object?>> searchByGroupName(String groupName) async {
     final searchKey = groupName.toLowerCase();
     return await groupCollection
         .where("name", isGreaterThanOrEqualTo: searchKey)
@@ -42,7 +42,7 @@ class FirestoreGroups {
 
 
   // Returning search result
-  searchByUserName(String username) {
+  Future<QuerySnapshot<Object?>> searchByUserName(String username) {
     final splitted = username.split(' ');
     return userCollection.where("firstname", isEqualTo: splitted[0]).get();
   }

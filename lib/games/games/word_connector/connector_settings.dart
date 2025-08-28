@@ -235,11 +235,10 @@ class _WordConnectorSettingsScreenState extends State<WordConnectorSettingsScree
   }
 
   Widget _buildFancyControlBar() {
-    return Container(
-      width: double.infinity,
-      color: Colors.green,
-      child: Padding(
-      padding: const EdgeInsets.only(bottom: 15),
+    return SafeArea(
+      child: Container(
+        width: double.infinity,
+        color: Colors.green,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [

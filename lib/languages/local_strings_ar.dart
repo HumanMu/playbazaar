@@ -8,6 +8,7 @@ class LocalStringsAr extends Translations {
       //appName
       'app_name': 'بازار اللعب',
       'notification_title': 'Play Bazaar',
+      'language_shortcut': 'ar',
 
 
       // Games
@@ -51,11 +52,14 @@ class LocalStringsAr extends Translations {
       'incorrect_guess': 'تخمين غير صحيح:',
       'hangman_play_settings': 'إعدادات لعبة الرجل المشنوق',
       'share_game_code': 'شارك الكود مع من تريد أن ينضم إلى اللعبة',
+      'enter_game_code': 'أدخل رمز اللعبة الذي شاركه صديقك:',
+      'create_and_invite': 'أنشئ وادعُ الأصدقاء',
+      'you_will_receive_code': 'عند الضغط على "لعبة جديدة"، ستتلقى رمز لعبة يمكنك مشاركته مع أصدقائك لدعوتهم للانضمام إليك!',
       'deactive_other_options': 'تعطيل الخيارات الأخرى',
       'deactive_play_with_friends': 'هل تريد اللعب بمفردك؟ إذاً يرجى تعطيل الخيارين أعلاه للمتابعة إلى اللعبة',
       'add_player': 'إضافة لاعب',
-      'compete_offline': 'تنافس مع الأصدقاء - دون اتصال',
-      'compete_online': 'تنافس مع الأصدقاء - عبر الإنترنت',
+      'compete_offline': 'مع الأصدقاء - دون اتصال',
+      'compete_online': 'مع الأصدقاء - عبر الإنترنت',
       'give_players_name': 'اكتب اسم كل لاعب واضغط على "+"',
       'this_generating_code': 'سيقوم هذا بإنشاء رمز لمشاركته مع الأصدقاء للانضمام',
       'play_solo': 'العب بمفردك',
@@ -313,6 +317,7 @@ class LocalStringsAr extends Translations {
       'allowed_message_length' : 'يرجى تحديد رسالتك بأقل من 1000 حرف',
       'allowed_message_length_1000' : 'يرجى تحديد رسالتك بأقل من 1000 حرف',
       'allowed_message_length_300' : 'يرجى تحديد رسالتك بأقل من 300 حرف',
+      'exact_code_limit': 'يجب أن يكون طول الرمز بالضبط %1 حرفًا',
       'current_message_length' : 'طول الرسالة الحالي',
       'reached_start_of_conversation': 'لقد وصلت إلى بداية المحادثة',
       'auto_destractor_message': 'سيتم حذف الرسائل تلقائياً بعد 5 أيام',

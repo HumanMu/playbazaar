@@ -1,6 +1,3 @@
-import 'package:get/get.dart';
-import '../../controller/user_controller/auth_controller.dart';
-
 
 List<String> difficultyNiveaAll = ['easy', 'medium', 'hard'];
 
@@ -17,15 +14,15 @@ String firestorePathAr = 'hangman_ar';
 
 
 
-Future<Map<String, dynamic>> getHangmanDifficulty() async {
+Future<Map<String, dynamic>> getHangmanDifficulty(String language) async {
 
-  final auth = Get.find<AuthController>();
+  //final auth = Get.find<AuthController>();
   List<String> difficultyNivea;
   List<String> difficultyLabels;
   String firestorePath;
 
-  if (auth.language.isNotEmpty) {
-    switch (auth.language[0]) {
+  if (language != "") {
+    switch (language) {
       case 'fa':
         difficultyNivea = difficultyNiveaAll;
         difficultyLabels = difficultyLabelsFa;
@@ -41,7 +38,7 @@ Future<Map<String, dynamic>> getHangmanDifficulty() async {
         difficultyLabels = difficultyLabelsAr;
         firestorePath = firestorePathAr;
         break;
-      case 'dk':
+      case 'da':
         difficultyNivea = difficultyNiveaAll;
         difficultyLabels = difficultyLabelsDa;
         firestorePath = firestorePathDa;

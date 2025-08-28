@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 
-notFound(message, guidanceText) {
+Widget notFound(String message, String guidanceText) {
   return Container(
     padding: const EdgeInsets.symmetric(horizontal: 25),
     child: Column(

@@ -122,7 +122,7 @@ class _MainScreenGamesState extends State<MainScreenGames> {
         Get.toNamed('/wordConnectorSettingScreen');
         break;
       case 'ludo_missions':
-        Get.toNamed('/ludoLobby');
+        Get.toNamed('/ludoHome');
         break;
       default:
         showCustomSnackbar('Please, pick a game first', false);

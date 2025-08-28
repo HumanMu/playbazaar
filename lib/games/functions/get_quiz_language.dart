@@ -1,5 +1,4 @@
 
-import '../../helper/sharedpreferences/sharedpreferences.dart';
 
 // English
 List<String> quizListConstantsRoutesEn = ['geography_en', 'english_en', 'general_knowledge_en', 'sports_en'];
@@ -18,15 +17,16 @@ List<String> quizListConstantsRoutesAr = ['geography_ar', 'syrien_ar', 'morrocca
 List<String> quizListConstantsAr = ['جغرافیا', 'سوري', 'مغربي', 'إنجليزي','عراقي','معلومات عامة', 'رياضة'];
 
 
-Future<Map<String, dynamic>> getQuizLanguage() async {
+Future<Map<String, dynamic>> getQuizLanguage(String language) async {
   List<String> quizPath;
   int quizLength;
   List<String> quizNames;
-  List<String>? value = await SharedPreferencesManager.getStringList(SharedPreferencesKeys.appLanguageKey);
+  //List<String>? value = await SharedPreferencesManager.getStringList(SharedPreferencesKeys.appLanguageKey);
   //final authController = Get.find<AuthController>();
+  //print("App languagee: $language");
 
-  if (value != null && value.isNotEmpty) {
-    switch (value[0]) {
+  if (language != "") {
+    switch (language) {
       case 'fa':
         quizPath = quizListConstantsRoutesAf;
         quizLength = quizListConstantsRoutesAf.length;
@@ -42,7 +42,7 @@ Future<Map<String, dynamic>> getQuizLanguage() async {
         quizLength = quizListConstantsRoutesAr.length;
         quizNames = quizListConstantsAr;
         break;
-      case 'dk':
+      case 'da':
         quizPath = quizListConstantsRoutesEn;
         quizLength = quizListConstantsRoutesEn.length;
         quizNames = quizListConstantsEn;

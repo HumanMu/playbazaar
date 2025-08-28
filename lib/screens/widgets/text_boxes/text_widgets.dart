@@ -21,7 +21,7 @@ const textInputDecoration =  InputDecoration(
   ),
 );
 
-Widget profileButton (context, buttonText, landingPage) {
+Widget profileButton (BuildContext context, buttonText, landingPage) {
   return ElevatedButton(
       style: ButtonStyle(
         shape: WidgetStateProperty.all(RoundedRectangleBorder(
@@ -45,11 +45,11 @@ Widget profileButton (context, buttonText, landingPage) {
 }
 
 
-void navigateToAnotherScreen(context, newPage) {
+void navigateToAnotherScreen(BuildContext context, newPage) {
   Navigator.push(context, MaterialPageRoute(builder: (context) => newPage));
 }
 
-void navigateAndReplaceScreen(context, newPage) {
+void navigateAndReplaceScreen(BuildContext context, newPage) {
   Navigator.pushReplacement(
     context, MaterialPageRoute(builder: (context) => newPage));
 }
@@ -58,6 +58,4 @@ Future<void> replaceCurrentWidget(BuildContext context, VoidCallback onSuccess) 
   await Future.delayed(const Duration(seconds: 2));
   onSuccess.call();
 }
-  
 
-// https://www.youtube.com/watch?v=2rn3XbBijy4

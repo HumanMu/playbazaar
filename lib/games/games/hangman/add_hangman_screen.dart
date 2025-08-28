@@ -8,7 +8,7 @@ import 'package:playbazaar/functions/string_cases.dart';
 import 'package:playbazaar/games/games/hangman/models/hangman_word_model.dart';
 import '../../../global_widgets/show_custom_snackbar.dart';
 import '../../functions/get_hangman_difficulty.dart';
-import '../../services/hangman_services.dart';
+import 'services/hangman_services.dart';
 
 
 class AddHangmanWords extends StatefulWidget {
@@ -47,7 +47,7 @@ class AddQuestionState extends State<AddHangmanWords> {
 
 
   Future<void> _initializeLanguageSettings() async {
-    final result = await getHangmanDifficulty();
+    final result = await getHangmanDifficulty("language_shortcut".tr);
     setState(() {
       difficultyNiveau = result['difficultyNivea'];
       difficultyLabels = result['difficultyLabels'];
