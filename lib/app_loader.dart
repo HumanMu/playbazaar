@@ -13,6 +13,9 @@ import 'package:playbazaar/services/push_notification_service/push_notification_
 import 'package:playbazaar/services/user_services.dart';
 import 'package:playbazaar/config/routes/app_routes.dart';
 
+import 'helper/sharedpreferences/sharedpreferences.dart';
+import 'languages/early_stage_strings.dart';
+
 class AppLoader extends StatefulWidget {
   const AppLoader({super.key});
 
@@ -23,6 +26,7 @@ class AppLoader extends StatefulWidget {
 class _AppLoaderState extends State<AppLoader> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
+  final RxString languageCode = "".obs;
   String _status = 'Starter app...';
 
   @override
@@ -52,20 +56,27 @@ class _AppLoaderState extends State<AppLoader> with SingleTickerProviderStateMix
     super.dispose();
   }
 
+
   Future<void> _initializeApp() async {
     try {
-      setState(() => _status = 'Indlæser notifikationer...');
-      await Future.delayed(Duration(milliseconds: 200)); // Let UI update
+
+      List<String>? languageData = await SharedPreferencesManager.getStringList(
+          SharedPreferencesKeys.appLanguageKey);
+      languageCode.value = languageData?.first ?? 'en';
+
+
+      setState(() => _status = getProcessString('loading_notifications'));
+      await Future.delayed(Duration(milliseconds: 200));
 
       final notificationService = NotificationService();
       await notificationService.init();
 
-      setState(() => _status = 'Indlæser konfiguration...');
+      setState(() => _status = getProcessString('loading_configurations'));
       await Future.delayed(Duration(milliseconds: 200));
 
       await dotenv.load(fileName: "assets/config/.env");
 
-      setState(() => _status = 'Opsætter sikkerhed...');
+      setState(() => _status = getProcessString('setting_security'));
       await Future.delayed(Duration(milliseconds: 200));
 
       SecureKeyStorage secureStorage = SecureKeyStorage();
@@ -73,12 +84,12 @@ class _AppLoaderState extends State<AppLoader> with SingleTickerProviderStateMix
       String iv = dotenv.env['AES_IV'] ?? '';
       await secureStorage.storeKeys(key, iv);
 
-      setState(() => _status = 'Initialiserer database...');
+      setState(() => _status = getProcessString('loading_your_data'));
       await Future.delayed(Duration(milliseconds: 200));
 
       await Hive.initFlutter();
 
-      setState(() => _status = 'Indlæser tjenester...');
+      setState(() => _status = getProcessString('loading_other_services'));
       await Future.delayed(Duration(milliseconds: 200));
 
       // Initialize all your services that AppRoutes expects
@@ -90,22 +101,24 @@ class _AppLoaderState extends State<AppLoader> with SingleTickerProviderStateMix
       Get.put(AuthController(), permanent: true);
       Get.put(AccountController(), permanent: true);
 
-      setState(() => _status = 'Klart!');
+      setState(() => _status = getProcessString('done'));
       await Future.delayed(Duration(milliseconds: 500));
 
-      // Navigate to your AppRoutes instead of individual screens
       _navigateToAppRoutes();
 
     } catch (e) {
       debugPrint('Initialization error: $e');
-      setState(() => _status = 'Fejl opstod - prøver igen...');
+      setState(() => _status = getProcessString('error_retry'));
       await Future.delayed(Duration(seconds: 2));
       _initializeApp(); // Retry
     }
   }
 
+  String getProcessString(String processCode){
+    return EarlyStageStrings.getTranslation(processCode, languageCode.value);
+  }
+
   void _navigateToAppRoutes() {
-    // Navigate to your original AppRoutes (formerly PlayBazaar)
     Navigator.of(context).pushReplacement(
       PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) => AppRoutes(),
@@ -163,7 +176,7 @@ class _AppLoaderState extends State<AppLoader> with SingleTickerProviderStateMix
             ),
             SizedBox(height: 30),
             Text(
-              'Play Bazaar',
+              "Play Bazaar",
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,

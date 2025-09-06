@@ -79,6 +79,7 @@ dev_dependencies:
   flutter_lints: ^6.0.0
   build_runner: ^2.4.6
 
+
 # flutter pub run flutter_launcher_icons
 flutter_launcher_icons:
   image_path: "assets/icons/play_bazaar_logo.png"
@@ -101,6 +102,18 @@ flutter_launcher_icons:
   macos:
     generate: false
 
+
+flutter_native_splash:
+  color: "#ffffff"
+  image: assets/icons/splash_screen_960x960.png
+  android: true
+  ios: true
+  web: false
+
+  android_12:
+    image: assets/icons/splash_screen_960x960.png
+    color: "#ffffff"
+    icon_background_color: "#ffffff"
 
 
 # The following section is specific to Flutter packages.
