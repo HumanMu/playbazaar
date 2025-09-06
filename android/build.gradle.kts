@@ -5,6 +5,9 @@ allprojects {
     }
 }
 
+//project(":app").projectDir = File(rootDir, "android/app/")
+//val newBuildDir: Directory = rootProject.layout.buildDirectory.get()
+
 val newBuildDir: Directory = rootProject.layout.buildDirectory.dir("../../build").get()
 rootProject.layout.buildDirectory.value(newBuildDir)
 

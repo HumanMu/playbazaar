@@ -4,15 +4,15 @@ import 'package:get/get.dart';
 Future<void> acceptDialog(BuildContext context, String title, String message) async {
   return showDialog<void>(
     context: context,
-    barrierDismissible: false, // user must tap button!
+    barrierDismissible: false,
     builder: (BuildContext context) {
       return AlertDialog(
         title: Center(child: Text(title)),
         content: SingleChildScrollView(
-          child: ListBody(
-            children: <Widget>[
-              Text(message),
-            ],
+          child: Text(
+            message,
+            textDirection: Directionality.of(context),
+            textAlign: TextAlign.start,
           ),
         ),
         actions: <Widget>[
@@ -20,14 +20,15 @@ Future<void> acceptDialog(BuildContext context, String title, String message) as
             child: TextButton(
               child: Text('btn_ok'.tr,
                 style: TextStyle(
-                  fontSize: 25,
-                  color: Colors.green
+                    fontSize: 25,
+                    color: Colors.green
                 ),
               ),
               onPressed: () {
                 Navigator.of(context).pop();
               },
-          )),
+            ),
+          ),
         ],
       );
     },

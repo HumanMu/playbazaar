@@ -49,10 +49,10 @@ class CustomLanguage extends StatelessWidget {
     await authController.updateLanguage(languageList);
   }
 
-  void updateLanguage(Locale locale) {
+  void updateLanguage(BuildContext context, Locale locale) {
     saveLanguage(locale);
     Get.updateLocale(locale);
-    Get.back();
+    Navigator.of(context).pop(); // Use the passed context
   }
 
   void languageDialog(BuildContext context) {
@@ -80,7 +80,7 @@ class CustomLanguage extends StatelessWidget {
                     && currentLocale.countryCode == authController.language[1];
 
                 return InkWell(
-                  onTap: () { updateLanguage(currentLocale); },
+                  onTap: () { updateLanguage(context, currentLocale); },
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 5.0),
                     width: double.infinity,

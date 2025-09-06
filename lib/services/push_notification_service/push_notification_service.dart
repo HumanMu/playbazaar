@@ -4,7 +4,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:playbazaar/helper/pushnotification/push_notification_helper.dart';
 import 'package:playbazaar/helper/sharedpreferences/sharedpreferences.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:playbazaar/languages/background_notification_translation.dart';
+import 'package:playbazaar/languages/early_stage_strings.dart';
 import 'package:get/get.dart';
 
 
@@ -178,15 +178,15 @@ class NotificationService {
             android: PushNotificationHelper.friendRequestDetails,
             iOS: iOSDetails,
         );
-        title = NotificationTranslations.getTranslation('received_friend_request_title', languageCode);
-        body = '${NotificationTranslations.getTranslation('received_friend_request_body', languageCode)} $body';
+        title = EarlyStageStrings.getTranslation('received_friend_request_title', languageCode);
+        body = '${EarlyStageStrings.getTranslation('received_friend_request_body', languageCode)} $body';
         break;
       case 'new_message':
         platformDetails = NotificationDetails(
             android: PushNotificationHelper.messageDetails,
             iOS: iOSDetails
         );
-        title ??= NotificationTranslations.getTranslation('received_new_message_title', languageCode);
+        title ??= EarlyStageStrings.getTranslation('received_new_message_title', languageCode);
         body = '$senderName: $body';
         break;
       default:
@@ -194,7 +194,7 @@ class NotificationService {
             android: PushNotificationHelper.friendRequestDetails,
             iOS: iOSDetails
         );
-        title ??= NotificationTranslations.getTranslation('notification', languageCode);
+        title ??= EarlyStageStrings.getTranslation('notification', languageCode);
     }
 
     await _localNotificationsPlugin.show(
