@@ -220,7 +220,7 @@ class OnlineLudoService extends BaseLudoService {
     if (!gameDoc.exists) throw Exception('Game not found');
 
     final gameData = LudoOnlineModel.fromMap(gameDoc.data()!);
-    final existingPlayers = playersSnapshot.docs.length;
+    //final existingPlayers = playersSnapshot.docs.length;
 
     if (gameData.gameStatus != GameProgress.waitning) {
       throw Exception('Game is full');
