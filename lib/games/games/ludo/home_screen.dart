@@ -199,7 +199,7 @@ class _LudoHomeScreenState extends State<LudoHomeScreen> {
           _buildGameTypeContainer(3, LudoColors.green, GameMode.offline),
           _buildGameTypeContainer(4, LudoColors.blue, GameMode.offline),
           _buildGameTypeContainer(1, LudoColors.yellow, GameMode.offline),
-          _buildGameTypeContainer(10, Colors.orangeAccent, GameMode.online),
+          //_buildGameTypeContainer(10, Colors.orangeAccent, GameMode.online),
           /*ElevatedButton(onPressed: () {
             Navigator.push(
               context,
