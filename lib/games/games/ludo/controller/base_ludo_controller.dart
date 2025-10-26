@@ -2,7 +2,9 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:playbazaar/games/games/ludo/helper/functions.dart';
 import 'package:playbazaar/games/games/ludo/models/dice_model.dart';
+import 'package:playbazaar/games/games/ludo/models/ludo_creattion_params.dart';
 import 'package:playbazaar/games/games/ludo/models/ludo_player.dart';
+import '../../../../functions/dialog_manager.dart';
 import '../helper/enums.dart';
 import '../interfaces/i_base_ludo_controller.dart';
 import '../locator/service_locator.dart';
@@ -15,9 +17,11 @@ abstract class BaseLudoController extends GetxController implements IBaseLudoCon
 
   BaseLudoService get gameService => LudoServiceLocator.get<BaseLudoService>();
   DiceController get diceController => LudoServiceLocator.get<DiceController>();
+  DialogManager get dialogManager => LudoServiceLocator.get<DialogManager>();
+
+  final List<List<GlobalKey>> keyReferences = LudoHelper.getGlobalKeys();
 
   final DiceModel diceModel = DiceModel();
-  final List<List<GlobalKey>> keyReferences = LudoHelper.getGlobalKeys();
 
   // Common reactive variables
   List<Token?> get gameTokens => gameService.gameTokens;
@@ -35,8 +39,8 @@ abstract class BaseLudoController extends GetxController implements IBaseLudoCon
     super.onInit();
     isLoading.value = true;
 
-    await initializeServices();
-    await initializePlayers();
+    //await initializeServices();
+    //await initializePlayers();
 
     // Add post frame callback to set boardBuild
     WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -51,7 +55,7 @@ abstract class BaseLudoController extends GetxController implements IBaseLudoCon
   Future<void> onBoardBuilt() async {}
 
   @override
-  Future<void> initializeServices();
+  Future<void> initializeServices(LudoCreationParamsModel params);
 
 
 
@@ -123,8 +127,8 @@ abstract class BaseLudoController extends GetxController implements IBaseLudoCon
   }
 
   void showGameOverDialog() {
-    Get.dialog(
-      GameOverDialog(
+    dialogManager.showDialog(
+      dialog: GameOverDialog(
         players: players,
         isTeamPlay: isTeamPlay.value,
         onPlayAgain: () {
@@ -132,7 +136,7 @@ abstract class BaseLudoController extends GetxController implements IBaseLudoCon
           // Reset game function here
         },
         onExit: () {
-          Get.back();
+          dialogManager.closeDialog();
           Get.back();
         },
       ),

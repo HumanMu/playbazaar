@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 
 class GameListBox extends StatefulWidget {
   final String title;
@@ -79,24 +80,22 @@ class StyledGameTileState extends State<GameListBox> with SingleTickerProviderSt
   }
 
   void _handleNavigation() {
-    Get.toNamed(
-      '/optionizedPlayScreen',
-      arguments: {
-        'selectedPath': widget.gamePath,
-        'quizTitle': widget.title,
-      },
-    );
+    final queryData = Uri(queryParameters: {
+      'selectedPath': widget.gamePath,
+      'quizTitle': widget.title,
+    }).query;
+    context.push('/optionizedPlayScreen?$queryData');
   }
 
   void _handleNavigationWithOption(String selectedOption) {
     final isWithOptions = selectedOption == 'with_options'.tr;
-    Get.toNamed(
-      isWithOptions ? '/optionizedPlayScreen' : '/noneOptionizedPlayScreen',
-      arguments: {
-        'selectedPath': widget.gamePath,
-        'quizTitle': widget.title,
-      },
-    );
+    final path = isWithOptions ? '/optionizedPlayScreen' : '/noneOptionizedPlayScreen';
+
+    final queryData = Uri(queryParameters: {
+      'selectedPath': widget.gamePath,
+      'quizTitle': widget.title,
+    }).query;
+    context.push('$path?$queryData');
   }
 
   @override

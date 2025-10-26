@@ -17,6 +17,14 @@ TokenState string2TokenState(String s) {
   return tokenState;
 }
 
+GameMode string2GameMode(String s) {
+  GameMode gameMode = GameMode.values.firstWhere(
+        (enumValue) => enumValue.toString().split('.').last == s,
+    orElse: () => throw ArgumentError('Invalid game mode --> string to TokenState: $s'),
+  );
+  return gameMode;
+}
+
 
 
 String tokenType2String(TokenType t) {
@@ -27,3 +35,6 @@ String tokenState2String(TokenState t) {
   return t.toString().split('.').last;
 }
 
+String gameMode2String(GameMode gm) {
+  return gm.toString().split('.').last;
+}

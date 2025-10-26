@@ -2,9 +2,10 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import '../../api/Authentication/auth_service.dart';
 import '../../controller/user_controller/account_controller.dart';
-import '../../languages/custom_language.dart';
+import '../../languages/language_dialog.dart';
 import '../../global_widgets/headerstack.dart';
 import '../../global_widgets/show_custom_snackbar.dart';
 import '../widgets/text_boxes/text_widgets.dart';
@@ -18,6 +19,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPage extends State<LoginPage> {
   final AccountController accountController = Get.put(AccountController());
+
 
   final formKey = GlobalKey<FormState>();
   AuthService authService = AuthService();
@@ -98,7 +100,7 @@ class _LoginPage extends State<LoginPage> {
                                   ),
                                   TextButton(
                                     onPressed: () {
-                                      Get.toNamed('/resetPassword');
+                                      context.push('/resetPassword');
                                     },
                                     child: Text('forgot_password'.tr),
                                   ),
@@ -109,7 +111,7 @@ class _LoginPage extends State<LoginPage> {
                                       alignment: Alignment.center,
                                       child: TextButton(
                                         onPressed: () {
-                                          CustomLanguage().languageDialog(context);
+                                          LanguageDialog.show(context);
                                         },
                                         child: Text('language'.tr,
                                             style: const TextStyle(
@@ -145,7 +147,7 @@ class _LoginPage extends State<LoginPage> {
                                     ),
                                     recognizer: TapGestureRecognizer()
                                       ..onTap = () {
-                                        Get.offNamed('/register');
+                                        context.go('/register');
                                       }),
                               ]
                           ),
@@ -177,7 +179,7 @@ class _LoginPage extends State<LoginPage> {
 
 
 
-  _submitButton() {
+  Widget _submitButton() {
     return Container(
       height: 55,
       width: double.infinity,

@@ -98,7 +98,7 @@ class LocalStringsDa extends Translations {
       'level': 'Niveau',
       'your_level': 'Dit niveau',
       'reset_your_level': 'Ved at trykke på knappen nedenfor nulstilles dit spilleniveau til starten, som den første dag.',
-      'round_result': 'Scoret i denne runde: %1 point\Vil du spille flere spil?',
+      'round_result': 'Scoret i denne runde: %1 point. Vil du spille flere spil?',
       'waiting_players_to_finish': 'Venter på, at andre spillere afslutter spillet',
       'winner': 'Vinder',
 
@@ -287,6 +287,8 @@ class LocalStringsDa extends Translations {
       'declined_friend_request': 'Afslået venneanmodning',
       'received_friend_request_body': 'Du har modtaget en venneanmodning fra',
       'received_friend_request_title': 'Ny venneanmodning',
+      'user_not_accepted_request': 'Denne bruger har endnu ikke accepteret din venneanmodning',
+      'not_friend_yet': 'Beklager, du er muligvis endnu ikke ven med denne bruger',
       'removed_from_friends': 'blev fjernet fra din venneliste',
       'something_went_wrong': 'Noget gik galt, prøv venligst igen',
       'wrong_group_password': 'Den angivne adgangskode var ugyldig',
@@ -324,6 +326,7 @@ class LocalStringsDa extends Translations {
       'chat_creation_failed': 'Oprettelse af chat mislykkedes',
       'failed_to_accept_friend_request': 'Kunne ikke acceptere venneanmodning',
       'adding_word_succed': 'Tilføjelse af nye ord lykkedes',
+      'reading_your_profile': 'Læser din profil...',
 
 
       // Policy

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:playbazaar/games/games/ludo/models/ludo_creattion_params.dart';
 import '../helper/enums.dart';
 import '../models/ludo_player.dart';
 import '../models/token.dart';
@@ -16,15 +17,14 @@ class OfflineLudoController extends BaseLudoController {
   Future<void> initializeGameState() async {
     final diceController = Get.find<DiceController>();
     diceController.initializeFirstPlayer(players);
+    await initializePlayers();
   }
 
   @override
-  Future<void> initializeServices() async {
-    if (Get.arguments != null) {
-      numberOfHumanPlayers.value = Get.arguments['numberOfPlayer'] ?? 4;
-      isRobotOn.value = Get.arguments['enabledRobots'] ?? false;
-      isTeamPlay.value = Get.arguments['teamPlay'] ?? false;
-    }
+  Future<void> initializeServices(LudoCreationParamsModel params) async {
+    numberOfHumanPlayers.value = params.numberOfPlayers;
+    isRobotOn.value = params.enableRobots;
+    isTeamPlay.value = params.teamPlay;
   }
 
   @override
@@ -246,8 +246,8 @@ class OfflineLudoController extends BaseLudoController {
     boardBuild.value = false;
     wasLastToken.value = false;
 
-    await initializeServices();
-    await initializePlayers();
+    //await initializeServices();
+    //await initializePlayers();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       boardBuild.value = true;

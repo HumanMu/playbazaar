@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:playbazaar/constants/app_colors.dart';
 import '../../../functions/generate_strings.dart';
 import '../../../global_widgets/dialog/accept_dialog.dart';
@@ -26,26 +27,35 @@ class _LudoHomeScreenState extends State<LudoHomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: LudoColors.background,
-        appBar: AppBar(
-          backgroundColor: AppColors.primary,
-          key: keyBar,
-          elevation: 0,
-          centerTitle: true,
-          title: Text(
-            'ludo_missions'.tr,
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.w600,
-              fontSize: 22,
-              letterSpacing: 0.5,
-            ),
+      backgroundColor: LudoColors.background,
+      appBar: AppBar(
+        backgroundColor: AppColors.primary,
+        key: keyBar,
+        elevation: 0,
+        centerTitle: true,
+        leading: IconButton(
+          onPressed: () {
+            context.go('/mainGames');
+          },
+          icon: const Icon(
+              Icons.arrow_back,
+              color: Colors.white
           ),
-          iconTheme: const IconThemeData(color: Colors.white),
         ),
-        body: Center(
-          child: _buildBody(),
-        )
+        title: Text(
+          'ludo_missions'.tr,
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w600,
+            fontSize: 22,
+            letterSpacing: 0.5,
+          ),
+        ),
+        iconTheme: const IconThemeData(color: Colors.white),
+      ),
+      body: Center(
+        child: _buildBody(),
+      )
     );
   }
 
@@ -195,11 +205,11 @@ class _LudoHomeScreenState extends State<LudoHomeScreen> {
         crossAxisSpacing: 20,
         mainAxisSpacing: 20,
         children: [
+          _buildGameTypeContainer(10, Colors.orangeAccent, GameMode.online),
+          _buildGameTypeContainer(1, LudoColors.yellow, GameMode.offline),
           _buildGameTypeContainer(2, LudoColors.red, GameMode.offline),
           _buildGameTypeContainer(3, LudoColors.green, GameMode.offline),
           _buildGameTypeContainer(4, LudoColors.blue, GameMode.offline),
-          _buildGameTypeContainer(1, LudoColors.yellow, GameMode.offline),
-          //_buildGameTypeContainer(10, Colors.orangeAccent, GameMode.online),
           /*ElevatedButton(onPressed: () {
             Navigator.push(
               context,
@@ -243,7 +253,7 @@ class _LudoHomeScreenState extends State<LudoHomeScreen> {
         builder: (context) => OnlineGameOptionsDialog(
           title: 'compete_online'.tr,
           joinButtonText: 'join_with_code'.tr,
-          createButtonText: 'btn_new_game'.tr,
+          createButtonText: 'btn_start'.tr,
           codeHint: 'game_code'.tr,
           gameCode: gameCode,
           onJoinGame: (String code){
@@ -296,15 +306,16 @@ class _LudoHomeScreenState extends State<LudoHomeScreen> {
       bool isHost,
       String? gameCode
     ){
-      Get.toNamed('/ludoPlayScreen', arguments: {
-        'gameMode': gameMode,
-        'isHost': isHost,
-        'gameCode': gameCode,
-        'numberOfPlayer': playerCount,
-        'teamPlay': teamPlay,
-        'enabledRobots': enabledRobots,
-      }
-    );
+    final queryData = Uri(queryParameters: {
+      'gameMode': gameMode.name,
+      'isHost': isHost.toString(),
+      'gameCode': gameCode,
+      'numberOfPlayer': playerCount.toString(),
+      'teamPlay': teamPlay.toString(),
+      'enabledRobots': enabledRobots.toString(),
+    }).query;
+
+    context.push('/ludoPlayScreen?$queryData');
   }
 
 

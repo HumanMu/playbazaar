@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:playbazaar/controller/group_controller/group_controller.dart';
 import 'package:playbazaar/functions/string_cases.dart';
 import 'package:playbazaar/helper/sharedpreferences/sharedpreferences.dart';
@@ -104,7 +105,7 @@ class _ChatInfoState extends State<ChatInfo> {
         actions: [
           IconButton(
             onPressed: () {
-              leavingGroupDialog(_handleLeaveGroup);
+              leavingGroupDialog(_handleLeaveGroup, context);
             },
             icon: const Icon(
               Icons.logout_outlined,
@@ -217,11 +218,16 @@ class _ChatInfoState extends State<ChatInfo> {
 
     );
 
-    groupController.removeGroupFromUser(
+    await groupController.removeGroupFromUser(
         memberDto,
         FirebaseAuth.instance.currentUser!.uid)
         .whenComplete(() {
-      Get.offNamed('/home');
+          goHome();
     });
+  }
+
+  void goHome() {
+    context.pop();
+    context.go('/home');
   }
 }

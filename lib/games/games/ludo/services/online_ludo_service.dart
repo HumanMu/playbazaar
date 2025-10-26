@@ -2,12 +2,12 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart' show debugPrint;
-import 'package:playbazaar/games/games/ludo/helper/enum_converter.dart';
+import 'package:playbazaar/games/games/ludo/models/ludo_creattion_params.dart';
 import '../../../helper/enum.dart';
 import '../helper/enums.dart';
 import '../models/ludo_online_model.dart';
-import '../models/ludo_player.dart';
 import '../models/position.dart';
+import '../models/single_online_player.dart';
 import '../models/token.dart';
 import 'base_ludo_service.dart';
 
@@ -24,34 +24,36 @@ class OnlineLudoService extends BaseLudoService {
   }
 
 
-  Future<String?> createLudoGame({
-    required bool teamPlay,
-    bool enableRobots = false,
-    required String gameCode,
-  }) async {
+  Future<String?> createLudoGame(LudoCreationParamsModel params) async {
     try {
       if (user == null) throw Exception('No authenticated user found');
 
       final DocumentReference gameRef = ludoReference.collection('inProgress').doc();
+      final SingleOnlinePlayer singlePlayer = SingleOnlinePlayer(
+          playerId: user!.uid,
+          name: user!.displayName ?? 'Player',
+          teamId: null,
+          tokens: [-1, -1, -1, -1],
+          color: null,
+      );
 
       LudoOnlineModel gameData = LudoOnlineModel(
           gameId: gameRef.id,
           hostId: user!.uid,
-          teamPlay: teamPlay,
-          enableRobots: enableRobots,
+          teamPlay: params.teamPlay,
+          enableRobots: params.enableRobots,
           gameStatus: GameProgress.waitning,
           currentPlayerTurn: null,
           diceValue: null,
           canRollDice: false,
-          gameTokens: [],
-          teamAssignments: {},
+          players: [singlePlayer],
           winnerOrder: [],
-          gameCode: gameCode,
+          gameCode: params.gameCode!,
       );
 
       // Create the game document first
       await gameRef.set(gameData.toMap());
-      await _addPlayerToGame(gameRef.id);
+      //await _addPlayerToGame(gameRef.id);
 
       return gameData.gameId;
 
@@ -62,73 +64,51 @@ class OnlineLudoService extends BaseLudoService {
   }
 
 
-  
-  Future<String?> joinExistingGame(String gameCode) async {
+
+  Future<String?> joinExistingGame(String inviteCode) async {
     try {
+      final user = FirebaseAuth.instance.currentUser;
       if (user == null) throw Exception('No authenticated user found');
 
-      LudoOnlineModel? gameDocument = await searchByGameCode(gameCode);
+      final gameData = await searchByGameCode(inviteCode);
 
-      if (gameDocument == null) {
-        debugPrint("Game not found with code: $gameCode");
+      if (gameData == null) {
+        debugPrint("Game not found");
         return null;
       }
 
-      if (gameDocument.gameStatus != GameProgress.waitning) {
-        throw Exception('Game is no longer accepting players');
+      // Check if user is already in the game
+      if (gameData.players.any((player) => player.playerId == user.uid)) {
+        debugPrint("User already in the game");
+        return gameData.gameId;
       }
 
-      // Check if player already exists in this game
-      final gameRef = ludoReference.collection('inProgress').doc(gameDocument.gameId);
-      final existingPlayer = await gameRef.collection('players').doc(user!.uid).get();
-
-      if (existingPlayer.exists) {
-        await gameRef.collection('players').doc(user!.uid).update({
-          'isConnected': true,
-        });
-
-      } else {
-        await _addPlayerToGame(gameDocument.gameId);
+      // Check if the game is full
+      if (gameData.players.length >= 4) {
+        debugPrint("Game is full");
+        return null;
       }
 
-      return gameDocument.gameId;
+      final newPlayer = SingleOnlinePlayer(
+        playerId: user.uid,
+        name: user.displayName ?? 'Player',
+        teamId: null,
+        tokens: [-1, -1, -1, -1],
+        color: null,
+      );
 
+      await ludoReference
+          .collection('inProgress')
+          .doc(gameData.gameId)
+          .update({
+        'players': FieldValue.arrayUnion([newPlayer.toMap()]),
+      });
+
+      return gameData.gameId;
     } catch (e) {
-      debugPrint("Joining game failed with error: $e");
+      debugPrint("Error joining game: $e");
       return null;
     }
-  }
-
-
-
-  Future<void> _addTokens2Firestore(String gameId, TokenType tokenType) async {
-    final gameRef = ludoReference.collection('inProgress').doc(gameId);
-
-    await FirebaseFirestore.instance.runTransaction((transaction) async {
-      final gameDoc = await transaction.get(gameRef);
-      if (!gameDoc.exists) return;
-
-      final gameData = LudoOnlineModel.fromMap(gameDoc.data()!);
-      List<dynamic> currentTokens = List.from(gameData.gameTokens);
-
-      // Each player gets 4 tokens, IDs should continue from the last
-      final startTokenId = currentTokens.length;
-
-      // Add 4 new tokens for this player
-      for (int i = 0; i < 4; i++) {
-        final tokenId = startTokenId + i;
-        currentTokens.add({
-          'id': tokenId,
-          'state': 'initial',
-          'positionInPath': 0,
-        });
-      }
-
-      // Increment player count safely
-      transaction.update(gameRef, {
-        'gameTokens': currentTokens,
-      });
-    });
   }
 
 
@@ -163,7 +143,6 @@ class OnlineLudoService extends BaseLudoService {
       }
     }
 
-    // Trigger UI update
     gameTokens.refresh();
   }
 
@@ -200,62 +179,13 @@ class OnlineLudoService extends BaseLudoService {
 
       final doc = querySnapshot.docs.first;
 
-      return LudoOnlineModel.fromMap({
-        ...doc.data(),
-        'id': doc.id,
-      });
+      return LudoOnlineModel.fromMap(doc.data()).copyWith(gameId: doc.id);//LudoOnlineModel.fromMap(doc.data());
     } catch (e) {
       debugPrint("Error searching game: $e");
       return null;
     }
   }
 
-
-  Future<void> _addPlayerToGame(String gameId) async {
-    final gameRef = ludoReference.collection('inProgress').doc(gameId);
-
-    final gameDoc = await gameRef.get();
-    final playersSnapshot = await gameRef.collection('players').get();
-
-    if (!gameDoc.exists) throw Exception('Game not found');
-
-    final gameData = LudoOnlineModel.fromMap(gameDoc.data()!);
-    //final existingPlayers = playersSnapshot.docs.length;
-
-    if (gameData.gameStatus != GameProgress.waitning) {
-      throw Exception('Game is full');
-    }
-
-    // Determine available token type
-    final existingTokenTypes = playersSnapshot.docs
-        .map((doc) => doc.data()['tokenType'] as String)
-        .toList();
-
-    final availableTypes = ['green', 'yellow', 'blue', 'red'];
-    final assignedTypeStr = availableTypes.firstWhere(
-          (type) => !existingTokenTypes.contains(type),
-      orElse: () => throw Exception('No available token types'),
-    );
-
-    final tokenType = string2TokenType(assignedTypeStr);
-
-    // Create player data
-    LudoPlayer playerData = LudoPlayer(
-      playerId: user!.uid,
-      name: user!.displayName ?? 'Player',
-      avatarImg: user!.photoURL ?? '',
-      tokenType: tokenType,
-      teamId: null,
-      isRobot: false,
-      isConnected: true,
-      numberOfreachedHome: 0,
-      endedPosition: 0,
-      hasFinished: false,
-    );
-
-    await _addTokens2Firestore(gameId, tokenType);
-    await gameRef.collection('players').doc(user!.uid).set(playerData.toMap());
-  }
 
 
 
@@ -347,30 +277,17 @@ class OnlineLudoService extends BaseLudoService {
 
 
 
-  Stream<List<LudoPlayer>> listenToPlayersChanges(String gameId) {
-    return ludoReference
-        .collection('inProgress')
-        .doc(gameId)
-        .collection('players')
-        .orderBy('joinedAt')
-        .snapshots()
-        .map((snapshot) {
-      return snapshot.docs
-          .map((doc) => LudoPlayer.fromMap(doc.data()))
-          .toList();
-    }).handleError((error) {
-      debugPrint('Error in getPlayersStreamByGameId: $error');
-      return <LudoPlayer>[];
-    });
-  }
-
   Stream<LudoOnlineModel?> listenToGameStateChanges(String gameId) {
+    debugPrint("Listening to game state changes for game ID: $gameId");
+
     return ludoReference
         .collection('inProgress')
         .doc(gameId)
         .snapshots()
         .map((doc) {
       try {
+        debugPrint("Listening to game state changes for game ID: ${doc.data()}");
+
         if (doc.exists && doc.data() != null) {
           return LudoOnlineModel.fromMap(doc.data()!);
         }

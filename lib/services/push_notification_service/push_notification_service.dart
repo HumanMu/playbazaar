@@ -1,11 +1,14 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:go_router/go_router.dart';
 import 'package:playbazaar/helper/pushnotification/push_notification_helper.dart';
 import 'package:playbazaar/helper/sharedpreferences/sharedpreferences.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:playbazaar/languages/early_stage_strings.dart';
 import 'package:get/get.dart';
+
+import '../../config/routes/router_provider.dart';
 
 
 String? initialNotificationRoute;
@@ -67,7 +70,7 @@ class NotificationService {
     if (pendingRoute != null) {
       await prefs.remove('pending_notification_route');
       if (Get.context != null) {
-        Get.toNamed(pendingRoute);
+        (pendingRoute);
       } else {
         // If context still not ready, store as initial route
         initialNotificationRoute = pendingRoute;
@@ -100,7 +103,7 @@ class NotificationService {
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       final String? route = message.data['route'];
       if (route != null) {
-        Get.toNamed(route);
+        rootNavigatorKey.currentContext?.push(route);
       }
     });
   }
@@ -126,7 +129,7 @@ class NotificationService {
 
   void _onNotificationTapped(NotificationResponse response) async {
     if (response.payload != null) {
-      Get.toNamed(response.payload!);
+      rootNavigatorKey.currentContext?.push(response.payload!);
     }
   }
 
@@ -145,7 +148,7 @@ class NotificationService {
 
       // Navigate if the context is ready
       if (Get.context != null) {
-        Get.toNamed(pendingRoute);
+        rootNavigatorKey.currentContext?.push(pendingRoute);
       } else {
         initialNotificationRoute = pendingRoute;
       }

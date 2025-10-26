@@ -24,20 +24,13 @@ class HiveUserService extends GetxService {
     init();
   }*/
   @override
-  Future<void> onInit() async {
+  void onInit() {
     super.onInit();
-    await _registerAdapters();
-    await init();
-    await _openBox();
+    _registerAdapters();
   }
 
   Future<void> _openBox() async {
     try {
-      // Register adapter right before opening
-      if (!Hive.isAdapterRegistered(0)) {
-        Hive.registerAdapter(RecentUserAdapter());
-      }
-
       _box = await Hive.openBox<RecentUser>(_boxName);
       _isInitialized.value = true;
     } catch (e) {
@@ -53,21 +46,9 @@ class HiveUserService extends GetxService {
   }
 
   Future<void> init() async {
-    if (_isInitialized.value) return;
     try {
 
-      /*if (!_adaptersRegistered) {
-        Hive.registerAdapter(RecentUserAdapter());
-      }
-
-      try {
-        _box = await Hive.openBox<RecentUser>(_boxName);
-        debugPrint(recentUsers.toString());
-      } catch (e) {
-        developer.log('Error opening box, attempting to delete and recreate', error: e);
-        await Hive.deleteBoxFromDisk(_boxName);
-        _box = await Hive.openBox<RecentUser>(_boxName);
-      }*/
+      await _openBox();
 
       _updateRecentUsersList();
       _box?.listenable().addListener(_updateRecentUsersList);
@@ -79,17 +60,15 @@ class HiveUserService extends GetxService {
 
   Future<void> _registerAdapters() async {
     if (!_adaptersRegistered) {
-      try {
-        _box = await Hive.openBox<RecentUser>(_boxName);
-        debugPrint("Opened friend box: ${recentUsers.toString()}");
-      } catch (e) {
-        developer.log('Error opening box, attempting to delete and recreate', error: e);
-        await Hive.deleteBoxFromDisk(_boxName);
-        _box = await Hive.openBox<RecentUser>(_boxName);
+      if (!Hive.isAdapterRegistered(0)) {
+        Hive.registerAdapter(RecentUserAdapter());
       }
       _adaptersRegistered = true;
     }
+
+    _isInitialized.value = true;
   }
+
 
   void _updateRecentUsersList() {
     if (_box == null) return;

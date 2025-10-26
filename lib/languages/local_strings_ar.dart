@@ -286,6 +286,8 @@ class LocalStringsAr extends Translations {
       'declined_friend_request': 'تم رفض طلب الصداقة',
       'received_friend_request_body': 'لقد تلقيت طلب صداقة من',
       'received_friend_request_title': 'طلب صداقة جديد',
+      'user_not_accepted_request': 'هذا المستخدم لم يقبل طلب صداقتك بعد',
+      'not_friend_yet': 'عذرًا، قد لا تكون صديقًا لهذا المستخدم بعد',
       'removed_from_friends': 'تمت إزالته من قائمة الأصدقاء الخاصة بك',
       'something_went_wrong': 'حدث خطأ ما، حاول مرة أخرى من فضلك',
       'wrong_group_password': 'كلمة المرور المقدمة غير صحيحة',
@@ -324,6 +326,7 @@ class LocalStringsAr extends Translations {
       'chat_creation_failed': 'فشل في إنشاء المحادثة',
       'failed_to_accept_friend_request': 'فشل في قبول طلب الصداقة',
       'adding_word_succed': 'تمت إضافة الكلمات الجديدة بنجاح',
+      'reading_your_profile': 'جارٍ قراءة ملفك الشخصي...',
 
 
 

@@ -1,6 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
+
+import '../config/routes/router_provider.dart';
 
 
 class AccountServices extends GetxService {
@@ -19,7 +22,8 @@ class AccountServices extends GetxService {
       // If reauthentication successful, proceed with deletion
       await currentUser.delete();
       await FirebaseAuth.instance.signOut();
-      Get.offAll('/login');
+      rootNavigatorKey.currentContext?.go('/login');
+
 
     } on FirebaseAuthException catch (e) {
       Get.snackbar('Error', e.message ?? 'Authentication failed');

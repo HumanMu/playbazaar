@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:playbazaar/controller/user_controller/user_controller.dart';
 import 'package:playbazaar/functions/enum_converter.dart';
 import 'package:playbazaar/global_widgets/show_custom_snackbar.dart';
@@ -71,9 +72,8 @@ class _FriendsList extends State<FriendsList> {
         actions: [
           IconButton(
             onPressed: () {
-              Get.toNamed(
-                  '/search',
-                  arguments: {'searchId': 'friends'}
+              context.push(
+                 '/search/friends',
               );
             },
             icon: const Icon(
@@ -266,10 +266,17 @@ class _FriendsList extends State<FriendsList> {
   }
 
 
-  void goToChat(String friendId, String receiverName, String? chatId, String friendStat) async {
+  void goToChat(String friendId, String receiverName, String? chatId, String friendStat) {
     if(string2FriendshipState(friendStat) == FriendshipStatus.good){
       String username = FirebaseAuth.instance.currentUser?.displayName ?? "";
-      await Get.toNamed(
+      final queryParam = Uri(queryParameters: {
+        'chatId': chatId,
+        'chatName': receiverName,
+        'userName': username,
+        'receiverId': friendId,
+      }).query;
+      context.push('/private_chat/chatId?$queryParam');
+      /*await Get.toNamed(
         '/private_chat',
         arguments: {
           'chatId': chatId,
@@ -277,13 +284,13 @@ class _FriendsList extends State<FriendsList> {
           'userName': username,
           'receiverId': friendId
         },
-      );
+      );*/
     }else if (string2FriendshipState(friendStat) == FriendshipStatus.waiting){
-      showCustomSnackbar("This user has not accepted your friend request yet", false);
+      showCustomSnackbar('user_not_accepted_request'.tr, false);
       return;
     }
     else{
-      showCustomSnackbar("Sorry, you may not be a friend with this user yet", false);
+      showCustomSnackbar('not_friend_yet'.tr, false);
       return;
     }
   }

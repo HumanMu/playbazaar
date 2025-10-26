@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:playbazaar/constants/enums.dart';
 import 'package:playbazaar/controller/user_controller/user_controller.dart';
 import 'package:playbazaar/global_widgets/dialog/accept_dialog.dart';
@@ -175,7 +176,7 @@ class _QuizMainPage extends State<QuizMainPage> {
                     ),
                     Expanded(
                       child: ElevatedButton(
-                        onPressed: () => Get.toNamed('/addQuestion'),
+                        onPressed: () => context.push('/addQuestion'),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.green,
                           side: BorderSide.none,
@@ -197,7 +198,7 @@ class _QuizMainPage extends State<QuizMainPage> {
                     if (userRole != UserRole.normal)
                       Expanded(
                         child: ElevatedButton(
-                          onPressed: () => Get.toNamed('/questionReviewPage'),
+                          onPressed: () => context.push('/questionReviewPage'),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.green,
                             side: BorderSide.none,

@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
+import 'package:playbazaar/config/routes/router_provider.dart';
 import 'package:playbazaar/constants/alphabets.dart';
 import 'package:playbazaar/controller/user_controller/auth_controller.dart';
 import 'package:playbazaar/games/games/hangman/models/game_participiant.dart';
@@ -227,7 +229,7 @@ class PlayController extends GetxController {
       if(userId == participants[0].uid ||userId == user!.uid){
         _gameSubscription?.cancel();
         closeWaitingRoom();
-        Get.offNamed('/mainGames');
+        rootNavigatorKey.currentContext?.push('/mainGames');
         showCustomSnackbar("msg_game_destruction_succed".tr, true);
       }
     }catch(e){
@@ -247,7 +249,6 @@ class PlayController extends GetxController {
       prepareNewGame();
       wordHint.value = "";
       await getPlayerGuess(context);
-      Get.toNamed('/hangman');
       closeWaitingRoom();
     }
 
@@ -302,7 +303,7 @@ class PlayController extends GetxController {
   Future<void> startSoloGamePlay() async {
     _gameSubscription?.cancel();
     if(isOfflineMode.value || isOnlineMode.value){
-      return acceptResultDialog( Get.context,
+      return acceptResultDialog( Get.context!,
           "deactive_other_options".tr,
           "deactive_play_with_friends".tr
       );
@@ -310,7 +311,6 @@ class PlayController extends GetxController {
     else{
       await _loadWordsFromFirestore();
       prepareNewGame();
-      Get.toNamed('/hangman');
     }
   }
 
@@ -330,7 +330,9 @@ class PlayController extends GetxController {
   Future<void> getPlayerGuess(BuildContext context) async {
     String? playerGuess = await showDialog<String>(
       context: context,
+      barrierDismissible: false,
       builder: (context) => StringReturnDialog(
+        canBeEmpty: false,
         title: "${"player_turn".tr} ${localPlayers[playerTurn.value]}",
         hintText: "write_here".tr,
         description: "guess_a_word_description".tr,
@@ -450,4 +452,6 @@ class PlayController extends GetxController {
     alphabet.value = alphabetMap["language_shortcut".tr] ?? Alphabets.english;
     update();
   }
+
+
 }

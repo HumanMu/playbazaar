@@ -1,4 +1,6 @@
 import 'package:get/get.dart';
+import 'package:playbazaar/functions/dialog_manager.dart';
+import 'package:playbazaar/games/games/ludo/models/ludo_creattion_params.dart';
 import 'package:playbazaar/global_widgets/show_custom_snackbar.dart';
 import '../controller/base_ludo_controller.dart';
 import '../helper/enums.dart';
@@ -13,20 +15,28 @@ import '../services/online_ludo_service.dart';
 class LudoServiceLocator {
   static bool _isInitialized = false;
   static GameMode _gameMode = GameMode.offline;
+  static final Map<Type, dynamic> _services = {};
 
-  static Future<void> initialize(GameMode gameMode) async {
+
+  static Future<void> initialize(
+      GameMode gameMode,
+      LudoCreationParamsModel paramns,
+      {required DialogManager dialogManager}) async {
     if (_isInitialized) {
-      await cleanup();
     }
 
+    await cleanup();
     _gameMode = gameMode;
+    _services[DialogManager] = dialogManager;
+
 
     await _registerGameService(gameMode);
-    _registerControllers(gameMode);
+    _registerControllers(gameMode, paramns, dialogManager);
     _registerCommonServices();
 
     _isInitialized = true;
   }
+
 
   /// Register common services used by all game modes
   static void _registerCommonServices() {
@@ -52,13 +62,18 @@ class LudoServiceLocator {
     Get.put<BaseLudoService>(gameService, permanent: false);
   }
 
-  static void _registerControllers(GameMode gameMode) {
+  static void _registerControllers(
+      GameMode gameMode,
+      LudoCreationParamsModel params,
+      DialogManager dialogManager,
+    ) {
     late BaseLudoController controller;
 
     switch (gameMode) {
       case GameMode.offline:
         controller = OfflineLudoController();
         Get.put<OfflineLudoController>(controller as OfflineLudoController, permanent: false);
+        controller.initializeServices(params);
         break;
 
       case GameMode.online:
@@ -71,41 +86,31 @@ class LudoServiceLocator {
   }
 
   /// Initialize the game with the specified parameters
-  static Future<void> initializeGame({
-    int? numberOfPlayers,
-    bool teamPlay = false,
-    bool enableRobots = false,
-    String? gameCode,
-    bool isHost = false,
-  }) async {
+  static Future<void> initializeGame(LudoCreationParamsModel params) async {
     if (!_isInitialized) {
       throw Exception('GameServiceLocator must be initialized before initializing the game');
     }
 
     if (_gameMode == GameMode.offline) {
       final offlineService = Get.find<OfflineLudoService>();
-      final numberOfPlayersToInit = (teamPlay || enableRobots)? 4 : numberOfPlayers;
-      await offlineService.init(numberOfPlayersToInit!, teamPlay: teamPlay);
+      final numberOfPlayersToInit = (params.teamPlay || params.enableRobots)? 4 : params.numberOfPlayers;
+      await offlineService.init(numberOfPlayersToInit, teamPlay: params.teamPlay);
 
     } else {
       final onlineService = Get.find<OnlineLudoService>();
       final onlineController = Get.find<OnlineLudoController>();
-      await onlineService.init(numberOfPlayers?? 0, teamPlay: teamPlay);
+      await onlineService.init(params.numberOfPlayers?? 0, teamPlay: params.teamPlay);
 
-      if (gameCode == null || gameCode.isEmpty) {
+      if (params.gameCode == null || params.gameCode!.isEmpty ) {
         showCustomSnackbar('Game code is required for to create or join a game.', false);
         return;
       }
 
-      if (isHost) {
-        await onlineController.createLudoGame(
-          teamPlay: teamPlay,
-          enableRobots: enableRobots,
-          gameCode: gameCode,
-        );
+      if (params.isHost) {
+        await onlineController.createLudoGame(params);
 
       } else {
-        await onlineController.joinExistingGame(gameCode);
+        await onlineController.joinExistingGame(params.gameCode!);
       }
     }
   }
@@ -145,6 +150,9 @@ class LudoServiceLocator {
       Get.delete<DiceController>();
     }
 
+    // ← Clear DialogManager
+    _services.clear();
+
     _isInitialized = false;
   }
 
@@ -154,11 +162,17 @@ class LudoServiceLocator {
     if (!_isInitialized) {
       throw Exception('GameServiceLocator must be initialized before accessing services');
     }
+
+    // ← Check custom services map first (for DialogManager)
+    if (_services.containsKey(T)) {
+      return _services[T] as T;
+    }
+
     return Get.find<T>();
   }
 
   /// Check if a service is registered
   static bool isRegistered<T>() {
-    return Get.isRegistered<T>();
+    return _services.containsKey(T) || Get.isRegistered<T>();
   }
 }

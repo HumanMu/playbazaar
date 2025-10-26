@@ -1,5 +1,6 @@
  import 'package:playbazaar/functions/enum_converter.dart';
  import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:playbazaar/games/games/ludo/models/single_online_player.dart';
 import '../../../helper/enum.dart';
 
  class LudoOnlineModel {
@@ -11,49 +12,38 @@ import '../../../helper/enum.dart';
    final String? currentPlayerTurn;
    final int? diceValue;
    final bool canRollDice;
-   final List<dynamic> gameTokens;
-   final Map<String, dynamic> teamAssignments;
+   final List<SingleOnlinePlayer> players;
    final Timestamp? createdAt;
    final Timestamp? lastUpdated;
-   final List<dynamic> winnerOrder;
+   final List<SingleOnlinePlayer>? winnerOrder;
    final String gameCode;
 
    LudoOnlineModel({
      required this.gameId,
      required this.hostId,
+     required this.gameCode,
      required this.teamPlay,
      required this.enableRobots,
      required this.gameStatus,
      this.currentPlayerTurn,
      this.diceValue,
      required this.canRollDice,
-     required this.gameTokens,
-     required this.teamAssignments,
+     required this.players,
      this.createdAt,
      this.lastUpdated,
-     required this.winnerOrder,
-     required this.gameCode,
+     this.winnerOrder,
    });
 
    factory LudoOnlineModel.fromMap(Map<String, dynamic> map) {
-     List<dynamic> gameTokensList;
 
-     if (map['gameTokens'] is List) {
-       gameTokensList = List.from(map['gameTokens']);
-     } else if (map['gameTokens'] is Map) {
-       // Convert Map to List
-       Map<String, dynamic> tokensMap = Map<String, dynamic>.from(map['gameTokens']);
-       gameTokensList = List.filled(16, null); // Adjust size as needed
-       tokensMap.forEach((key, value) {
-         int index = int.tryParse(key) ?? 0;
-         if (index < gameTokensList.length) {
-           gameTokensList[index] = value;
-         }
-       });
-     } else {
-       gameTokensList = [];
-     }
 
+     final sPlayers = (map['players'] as List<dynamic>? ?? [])
+         .map((e) => SingleOnlinePlayer.fromMap(Map<String, dynamic>.from(e as Map)))
+         .toList();
+
+     final winners = (map['winnerOrder'] as List<dynamic>? ?? [])
+         .map((e) => SingleOnlinePlayer.fromMap(Map<String, dynamic>.from(e as Map)))
+         .toList();
 
      return LudoOnlineModel(
        gameId: map['gameId'] ?? '',
@@ -64,11 +54,10 @@ import '../../../helper/enum.dart';
        currentPlayerTurn: map['currentPlayerTurn'],
        diceValue: map['diceValue'],
        canRollDice: map['canRollDice'] ?? false,
-       gameTokens: gameTokensList,
-       teamAssignments: Map<String, dynamic>.from(map['teamAssignments'] ?? {}),
+       players: sPlayers,
        createdAt: map['createdAt'],
        lastUpdated: map['lastUpdated'],
-       winnerOrder: List.from(map['winnerOrder'] ?? []),
+       winnerOrder: winners,
        gameCode: map['gameCode'] ?? '',
      );
    }
@@ -83,11 +72,10 @@ import '../../../helper/enum.dart';
        'currentPlayerTurn': currentPlayerTurn,
        'diceValue': diceValue,
        'canRollDice': canRollDice,
-       'gameTokens': gameTokens,
-       'teamAssignments': teamAssignments,
+       'players': players.map((player) => player.toMap()).toList(),
        'createdAt': createdAt?? FieldValue.serverTimestamp(),
        'lastUpdated': lastUpdated ?? FieldValue.serverTimestamp(),
-       'winnerOrder': winnerOrder,
+       'winnerOrder': winnerOrder ?? [],
        'gameCode': gameCode,
      };
    }
@@ -101,12 +89,10 @@ import '../../../helper/enum.dart';
      String? currentPlayerTurn,
      int? diceValue,
      bool? canRollDice,
-     List<dynamic>? gameTokens,
-     List<dynamic>? activeTokenTypes,
-     Map<String, dynamic>? teamAssignments,
+     List<SingleOnlinePlayer>? players,
      Timestamp? createdAt,
      Timestamp? lastUpdated,
-     List<dynamic>? winnerOrder,
+     List<SingleOnlinePlayer>? winnerOrder,
      String? gameCode,
    }) {
      return LudoOnlineModel(
@@ -118,11 +104,10 @@ import '../../../helper/enum.dart';
        currentPlayerTurn: currentPlayerTurn ?? this.currentPlayerTurn,
        diceValue: diceValue ?? this.diceValue,
        canRollDice: canRollDice ?? this.canRollDice,
-       gameTokens: gameTokens ?? this.gameTokens,
-       teamAssignments: teamAssignments ?? this.teamAssignments,
+       players: players ?? this.players,
        createdAt: createdAt ?? this.createdAt,
        lastUpdated: lastUpdated ?? this.lastUpdated,
-       winnerOrder: winnerOrder ?? this.winnerOrder,
+       winnerOrder: winnerOrder,
        gameCode: gameCode ?? this.gameCode,
      );
    }

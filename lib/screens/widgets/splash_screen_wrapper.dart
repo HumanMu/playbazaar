@@ -4,16 +4,6 @@ import 'package:playbazaar/screens/main_screens/login_pages.dart';
 import 'package:playbazaar/screens/main_screens/profile_page.dart';
 import 'package:playbazaar/controller/user_controller/auth_controller.dart';
 import 'package:playbazaar/screens/secondary_screens/animated_splash_screen.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:hive_ce_flutter/adapters.dart';
-import 'package:playbazaar/admob/ad_manager_services.dart';
-import 'package:playbazaar/controller/message_controller/private_message_controller.dart';
-import 'package:playbazaar/controller/user_controller/account_controller.dart';
-import 'package:playbazaar/controller/user_controller/user_controller.dart';
-import 'package:playbazaar/helper/encryption/secure_key_storage.dart';
-import 'package:playbazaar/services/hive_services/hive_user_service.dart';
-import 'package:playbazaar/services/push_notification_service/push_notification_service.dart';
-import 'package:playbazaar/services/user_services.dart';
 
 class SplashScreenWrapper extends StatefulWidget {
   const SplashScreenWrapper({super.key});
@@ -34,26 +24,8 @@ class _SplashScreenWrapperState extends State<SplashScreenWrapper> {
 
   Future<void> _initializeApp() async {
     try {
-      // Run all the initialization that was in main()
-      final notificationService = NotificationService();
-      await notificationService.init();
+      await Future.delayed(Duration(milliseconds: 300));
 
-      await dotenv.load(fileName: "assets/config/.env");
-      SecureKeyStorage secureStorage = SecureKeyStorage();
-      String key = dotenv.env['AES_KEY'] ?? '';
-      String iv = dotenv.env['AES_IV'] ?? '';
-      await secureStorage.storeKeys(key, iv);
-
-      await Hive.initFlutter();
-      Get.put(HiveUserService(), permanent: true);
-      await AdManagerService().initialize();
-      Get.put(UserServices(), permanent: true);
-      Get.put(PrivateMessageController(), permanent: true);
-      Get.put(UserController(), permanent: true);
-      Get.put(AuthController(), permanent: true);
-      Get.put(AccountController(), permanent: true);
-
-      // Initialization complete
       setState(() {
         _isInitialized = true;
       });
@@ -135,7 +107,7 @@ class _SplashScreenWrapperState extends State<SplashScreenWrapper> {
               ),
               SizedBox(height: 20),
               Text(
-                'Indlæser Play Bazaar...',
+                'reading_your_profile'.tr,
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w500,
@@ -171,31 +143,3 @@ class _SplashScreenWrapperState extends State<SplashScreenWrapper> {
   }
 }
 
-
-/*class SplashScreenWrapper extends StatelessWidget {
-  const SplashScreenWrapper({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final nextScreen = determineNextScreen();
-
-    return AnimatedSplashScreen(
-      imagePath: 'assets/icons/splash_screen_960x960.png',
-      nextScreen: nextScreen,
-      duration: const Duration(milliseconds: 2500),
-    );
-  }
-
-  Widget determineNextScreen() {
-    try {
-      final authController = Get.find<AuthController>();
-      if (authController.isSignedIn.value) {
-        return const ProfilePage();
-      } else {
-        return const LoginPage();
-      }
-    } catch (e) {
-      return const LoginPage();
-    }
-  }
-}*/

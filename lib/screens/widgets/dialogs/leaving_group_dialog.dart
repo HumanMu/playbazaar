@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 
 Future<void> leavingGroupDialog(
-    final Function() onLeaveGroup) async {
+    final Function() onLeaveGroup, BuildContext context) async {
   return showDialog(
     barrierDismissible: false,
-    context: Get.context!,  // Use Get.context for accessing context
+    context: context,
     builder: (context) {
       return AlertDialog(
         title: Text("leaving".tr),
@@ -13,7 +14,8 @@ Future<void> leavingGroupDialog(
         actions: [
           IconButton(
             onPressed: () {
-              Navigator.pop(context);
+              context.pop();
+              //Navigator.pop(context);
             },
             icon: const Icon(Icons.cancel_presentation, color: Colors.red),
           ),

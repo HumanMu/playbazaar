@@ -285,6 +285,8 @@ class LocalStringsEn extends Translations {
       'declined_friend_request' : 'Declined friend request',
       'received_friend_request_body': 'You have received a friend request from',
       'received_friend_request_title': 'New friend request',
+      'user_not_accepted_request': 'This user has not accepted your friend request yet',
+      'not_friend_yet': 'Sorry, you may not be a friend with this user yet',
       'removed_from_friends' : 'was removed from your friends list',
       'something_went_wrong' : 'Something went wrong, try again please',
       'wrong_group_password' : 'The password provided was invalid',
@@ -322,6 +324,7 @@ class LocalStringsEn extends Translations {
       'chat_creation_failed': 'Chat creation failed',
       'failed_to_accept_friend_request': 'Failed to accept friend request',
       'adding_word_succed': 'Adding new words succeeded',
+      'reading_your_profile': 'Reading your profile...',
 
 
 

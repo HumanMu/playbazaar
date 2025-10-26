@@ -5,6 +5,8 @@ import 'package:playbazaar/games/games/ludo/controller/online_ludo_controller.da
 import 'package:playbazaar/global_widgets/rarely_used/text_2_copy.dart';
 
 class LudoWaitingRoomDialog extends StatelessWidget {
+  static const String dialogId = 'ludo_waiting_room';
+
   const LudoWaitingRoomDialog({
     super.key,
   });
@@ -17,6 +19,7 @@ class LudoWaitingRoomDialog extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
       ),
+
       child: Container(
         width: double.infinity,
         constraints: const BoxConstraints(maxWidth: 400),
@@ -110,7 +113,7 @@ class LudoWaitingRoomDialog extends StatelessWidget {
             Row(
               children: [
                 ElevatedButton(
-                  onPressed: () => controller.removePlayer(controller.user!.uid),
+                  onPressed: () => controller.closeWaitingRoom(),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red,
                   ),

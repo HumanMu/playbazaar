@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import '../../../constants/app_colors.dart';
+import '../../../functions/dialog_manager.dart';
 import '../../../global_widgets/dialog/show_error_dialog_utils.dart';
 import 'helper/enums.dart';
 import 'locator/service_locator.dart';
+import 'models/ludo_creattion_params.dart';
 import 'widgets/game_play.dart';
 
-class LudoPlayScreen extends StatefulWidget {
+class LudoPlayScreen extends ConsumerStatefulWidget {
   final GameMode gameMode;
   final int numberOfPlayer;
   final bool enabledRobots;
@@ -25,10 +29,10 @@ class LudoPlayScreen extends StatefulWidget {
   });
 
   @override
-  State<LudoPlayScreen> createState() => _LudoPlayScreenState();
+  ConsumerState<LudoPlayScreen> createState() => _LudoPlayScreenState();
 }
 
-class _LudoPlayScreenState extends State<LudoPlayScreen> {
+class _LudoPlayScreenState extends ConsumerState<LudoPlayScreen> {
   final GlobalKey keyBar = GlobalKey();
   bool isLoading = false;
 
@@ -43,15 +47,23 @@ class _LudoPlayScreenState extends State<LudoPlayScreen> {
 
   Future<void> initializeServices() async {
     try {
-      await LudoServiceLocator.initialize(widget.gameMode);
-
-      await LudoServiceLocator.initializeGame(
-        numberOfPlayers: widget.numberOfPlayer,
-        teamPlay: widget.teamPlay,
-        enableRobots: widget.enabledRobots,
-        gameCode: widget.gameCode,
-        isHost: widget.isHost
+      LudoCreationParamsModel params = LudoCreationParamsModel(
+          numberOfPlayers: widget.numberOfPlayer,
+          teamPlay: widget.teamPlay,
+          enableRobots: widget.enabledRobots,
+          gameCode: widget.gameCode,
+          isHost: widget.isHost
       );
+
+      final dialogManager = ref.read(dialogManagerProvider.notifier);
+      await LudoServiceLocator.cleanup();
+      await LudoServiceLocator.initialize(
+          widget.gameMode,
+          params,
+          dialogManager: dialogManager
+      );
+
+      await LudoServiceLocator.initializeGame(params);
 
       if (mounted) {
         setState(() {
@@ -81,20 +93,19 @@ class _LudoPlayScreenState extends State<LudoPlayScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBar(                                     // You can maybe remove this to fix dice positioning
+      appBar: AppBar(
         backgroundColor: AppColors.primary,
         key: keyBar,
         centerTitle: true,
         elevation: 0,
         leading: IconButton(
             onPressed: () {
-              if (Get.previousRoute == '/ludoHome') {
-                Get.back();
-              } else {
-                Get.offNamed('/ludoHome');
-              }
+              context.go('/ludoHome');
             },
-            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            icon: const Icon(
+                Icons.arrow_back,
+                color: Colors.white
+            ),
         ),
         title: Text(
           "ludo_missions".tr,

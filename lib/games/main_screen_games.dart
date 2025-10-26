@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:playbazaar/global_widgets/show_custom_snackbar.dart';
 import '../api/Authentication/auth_service.dart';
 import '../screens/widgets/sidebar_drawer.dart';
@@ -90,7 +91,6 @@ class _MainScreenGamesState extends State<MainScreenGames> {
 
 
   Widget _buildGameTile({
-    //required String title,
     required String gamePath,
   }) {
     return Card(
@@ -113,16 +113,16 @@ class _MainScreenGamesState extends State<MainScreenGames> {
   void navigateToGamePage(String gamePath) {
     switch (gamePath) {
       case 'quiz':
-        Get.toNamed('/mainQuiz');
+        context.push('/mainQuiz');
         break;
       case 'hangman':
-        Get.toNamed('/hangmanPlaySettings');
+        context.push('/hangmanPlaySettings');
         break;
       case 'wordconnector':
-        Get.toNamed('/wordConnectorSettingScreen');
+        context.push('/wordConnectorSettingScreen');
         break;
       case 'ludo_missions':
-        Get.toNamed('/ludoHome');
+        context.push('/ludoHome');
         break;
       default:
         showCustomSnackbar('Please, pick a game first', false);

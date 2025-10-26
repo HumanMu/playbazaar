@@ -1,5 +1,7 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../../../constants/enums.dart';
 import '../../../controller/user_controller/user_controller.dart';
 import '../../../global_widgets/dialog/accept_dialog.dart';
@@ -8,15 +10,15 @@ import 'package:playbazaar/games/games/hangman/controller/play_controller.dart';
 import '../../widgets/custom_switch_textbox_tile.dart';
 
 
-class HangmanPlaySettingsScreen extends StatefulWidget {
+class HangmanPlaySettingsScreen extends ConsumerStatefulWidget {
 
   const HangmanPlaySettingsScreen({super.key});
 
   @override
-  State<HangmanPlaySettingsScreen> createState() => _HangmanPlaySettingsScreenState();
+  ConsumerState<HangmanPlaySettingsScreen> createState() => _HangmanPlaySettingsScreenState();
 }
 
-class _HangmanPlaySettingsScreenState extends State<HangmanPlaySettingsScreen> {
+class _HangmanPlaySettingsScreenState extends ConsumerState<HangmanPlaySettingsScreen> {
   final PlayController controller = Get.put(PlayController(), permanent: true);
   final TextEditingController playerNameController = TextEditingController();
   final TextEditingController gameCodeController = TextEditingController();
@@ -38,7 +40,7 @@ class _HangmanPlaySettingsScreenState extends State<HangmanPlaySettingsScreen> {
           backgroundColor: Colors.red,
           centerTitle: true,
           leading: IconButton(
-            onPressed: () {Get.offNamed('/mainGames');},
+            onPressed: () {context.go('/mainGames');},
             icon: const Icon(Icons.arrow_back),
           ),
           title: Text(
@@ -89,7 +91,7 @@ class _HangmanPlaySettingsScreenState extends State<HangmanPlaySettingsScreen> {
                       if(userController.userData.value!.role != UserRole.normal)
                         Obx(() => !controller.isOfflineMode.value && !controller.isJoiningMode.value
                           ? ElevatedButton(
-                              onPressed: () => Get.toNamed('/hangmanAddWords'),
+                              onPressed: () => context.push('/hangmanAddWords'),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.green,
                                 side: BorderSide.none,
@@ -197,7 +199,7 @@ class _HangmanPlaySettingsScreenState extends State<HangmanPlaySettingsScreen> {
           ),
           subtitle: Text('play_solo_description'.tr),
           trailing: const Icon(Icons.arrow_forward),
-          onTap: controller.startSoloGamePlay,
+          onTap: _startSoloGame,
         ),
       ),
     );
@@ -216,7 +218,7 @@ class _HangmanPlaySettingsScreenState extends State<HangmanPlaySettingsScreen> {
                   ? Colors.green
                   : Colors.white54,
             ),
-            onPressed: () => controller.startTeamPlayGame(context),
+            onPressed: () => _startTeamGame(),
             child: Text('btn_start'.tr,
               style: TextStyle(fontSize: 18, color: Colors.white),
             ),
@@ -225,5 +227,19 @@ class _HangmanPlaySettingsScreenState extends State<HangmanPlaySettingsScreen> {
       }
       return const SizedBox.shrink();
     });
+  }
+
+  Future<void> _startTeamGame() async {
+    await controller.startTeamPlayGame(context);
+    _navigateToPlayScreen();
+  }
+
+  Future<void> _startSoloGame() async {
+    await controller.startSoloGamePlay();
+    _navigateToPlayScreen();
+  }
+
+  void _navigateToPlayScreen() {
+    context.push('/hangman');
   }
 }
