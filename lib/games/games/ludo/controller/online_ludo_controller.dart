@@ -8,7 +8,6 @@ import 'package:playbazaar/games/games/ludo/models/ludo_creattion_params.dart';
 import 'package:playbazaar/games/games/ludo/models/single_online_player.dart';
 import 'package:playbazaar/games/games/ludo/services/online_ludo_service.dart';
 import '../../../../global_widgets/show_custom_snackbar.dart';
-import '../../../entities/dialog_request_model.dart';
 import '../../../helper/enum.dart';
 import '../helper/enums.dart';
 import '../models/ludo_online_model.dart';
@@ -69,6 +68,27 @@ class OnlineLudoController extends BaseLudoController {
     showWaitingRoom();
     gameId.value = gameRef;
     await _listeningToGameState();
+  }
+
+  @override
+  Future<void> onAwaitingTokenSelection(TokenType player, int diceValue) async {
+    if (player != myTokenType) {
+      return;
+    }
+  }
+
+  @override
+  Future<void> handleDiceRollResult(int diceValue, TokenType currentPlayer) async {
+    // Online mode: sync dice result to Firebase first
+    if (currentPlayer == myTokenType) {
+      await onlineGameService.updateGameState({
+        'diceValue': diceValue,
+        'canRollDice': false,
+      }, gameId.value);
+    }
+
+    // Then handle normally
+    await super.handleDiceRollResult(diceValue, currentPlayer);
   }
 
   Future<void> _listeningToGameState() async {

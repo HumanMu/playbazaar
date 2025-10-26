@@ -45,7 +45,7 @@ class DiceController extends GetxController {
             }
           });
         }
-        break; // Found the first active player
+        break;
       }
     }
   }
@@ -70,12 +70,11 @@ class DiceController extends GetxController {
         dice.diceValue = finalValue;
       }
 
-      dice.handleDiceRollResult(finalValue);
       dice.isRolling = false;
+      dice.handleDiceRollResult(finalValue);
 
       if (finalValue == 6) {
         if (dice.rxConsecutiveSixes >= 3) {
-          dice.rxConsecutiveSixes = 0;
           dice.giveAnotherTurn = false;
           await nextPlayer();
           return;
@@ -84,7 +83,7 @@ class DiceController extends GetxController {
         dice.rxConsecutiveSixes = 0;
       }
 
-      await moveToNextPlayerCheck(finalValue);
+      await gameController.handleDiceRollResult(finalValue, dice.diceColor);
 
     } catch (e) {
       _resetDiceState();
@@ -102,29 +101,6 @@ class DiceController extends GetxController {
     dice.isAwaitingMove = false;
   }
 
-  Future<void> moveToNextPlayerCheck(int diceValue) async {
-    final availableToken = gameController.getMovableTokens(dice.diceColor, diceValue);
-
-    if (diceValue != 6 && !availableToken) {
-      await nextPlayer();
-    }
-    else if(diceValue == 6) {
-      final hasInitialToken = gameController.checkForInitialTokens(dice.diceColor);
-      if(!hasInitialToken && !availableToken) {
-        await nextPlayer();
-      }
-      else {
-        // Wait for token selection
-        dice.isInteractive = false;
-        dice.isAwaitingMove = true;
-      }
-    }
-    else {
-      // Wait for token selection
-      dice.isInteractive = false;
-      dice.isAwaitingMove = true;
-    }
-  }
 
   Future<void> nextPlayer() async {
     dice.giveAnotherTurn = false;
@@ -172,7 +148,7 @@ class DiceController extends GetxController {
       await Future.delayed(const Duration(milliseconds: 800));
       await playRobotTurn();
     } else {
-      // Human turn, dice is already set to interactive
+      // Human turn
     }
   }
 

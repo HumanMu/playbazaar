@@ -108,6 +108,15 @@ abstract class BaseLudoService extends GetxService {
     return true;
   }
 
+  bool canTokenMove(Token token, int steps) {
+    if (!canMoveToken(token, steps)) return false;
+
+    final newPosition = token.positionInPath + steps;
+    final pathLength = getPathLength(token.type);
+
+    return newPosition < pathLength;
+  }
+
   // Common logic for moving token from initial position
   Future<void> moveTokenFromInitial(Token token) async {
     if (!isValidToken(token)) return;

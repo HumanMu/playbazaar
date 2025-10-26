@@ -11,12 +11,6 @@ class OfflineLudoController extends BaseLudoController {
 
   @override
   Future<void> onBoardBuilt() async {
-    await initializeGameState();
-  }
-
-  Future<void> initializeGameState() async {
-    final diceController = Get.find<DiceController>();
-    diceController.initializeFirstPlayer(players);
     await initializePlayers();
   }
 
@@ -25,6 +19,14 @@ class OfflineLudoController extends BaseLudoController {
     numberOfHumanPlayers.value = params.numberOfPlayers;
     isRobotOn.value = params.enableRobots;
     isTeamPlay.value = params.teamPlay;
+  }
+
+  @override
+  Future<void> onAwaitingTokenSelection(TokenType player, int diceValue) async {
+    final currentPlayer = players.firstWhereOrNull((p) => p.tokenType == player);
+    if (currentPlayer?.isRobot == true && isRobotOn.value) {
+      await diceController.playRobotTurn();
+    }
   }
 
   @override
@@ -251,7 +253,7 @@ class OfflineLudoController extends BaseLudoController {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       boardBuild.value = true;
-      initializeGameState();
+      //initializeGameState();
       isLoading.value = false;
     });
   }

@@ -71,6 +71,29 @@ abstract class BaseLudoController extends GetxController implements IBaseLudoCon
     return token.positionInPath + diceValue <= 56;
   }
 
+  Future<void> handleDiceRollResult(int diceValue, TokenType currentPlayer) async {
+    final availableToken = getMovableTokens(currentPlayer, diceValue);
+
+    if (diceValue != 6 && !availableToken) {
+      await diceController.nextPlayer();
+    } else if (diceValue == 6) {
+      final hasInitialToken = checkForInitialTokens(currentPlayer);
+      if (!hasInitialToken && !availableToken) {
+        await diceController.nextPlayer();
+      } else {
+        diceController.setMoveState(true);
+        diceController.setDiceState(false);
+        await onAwaitingTokenSelection(currentPlayer, diceValue);
+      }
+    } else {
+      diceController.setMoveState(true);
+      diceController.setDiceState(false);
+      await onAwaitingTokenSelection(currentPlayer, diceValue);
+    }
+  }
+
+  Future<void> onAwaitingTokenSelection(TokenType player, int diceValue) async {}
+
   Future<void> updateReachedHome(Token token) async {
     final index = players.indexWhere((e) => e.tokenType == token.type);
     if (index != -1) {

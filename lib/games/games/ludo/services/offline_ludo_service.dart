@@ -83,13 +83,9 @@ class OfflineLudoService extends BaseLudoService {
   }
 
   Future<bool> _moveTokenAlongPath(Token token, int steps) async {
-    if (!isValidToken(token)) return false;
-
+    if (!canTokenMove(token, steps)) return false;
     final newPositionInPath = token.positionInPath + steps;
-    final pathLength = getPathLength(token.type);
 
-    // Check if move is valid
-    if (newPositionInPath >= pathLength) return false;
     final destination = getPosition(token.type, newPositionInPath);
 
     // Calculate what will happen at destination
