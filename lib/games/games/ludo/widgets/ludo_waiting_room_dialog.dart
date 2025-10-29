@@ -5,7 +5,7 @@ import 'package:playbazaar/games/games/ludo/controller/online_ludo_controller.da
 import 'package:playbazaar/global_widgets/rarely_used/text_2_copy.dart';
 
 class LudoWaitingRoomDialog extends StatelessWidget {
-  static const String dialogId = 'ludo_waiting_room';
+  //static const String dialogId = 'ludo_waiting_room';
 
   const LudoWaitingRoomDialog({
     super.key,

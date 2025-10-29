@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart' show debugPrint;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:playbazaar/functions/dialog_manager.dart';
+import 'package:playbazaar/core/dialog/dialog_manager.dart';
 import 'package:playbazaar/games/games/ludo/models/ludo_creattion_params.dart';
 import 'package:playbazaar/games/games/ludo/models/single_online_player.dart';
 import 'package:playbazaar/games/games/ludo/services/online_ludo_service.dart';
+import '../../../../constants/app_dialog_ids.dart';
 import '../../../../global_widgets/show_custom_snackbar.dart';
 import '../../../helper/enum.dart';
 import '../helper/enums.dart';
@@ -365,7 +365,7 @@ class OnlineLudoController extends BaseLudoController {
 
 
   void showWaitingRoom() {
-    if (dialogManager.isDialogShowingByRouteName(LudoWaitingRoomDialog.dialogId)) {
+    if (dialogManager.isDialogShowingByRouteName(AppDialogIds.ludoWaitingRoom)) {
       debugPrint("Waiting room already showing");
       return;
     }
@@ -376,33 +376,15 @@ class OnlineLudoController extends BaseLudoController {
       priority: DialogPriority.high,
       canBeInterrupted: false,
       timeout: const Duration(minutes: 10),
-      routeSettings: const RouteSettings(
-          name: LudoWaitingRoomDialog.dialogId,
+      routeSettings: RouteSettings(
+          name: AppDialogIds.ludoWaitingRoom,
       ),
     );
   }
 
   Future<void> closeWaitingRoom() async {
-    dialogManager.closeDialogByRouteName(LudoWaitingRoomDialog.dialogId);
+    dialogManager.closeDialogByRouteName(AppDialogIds.ludoWaitingRoom);
   }
-  /*void showWaitingRoom() {
-    if (Get.isDialogOpen == true) {
-      debugPrint("A dialog is already open.");
-    } else {
-      Get.dialog(
-        LudoWaitingRoomDialog(),
-        barrierDismissible: false,
-      );
-    }
-  }
-
-  void closeWaitingRoom() {
-    if (Get.isDialogOpen == true) {
-      Get.back();
-    } else {
-      debugPrint("No dialog is currently open to close.");
-    }
-  */
 
   void deleteGame() {
     _gameStateSubscription?.cancel();

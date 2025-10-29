@@ -4,7 +4,7 @@ import 'package:playbazaar/games/games/ludo/helper/functions.dart';
 import 'package:playbazaar/games/games/ludo/models/dice_model.dart';
 import 'package:playbazaar/games/games/ludo/models/ludo_creattion_params.dart';
 import 'package:playbazaar/games/games/ludo/models/ludo_player.dart';
-import '../../../../functions/dialog_manager.dart';
+import '../../../../core/dialog/dialog_manager.dart';
 import '../helper/enums.dart';
 import '../interfaces/i_base_ludo_controller.dart';
 import '../locator/service_locator.dart';

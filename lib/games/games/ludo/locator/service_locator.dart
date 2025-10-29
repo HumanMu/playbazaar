@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:playbazaar/functions/dialog_manager.dart';
+import 'package:playbazaar/core/dialog/dialog_manager.dart';
 import 'package:playbazaar/games/games/ludo/models/ludo_creattion_params.dart';
 import 'package:playbazaar/global_widgets/show_custom_snackbar.dart';
 import '../controller/base_ludo_controller.dart';

@@ -6,6 +6,7 @@ import '../../../../global_widgets/rarely_used/text_2_copy.dart';
 class OnlineGameOptionsDialog extends StatefulWidget {
   final Function(String gameCode) onJoinGame;
   final VoidCallback onCreateGame;
+  final VoidCallback? onCancel;
   final String? title;
   final String? joinButtonText;
   final String? createButtonText;
@@ -17,6 +18,7 @@ class OnlineGameOptionsDialog extends StatefulWidget {
     super.key,
     required this.onJoinGame,
     required this.onCreateGame,
+    this.onCancel,
     this.title = 'Play Online',
     this.joinButtonText = 'Join Game',
     this.createButtonText = 'Create New Game',
@@ -44,13 +46,11 @@ class _OnlineGameOptionsDialogState extends State<OnlineGameOptionsDialog> {
   void _handleJoinGame() {
     if (_formKey.currentState!.validate()) {
       final code = _codeController.text.trim().toUpperCase();
-      Navigator.of(context).pop();
       widget.onJoinGame(code);
     }
   }
 
   void _handleCreateGame() {
-    Navigator.of(context).pop();
     widget.onCreateGame();
   }
 
@@ -270,7 +270,7 @@ class _OnlineGameOptionsDialogState extends State<OnlineGameOptionsDialog> {
       children: [
         Expanded(
           child: OutlinedButton(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () => widget.onCancel?.call(),
             style: OutlinedButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 12),
               shape: RoundedRectangleBorder(

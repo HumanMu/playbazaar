@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import '../../../constants/app_colors.dart';
-import '../../../functions/dialog_manager.dart';
+import '../../../core/dialog/dialog_listner.dart';
 import '../../../global_widgets/dialog/show_error_dialog_utils.dart';
 import 'helper/enums.dart';
 import 'locator/service_locator.dart';

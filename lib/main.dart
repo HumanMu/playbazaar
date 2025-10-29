@@ -6,9 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:playbazaar/controller/language_controller/language_controller.dart';
-import 'package:playbazaar/functions/dialog_manager.dart';
 import 'config/firebase_options.dart';
 import 'config/routes/router_provider.dart';
+import 'core/dialog/dialog_listner.dart';
 import 'languages/local_strings.dart';
 
 

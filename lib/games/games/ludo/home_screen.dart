@@ -1,21 +1,24 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:playbazaar/constants/app_colors.dart';
+import 'package:playbazaar/constants/app_dialog_ids.dart';
+import '../../../core/dialog/dialog_listner.dart';
 import '../../../functions/generate_strings.dart';
 import '../../../global_widgets/dialog/accept_dialog.dart';
 import 'helper/enums.dart';
 import 'helper/utility_color.dart';
 import 'widgets/online_game_creation_dialog.dart';
 
-class LudoHomeScreen extends StatefulWidget {
+class LudoHomeScreen extends ConsumerStatefulWidget {
   const LudoHomeScreen({super.key});
   @override
-  State<LudoHomeScreen> createState() => _LudoHomeScreenState();
+  ConsumerState<LudoHomeScreen> createState() => _LudoHomeScreenState();
 }
 
-class _LudoHomeScreenState extends State<LudoHomeScreen> {
+class _LudoHomeScreenState extends ConsumerState<LudoHomeScreen> {
   GlobalKey keyBar = GlobalKey();
   bool enabledRobots = false;
   bool teamPlay = false;
@@ -245,25 +248,34 @@ class _LudoHomeScreenState extends State<LudoHomeScreen> {
 
   void _handleGameSelection(int playerCount, GameMode mode) {
     if(mode == GameMode.online){
+      final dialogManager = ref.read(dialogManagerProvider.notifier);
       final String gameCode = generateStrings(6);
 
-      showDialog(
-        context: context,
-        barrierDismissible: true,
-        builder: (context) => OnlineGameOptionsDialog(
-          title: 'compete_online'.tr,
-          joinButtonText: 'join_with_code'.tr,
-          createButtonText: 'btn_start'.tr,
-          codeHint: 'game_code'.tr,
-          gameCode: gameCode,
-          onJoinGame: (String code){
-            _navigateToPlayScreen(4, mode, false, code);
-        },
-          onCreateGame: (){
-            _navigateToPlayScreen(4, mode, true, gameCode);
-          },
+      dialogManager.showDialog(
+          dialog: OnlineGameOptionsDialog(
+            title: 'compete_online'.tr,
+            joinButtonText: 'join_with_code'.tr,
+            createButtonText: 'btn_start'.tr,
+            codeHint: 'game_code'.tr,
+            gameCode: gameCode,
+            onJoinGame: (String code){
+              dialogManager.closeDialog(AppDialogIds.ludoOnlineGameCreation);
+              _navigateToPlayScreen(4, mode, false, code);
+            },
+            onCreateGame: (){
+              dialogManager.closeDialog(AppDialogIds.ludoOnlineGameCreation);
+              _navigateToPlayScreen(4, mode, true, gameCode);
+            },
+            onCancel: () {
+              dialogManager.closeDialog(AppDialogIds.ludoOnlineGameCreation);
+            },
+          ),
+        barrierDismissible: false,
+        routeSettings: RouteSettings(
+            name: AppDialogIds.ludoOnlineGameCreation
         ),
       );
+
       return;
     }
 
