@@ -5,8 +5,6 @@ import 'package:playbazaar/games/games/ludo/controller/online_ludo_controller.da
 import 'package:playbazaar/global_widgets/rarely_used/text_2_copy.dart';
 
 class LudoWaitingRoomDialog extends StatelessWidget {
-  //static const String dialogId = 'ludo_waiting_room';
-
   const LudoWaitingRoomDialog({
     super.key,
   });
@@ -22,7 +20,7 @@ class LudoWaitingRoomDialog extends StatelessWidget {
 
       child: Container(
         width: double.infinity,
-        constraints: const BoxConstraints(maxWidth: 400),
+        constraints: const BoxConstraints(maxWidth: 450),
         padding: const EdgeInsets.all(16),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -66,10 +64,11 @@ class LudoWaitingRoomDialog extends StatelessWidget {
                   itemBuilder: (context, index) {
                     final player = controller.players[index];
                     return Container(
-                        padding: EdgeInsets.symmetric(horizontal: 12),
+                        padding: EdgeInsets.symmetric(horizontal: 5),
                         child: Stack(
                           children: [
                             ListTile(
+                              contentPadding: EdgeInsets.symmetric(horizontal: 0), // Don't remove this
                               leading: CircleAvatar(
                                 backgroundColor: Colors.white54,
                                 backgroundImage: player.avatarImg != null
@@ -82,14 +81,16 @@ class LudoWaitingRoomDialog extends StatelessWidget {
                               title: Row(
                                 children: [
                                   Text(splitBySpace(player.name!)[0]),
+                                  Spacer(),
                                   index == 0
-                                      ? Text(
-                                    " ${"host".tr}",
-                                    style: TextStyle(fontSize: 10, color: Colors.red),
+                                    ?Text(
+                                      " ${"host".tr}",
+                                      style: TextStyle(fontSize: 10, color: Colors.red),
                                   )
                                       : Text(""),
                                 ],
                               ),
+
                               trailing: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 mainAxisAlignment: MainAxisAlignment.end,

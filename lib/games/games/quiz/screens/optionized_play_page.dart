@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:playbazaar/controller/sound_controller/sound_controller.dart';
+import 'package:playbazaar/services/settings/sound_services.dart';
 import '../../../../admob/adaptive_banner_ad.dart';
 import '../controller/quiz_play_controller.dart';
 
@@ -22,7 +22,7 @@ class OptionizedPlayScreen extends StatefulWidget {
 }
 
 class _QuizPlayScreen extends State<OptionizedPlayScreen>{
-  late SoundController soundController;
+  final soundService = Get.find<SoundService>();
   late QuizPlayController playController;
 
 
@@ -33,15 +33,13 @@ class _QuizPlayScreen extends State<OptionizedPlayScreen>{
       selectedQuiz: widget.selectedQuiz,
       quizTitle: widget.quizTitle)
     );
-    soundController = Get.put(SoundController());
   }
 
   @override
-  void dispose(){
-    soundController.dispose();
+  void dispose() {
+    playController.dispose();
     super.dispose();
   }
-
 
 
   @override

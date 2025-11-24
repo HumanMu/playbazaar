@@ -36,7 +36,7 @@ abstract class BaseLudoService extends GetxService {
 
   // Abstract methods that must be implemented by subclasses
   Future<BaseLudoService> init(int numberOfPlayer, {bool teamPlay = false});
-  Future<bool> moveToken(Token token, int steps);
+  Future<bool> moveToken(Token token, int steps, String? gameId, String nextPlayer, Token? didKill);
 
   Future<void> initializeGame() async {
     _pathCache.clear();
@@ -193,8 +193,12 @@ abstract class BaseLudoService extends GetxService {
   Future<void> animateTokenMovement(Token token, int steps) async {
     List<Future<void>> animationFutures = [];
 
+    if(token.tokenState == TokenState.initial && steps ==6) {
+      steps = 0;
+    }
+
     for (int i = 1; i <= steps; i++) {
-      final stepDelay = Duration(milliseconds: 200 * i);
+      final stepDelay = Duration(milliseconds: 120 * i);
       final stepPosition = token.positionInPath + i;
 
       final stepFuture = Future.delayed(stepDelay, () {
@@ -213,7 +217,7 @@ abstract class BaseLudoService extends GetxService {
   }
 
   // Common move result handling
-  Future<bool> handleMoveResult(Token token, int newPositionInPath, Position destination, MoveResult result) async {
+  Future<Token?> handleMoveResult(Token token, int newPositionInPath, Position destination, MoveResult result, {bool onlyCalculation = false}) async {
     final pathLength = getPathLength(token.type);
 
     // Update token state for normal movement (not self-kill)
@@ -232,17 +236,19 @@ abstract class BaseLudoService extends GetxService {
 
     // Handle token reset (either opponent or self)
     if (result.tokenToReset != null) {
-      if (result.isSelfKill) {
+      if (result.isSelfKill && !onlyCalculation) {
         // Brief pause for self-kill visual feedback
         await Future.delayed(const Duration(milliseconds: 100));
       }
 
-      // Immediate reset animation with no delay between steps
-      await animateTokenReset(result.tokenToReset!);
-      return true;
+      // Immediate reset animation with no delay between steps if makeMove is true
+      if(!onlyCalculation) {
+        await animateTokenReset(result.tokenToReset!);
+      }
+      return result.tokenToReset;
     }
 
-    return false;
+    return result.tokenToReset;
   }
 
   // Update teammates at destination to be safe in pair

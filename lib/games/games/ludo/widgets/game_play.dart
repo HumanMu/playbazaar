@@ -1,4 +1,5 @@
 import '../../../../admob/adaptive_banner_ad.dart';
+import '../../../../global_widgets/rarely_used/custom_sidebar_menu.dart';
 import '../controller/base_ludo_controller.dart';
 import '../controller/dice_controller.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +27,7 @@ class _GamePlayState extends State<GamePlay> {
   final GlobalKey boardContainerKey = GlobalKey();
   final gameController = Get.find<BaseLudoController>();
   final diceController = Get.find<DiceController>();
+  bool drawerState = false;
 
   @override
   void initState() {
@@ -41,7 +43,10 @@ class _GamePlayState extends State<GamePlay> {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
+
+    return PopScope(
+      canPop: false,
+      child: LayoutBuilder(
         builder: (context, constraints) {
         final screenHeight = constraints.maxHeight;
         final screenWidth = constraints.maxWidth;
@@ -64,18 +69,13 @@ class _GamePlayState extends State<GamePlay> {
 
         return Stack(
           children: [
-            Container(
-              color: Colors.teal[900],
-              width: MediaQuery.of(context).size.width,
-              child: AdaptiveBannerAd(
-                onAdLoaded: (isLoaded) {
-                  if (isLoaded) {
-                    debugPrint('Ad loaded in Ludo Game Play');
-                  } else {
-                    debugPrint('Ad failed to load in Ludo Game Play');
-                  }
-                },
-              ),  // The BannerAd widget
+            SafeArea(
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CustomSideMenu(),
+                  ]
+              ),
             ),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -191,13 +191,14 @@ class _GamePlayState extends State<GamePlay> {
                       ],
                     ),
                   ),
-                )
+                ),
+
               ],
             ),
 
             // Single dice that animates to player positions
             Obx(() {
-              final diceColor = diceController.diceColor;
+              final diceColor = diceController.color;
               final double calculatedSize = screenWidth * 0.08;
               final double profileDimension = calculatedSize.clamp(55.0, 70.0);
               final double diceFromSide = profileDimension + (screenWidth * 0.02);
@@ -233,9 +234,27 @@ class _GamePlayState extends State<GamePlay> {
                 child: const ModernDiceWidget(),
               );
             }),
+            Positioned(
+              bottom: 0,
+              child: SafeArea(
+                child:  Container(
+                margin: EdgeInsets.zero,
+                color: Colors.teal[900],
+                width: MediaQuery.of(context).size.width,
+                child: AdaptiveBannerAd(
+                    onAdLoaded: (isLoaded) {
+                      if (isLoaded) {
+                        debugPrint('Ad loaded in Ludo Game Play');
+                      } else {
+                        debugPrint('Ad failed to load in Ludo Game Play');
+                      }
+                    }),  // The BannerAd widget
+                )
+              )
+            )
           ],
         );
-      },
+      }),
     );
   }
 

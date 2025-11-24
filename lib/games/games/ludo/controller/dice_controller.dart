@@ -12,11 +12,11 @@ class DiceController extends GetxController {
   final BaseLudoController gameController = Get.find<BaseLudoController>();
 
   // Expose getters for easier access
-  bool get giveAnotherTurn => dice.giveAnotherTurn;
-  TokenType get diceColor => dice.diceColor;
+  bool get hasExtraTurn  => dice.hasExtraTurn;
+  TokenType get color => dice.color;
   bool get moveState => dice.isAwaitingMove;
   bool get isRobotTurn => dice.isRobotTurn;
-  bool get diceState => dice.isInteractive;
+  bool get diceState => dice.rollState;
   int get consecvative6 => dice.rxConsecutiveSixes;
   int get diceValue => dice.diceValue;
 
@@ -28,20 +28,20 @@ class DiceController extends GetxController {
 
   void initializeFirstPlayer(List<LudoPlayer> currentPlayers) {
     dice.rxConsecutiveSixes = 0;
-    dice.giveAnotherTurn = false;
+    dice.hasExtraTurn = false;
 
     for (var player in currentPlayers) {
       if (!player.hasFinished) {
-        dice.diceColor = player.tokenType;
+        dice.color = player.tokenType;
         dice.isRobotTurn = (player.isRobot ?? false) && gameController.isRobotOn.value;
-        dice.isInteractive = !dice.isRobotTurn;
+        dice.rollState = !dice.isRobotTurn;
         dice.isAwaitingMove = false;
         dice.isRolling = false;
 
         if (dice.isRobotTurn) {
           Future.delayed(Duration(milliseconds: 800), () {
-            if (dice.isRobotTurn && dice.diceColor == player.tokenType) {
-              playRobotTurn();
+            if (dice.isRobotTurn && dice.color == player.tokenType) {
+              processRobotTurn();
             }
           });
         }
@@ -51,7 +51,7 @@ class DiceController extends GetxController {
   }
 
 
-  Future<void> rollDice() async {
+  Future<void> handleDiceRoll() async {
     if ((dice.isRobotTurn && !dice.canBeRolledByRobot) ||
         (!dice.isRobotTurn && !dice.canBeRolledByHuman)) {
       return;
@@ -60,13 +60,13 @@ class DiceController extends GetxController {
     try {
       dice.isRolling = true;
       if (!dice.isRobotTurn) {
-        dice.isInteractive = false;
+        dice.rollState = false;
       }
 
       int finalValue = 0;
       for (int i = 0; i < 6; i++) {
         await Future.delayed(Duration(milliseconds: i == 0 ? 0 : 200));
-        finalValue = _generateRandomDiceValue();
+        finalValue = _rollDice();
         dice.diceValue = finalValue;
       }
 
@@ -75,35 +75,35 @@ class DiceController extends GetxController {
 
       if (finalValue == 6) {
         if (dice.rxConsecutiveSixes >= 3) {
-          dice.giveAnotherTurn = false;
-          await nextPlayer();
+          dice.hasExtraTurn = false;
+          await processNextPlayer();
           return;
         }
       }else{
         dice.rxConsecutiveSixes = 0;
       }
 
-      await gameController.handleDiceRollResult(finalValue, dice.diceColor);
+      await gameController.handleDiceRollResult(finalValue, dice.color);
 
     } catch (e) {
       _resetDiceState();
     }
   }
 
-  int _generateRandomDiceValue() {
-    return Random().nextInt(6) + 1;
+  int _rollDice() {
+    return Random.secure().nextInt(6) + 1;
   }
 
   // Reset dice state in case of errors
   void _resetDiceState() {
     dice.isRolling = false;
-    dice.isInteractive = true;
+    dice.rollState = true;
     dice.isAwaitingMove = false;
   }
 
 
-  Future<void> nextPlayer() async {
-    dice.giveAnotherTurn = false;
+  Future<void> processNextPlayer() async {
+    dice.hasExtraTurn = false;
     dice.isAwaitingMove = false;
     dice.isRolling = false;
 
@@ -111,7 +111,7 @@ class DiceController extends GetxController {
     final players = gameController.players;
 
     // Find current player index
-    int currentIndex = players.indexWhere((player) => player.tokenType == dice.diceColor);
+    int currentIndex = players.indexWhere((player) => player.tokenType == dice.color);
     if (currentIndex == -1) {
       initializeFirstPlayer(players);
       return;
@@ -132,47 +132,46 @@ class DiceController extends GetxController {
 
 
     if (checkedCount >= players.length && players.every((p) => p.hasFinished)) {
-      dice.isInteractive = false;
+      dice.rollState = false;
       return;
     }
 
     final nextPlayer = players[nextIndex];
-    dice.diceColor = nextPlayer.tokenType;
-    dice.isInteractive = true;
+    dice.color = nextPlayer.tokenType;
+    dice.rollState = true;
     dice.isRobotTurn = (nextPlayer.isRobot ?? false) && gameController.isRobotOn.value;
     dice.rxConsecutiveSixes = 0;
 
     // Auto-play for robot
     if (dice.isRobotTurn) {
-      dice.isInteractive = false;
+      dice.rollState = false;
       await Future.delayed(const Duration(milliseconds: 800));
-      await playRobotTurn();
+      await processRobotTurn();
     } else {
       // Human turn
     }
   }
 
 
-  Future<void> playRobotTurn() async {
+  Future<void> processRobotTurn() async {
     dice.isRobotTurn = true;
-    dice.isInteractive = false;
+    dice.rollState = false;
 
-    await rollDice();
+    await handleDiceRoll();
 
-    if (dice.isAwaitingMove) {
-      await _selectRobotToken();
-    }
-
-    if (giveAnotherTurn && consecvative6 < 3) {
+    /*if (dice.isAwaitingMove) {
+      await selectRobotToken();
+    }*/
+    if (hasExtraTurn && consecvative6 < 3) {
       await Future.delayed(const Duration(milliseconds: 800));
-      await playRobotTurn();
+      await processRobotTurn();
     }
   }
 
-  Future<void> _selectRobotToken() async {
+  Future<void> selectRobotToken() async {
     final tokens = gameController.gameTokens
         .whereType<Token>()
-        .where((token) => token.type == diceColor)
+        .where((token) => token.type == color)
         .toList();
 
     // AI logic for token selection
@@ -195,16 +194,22 @@ class DiceController extends GetxController {
       await Future.delayed(const Duration(milliseconds: 300));
       await gameController.handleTokenTap(tokenToMove);
     } else {
-      await nextPlayer();
+      await processNextPlayer();
     }
   }
 
   // For backward compatibility
-  void setDiceState(bool state) {
-    dice.isInteractive = state;
+  void setDiceRollState(bool state) {
+    dice.rollState = state;
   }
 
   void setMoveState(bool state) {
     dice.isAwaitingMove = state;
   }
+
+  void setColor(TokenType newColor) {
+    dice.color = newColor;
+    update();
+  }
+
 }

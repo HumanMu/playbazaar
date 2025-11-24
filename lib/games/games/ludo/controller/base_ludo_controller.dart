@@ -1,9 +1,12 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:playbazaar/config/routes/router_provider.dart';
 import 'package:playbazaar/games/games/ludo/helper/functions.dart';
 import 'package:playbazaar/games/games/ludo/models/dice_model.dart';
 import 'package:playbazaar/games/games/ludo/models/ludo_creattion_params.dart';
 import 'package:playbazaar/games/games/ludo/models/ludo_player.dart';
+import '../../../../constants/app_dialog_ids.dart';
 import '../../../../core/dialog/dialog_manager.dart';
 import '../helper/enums.dart';
 import '../interfaces/i_base_ludo_controller.dart';
@@ -20,7 +23,6 @@ abstract class BaseLudoController extends GetxController implements IBaseLudoCon
   DialogManager get dialogManager => LudoServiceLocator.get<DialogManager>();
 
   final List<List<GlobalKey>> keyReferences = LudoHelper.getGlobalKeys();
-
   final DiceModel diceModel = DiceModel();
 
   // Common reactive variables
@@ -33,14 +35,12 @@ abstract class BaseLudoController extends GetxController implements IBaseLudoCon
   final RxBool isRobotOn = false.obs;
   final RxInt numberOfHumanPlayers = 4.obs;
   late bool isHost = false;
+  late GameMode gameMode = GameMode.offline;
 
   @override
   void onInit() async {
     super.onInit();
     isLoading.value = true;
-
-    //await initializeServices();
-    //await initializePlayers();
 
     // Add post frame callback to set boardBuild
     WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -58,37 +58,39 @@ abstract class BaseLudoController extends GetxController implements IBaseLudoCon
   Future<void> initializeServices(LudoCreationParamsModel params);
 
 
-
   bool getMovableTokens(TokenType type, int diceValue) {
     return gameService.getMovableTokens(type, diceValue);
   }
 
-  bool checkForInitialTokens(TokenType type) {
-    return gameService.hasInitialToken(type);
+  void printMessage(String message) {
+    debugPrint(message);
   }
+
 
   bool hasEnoughSpaceToMove(Token token, int diceValue) {
     return token.positionInPath + diceValue <= 56;
   }
 
-  Future<void> handleDiceRollResult(int diceValue, TokenType currentPlayer) async {
-    final availableToken = getMovableTokens(currentPlayer, diceValue);
+  Future<void> handleDiceRollResult(int diceValue, TokenType currentPlayerType) async {
+    final availableToken = getMovableTokens(currentPlayerType, diceValue);
 
-    if (diceValue != 6 && !availableToken) {
-      await diceController.nextPlayer();
+    if (diceValue != 6 && !availableToken && gameMode == GameMode.offline) {
+      await diceController.processNextPlayer();
+
     } else if (diceValue == 6) {
-      final hasInitialToken = checkForInitialTokens(currentPlayer);
+      final hasInitialToken = gameService.hasInitialToken(currentPlayerType);
+
       if (!hasInitialToken && !availableToken) {
-        await diceController.nextPlayer();
+        await diceController.processNextPlayer();
       } else {
         diceController.setMoveState(true);
-        diceController.setDiceState(false);
-        await onAwaitingTokenSelection(currentPlayer, diceValue);
+        diceController.setDiceRollState(false);
+        await onAwaitingTokenSelection(currentPlayerType, diceValue);
       }
     } else {
       diceController.setMoveState(true);
-      diceController.setDiceState(false);
-      await onAwaitingTokenSelection(currentPlayer, diceValue);
+      diceController.setDiceRollState(false);
+      await onAwaitingTokenSelection(currentPlayerType, diceValue);
     }
   }
 
@@ -149,7 +151,28 @@ abstract class BaseLudoController extends GetxController implements IBaseLudoCon
     }
   }
 
+  bool basicTokenTapCheck(Token token) {
+    diceController.setDiceRollState(false);
+
+    if (token.tokenState == TokenState.home
+        || (token.tokenState == TokenState.initial && diceController.diceValue != 6)
+        || token.type != diceController.color
+        || !diceController.moveState) {
+      diceController.setMoveState(false);
+      return false;
+    }
+    diceController.setMoveState(false);
+
+    if (!hasEnoughSpaceToMove(token, diceController.diceValue)) return false;
+    return true;
+  }
+
+
   void showGameOverDialog() {
+    if (dialogManager.isDialogShowingByRouteName(AppDialogIds.ludoWaitingRoom)) {
+      return;
+    }
+
     dialogManager.showDialog(
       dialog: GameOverDialog(
         players: players,
@@ -160,7 +183,7 @@ abstract class BaseLudoController extends GetxController implements IBaseLudoCon
         },
         onExit: () {
           dialogManager.closeDialog();
-          Get.back();
+          rootNavigatorKey.currentContext?.push("/ludoHome");
         },
       ),
       barrierDismissible: false,

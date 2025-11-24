@@ -77,7 +77,7 @@ class _LudoHomeScreenState extends ConsumerState<LudoHomeScreen> {
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w600,
-              color: LudoColors.accent,
+              color: LudoColors.green,
             ),
           ),
           const SizedBox(height: 10),

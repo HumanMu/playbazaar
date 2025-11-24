@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:hive_ce_flutter/adapters.dart';
 import 'package:playbazaar/admob/ad_manager_services.dart';
 import 'package:playbazaar/controller/message_controller/private_message_controller.dart';
+import 'package:playbazaar/controller/settings_controller/notification_settings_controller.dart';
 import 'package:playbazaar/controller/user_controller/account_controller.dart';
 import 'package:playbazaar/controller/user_controller/auth_controller.dart';
 import 'package:playbazaar/controller/user_controller/user_controller.dart';
@@ -12,6 +13,8 @@ import 'package:playbazaar/services/hive_services/hive_user_service.dart';
 import 'package:playbazaar/services/push_notification_service/push_notification_service.dart';
 import 'package:playbazaar/services/user_services.dart';
 import 'package:playbazaar/helper/sharedpreferences/sharedpreferences.dart';
+
+import '../../services/settings/sound_services.dart';
 
 /// Handles all app initialization logic in a centralized, testable way
 class AppInitializer {
@@ -43,6 +46,7 @@ class AppInitializer {
 
   Future<void> _initializeNotifications() async {
     final notificationService = NotificationService();
+    Get.put(NotificationSettingsController(), permanent: true);
     await notificationService.init();
   }
 
@@ -80,6 +84,7 @@ class AppInitializer {
     Get.put(UserController(), permanent: true);
     Get.put(AuthController(), permanent: true);
     Get.put(AccountController(), permanent: true);
+    Get.put(SoundService(), permanent: true);
 
     _updateStatus('done');
     await Future.delayed(Duration(milliseconds: 500));

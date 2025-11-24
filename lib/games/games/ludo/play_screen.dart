@@ -92,7 +92,7 @@ class _LudoPlayScreenState extends ConsumerState<LudoPlayScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      /*backgroundColor: AppColors.background,
       appBar: AppBar(
         backgroundColor: AppColors.primary,
         key: keyBar,
@@ -117,13 +117,24 @@ class _LudoPlayScreenState extends ConsumerState<LudoPlayScreen> {
           ),
         ),
         iconTheme: const IconThemeData(color: AppColors.white),
-      ),
-      body: Center(
-          child: isLoading
-            ? CircularProgressIndicator()
-            : GamePlay(keyBar),
+      ),*/
+        body: Container(
+          width: double.infinity,
+          height: double.infinity,
 
-      ),
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/games/ludo/ludo_play_screen_bg1.jpg'),
+              fit: BoxFit.cover,
+            ),
+          ),
+
+          child: Center(
+            child: isLoading
+                ? const CircularProgressIndicator()
+                : GamePlay(keyBar),
+          ),
+        ),
     );
   }
 

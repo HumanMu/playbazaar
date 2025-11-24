@@ -1,48 +1,59 @@
-import 'dart:ui';
 
 class SingleOnlinePlayer {
-  final String playerId;        // Firestore document key (userId)
-  final String name;      // Display name
-  final List<int> tokens; // [-1, 0..56, 57]
+  final String playerId;
+  final String name;
   final String? teamId;
-
-  // Not stored in Firestore, only local
-  Color? color;
-
-  int get tokensAtHome => tokens.where((t) => t == -1).length;
-  int get tokensFinished => tokens.where((t) => t == 57).length;
-  int get tokensOnBoard => tokens.where((t) => t >= 0 && t <= 56).length;
+  final int finishedTokensLength;
+  final bool isConnected;
+  final String color;
 
 
   SingleOnlinePlayer({
     required this.playerId,
     required this.name,
-    required this.tokens,
+    required this.isConnected,
+    required this.finishedTokensLength,
+    required this.color,
     this.teamId,
-    this.color,
   });
 
-  // Factory to create from Firestore map
   factory SingleOnlinePlayer.fromMap(Map<String, dynamic> data) {
     return SingleOnlinePlayer(
       playerId: data['playerId'],
       name: data['name'] ?? 'player',
-      tokens: List<int>.from(data['tokens'] ?? [-1, -1, -1, -1]),
       teamId: data['teamId'],
+      finishedTokensLength: data['finishedTokensLength'],
+      isConnected: data['isConnected'] ?? true,
+      color: data['color'] ?? 'red',
     );
   }
 
-  // Convert to map for Firestore
   Map<String, dynamic> toMap() {
     return {
       "playerId": playerId,
       "name": name,
-      "tokens": tokens,
       "teamId": teamId,
+      "finishedTokensLength": finishedTokensLength,
+      "isConnected": isConnected,
+      "color": color,
     };
   }
 
-  // Helpers
-  bool get hasWon => tokens.every((pos) => pos == 57);
-  bool get hasAnyOnBoard => tokens.any((pos) => pos >= 0 && pos < 57);
+  // Keep these helpers but calculate from external token map
+  bool hasWon(Map<String, int> allTokens, int playerIndex) {
+    for (int i = 0; i < 4; i++) {
+      final tokenKey = 'p${playerIndex}_t$i';
+      if (allTokens[tokenKey] != 57) return false;
+    }
+    return true;
+  }
+
+  bool hasAnyOnBoard(Map<String, int> allTokens, int playerIndex) {
+    for (int i = 0; i < 4; i++) {
+      final tokenKey = 'p${playerIndex}_t$i';
+      final pos = allTokens[tokenKey] ?? -1;
+      if (pos >= 0 && pos < 57) return true;
+    }
+    return false;
+  }
 }

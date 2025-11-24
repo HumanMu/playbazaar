@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:playbazaar/games/games/ludo/controller/base_ludo_controller.dart';
+import 'package:playbazaar/games/games/ludo/controller/dice_controller.dart';
 import 'package:playbazaar/games/games/ludo/helper/functions.dart';
 import 'package:playbazaar/games/games/ludo/services/base_ludo_service.dart';
 import 'package:playbazaar/games/games/ludo/widgets/animated_token.dart';
@@ -29,7 +30,14 @@ class TokenWidget extends StatelessWidget {
       width: dimensions[2] * 0.9,  // Reduce size by 10% to account for centering
       height: dimensions[3] * 0.9,
       child: InkWell(
-        onTap: () => gameController.handleTokenTap(token),
+        onTap: () {
+          if(gameController.diceController.color != token.type) {
+            return;
+          }
+          gameController.printMessage("Tapped dice: ${gameController.diceController.color}");
+          gameController.printMessage("Tapped token: ${token.type}");
+          gameController.handleTokenTap(token);
+        },
         borderRadius: BorderRadius.circular((dimensions[2] * 0.8) / 2),
         child: Card(
             elevation: 5,

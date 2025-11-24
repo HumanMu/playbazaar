@@ -24,8 +24,11 @@ class OfflineLudoController extends BaseLudoController {
   @override
   Future<void> onAwaitingTokenSelection(TokenType player, int diceValue) async {
     final currentPlayer = players.firstWhereOrNull((p) => p.tokenType == player);
+    debugPrint('isRobot: ${currentPlayer?.isRobot}');
+    debugPrint('isRobotOn: ${isRobotOn.value}');
     if (currentPlayer?.isRobot == true && isRobotOn.value) {
-      await diceController.playRobotTurn();
+      await diceController.selectRobotToken();
+      //await diceController.playRobotTurn();
     }
   }
 
@@ -118,41 +121,29 @@ class OfflineLudoController extends BaseLudoController {
 
   @override
   Future<void> handleTokenTap(Token token) async {
-    final diceController = Get.find<DiceController>();
 
-    if (token.tokenState == TokenState.home ||
-        (token.tokenState == TokenState.initial && diceController.diceValue != 6) ||
-        !diceController.moveState ||
-        token.type != diceController.diceColor) {
-      return;
-    }
-
-    if (!hasEnoughSpaceToMove(token, diceController.diceValue)) {
-      return;
-    }
-
-    diceController.setMoveState(false);
-    diceController.setDiceState(false);
+    bool basicCheck = basicTokenTapCheck(token);
+    if (!basicCheck) return;
 
     await moveToken(token, diceController);
-    bool giveAnotherTurn = diceController.giveAnotherTurn;
+    bool giveAnotherTurn = diceController.hasExtraTurn;
 
     if (!giveAnotherTurn || wasLastToken.value) {
       await Future.delayed(const Duration(milliseconds: 500), () {
-        diceController.nextPlayer();
+        diceController.processNextPlayer();
       });
     } else if (giveAnotherTurn) {
-      diceController.dice.giveAnotherTurn = false;
-      final currentPlayerIndex = players.indexWhere((p) => p.tokenType == diceController.diceColor);
+      diceController.dice.hasExtraTurn = false;
+      final currentPlayerIndex = players.indexWhere((p) => p.tokenType == diceController.color);
 
       if (currentPlayerIndex >= 0 &&
           players[currentPlayerIndex].isRobot == true &&
           isRobotOn.value) {
         await Future.delayed(const Duration(milliseconds: 800), () {
-          diceController.playRobotTurn();
+          diceController.processRobotTurn();
         });
       } else {
-        diceController.setDiceState(true);
+        diceController.setDiceRollState(true);
       }
     }
   }
@@ -160,7 +151,7 @@ class OfflineLudoController extends BaseLudoController {
   @override
   Future<void> moveToken(Token token, dynamic controller) async {
     final diceController = controller as DiceController;
-    final didKill = await gameService.moveToken(token, diceController.diceValue);
+    final didKill = await gameService.moveToken(token, diceController.diceValue, null, "", null);
 
     bool hasReached = token.positionInPath + diceController.diceValue == 56;
     if (hasReached) {
@@ -173,7 +164,7 @@ class OfflineLudoController extends BaseLudoController {
       }
     }
 
-    diceController.dice.giveAnotherTurn = didKill || hasReached || (diceController.diceValue == 6);
+    diceController.dice.hasExtraTurn = didKill || hasReached || (diceController.diceValue == 6);
   }
 
   List<double> getPosition(int row, int column, GlobalKey appBarKey) {

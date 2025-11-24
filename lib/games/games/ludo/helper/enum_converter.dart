@@ -20,7 +20,7 @@ TokenState string2TokenState(String s) {
 GameMode string2GameMode(String s) {
   GameMode gameMode = GameMode.values.firstWhere(
         (enumValue) => enumValue.toString().split('.').last == s,
-    orElse: () => throw ArgumentError('Invalid game mode --> string to TokenState: $s'),
+    orElse: () => throw ArgumentError('Invalid game mode --> string to GameMode: $s'),
   );
   return gameMode;
 }

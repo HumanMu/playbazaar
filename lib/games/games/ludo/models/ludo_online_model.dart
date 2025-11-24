@@ -8,15 +8,15 @@ import '../../../helper/enum.dart';
    final String hostId;
    final bool teamPlay;
    final bool enableRobots;
-   final GameProgress gameStatus;
+   final GameProgress gameState;
    final String? currentPlayerTurn;
    final int? diceValue;
-   final bool canRollDice;
-   final List<SingleOnlinePlayer> players;
+   final Map<String, SingleOnlinePlayer> players;
    final Timestamp? createdAt;
    final Timestamp? lastUpdated;
-   final List<SingleOnlinePlayer>? winnerOrder;
+   final List<String>? winnerOrder;
    final String gameCode;
+   final Map<String, int>? tokens;
 
    LudoOnlineModel({
      required this.gameId,
@@ -24,41 +24,49 @@ import '../../../helper/enum.dart';
      required this.gameCode,
      required this.teamPlay,
      required this.enableRobots,
-     required this.gameStatus,
+     required this.gameState,
      this.currentPlayerTurn,
      this.diceValue,
-     required this.canRollDice,
      required this.players,
      this.createdAt,
      this.lastUpdated,
      this.winnerOrder,
+     this.tokens,
    });
 
    factory LudoOnlineModel.fromMap(Map<String, dynamic> map) {
-
-
-     final sPlayers = (map['players'] as List<dynamic>? ?? [])
-         .map((e) => SingleOnlinePlayer.fromMap(Map<String, dynamic>.from(e as Map)))
-         .toList();
+     final rawPlayers = map['players'] as Map<String, dynamic>? ?? {};
+     final playersMap = rawPlayers.map(
+           (playerId, data) => MapEntry(
+         playerId,
+         SingleOnlinePlayer.fromMap(Map<String, dynamic>.from(data)),
+       ),
+     );
 
      final winners = (map['winnerOrder'] as List<dynamic>? ?? [])
-         .map((e) => SingleOnlinePlayer.fromMap(Map<String, dynamic>.from(e as Map)))
+         .map((e) => e.toString())
          .toList();
+
+     // Parse tokens map
+     Map<String, int>? tokensMap;
+     if (map['tokens'] != null) {
+       tokensMap = Map<String, int>.from(map['tokens']);
+     }
 
      return LudoOnlineModel(
        gameId: map['gameId'] ?? '',
        hostId: map['hostId'] ?? '',
        teamPlay: map['teamPlay'] ?? false,
        enableRobots: map['enableRobots'] ?? false,
-       gameStatus: string2Progress(map['gameStatus']),
+       gameState: string2Progress(map['gameState']),
        currentPlayerTurn: map['currentPlayerTurn'],
        diceValue: map['diceValue'],
-       canRollDice: map['canRollDice'] ?? false,
-       players: sPlayers,
+       players: playersMap,
        createdAt: map['createdAt'],
        lastUpdated: map['lastUpdated'],
        winnerOrder: winners,
        gameCode: map['gameCode'] ?? '',
+       tokens: tokensMap,
      );
    }
 
@@ -68,15 +76,17 @@ import '../../../helper/enum.dart';
        'hostId': hostId,
        'teamPlay': teamPlay,
        'enableRobots': enableRobots,
-       'gameStatus': progress2String(gameStatus),
+       'gameState': progress2String(gameState),
        'currentPlayerTurn': currentPlayerTurn,
        'diceValue': diceValue,
-       'canRollDice': canRollDice,
-       'players': players.map((player) => player.toMap()).toList(),
-       'createdAt': createdAt?? FieldValue.serverTimestamp(),
+       'players': players.map(
+             (playerId, player) => MapEntry(playerId, player.toMap()),
+       ),
+       'createdAt': createdAt ?? FieldValue.serverTimestamp(),
        'lastUpdated': lastUpdated ?? FieldValue.serverTimestamp(),
        'winnerOrder': winnerOrder ?? [],
        'gameCode': gameCode,
+       'tokens': tokens ?? {},
      };
    }
 
@@ -85,31 +95,31 @@ import '../../../helper/enum.dart';
      String? hostId,
      bool? teamPlay,
      bool? enableRobots,
-     GameProgress? gameStatus,
+     GameProgress? gameState,
      String? currentPlayerTurn,
      int? diceValue,
      bool? canRollDice,
-     List<SingleOnlinePlayer>? players,
+     Map<String, SingleOnlinePlayer>? players,
      Timestamp? createdAt,
      Timestamp? lastUpdated,
-     List<SingleOnlinePlayer>? winnerOrder,
+     List<String>? winnerOrder,
      String? gameCode,
+     Map<String, int>? tokens,
    }) {
      return LudoOnlineModel(
        gameId: gameId ?? this.gameId,
        hostId: hostId ?? this.hostId,
        teamPlay: teamPlay ?? this.teamPlay,
        enableRobots: enableRobots ?? this.enableRobots,
-       gameStatus: gameStatus ?? this.gameStatus,
+       gameState: gameState ?? this.gameState,
        currentPlayerTurn: currentPlayerTurn ?? this.currentPlayerTurn,
        diceValue: diceValue ?? this.diceValue,
-       canRollDice: canRollDice ?? this.canRollDice,
        players: players ?? this.players,
        createdAt: createdAt ?? this.createdAt,
        lastUpdated: lastUpdated ?? this.lastUpdated,
        winnerOrder: winnerOrder,
        gameCode: gameCode ?? this.gameCode,
+       tokens: tokens ?? this.tokens,
      );
    }
  }
-
