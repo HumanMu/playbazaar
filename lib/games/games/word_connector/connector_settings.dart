@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../../../constants/enums.dart';
 import 'controller/connector_play_controller.dart';
 import '../../../global_widgets/dialog/accept_dialog.dart';
@@ -59,7 +60,7 @@ class _WordConnectorSettingsScreenState extends State<WordConnectorSettingsScree
         backgroundColor: Colors.red,
         centerTitle: true,
         leading: IconButton(
-          onPressed: () => Get.offNamed('/mainGames'),
+          onPressed: () => context.go('/mainGames'),
           icon: Icon(Icons.arrow_back, color: Colors.white),
         ),
         title: Text(
@@ -227,7 +228,7 @@ class _WordConnectorSettingsScreenState extends State<WordConnectorSettingsScree
           size: 40,
         ),
         onTap: () {
-          Get.toNamed('/wordConnectorPlayScreen');
+          context.push('/wordConnectorPlayScreen');
           controller.loadGameData();
         },
       ),
@@ -244,7 +245,7 @@ class _WordConnectorSettingsScreenState extends State<WordConnectorSettingsScree
           children: [
             if (userRole != UserRole.normal)
               ElevatedButton(
-                onPressed: () => Get.toNamed('/addWordConnectorScreen'),
+                onPressed: () => context.push('/addWordConnectorScreen'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green,
                   foregroundColor: Colors.blueGrey.shade800,

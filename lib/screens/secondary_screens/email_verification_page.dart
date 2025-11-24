@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:playbazaar/global_widgets/dialog/accept_dialog.dart';
 import 'package:playbazaar/global_widgets/show_custom_snackbar.dart';
 import '../../controller/user_controller/auth_controller.dart';
@@ -44,9 +45,13 @@ class _EmailVerificationState extends State<EmailVerificationPage> {
         timer.cancel(); // Stop the timer once email is verified
         await askForNotificationPermission();
         await DeviceService().registerDevice();
-        Get.offAllNamed('/profile');
+        _navigateToProfilePage();
       }
     });
+  }
+
+  void _navigateToProfilePage() {
+    context.go('/profile');
   }
 
   Future<void> askForNotificationPermission()async {
@@ -109,7 +114,7 @@ class _EmailVerificationState extends State<EmailVerificationPage> {
                   onPressed: () {
                     resendTimer?.cancel();
                     emailCheckTimer?.cancel();
-                    Get.offAllNamed('/register');
+                    context.go('/register');
                   },
                 ),
               ],

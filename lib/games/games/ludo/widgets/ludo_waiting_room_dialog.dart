@@ -17,9 +17,10 @@ class LudoWaitingRoomDialog extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
       ),
+
       child: Container(
         width: double.infinity,
-        constraints: const BoxConstraints(maxWidth: 400),
+        constraints: const BoxConstraints(maxWidth: 450),
         padding: const EdgeInsets.all(16),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -63,10 +64,11 @@ class LudoWaitingRoomDialog extends StatelessWidget {
                   itemBuilder: (context, index) {
                     final player = controller.players[index];
                     return Container(
-                        padding: EdgeInsets.symmetric(horizontal: 12),
+                        padding: EdgeInsets.symmetric(horizontal: 5),
                         child: Stack(
                           children: [
                             ListTile(
+                              contentPadding: EdgeInsets.symmetric(horizontal: 0), // Don't remove this
                               leading: CircleAvatar(
                                 backgroundColor: Colors.white54,
                                 backgroundImage: player.avatarImg != null
@@ -79,14 +81,16 @@ class LudoWaitingRoomDialog extends StatelessWidget {
                               title: Row(
                                 children: [
                                   Text(splitBySpace(player.name!)[0]),
+                                  Spacer(),
                                   index == 0
-                                      ? Text(
-                                    " ${"host".tr}",
-                                    style: TextStyle(fontSize: 10, color: Colors.red),
+                                    ?Text(
+                                      " ${"host".tr}",
+                                      style: TextStyle(fontSize: 10, color: Colors.red),
                                   )
                                       : Text(""),
                                 ],
                               ),
+
                               trailing: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 mainAxisAlignment: MainAxisAlignment.end,
@@ -110,7 +114,7 @@ class LudoWaitingRoomDialog extends StatelessWidget {
             Row(
               children: [
                 ElevatedButton(
-                  onPressed: () => controller.removePlayer(controller.user!.uid),
+                  onPressed: () => controller.closeWaitingRoom(),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red,
                   ),

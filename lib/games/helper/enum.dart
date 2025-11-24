@@ -1,5 +1,5 @@
 enum GameProgress{
-  waitning,
+  waiting,
   inProgress,
   finished,
   cancelled

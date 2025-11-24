@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import '../../../admob/adaptive_banner_ad.dart';
 import 'widgets/animated_hangman_painter.dart';
@@ -119,7 +120,7 @@ class _HangmanPlayScreenState extends State<HangmanPlayScreen> with SingleTicker
   Widget _buildAppBar() {
     return AppBar(
       leading: IconButton(
-        onPressed: () => Get.offNamed('/hangmanPlaySettings'),
+        onPressed: () => context.go('/hangmanPlaySettings'),
         icon: const Icon(Icons.arrow_back, color: Colors.white),
       ),
       title: Text(

@@ -4,7 +4,7 @@ class LocalStringsFa extends Translations {
 
   @override
   Map<String, Map<String, String>> get keys => {
-    'fa_AF': {
+    'fa_IR': {
       'app_name' : 'Play Bazaar',
       'notification_title' : 'Play Bazaar',
       'language_shortcut': 'fa',
@@ -196,7 +196,7 @@ class LocalStringsFa extends Translations {
       'current_data': 'داده‌های فعلی',
       'words': 'کلمات',
       'letters': 'حروف',
-      'empty_field': 'فیلد خالی است',
+      'empty_field': 'جایگاه متن خالی است',
       'word_already_exist': 'این کلمه قبلاً وجود دارد',
       'nothing_to_save': 'چیز جدیدی برای ذخیره وجود ندارد',
       'max_level_100': 'سطح باید کمتر از ۱۰۰ و بزرگتر از ۰ باشد',
@@ -284,6 +284,8 @@ class LocalStringsFa extends Translations {
       'declined_friend_request' : 'درخواست دستی شما را رد کرد',
       'received_friend_request_body': 'دریافت درخواست جدید از طرف',
       'received_friend_request_title': 'درخواست دوستی جدید',
+      'user_not_accepted_request': 'این کاربر هنوز درخواست دوستی شما را قبول نکرده است',
+      'not_friend_yet': 'متأسفیم، ممکن است هنوز با این کاربر دوست نباشید',
       'removed_from_friends' : 'از لیست دوستان شما حذف شد',
       'something_went_wrong' : 'خطایی رخ داد, لطفا دوباره تلاش کنید',
       'wrong_group_password' : 'رمز را که وارد کردید اشتباه بود!',
@@ -321,6 +323,7 @@ class LocalStringsFa extends Translations {
       'chat_creation_failed': 'ایجاد چت ناموفق بود',
       'failed_to_accept_friend_request': 'قبول درخواست دوستی ناموفق بود',
       'adding_word_succed': 'افزودن کلمات جدید با موفقیت انجام شد',
+      'reading_your_profile': 'در حال خواندن پروفایل شما...',
 
 
       // سیاست حفظ حریم خصوصی

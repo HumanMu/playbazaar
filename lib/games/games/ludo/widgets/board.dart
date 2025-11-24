@@ -4,9 +4,15 @@ import '../../../../config/orientation_manager.dart';
 
 class LudoBoard extends StatelessWidget {
   final List<List<GlobalKey>> keyReferences;
+  final List<Color>? playerColors;
+
 
   // Constructor
-  const LudoBoard({super.key, required this.keyReferences});
+  const LudoBoard({
+    super.key,
+    required this.keyReferences,
+    this.playerColors
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +33,7 @@ class LudoBoard extends StatelessWidget {
             child: _BuildLudoBoard(
               boardSize: boardSize,
               keyReferences: keyReferences,
+              playerColors: playerColors,
             ),
           ),
         );
@@ -38,10 +45,12 @@ class LudoBoard extends StatelessWidget {
 class _BuildLudoBoard extends StatelessWidget {
   final double boardSize;
   final List<List<GlobalKey>> keyReferences;
+  final List<Color>? playerColors;
 
   const _BuildLudoBoard({
     required this.boardSize,
     required this.keyReferences,
+    this.playerColors
   });
 
   @override
@@ -55,7 +64,7 @@ class _BuildLudoBoard extends StatelessWidget {
         RepaintBoundary(
           child: CustomPaint(
             size: Size(boardSize, boardSize),
-            painter: LudoBoardPainter(),
+            painter: LudoBoardPainter(pColors: playerColors),
           ),
         ),
 
@@ -72,8 +81,8 @@ class _BuildLudoBoard extends StatelessWidget {
           child: Row(
             children: List.generate(15, (col) {
               return Expanded(
-                key: keyReferences[row][col],
                 child: SizedBox(
+                  key: keyReferences[row][col],
                   height: double.infinity,
                   width: double.infinity,
                   // Uncomment for debugging cell positions
@@ -89,13 +98,12 @@ class _BuildLudoBoard extends StatelessWidget {
 }
 
 class LudoBoardPainter extends CustomPainter {
-  // Define colors for player zones
-  static const Map<String, Color> playerColors = {
-    'red': Colors.red,
-    'green': Colors.green,
-    'yellow': Colors.yellow,
-    'blue': Colors.blue,
-  };
+  final List<Color> playersColors;
+
+  LudoBoardPainter({
+    List<Color>? pColors,
+  }) : playersColors = pColors ??
+      [Colors.red, Colors.green, Colors.yellow, Colors.blue];
 
   // Board layout constants
   static const int gridSize = 15;
@@ -118,10 +126,7 @@ class LudoBoardPainter extends CustomPainter {
     fillPaint.color = Colors.white;
     canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), fillPaint);
 
-    // Draw player corner areas
     _drawPlayerCorners(canvas, cellSize, fillPaint, borderPaint);
-
-    // Draw the home areas for tokens
     _drawHomeAreas(canvas, cellSize, fillPaint, borderPaint);
 
     // Draw the paths through the board
@@ -130,28 +135,26 @@ class LudoBoardPainter extends CustomPainter {
     // Draw the center area with colored triangles
     _drawCenterArea(canvas, cellSize, fillPaint, borderPaint);
 
-    // Draw the safe spots
     _drawSafeSpots(canvas, cellSize);
-
-    // Draw grid lines
     _drawGridLines(canvas, size, cellSize, borderPaint);
   }
 
   void _drawPlayerCorners(Canvas canvas, double cellSize, Paint fillPaint, Paint borderPaint) {
+
+    // Bottom-left (Red)
+    fillPaint.color = playersColors[0]; //playerColors['red']!;
+    _drawCorner(canvas, 0, cellSize * (gridSize - cornerSize), cellSize, fillPaint, borderPaint);
+
     // Top-left (Green)
-    fillPaint.color = playerColors['green']!;
+    fillPaint.color = playersColors[1]; //playerColors['green']!;
     _drawCorner(canvas, 0, 0, cellSize, fillPaint, borderPaint);
 
     // Top-right (Yellow)
-    fillPaint.color = playerColors['yellow']!;
+    fillPaint.color = playersColors[2]; //playerColors['yellow']!;
     _drawCorner(canvas, cellSize * (gridSize - cornerSize), 0, cellSize, fillPaint, borderPaint);
 
-    // Bottom-left (Red)
-    fillPaint.color = playerColors['red']!;
-    _drawCorner(canvas, 0, cellSize * (gridSize - cornerSize), cellSize, fillPaint, borderPaint);
-
     // Bottom-right (Blue)
-    fillPaint.color = playerColors['blue']!;
+    fillPaint.color = playersColors[3]; //playerColors['blue']!;
     _drawCorner(canvas, cellSize * (gridSize - cornerSize),
         cellSize * (gridSize - cornerSize), cellSize, fillPaint, borderPaint);
   }
@@ -206,14 +209,15 @@ class LudoBoardPainter extends CustomPainter {
 
     // Updated positions to be in the middle of cells rather than at grid intersections
     final tokenPositions = [
-      // Green (top-left) - positions and color - centered in cells
-      {"positions": [[2.5, 2.5], [2.5, 3.5], [3.5, 2.5], [3.5, 3.5]], "color": playerColors['green']},
-      // Yellow (top-right) - positions and color - centered in cells
-      {"positions": [[11.5, 2.5], [11.5, 3.5], [12.5, 2.5], [12.5, 3.5]], "color": playerColors['yellow']},
       // Red (bottom-left) - positions and color - centered in cells
-      {"positions": [[2.5, 11.5], [2.5, 12.5], [3.5, 11.5], [3.5, 12.5]], "color": playerColors['red']},
+      {"positions": [[2.5, 11.5], [2.5, 12.5], [3.5, 11.5], [3.5, 12.5]], "color": playersColors[0]},
+      // Green (top-left) - positions and color - centered in cells
+      {"positions": [[2.5, 2.5], [2.5, 3.5], [3.5, 2.5], [3.5, 3.5]], "color": playersColors[1]},
+
+      // Yellow (top-right) - positions and color - centered in cells
+      {"positions": [[11.5, 2.5], [11.5, 3.5], [12.5, 2.5], [12.5, 3.5]], "color": playersColors[2]},
       // Blue (bottom-right) - positions and color - centered in cells
-      {"positions": [[11.5, 11.5], [11.5, 12.5], [12.5, 11.5], [12.5, 12.5]], "color": playerColors['blue']},
+      {"positions": [[11.5, 11.5], [11.5, 12.5], [12.5, 11.5], [12.5, 12.5]], "color": playersColors[3]},
     ];
 
     // Draw token circles
@@ -307,10 +311,11 @@ class LudoBoardPainter extends CustomPainter {
     final center = Offset(centerX, centerY);
 
     // Draw triangles
-    _drawTriangle(canvas, center, topLeft, topRight, playerColors['yellow']!);
-    _drawTriangle(canvas, center, topRight, bottomRight, playerColors['blue']!);
-    _drawTriangle(canvas, center, bottomRight, bottomLeft, playerColors['red']!);
-    _drawTriangle(canvas, center, bottomLeft, topLeft, playerColors['green']!);
+    _drawTriangle(canvas, center, bottomRight, bottomLeft, playersColors[0] ); //playerColors['red']!);
+    _drawTriangle(canvas, center, bottomLeft, topLeft, playersColors[1]); //playerColors['green']!);
+
+    _drawTriangle(canvas, center, topLeft, topRight, playersColors[2]); //playerColors['yellow']!);
+    _drawTriangle(canvas, center, topRight, bottomRight, playersColors[3]); //playerColors['blue']!);
   }
 
   void _drawTriangle(Canvas canvas, Offset p1, Offset p2, Offset p3, Color color) {

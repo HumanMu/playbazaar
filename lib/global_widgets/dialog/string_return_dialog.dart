@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:playbazaar/global_widgets/show_custom_snackbar.dart';
 class StringReturnDialog extends StatelessWidget {
   final String title;
   final String? description;
   final String? hintText;
   final Color? btnApproveColor;
   final Color? btnDeclineColor;
+  final bool? canBeEmpty;
 
   const StringReturnDialog({
     required this.title,
@@ -13,6 +15,7 @@ class StringReturnDialog extends StatelessWidget {
     this.hintText,
     this.btnApproveColor,
     this.btnDeclineColor,
+    this.canBeEmpty,
     super.key
   });
 
@@ -62,10 +65,10 @@ class StringReturnDialog extends StatelessWidget {
         ),
         TextButton(
           onPressed: () {
+            bool result = _handleApproveClick(controller.text);
+            if(result == false) return;
             Navigator.of(context).pop(
-              controller.text.isEmpty
-                ? null
-                : controller.text
+              controller.text.trim()
             );
           },
           child: Text('btn_approve'.tr,
@@ -76,6 +79,16 @@ class StringReturnDialog extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  bool _handleApproveClick(String text) {
+    if( canBeEmpty == false && text.trim().isEmpty ) {
+      showCustomSnackbar('empty_field'.tr, false);
+      return false;
+    }
+    else {
+      return true;
+    }
   }
 }
 

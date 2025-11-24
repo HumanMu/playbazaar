@@ -2,12 +2,15 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart' show debugPrint;
-import 'package:playbazaar/games/games/ludo/helper/enum_converter.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:playbazaar/games/games/ludo/models/ludo_creattion_params.dart';
+import 'package:playbazaar/global_widgets/show_custom_snackbar.dart';
 import '../../../helper/enum.dart';
+import '../../../helper/enum_converter.dart';
 import '../helper/enums.dart';
 import '../models/ludo_online_model.dart';
-import '../models/ludo_player.dart';
 import '../models/position.dart';
+import '../models/single_online_player.dart';
 import '../models/token.dart';
 import 'base_ludo_service.dart';
 
@@ -23,119 +26,161 @@ class OnlineLudoService extends BaseLudoService {
     return this;
   }
 
+  Future<void> updateDiceValue(String gameId, String nextPlayerId) async {
+    final gameRef = ludoReference.collection('inProgress').doc(gameId);
 
-  Future<String?> createLudoGame({
-    required bool teamPlay,
-    bool enableRobots = false,
-    required String gameCode,
-  }) async {
+    // Build single update with all changes
+    await gameRef.update ({
+      'currentPlayerTurn': nextPlayerId,
+      'lastUpdated': FieldValue.serverTimestamp(),
+    });
+  }
+
+  Future<String?> createLudoGame(LudoCreationParamsModel params) async {
     try {
       if (user == null) throw Exception('No authenticated user found');
 
       final DocumentReference gameRef = ludoReference.collection('inProgress').doc();
-
-      LudoOnlineModel gameData = LudoOnlineModel(
-          gameId: gameRef.id,
-          hostId: user!.uid,
-          teamPlay: teamPlay,
-          enableRobots: enableRobots,
-          gameStatus: GameProgress.waitning,
-          currentPlayerTurn: null,
-          diceValue: null,
-          canRollDice: false,
-          gameTokens: [],
-          teamAssignments: {},
-          winnerOrder: [],
-          gameCode: gameCode,
+      final SingleOnlinePlayer singlePlayer = SingleOnlinePlayer(
+        playerId: user!.uid,
+        name: user!.displayName ?? 'Player',
+        teamId: null,
+        isConnected: true,
+        finishedTokensLength: 0,
+        color: 'red',
       );
 
-      // Create the game document first
-      await gameRef.set(gameData.toMap());
-      await _addPlayerToGame(gameRef.id);
+      // Initialize tokens map for first player
+      Map<String, int> initialTokens = {
+        'p0_t0': -1,
+        'p0_t1': -1,
+        'p0_t2': -1,
+        'p0_t3': -1,
+      };
 
+      LudoOnlineModel gameData = LudoOnlineModel(
+        gameId: gameRef.id,
+        hostId: user!.uid,
+        teamPlay: params.teamPlay,
+        enableRobots: params.enableRobots,
+        gameState: GameProgress.waiting,
+        currentPlayerTurn: user!.uid,
+        diceValue: null,
+        players: {user!.uid: singlePlayer},
+        winnerOrder: [],
+        gameCode: params.gameCode!,
+        tokens: initialTokens,
+      );
+
+      await gameRef.set(gameData.toMap());
       return gameData.gameId;
 
     } catch (e) {
-      debugPrint("Creating game failed with error - online ludo service: $e");
-      throw Exception('Failed to create game - online ludo service: $e');
+      debugPrint("Creating game failed with error: $e");
+      throw Exception('Failed to create game: $e');
     }
   }
 
-
-  
-  Future<String?> joinExistingGame(String gameCode) async {
+  Future<String?> joinExistingGame(String inviteCode) async {
     try {
       if (user == null) throw Exception('No authenticated user found');
 
-      LudoOnlineModel? gameDocument = await searchByGameCode(gameCode);
+      final gameQuery = await ludoReference
+          .collection('inProgress')
+          .where('gameCode', isEqualTo: inviteCode.trim())
+          .limit(1)
+          .get();
 
-      if (gameDocument == null) {
-        debugPrint("Game not found with code: $gameCode");
+      if (gameQuery.docs.isEmpty) {
+        debugPrint("Game not found");
         return null;
       }
 
-      if (gameDocument.gameStatus != GameProgress.waitning) {
-        throw Exception('Game is no longer accepting players');
-      }
+      final gameRef = gameQuery.docs.first.reference;
 
-      // Check if player already exists in this game
-      final gameRef = ludoReference.collection('inProgress').doc(gameDocument.gameId);
-      final existingPlayer = await gameRef.collection('players').doc(user!.uid).get();
+      return await FirebaseFirestore.instance.runTransaction<String?>((transaction) async {
+        final gameSnapshot = await transaction.get(gameRef);
 
-      if (existingPlayer.exists) {
-        await gameRef.collection('players').doc(user!.uid).update({
-          'isConnected': true,
+        if (!gameSnapshot.exists) {
+          throw Exception("Game was deleted");
+        }
+
+        final gameData = LudoOnlineModel.fromMap(gameSnapshot.data()!);
+
+        // Validation checks...
+        if (gameData.players.containsKey(user!.uid)) {
+          showCustomSnackbar("User already in the game", true);
+          return gameData.gameId;
+        }
+
+        if (gameData.players.length >= 4) {
+          showCustomSnackbar("Game is full", false);
+          throw Exception("Game is full");
+        }
+
+        if (gameData.gameState == GameProgress.inProgress) {
+          showCustomSnackbar("Game already started", false);
+          throw Exception("Game already started");
+        }
+
+        // Calculate available colors and team
+        final assignedColors = gameData.players.values.map((p) => p.color).toSet();
+        String? teamId;
+        List<String> availableColors;
+
+        if (gameData.teamPlay) {
+          final team1Count = gameData.players.values.where((p) => p.teamId == "1").length;
+          final team2Count = gameData.players.values.where((p) => p.teamId == "2").length;
+          teamId = team1Count <= team2Count ? "1" : "2";
+          final teamColors = teamId == "1" ? ["red", "yellow"] : ["green", "blue"];
+          availableColors = teamColors.where((c) => !assignedColors.contains(c)).toList();
+        } else {
+          availableColors = ["red", "yellow", "green", "blue"]
+              .where((c) => !assignedColors.contains(c))
+              .toList();
+        }
+
+        if (availableColors.isEmpty) {
+          throw Exception("No available ${gameData.teamPlay ? 'team ' : ''}colors");
+        }
+
+        final newPlayer = SingleOnlinePlayer(
+          playerId: user!.uid,
+          name: user!.displayName ?? 'Player',
+          teamId: teamId,
+          color: availableColors.first,
+          isConnected: true,
+          finishedTokensLength: 0,
+        );
+
+        final newPlayerIndex = gameData.players.length;
+
+        // Initialize tokens for new player
+        Map<String, dynamic> tokenUpdates = {};
+        for (int i = 0; i < 4; i++) {
+          tokenUpdates['tokens.p${newPlayerIndex}_t$i'] = -1;
+        }
+
+        // ✅ Update using Map structure with userId as key
+        transaction.update(gameRef, {
+          'players.${user!.uid}': newPlayer.toMap(),
+          ...tokenUpdates,
+          'lastUpdated': FieldValue.serverTimestamp(),
         });
 
-      } else {
-        await _addPlayerToGame(gameDocument.gameId);
-      }
-
-      return gameDocument.gameId;
+        return gameData.gameId;
+      });
 
     } catch (e) {
-      debugPrint("Joining game failed with error: $e");
+      debugPrint("Error joining game: $e");
       return null;
     }
-  }
-
-
-
-  Future<void> _addTokens2Firestore(String gameId, TokenType tokenType) async {
-    final gameRef = ludoReference.collection('inProgress').doc(gameId);
-
-    await FirebaseFirestore.instance.runTransaction((transaction) async {
-      final gameDoc = await transaction.get(gameRef);
-      if (!gameDoc.exists) return;
-
-      final gameData = LudoOnlineModel.fromMap(gameDoc.data()!);
-      List<dynamic> currentTokens = List.from(gameData.gameTokens);
-
-      // Each player gets 4 tokens, IDs should continue from the last
-      final startTokenId = currentTokens.length;
-
-      // Add 4 new tokens for this player
-      for (int i = 0; i < 4; i++) {
-        final tokenId = startTokenId + i;
-        currentTokens.add({
-          'id': tokenId,
-          'state': 'initial',
-          'positionInPath': 0,
-        });
-      }
-
-      // Increment player count safely
-      transaction.update(gameRef, {
-        'gameTokens': currentTokens,
-      });
-    });
   }
 
 
   Future<void> initializeLocalTokens(int numberOfPlayer, {bool teamPlay = false}) async {
     isTeamPlayEnabled = teamPlay;
 
-    // Offline token configuration
     final playerConfigs = {
       1: [TokenType.red],
       2: [TokenType.yellow, TokenType.red],
@@ -163,10 +208,8 @@ class OnlineLudoService extends BaseLudoService {
       }
     }
 
-    // Trigger UI update
     gameTokens.refresh();
   }
-
 
 
   List<Token> _createHomeTokensForType(TokenType type) {
@@ -186,137 +229,90 @@ class OnlineLudoService extends BaseLudoService {
     });
   }
 
-  Future<LudoOnlineModel?> searchByGameCode(String gameCode) async {
-    try {
-      final querySnapshot = await ludoReference
-          .collection('inProgress')
-          .where('gameCode', isEqualTo: gameCode.trim())
-          .limit(1)
-          .get();
-
-      if (querySnapshot.docs.isEmpty) {
-        return null;
-      }
-
-      final doc = querySnapshot.docs.first;
-
-      return LudoOnlineModel.fromMap({
-        ...doc.data(),
-        'id': doc.id,
-      });
-    } catch (e) {
-      debugPrint("Error searching game: $e");
-      return null;
-    }
-  }
-
-
-  Future<void> _addPlayerToGame(String gameId) async {
-    final gameRef = ludoReference.collection('inProgress').doc(gameId);
-
-    final gameDoc = await gameRef.get();
-    final playersSnapshot = await gameRef.collection('players').get();
-
-    if (!gameDoc.exists) throw Exception('Game not found');
-
-    final gameData = LudoOnlineModel.fromMap(gameDoc.data()!);
-    //final existingPlayers = playersSnapshot.docs.length;
-
-    if (gameData.gameStatus != GameProgress.waitning) {
-      throw Exception('Game is full');
-    }
-
-    // Determine available token type
-    final existingTokenTypes = playersSnapshot.docs
-        .map((doc) => doc.data()['tokenType'] as String)
-        .toList();
-
-    final availableTypes = ['green', 'yellow', 'blue', 'red'];
-    final assignedTypeStr = availableTypes.firstWhere(
-          (type) => !existingTokenTypes.contains(type),
-      orElse: () => throw Exception('No available token types'),
-    );
-
-    final tokenType = string2TokenType(assignedTypeStr);
-
-    // Create player data
-    LudoPlayer playerData = LudoPlayer(
-      playerId: user!.uid,
-      name: user!.displayName ?? 'Player',
-      avatarImg: user!.photoURL ?? '',
-      tokenType: tokenType,
-      teamId: null,
-      isRobot: false,
-      isConnected: true,
-      numberOfreachedHome: 0,
-      endedPosition: 0,
-      hasFinished: false,
-    );
-
-    await _addTokens2Firestore(gameId, tokenType);
-    await gameRef.collection('players').doc(user!.uid).set(playerData.toMap());
-  }
-
-
-
-  // Update game state in Firebase
-  Future<void> updateGameState(Map<String, dynamic> updates, String gameId) async {
-    try {
-      final gameRef = ludoReference.collection('inProgress').doc(gameId);
-      updates['lastUpdated'] = FieldValue.serverTimestamp();
-      await gameRef.update(updates);
-    } catch (e) {
-      debugPrint("Failed to update game state: $e");
-    }
-  }
-
-
 
   Future<void> startGame(String gameId) async {
+    try {
+      final gameRef = ludoReference.collection('inProgress').doc(gameId);
 
-  }
+      // ✅ Get first player (host) to set turn
+      final gameSnapshot = await gameRef.get();
+      final gameData = LudoOnlineModel.fromMap(gameSnapshot.data()!);
 
+      await gameRef.update({
+        'gameState': gameProgress2String(GameProgress.inProgress),
+        'currentPlayerTurn': gameData.hostId,
+        'lastUpdated': FieldValue.serverTimestamp(),
+      });
 
-
-  @override
-  Future<bool> moveToken(Token token, int steps) async {
-
-    if (!canMoveToken(token, steps)) return false;
-
-    // Send move to server/other players first
-    //await _sendMoveToServer(token, steps);
-
-    bool didKill = false;
-
-    if (token.tokenState == TokenState.initial && steps == 6) {
-      await moveTokenFromInitial(token);
-    } else {
-      didKill = await _moveTokenAlongPath(token, steps);
+    } catch (e) {
+      debugPrint("Failed to start game: $e");
     }
-
-    return didKill;
   }
 
+  Future<void> syncMoveToFirestore({
+    required Token token,
+    required int diceValue,
+    required String gameId,
+    Token? killedToken,
+    required String nextPlayerTurn,
+    required bool hasReached,
+    required bool isLastReachedToken,
+  }) async {
+    try {
+      final gameRef = ludoReference.collection('inProgress').doc(gameId);
 
-  Future<bool> _moveTokenAlongPath(Token token, int steps) async {
-    if (!isValidToken(token)) return false;
+      // Calculate player and token indices
+      final playerIndex = _getPlayerIndexFromToken(token);
+      final localTokenIndex = token.id % 4;
 
-    final newPositionInPath = token.positionInPath + steps;
-    final pathLength = getPathLength(token.type);
+      // Determine Firestore position value
+      int newPosition = token.positionInPath + diceValue;
+      int firestorePosition = hasReached ? 56 : newPosition;
+      bool isInitialToken = token.tokenState == TokenState.initial && diceValue == 6;
 
-    // Check if move does not goes beyond the path length
-    if (newPositionInPath >= pathLength) return false;
-    final destination = getPosition(token.type, newPositionInPath);
+      // Build single update with all changes
+      Map<String, dynamic> updates = {
+        'tokens.p${playerIndex}_t$localTokenIndex': isInitialToken ? 0 : firestorePosition,
+        'currentPlayerTurn': nextPlayerTurn,
+        'diceValue': diceValue,
+        'lastUpdated': FieldValue.serverTimestamp(),
+      };
 
-    // Calculate what will happen at destination
-    final moveResult = calculateMoveResult(token, destination);
+      // If a token was killed, reset it
+      if (killedToken != null) {
+        final killedPlayerIndex = _getPlayerIndexFromToken(killedToken);
+        final killedTokenIndex = killedToken.id % 4;
+        updates['tokens.p${killedPlayerIndex}_t$killedTokenIndex'] = -1;
+      }
 
-    await animateTokenMovement(token, steps);
-    bool didKill = await handleMoveResult(token, newPositionInPath, destination, moveResult);
+      if (isLastReachedToken) {
+        updates['winnerOrder'] = FieldValue.arrayUnion([user!.displayName]);
+      }
 
-    return didKill;
+      if(hasReached) {
+        updates['players.${user!.uid}.finishedTokensLength'] = FieldValue.increment(1);
+      }
+
+      await gameRef.update(updates);
+
+    } catch (e) {
+      debugPrint("❌ Failed to sync move to Firestore: $e");
+      rethrow;
+    }
   }
 
+  // Helper to determine player index from token type
+  int _getPlayerIndexFromToken(Token token) {
+    return _playerIndexMap[token.type] ?? 0;
+  }
+
+// Add this map to track player positions in the array
+  final Map<TokenType, int> _playerIndexMap = {};
+
+  void setPlayerIndexMap(Map<TokenType, int> mapping) {
+    _playerIndexMap.clear();
+    _playerIndexMap.addAll(mapping);
+  }
 
   Future<void> leaveGame(String? gameId) async {
 
@@ -340,37 +336,21 @@ class OnlineLudoService extends BaseLudoService {
     await batch.commit();
   }
 
-  // Restart game
   Future<void> restartGame(String gameId) async {
 
   }
 
-
-
-  Stream<List<LudoPlayer>> listenToPlayersChanges(String gameId) {
-    return ludoReference
-        .collection('inProgress')
-        .doc(gameId)
-        .collection('players')
-        .orderBy('joinedAt')
-        .snapshots()
-        .map((snapshot) {
-      return snapshot.docs
-          .map((doc) => LudoPlayer.fromMap(doc.data()))
-          .toList();
-    }).handleError((error) {
-      debugPrint('Error in getPlayersStreamByGameId: $error');
-      return <LudoPlayer>[];
-    });
-  }
-
   Stream<LudoOnlineModel?> listenToGameStateChanges(String gameId) {
+    debugPrint("Listening to game state changes for game ID: $gameId");
+
     return ludoReference
         .collection('inProgress')
         .doc(gameId)
         .snapshots()
         .map((doc) {
       try {
+        debugPrint("Listening to game state changes for game ID: ${doc.data()}");
+
         if (doc.exists && doc.data() != null) {
           return LudoOnlineModel.fromMap(doc.data()!);
         }
@@ -384,10 +364,14 @@ class OnlineLudoService extends BaseLudoService {
     });
   }
 
-
   @override
   void onClose() {
     leaveGame(null);
     super.onClose();
+  }
+
+  @override
+  Future<bool> moveToken(Token token, int steps, String? gameId, String nextPlayer, Token? didKill) {
+    return  Future.value(Future.delayed(1.microseconds, () => true));
   }
 }

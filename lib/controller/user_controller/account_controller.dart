@@ -2,10 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:go_router/go_router.dart';
 import 'package:playbazaar/services/collection_services.dart';
 import 'package:playbazaar/services/hive_services/hive_user_service.dart';
 import 'package:playbazaar/services/push_notification_service/device_service.dart';
 import '../../api/services/firestore_services.dart';
+import '../../config/routes/router_provider.dart';
 import '../../global_widgets/show_custom_snackbar.dart';
 import '../../global_widgets/dialog/string_return_dialog.dart';
 import '../../helper/sharedpreferences/sharedpreferences.dart';
@@ -48,7 +50,8 @@ class AccountController extends GetxController {
 
       await user.sendEmailVerification();
       showCustomSnackbar('verification_email_sent'.tr, true, timing: 7);
-      Get.offAllNamed('/emailVerification');
+      rootNavigatorKey.currentContext?.push('/emailVerification');
+
       showCustomSnackbar("registration_succed".tr, true);
       return true;
     } on FirebaseAuthException catch (e) {
@@ -74,7 +77,6 @@ class AccountController extends GetxController {
       if (userCredential.user != null) {
         await SharedPreferencesManager.setBool(SharedPreferencesKeys.userLoggedInKey, true);
         await DeviceService().handleDeviceNotificationOnLogin();
-        Get.offNamed('/profile');
       }
 
     }on FirebaseAuthException catch (e) {
@@ -125,8 +127,6 @@ class AccountController extends GetxController {
       );
 
       await HiveUserService().clearRecentUsers();
-
-      // Reauthenticate
       await currentUser.reauthenticateWithCredential(credential);
 
       // 1. Remove this user from friends' friend lists
@@ -139,9 +139,7 @@ class AccountController extends GetxController {
 
       // 4. Delete Firebase Authentication user
       await currentUser.delete();
-
       await FirebaseAuth.instance.signOut();
-      Get.offAll('/login');
       showCustomSnackbar("account_deletion_succed".tr, true);
 
     } on FirebaseAuthException catch (e) {
@@ -150,6 +148,7 @@ class AccountController extends GetxController {
       Get.snackbar('Error', 'An unexpected error occurred: $e');
     }
   }
+
 
   void _handleFirebaseAuthException(FirebaseAuthException e) {
     switch (e.code) {

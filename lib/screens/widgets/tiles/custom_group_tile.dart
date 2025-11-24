@@ -2,11 +2,13 @@ import 'dart:core';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:playbazaar/controller/group_controller/group_controller.dart';
 import 'package:playbazaar/functions/string_cases.dart';
 import 'package:playbazaar/helper/encryption/encrypt_string.dart';
 import 'package:playbazaar/models/group_model.dart';
 import 'package:playbazaar/global_widgets/show_custom_snackbar.dart';
+import '../../../global_widgets/circle_avatar.dart';
 import '../../../models/DTO/add_group_member.dart';
 import '../../../global_widgets/text_boxes/text_box_decoration.dart';
 import '../dialogs/accept_result_dialog.dart';
@@ -86,16 +88,24 @@ class _GroupTileState extends State<CustomGroupTile> {
   }
 
   void navigateToGroupChat() {
-    Get.toNamed('/group_chat', arguments: {
+
+    final bool isPublicValue =
+    (mounted)
+        ? requestedGroup.isPublic
+        : widget.isPublic;
+
+    final path = '/group_chat/${widget.groupId}';
+    final queryData = Uri(queryParameters: {
       'chatId': widget.groupId,
       'chatName': widget.groupName,
-      'userName': widget.admin,
-      'isPublic': widget.isPublic
-    });
+      'adminName': widget.admin,
+      'isPublic': isPublicValue.toString(),
+    }).query;
+    context.push('$path?$queryData');
   }
 
   bool isPublic() {
-    return requestedGroup.isPublic? true : false;
+    return widget.isPublic? true : false;
   }
 
 
@@ -123,18 +133,7 @@ class _GroupTileState extends State<CustomGroupTile> {
           color: Colors.white,
         ),
         child: ListTile(
-          leading: CircleAvatar(
-            radius: 25,
-            backgroundColor: Colors.red,
-            child: Text(
-              widget.groupName.substring(0, 1).toUpperCase(),
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w300,
-              ),
-            ),
-          ),
+          leading: circleAvatar(widget.groupName),
           title: Text(capitalizeFirstLetter(widget.groupName),
             style: const TextStyle(
               fontWeight: FontWeight.bold,
@@ -150,7 +149,7 @@ class _GroupTileState extends State<CustomGroupTile> {
           trailing: IconButton(
             icon: Icon(Icons.more_vert),
             onPressed: (){
-              leavingGroupDialog(_handleLeaveGroup);
+              leavingGroupDialog(_handleLeaveGroup, context);
             }
           ),
         ),
@@ -229,12 +228,16 @@ class _GroupTileState extends State<CustomGroupTile> {
         isPublic: widget.isPublic
     );
 
-    groupController.removeGroupFromUser(
-        memberDto,
-        FirebaseAuth.instance.currentUser!.uid)
-        .whenComplete(() {
-      Get.offNamed('/home');
+    await groupController.removeGroupFromUser(
+      memberDto,
+      FirebaseAuth.instance.currentUser!.uid)
+      .whenComplete(() {
+        goHome();
     });
+  }
+
+  void goHome() {
+    context.go('/home');
   }
 
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:playbazaar/games/games/word_connector/controller/connector_play_controller.dart';
 import 'package:playbazaar/games/games/word_connector/widgets/letter_circle.dart';
 import 'package:playbazaar/games/games/word_connector/widgets/word_connector_grid.dart';
@@ -25,7 +26,7 @@ class WordConnectorPlayScreen extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
           ),
           child: IconButton(
-            onPressed: () => Get.offNamed('/wordConnectorSettingScreen'),
+            onPressed: () => context.go('/wordConnectorSettingScreen'),
             icon: Icon(Icons.arrow_back, color: Colors.white),
           ),
         ),

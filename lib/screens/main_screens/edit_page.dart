@@ -1,10 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:playbazaar/controller/user_controller/auth_controller.dart';
 import 'package:playbazaar/controller/user_controller/user_controller.dart';
 import 'package:playbazaar/global_widgets/show_custom_snackbar.dart';
 import '../../api/Authentication/auth_service.dart';
+import '../../config/routes/static_app_routes.dart';
 import '../../models/DTO/user_profile_dto.dart';
 import '../widgets/text_boxes/text_inputs.dart';
 
@@ -197,6 +199,10 @@ class _EditPage extends State<EditPage> {
     else{
       showCustomSnackbar('didnt_made_changes'.tr, false);
     }
-    Get.offNamed('/profile');
+    navigateToProfile();
+  }
+
+  void navigateToProfile() {
+    context.go(AppRoutes.profile);
   }
 }

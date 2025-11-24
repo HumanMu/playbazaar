@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:playbazaar/controller/user_controller/account_controller.dart';
 import '../../../controller/settings_controller/notification_settings_controller.dart';
 import 'package:playbazaar/screens/widgets/settings_switch.dart';
 
-import '../../languages/custom_language.dart';
+import '../../languages/language_dialog.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -14,7 +15,7 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsState extends State<SettingsPage> {
-  final NotificationSettingsController settingsController = Get.find<NotificationSettingsController>();
+  late final NotificationSettingsController notificationController = Get.put(NotificationSettingsController());
   final AccountController accountController = Get.put(AccountController());
   var isSignedIn = false.obs;
   int selectedCategoryIndex = 0;
@@ -136,8 +137,8 @@ class _SettingsState extends State<SettingsPage> {
             textTitle('sounds'.tr, null),
             Obx(() => SettingsSwitch(
               title: "btn_sounds".tr,
-              value: settingsController.isButtonSoundsEnabled.value,
-              onToggle: settingsController.toggleButtonSounds,
+              value: notificationController.isButtonSoundsEnabled.value,
+              onToggle: notificationController.toggleButtonSounds,
             )),
           ],
         );
@@ -148,20 +149,20 @@ class _SettingsState extends State<SettingsPage> {
             textTitle('notifications'.tr, null),
             Obx(() => SettingsSwitch(
               title: "friend_request".tr,
-              value: settingsController.isFriendRequestNotificationEnabled.value,
-              onToggle: settingsController.toggleFriendRequestNotifications,
+              value: notificationController.isFriendRequestNotificationEnabled.value,
+              onToggle: notificationController.toggleFriendRequestNotifications,
             )),
             SizedBox(height: 10),
             Obx(() => SettingsSwitch(
               title: "friends_messages".tr,
-              value: settingsController.isMessageNotificationEnabled.value,
-              onToggle: settingsController.toggleMessageNotifications,
+              value: notificationController.isMessageNotificationEnabled.value,
+              onToggle: notificationController.toggleMessageNotifications,
             )),
             SizedBox(height: 20),
             Divider(height: 1),
             SizedBox(height: 10),
             Center(
-              child: ElevatedButton(onPressed: settingsController.saveNotificationSettings,
+              child: ElevatedButton(onPressed: notificationController.saveNotificationSettings,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green
                 ),
@@ -179,7 +180,7 @@ class _SettingsState extends State<SettingsPage> {
               alignment: Alignment.center,
               child: TextButton(
                 onPressed: () {
-                  CustomLanguage().languageDialog(context);
+                  LanguageDialog.show(context);
                 },
                 child: Row (
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -202,8 +203,9 @@ class _SettingsState extends State<SettingsPage> {
             textTitle('danger_zone'.tr, Colors.red),
             Text("delete_account_guidance".tr),
             TextButton(
-              onPressed: () {
-                accountController.deleteMyAccount(context);
+              onPressed: () async {
+                await accountController.deleteMyAccount(context);
+                _navigateToLogin();
               },
               child: Text(
                   "btn_delete_account".tr,
@@ -219,6 +221,12 @@ class _SettingsState extends State<SettingsPage> {
         return SizedBox.shrink();
     }
   }
+
+  void _navigateToLogin() {
+    context.go('/login');
+  }
+
+
 
   Widget textTitle(String title, Color? color) {
     return Center(

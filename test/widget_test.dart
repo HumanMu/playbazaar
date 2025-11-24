@@ -7,12 +7,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:playbazaar/config/routes/app_routes.dart';
+import 'package:playbazaar/main.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const AppRoutes());
+    await tester.pumpWidget(const PlayBazaar());
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);

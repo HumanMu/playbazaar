@@ -84,7 +84,7 @@ class _ModernDiceWidgetState extends State<ModernDiceWidget>
 
   void _handleDiceTap() {
     if (diceController.dice.canBeRolledByHuman) {
-      diceController.rollDice();
+      diceController.handleDiceRoll();
     }
   }
 
@@ -92,10 +92,10 @@ class _ModernDiceWidgetState extends State<ModernDiceWidget>
   Widget build(BuildContext context) {
     return Obx(() {
       final diceValue = diceController.diceValue;
-      final diceColor = diceController.diceColor;
+      final diceColor = diceController.color;
       final isRolling = diceController.dice.rxIsRolling.value;
       final isRobotTurn = diceController.isRobotTurn;
-      final isInteractive = diceController.dice.isInteractive && !isRobotTurn;
+      final isInteractive = diceController.dice.rollState && !isRobotTurn;
       final color = LudoHelper.getTokenColor(diceColor);
 
       // Calculate dice size with constraints

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:playbazaar/global_widgets/circle_avatar.dart';
 
 class MessageTileGroup extends StatelessWidget {
   final String message;
@@ -56,9 +57,10 @@ class MessageTileGroup extends StatelessWidget {
               if (!sendByMe)
                 Padding(
                   padding: EdgeInsets.only(right: 8.0),
-                  child: CircleAvatar(
-                    backgroundImage: NetworkImage('URL_TO_USER_PROFILE_IMAGE'),
-                    radius: 15,
+                  child: circleAvatar(
+                    sender,
+                    radius: 15.0,
+                    bgColor: Colors.green
                   ),
                 ),
               Flexible(

@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_switch/flutter_advanced_switch.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:playbazaar/models/DTO/add_user_to_group_dto.dart';
 import 'package:playbazaar/models/DTO/create_group_dto.dart';
 import 'package:playbazaar/screens/widgets/dialogs/accept_result_dialog.dart';
@@ -59,10 +60,7 @@ class _HomePageState extends State<HomePage> {
         actions: [
           IconButton(
             onPressed: () {
-              Get.toNamed('/search',
-                  arguments: {
-                'searchId': 'group'
-              });
+              context.push('/search/group');
             },
             icon: const Icon(Icons.search, color: Colors.white,),
           ),

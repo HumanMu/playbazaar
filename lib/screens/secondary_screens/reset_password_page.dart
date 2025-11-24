@@ -13,9 +13,17 @@ class ResetPasswordPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('reset_password'.tr),
+        title: Text('reset_password'.tr,
+          style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 25
+          ),
+        ),
+        iconTheme: IconThemeData(color: Colors.white),
         backgroundColor: Colors.redAccent,
         centerTitle: true,
+
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

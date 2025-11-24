@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import '../models/question_models.dart';
 
 class QuizEndMessageDialog extends StatelessWidget {
@@ -32,7 +33,7 @@ class QuizEndMessageDialog extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: () {
                     Navigator.of(context).pop();
-                    Get.offNamed('/mainQuiz');
+                    context.go('/mainQuiz');
                   },
                   child: Text(
                     "btn_continue".tr,

@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
+import 'package:playbazaar/config/routes/static_app_routes.dart';
 import 'package:playbazaar/functions/string_cases.dart';
 import '../../api/Authentication/auth_service.dart';
 import '../../controller/user_controller/user_controller.dart';
@@ -48,7 +50,7 @@ class _ProfilePage extends State<ProfilePage> {
      /// await AdManagerService().initialize();
     }
     else{
-      Get.offNamed('/login');
+      context.go(AppRoutes.login);
     }
   }
 
@@ -157,7 +159,7 @@ class _ProfilePage extends State<ProfilePage> {
           }),
         ),
         onPressed: () {
-          Get.toNamed('/edit');
+          context.push(AppRoutes.edit);
         },
         child: Text('btn_edit'.tr,
           style: TextStyle(color: Colors.white),

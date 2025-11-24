@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
-
+/// This is using GetX which is not being used for navigation so this is should be removed when navigation with provider works
 class AuthGuard extends GetMiddleware {
   @override
   RouteSettings? redirect(String? route) {

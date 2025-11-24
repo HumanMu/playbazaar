@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:playbazaar/controller/message_controller/group_message_controller.dart';
 import 'package:playbazaar/functions/string_cases.dart';
 import 'package:playbazaar/global_widgets/show_custom_snackbar.dart';
@@ -80,12 +81,15 @@ class _GroupChatPageState extends State<GroupChatPage> {
           actions: [
             IconButton(
               onPressed: () {
-                Get.toNamed('/chatinfo', arguments: {
+                final path = '/chatinfo/${widget.chatId}';
+                final queryData = Uri(queryParameters: {
                   'chatId': widget.chatId,
                   'chatName': widget.chatName,
                   'adminName': admin,
-                  'isPublic': widget.isPublic,
-                });
+                  'isPublic': widget.isPublic.toString(),
+                }).query;
+
+                context.push('$path?$queryData');
               },
               icon: const Icon(Icons.info, color: Colors.white70),
             )

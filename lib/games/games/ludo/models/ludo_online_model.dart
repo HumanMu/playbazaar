@@ -1,5 +1,6 @@
  import 'package:playbazaar/functions/enum_converter.dart';
  import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:playbazaar/games/games/ludo/models/single_online_player.dart';
 import '../../../helper/enum.dart';
 
  class LudoOnlineModel {
@@ -7,69 +8,65 @@ import '../../../helper/enum.dart';
    final String hostId;
    final bool teamPlay;
    final bool enableRobots;
-   final GameProgress gameStatus;
+   final GameProgress gameState;
    final String? currentPlayerTurn;
    final int? diceValue;
-   final bool canRollDice;
-   final List<dynamic> gameTokens;
-   final Map<String, dynamic> teamAssignments;
+   final Map<String, SingleOnlinePlayer> players;
    final Timestamp? createdAt;
    final Timestamp? lastUpdated;
-   final List<dynamic> winnerOrder;
+   final List<String>? winnerOrder;
    final String gameCode;
+   final Map<String, int>? tokens;
 
    LudoOnlineModel({
      required this.gameId,
      required this.hostId,
+     required this.gameCode,
      required this.teamPlay,
      required this.enableRobots,
-     required this.gameStatus,
+     required this.gameState,
      this.currentPlayerTurn,
      this.diceValue,
-     required this.canRollDice,
-     required this.gameTokens,
-     required this.teamAssignments,
+     required this.players,
      this.createdAt,
      this.lastUpdated,
-     required this.winnerOrder,
-     required this.gameCode,
+     this.winnerOrder,
+     this.tokens,
    });
 
    factory LudoOnlineModel.fromMap(Map<String, dynamic> map) {
-     List<dynamic> gameTokensList;
+     final rawPlayers = map['players'] as Map<String, dynamic>? ?? {};
+     final playersMap = rawPlayers.map(
+           (playerId, data) => MapEntry(
+         playerId,
+         SingleOnlinePlayer.fromMap(Map<String, dynamic>.from(data)),
+       ),
+     );
 
-     if (map['gameTokens'] is List) {
-       gameTokensList = List.from(map['gameTokens']);
-     } else if (map['gameTokens'] is Map) {
-       // Convert Map to List
-       Map<String, dynamic> tokensMap = Map<String, dynamic>.from(map['gameTokens']);
-       gameTokensList = List.filled(16, null); // Adjust size as needed
-       tokensMap.forEach((key, value) {
-         int index = int.tryParse(key) ?? 0;
-         if (index < gameTokensList.length) {
-           gameTokensList[index] = value;
-         }
-       });
-     } else {
-       gameTokensList = [];
+     final winners = (map['winnerOrder'] as List<dynamic>? ?? [])
+         .map((e) => e.toString())
+         .toList();
+
+     // Parse tokens map
+     Map<String, int>? tokensMap;
+     if (map['tokens'] != null) {
+       tokensMap = Map<String, int>.from(map['tokens']);
      }
-
 
      return LudoOnlineModel(
        gameId: map['gameId'] ?? '',
        hostId: map['hostId'] ?? '',
        teamPlay: map['teamPlay'] ?? false,
        enableRobots: map['enableRobots'] ?? false,
-       gameStatus: string2Progress(map['gameStatus']),
+       gameState: string2Progress(map['gameState']),
        currentPlayerTurn: map['currentPlayerTurn'],
        diceValue: map['diceValue'],
-       canRollDice: map['canRollDice'] ?? false,
-       gameTokens: gameTokensList,
-       teamAssignments: Map<String, dynamic>.from(map['teamAssignments'] ?? {}),
+       players: playersMap,
        createdAt: map['createdAt'],
        lastUpdated: map['lastUpdated'],
-       winnerOrder: List.from(map['winnerOrder'] ?? []),
+       winnerOrder: winners,
        gameCode: map['gameCode'] ?? '',
+       tokens: tokensMap,
      );
    }
 
@@ -79,16 +76,17 @@ import '../../../helper/enum.dart';
        'hostId': hostId,
        'teamPlay': teamPlay,
        'enableRobots': enableRobots,
-       'gameStatus': progress2String(gameStatus),
+       'gameState': progress2String(gameState),
        'currentPlayerTurn': currentPlayerTurn,
        'diceValue': diceValue,
-       'canRollDice': canRollDice,
-       'gameTokens': gameTokens,
-       'teamAssignments': teamAssignments,
-       'createdAt': createdAt?? FieldValue.serverTimestamp(),
+       'players': players.map(
+             (playerId, player) => MapEntry(playerId, player.toMap()),
+       ),
+       'createdAt': createdAt ?? FieldValue.serverTimestamp(),
        'lastUpdated': lastUpdated ?? FieldValue.serverTimestamp(),
-       'winnerOrder': winnerOrder,
+       'winnerOrder': winnerOrder ?? [],
        'gameCode': gameCode,
+       'tokens': tokens ?? {},
      };
    }
 
@@ -97,34 +95,31 @@ import '../../../helper/enum.dart';
      String? hostId,
      bool? teamPlay,
      bool? enableRobots,
-     GameProgress? gameStatus,
+     GameProgress? gameState,
      String? currentPlayerTurn,
      int? diceValue,
      bool? canRollDice,
-     List<dynamic>? gameTokens,
-     List<dynamic>? activeTokenTypes,
-     Map<String, dynamic>? teamAssignments,
+     Map<String, SingleOnlinePlayer>? players,
      Timestamp? createdAt,
      Timestamp? lastUpdated,
-     List<dynamic>? winnerOrder,
+     List<String>? winnerOrder,
      String? gameCode,
+     Map<String, int>? tokens,
    }) {
      return LudoOnlineModel(
        gameId: gameId ?? this.gameId,
        hostId: hostId ?? this.hostId,
        teamPlay: teamPlay ?? this.teamPlay,
        enableRobots: enableRobots ?? this.enableRobots,
-       gameStatus: gameStatus ?? this.gameStatus,
+       gameState: gameState ?? this.gameState,
        currentPlayerTurn: currentPlayerTurn ?? this.currentPlayerTurn,
        diceValue: diceValue ?? this.diceValue,
-       canRollDice: canRollDice ?? this.canRollDice,
-       gameTokens: gameTokens ?? this.gameTokens,
-       teamAssignments: teamAssignments ?? this.teamAssignments,
+       players: players ?? this.players,
        createdAt: createdAt ?? this.createdAt,
        lastUpdated: lastUpdated ?? this.lastUpdated,
-       winnerOrder: winnerOrder ?? this.winnerOrder,
+       winnerOrder: winnerOrder,
        gameCode: gameCode ?? this.gameCode,
+       tokens: tokens ?? this.tokens,
      );
    }
  }
-

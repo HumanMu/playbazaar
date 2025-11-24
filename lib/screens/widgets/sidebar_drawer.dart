@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
+import 'package:playbazaar/config/routes/static_app_routes.dart';
 import '../../api/Authentication/auth_service.dart';
 import '../../controller/user_controller/auth_controller.dart';
 import '../../services/hive_services/hive_user_service.dart';
@@ -28,14 +30,15 @@ class SidebarDrawerState extends State<SidebarDrawer> {
 
 
   void navigateTo(String path) {
-    Get.toNamed('/$path');
+    context.push('/$path');
+    Navigator.of(context).pop();
   }
 
   void logoutAction() async {
     await authController.logOutUser();
     await recentUsersService.clearRecentUsers();
     if (!mounted) return;
-    Get.offAllNamed('/login');
+    context.go(AppRoutes.login);
   }
 
 

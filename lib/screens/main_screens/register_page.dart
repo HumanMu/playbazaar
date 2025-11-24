@@ -2,6 +2,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import '../../api/Authentication/auth_service.dart';
 import '../../controller/user_controller/account_controller.dart';
 import '../../global_widgets/headerstack.dart';
@@ -174,7 +175,7 @@ class _RegisterPage extends State<RegisterPage> {
                             ),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
-                                Get.offNamed('/login');
+                                context.go('/login');
                               }),
                       ],
                     ),
