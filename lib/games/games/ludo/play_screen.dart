@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:get/get.dart';
-import 'package:go_router/go_router.dart';
-import '../../../constants/app_colors.dart';
 import '../../../core/dialog/dialog_listner.dart';
 import '../../../global_widgets/dialog/show_error_dialog_utils.dart';
 import 'helper/enums.dart';
@@ -92,32 +89,6 @@ class _LudoPlayScreenState extends ConsumerState<LudoPlayScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      /*backgroundColor: AppColors.background,
-      appBar: AppBar(
-        backgroundColor: AppColors.primary,
-        key: keyBar,
-        centerTitle: true,
-        elevation: 0,
-        leading: IconButton(
-            onPressed: () {
-              context.go('/ludoHome');
-            },
-            icon: const Icon(
-                Icons.arrow_back,
-                color: Colors.white
-            ),
-        ),
-        title: Text(
-          "ludo_missions".tr,
-          style: const TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.w600,
-            fontSize: 22,
-            letterSpacing: 0.5,
-          ),
-        ),
-        iconTheme: const IconThemeData(color: AppColors.white),
-      ),*/
         body: Container(
           width: double.infinity,
           height: double.infinity,

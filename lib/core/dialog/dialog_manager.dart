@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import '../../games/entities/dialog_request_model.dart';
 import 'dialog_state.dart';
 
@@ -9,7 +9,7 @@ enum DialogPriority {
   low,
   normal,
   high,
-  critical, // Can interrupt other dialogs
+  critical,
 }
 
 /// Extended dialog request with priority support

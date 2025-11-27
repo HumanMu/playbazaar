@@ -77,7 +77,10 @@ class LocalStringsFa extends Translations {
       'guess_a_word_description': 'کلمه نباید فاصله اضافی، قوانین نوشتاری را نقض کند یا شامل کاراکترهای خاص باشد',
       'player_turn': 'نوبت ',
       'waiting_room': 'اتاق انتظار',
+      'kick_a_member': 'حذف یک عضو',
+      'leave_game': 'خروج از بازی',
       'game_code': 'کد بازی',
+      'game_is_full': ' این بازی تکمیل ظرفیت شده است',
       'game_code_hint': 'کد خود را اینجا وارد کنید ...',
       'waiting_start': 'در انتظار شروع میزبان...',
       'host': 'میزبان',
@@ -85,6 +88,8 @@ class LocalStringsFa extends Translations {
       'join_with_code': 'ورود با کد',
       'join_with_code_description': 'اگر یک کد برای پیوستن به دیگران دارید، این گزینه را انتخاب کنید',
       'waiting_participants': 'منتظر شرکت‌کنندگان...',
+      "removed_from_game_title": "حذف از بازی",
+      "removed_from_game_description": "شما توسط سازنده بازی از بازی حذف شده‌اید.",
       'msg_game_destruction_succed': 'بازی با موفقیت حذف شد.',
       'msg_game_not_found': 'بازی با کد داده شده یافت نشد.',
       'msg_game_creator_deleted': 'بازی پیدا نشد، ممکن است سازنده بازی را حذف کرده باشد.',
@@ -249,7 +254,7 @@ class LocalStringsFa extends Translations {
       'btn_update': 'به‌روزرسانی',
       'btn_remove': 'حذف',
       'btn_reset': 'بازگشت به اول',
-
+      'btn_done': 'انجام شد',
 
       //  Settings
       'settings': 'تنظیمات',

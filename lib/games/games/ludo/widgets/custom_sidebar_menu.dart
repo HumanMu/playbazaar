@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
+import 'package:playbazaar/games/games/ludo/controller/online_ludo_controller.dart';
 
 
 class CustomSideMenu extends StatefulWidget {
@@ -16,6 +17,8 @@ class _CustomSideMenuState extends State<CustomSideMenu> {
   bool _isDrawerOpen = false;
   static const double _collapsedWidth = 60.0;
   static const double _expandedWidth = 0.35;
+
+  final controller = Get.find<OnlineLudoController>();
 
 
   @override
@@ -64,11 +67,19 @@ class _CustomSideMenuState extends State<CustomSideMenu> {
               children: [
                 TextButton(
                   onPressed: () => context.go("/ludoHome"),
-                  child: Text("btn_leave".tr, style: TextStyle(
+                  child: Text("leave_game".tr, style: TextStyle(
                     fontSize: 20,
                     color: Colors.white,
                   )),
                 ),
+
+                controller.isHost? TextButton(
+                  onPressed: () => controller.showWaitingRoom(isManaging: true),
+                  child: Text("kick_a_member".tr, style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.white,
+                  )),
+                ) : Container(),
               ],
             ),
         ],

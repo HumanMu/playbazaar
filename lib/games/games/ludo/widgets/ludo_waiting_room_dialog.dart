@@ -5,7 +5,9 @@ import 'package:playbazaar/games/games/ludo/controller/online_ludo_controller.da
 import 'package:playbazaar/global_widgets/rarely_used/text_2_copy.dart';
 
 class LudoWaitingRoomDialog extends StatelessWidget {
+  final bool isManaging;
   const LudoWaitingRoomDialog({
+    required this.isManaging,
     super.key,
   });
 
@@ -68,7 +70,7 @@ class LudoWaitingRoomDialog extends StatelessWidget {
                         child: Stack(
                           children: [
                             ListTile(
-                              contentPadding: EdgeInsets.symmetric(horizontal: 0), // Don't remove this
+                              contentPadding: EdgeInsets.symmetric(horizontal: 0),
                               leading: CircleAvatar(
                                 backgroundColor: Colors.white54,
                                 backgroundImage: player.avatarImg != null
@@ -95,8 +97,7 @@ class LudoWaitingRoomDialog extends StatelessWidget {
                                 mainAxisSize: MainAxisSize.min,
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
-                                  controller.players[index].playerId == controller.user!.uid && index!=0
-                                      ? IconButton(
+                                  controller.isHost && controller.players[index].playerId != controller.user?.uid ? IconButton(
                                     onPressed: () => controller.removePlayer(controller.players[index].playerId!),
                                     icon: Icon(Icons.remove_circle_sharp, color: Colors.red, size: 20),
                                   ): Container(),
@@ -111,7 +112,20 @@ class LudoWaitingRoomDialog extends StatelessWidget {
               }),
             ),
             const SizedBox(height: 16),
-            Row(
+            isManaging? SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () => controller.closeWaitingRoom(),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                ), child: Text("btn_done".tr,
+                  style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold
+                  )
+              ))
+            ): Row(
               children: [
                 ElevatedButton(
                   onPressed: () => controller.closeWaitingRoom(),

@@ -75,7 +75,10 @@ class LocalStringsAr extends Translations {
       'guess_a_word_description': 'کلمه نباید فاصله اضافی، قوانین نوشتاری را نقض کند یا شامل کاراکترهای خاص باشد',
       'player_turn': 'دور ',
       'waiting_room': 'غرفة الانتظار',
+      'kick_a_member': 'طرد أحد الأعضاء',
+      'leave_game': 'مغادرة اللعبة',
       'game_code': 'رمز اللعبة',
+      'game_is_full': 'اللعبة ممتلئة',
       'game_code_hint': 'أدخل الكود هنا ...',
       'waiting_start': 'في انتظار المضيف للبدء...',
       'host': 'المضيف',
@@ -83,6 +86,8 @@ class LocalStringsAr extends Translations {
       'join_with_code': 'الانضمام باستخدام الكود',
       'join_with_code_description': 'إذا كان لديك كود للانضمام إلى الآخرين، اختر هذا الخيار',
       'waiting_participants': 'في انتظار المشاركين...',
+      "removed_from_game_title": "Removed from Game",
+      "removed_from_game_description": "You have been removed from the game by the creator.",
       'msg_game_destruction_succed': 'تم تدمير اللعبة بنجاح.',
       'msg_game_not_found': 'فشل في العثور على لعبة بالكود المعطى.',
       'msg_game_creator_deleted': 'اللعبة غير موجودة، ربما قام المنشئ بحذف اللعبة.',
@@ -250,7 +255,7 @@ class LocalStringsAr extends Translations {
       'btn_update': 'تحديث',
       'btn_remove': 'إزالة',
       'btn_reset': 'إعادة تعيين',
-
+      'btn_done': 'تم',
 
       // Settings
       'settings': 'الإعدادات',

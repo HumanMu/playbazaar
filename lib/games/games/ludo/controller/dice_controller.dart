@@ -159,9 +159,6 @@ class DiceController extends GetxController {
 
     await handleDiceRoll();
 
-    /*if (dice.isAwaitingMove) {
-      await selectRobotToken();
-    }*/
     if (hasExtraTurn && consecvative6 < 3) {
       await Future.delayed(const Duration(milliseconds: 800));
       await processRobotTurn();

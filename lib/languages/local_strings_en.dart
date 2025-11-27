@@ -77,7 +77,10 @@ class LocalStringsEn extends Translations {
       'guess_a_word_description': 'The word should not contain any extra spacing, violate writing rules, or include special characters',
       'player_turn': 'Turn of ',
       'waiting_room': 'Waiting Room',
+      'kick_a_member': 'Kick a member',
+      'leave_game': 'Leave the game',
       'game_code': 'Game Code',
+      'game_is_full': 'The game is full',
       'game_code_hint': 'Your code here ...',
       'waiting_start': 'Waiting for host to start...',
       'host': 'Host',
@@ -85,6 +88,8 @@ class LocalStringsEn extends Translations {
       'join_with_code': 'Join with code',
       'join_with_code_description': 'If you have a code to join others, pick this one',
       'waiting_participants': 'Waiting for participants...',
+      "removed_from_game_title": "Removed from Game",
+      "removed_from_game_description": "The game creator has removed you from the game.",
       'msg_game_destruction_succed': 'The game has been successfully destroyed.',
       'msg_game_not_found': 'Failed to find a game with the given code.',
       'msg_game_creator_deleted': 'Game not found, the creator might have deleted the game.',
@@ -249,7 +254,7 @@ class LocalStringsEn extends Translations {
       'btn_update': 'Update',
       'btn_remove': 'Remove',
       'btn_reset': 'Reset',
-
+      'btn_done': 'Done',
 
       // Settings
       'settings': 'Settings',

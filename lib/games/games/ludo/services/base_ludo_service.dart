@@ -42,7 +42,6 @@ abstract class BaseLudoService extends GetxService {
     _pathCache.clear();
     activeTokenTypes.clear();
     teamAssignments.clear();
-    //gameTokens.value = List<Token?>.filled(16, null);
 
     // Clear and reinitialize with 16 null tokens
     gameTokens.clear();

@@ -2,6 +2,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import '../../games/entities/dialog_request_model.dart';
 import 'dialog_manager.dart';
 import 'dialog_state.dart';

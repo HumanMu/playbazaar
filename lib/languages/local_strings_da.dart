@@ -77,7 +77,10 @@ class LocalStringsDa extends Translations {
       'guess_a_word_description': 'Ordet må ikke indeholde ekstra mellemrum, bryde skriveregler eller inkludere specialtegn',
       'player_turn': 'Tur for ',
       'waiting_room': 'Venterum',
+      'kick_a_member': 'Fjern et medlem',
+      'leave_game': 'Forlad spillet',
       'game_code': 'Spilkode',
+      'game_is_full': 'Spillet er fuldt',
       'game_code_hint': 'Din kode her ...',
       'waiting_start': 'Venter på at værten starter...',
       'host': 'Vært',
@@ -85,6 +88,8 @@ class LocalStringsDa extends Translations {
       'join_with_code': 'Deltag med kode',
       'join_with_code_description': 'Hvis du har en kode for at deltage med andre, vælg denne',
       'waiting_participants': 'Venter på deltagere...',
+      "removed_from_game_title": "Fjernet fra spillet",
+      "removed_from_game_description": "Du er blevet fjernet fra spillet af skaberen.",
       'msg_game_destruction_succed': 'Spillet er blevet succesfuldt ødelagt.',
       'msg_game_not_found': 'Kunne ikke finde et spil med den angivne kode.',
       'msg_game_creator_deleted': 'Spillet blev ikke fundet, skaberen har muligvis slettet spillet.',
@@ -139,7 +144,7 @@ class LocalStringsDa extends Translations {
       'group_name_unvalid_characters' : 'Gruppenavnet må ikke indeholde tegnet \'_\'',
       'private_group_is_selected': 'Du har valgt en privat gruppe, og en privat gruppe skal have et kodeord på mindst 4 tegn',
       'you_became_a_member': 'Du er blevet medlem!',
-      'already_member': 'Allerede medlem',
+      'already_member': 'Du er allerede medlem',
       'not_group_member': 'Du er ikke medlem af denne gruppe',
       'group_not_found': 'Kunne ikke finde gruppen',
 
@@ -251,7 +256,7 @@ class LocalStringsDa extends Translations {
       'btn_update': 'Opdater',
       'btn_remove': 'Fjern',
       'btn_reset': 'Nulstil',
-
+      'btn_done': 'Færdig',
 
       // Settings
       'settings': 'Indstillinger',

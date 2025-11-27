@@ -1,5 +1,5 @@
 import '../../../../admob/adaptive_banner_ad.dart';
-import '../../../../global_widgets/rarely_used/custom_sidebar_menu.dart';
+import 'custom_sidebar_menu.dart';
 import '../controller/base_ludo_controller.dart';
 import '../controller/dice_controller.dart';
 import 'package:flutter/material.dart';
