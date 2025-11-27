@@ -75,7 +75,7 @@ final routerProvider = Provider<GoRouter>((ref) {
     });
 
     // If no user and trying to access protected route -> redirect to login
-    if (user == null && isAuthRequired) {  // ✅ Use isAuthRequired here
+    if (user == null && isAuthRequired) {
       return AppRoutes.login;
     }
 
@@ -245,8 +245,6 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.settings,
         builder: (context, state) => SettingsPage(),
-        // Note: GetX Bindings are handled differently in Riverpod/GoRouter.
-        // Logic for dependency injection should use Riverpod providers, not bindings.
       ),
       // Route with a Path Parameter
       GoRoute(

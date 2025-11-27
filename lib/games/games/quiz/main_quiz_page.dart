@@ -5,7 +5,6 @@ import 'package:playbazaar/constants/enums.dart';
 import 'package:playbazaar/controller/user_controller/user_controller.dart';
 import 'package:playbazaar/global_widgets/dialog/accept_dialog.dart';
 import '../../../api/Authentication/auth_service.dart';
-import '../../../screens/widgets/sidebar_drawer.dart';
 import '../../widgets/game_list_box.dart';
 import '../../functions/get_quiz_language.dart';
 
@@ -71,11 +70,22 @@ class _QuizMainPage extends State<QuizMainPage> {
           iconTheme: IconThemeData(
             color: Colors.white,
           ),
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+
         ),
-        drawer: SidebarDrawer(
+        /*drawer: SidebarDrawer(
           authService: authService,
           parentContext: context,
-        ),
+        ),*/
+
         body: SafeArea(
           top: false,
           bottom: true,

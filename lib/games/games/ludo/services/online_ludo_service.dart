@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:get/get.dart';
 import 'package:playbazaar/games/games/ludo/models/ludo_creattion_params.dart';
 import 'package:playbazaar/global_widgets/show_custom_snackbar.dart';
 import '../../../helper/enum.dart';
@@ -44,7 +45,7 @@ class OnlineLudoService extends BaseLudoService {
       final SingleOnlinePlayer singlePlayer = SingleOnlinePlayer(
         playerId: user!.uid,
         name: user!.displayName ?? 'Player',
-        teamId: null,
+        teamId: params.teamPlay? 1 : null,
         isConnected: true,
         finishedTokensLength: 0,
         color: 'red',
@@ -81,6 +82,7 @@ class OnlineLudoService extends BaseLudoService {
     }
   }
 
+
   Future<String?> joinExistingGame(String inviteCode) async {
     try {
       if (user == null) throw Exception('No authenticated user found');
@@ -93,6 +95,7 @@ class OnlineLudoService extends BaseLudoService {
 
       if (gameQuery.docs.isEmpty) {
         debugPrint("Game not found");
+        showCustomSnackbar("msg_game_not_found".tr, false);
         return null;
       }
 
@@ -102,66 +105,53 @@ class OnlineLudoService extends BaseLudoService {
         final gameSnapshot = await transaction.get(gameRef);
 
         if (!gameSnapshot.exists) {
-          throw Exception("Game was deleted");
+          showCustomSnackbar("msg_game_not_found".tr, false);
+          throw Exception("Game not found");
         }
 
         final gameData = LudoOnlineModel.fromMap(gameSnapshot.data()!);
 
-        // Validation checks...
+        // Validation checks
         if (gameData.players.containsKey(user!.uid)) {
-          showCustomSnackbar("User already in the game", true);
+          showCustomSnackbar("already_member".tr, true);
           return gameData.gameId;
         }
 
         if (gameData.players.length >= 4) {
-          showCustomSnackbar("Game is full", false);
-          throw Exception("Game is full");
+          showCustomSnackbar("msg_game_not_found".tr, false);
+          throw Exception("The game is full".tr);
         }
 
-        if (gameData.gameState == GameProgress.inProgress) {
-          showCustomSnackbar("Game already started", false);
-          throw Exception("Game already started");
+        final playerIndex = gameData.players.length;
+        const colorSequence = ["red", "yellow", "green", "blue"];
+
+        if (playerIndex >= colorSequence.length) {
+          throw Exception("game_is_full".tr);
         }
 
-        // Calculate available colors and team
-        final assignedColors = gameData.players.values.map((p) => p.color).toSet();
-        String? teamId;
-        List<String> availableColors;
+        final assignedColor = colorSequence[playerIndex];
 
+        int? teamId;
         if (gameData.teamPlay) {
-          final team1Count = gameData.players.values.where((p) => p.teamId == "1").length;
-          final team2Count = gameData.players.values.where((p) => p.teamId == "2").length;
-          teamId = team1Count <= team2Count ? "1" : "2";
-          final teamColors = teamId == "1" ? ["red", "yellow"] : ["green", "blue"];
-          availableColors = teamColors.where((c) => !assignedColors.contains(c)).toList();
-        } else {
-          availableColors = ["red", "yellow", "green", "blue"]
-              .where((c) => !assignedColors.contains(c))
-              .toList();
-        }
-
-        if (availableColors.isEmpty) {
-          throw Exception("No available ${gameData.teamPlay ? 'team ' : ''}colors");
+          // Red+Yellow=Team1, Green+Blue=Team2
+          teamId = (playerIndex == 0 || playerIndex == 1) ? 1 : 2;
         }
 
         final newPlayer = SingleOnlinePlayer(
           playerId: user!.uid,
           name: user!.displayName ?? 'Player',
           teamId: teamId,
-          color: availableColors.first,
+          color: assignedColor,
           isConnected: true,
           finishedTokensLength: 0,
         );
 
-        final newPlayerIndex = gameData.players.length;
-
         // Initialize tokens for new player
         Map<String, dynamic> tokenUpdates = {};
         for (int i = 0; i < 4; i++) {
-          tokenUpdates['tokens.p${newPlayerIndex}_t$i'] = -1;
+          tokenUpdates['tokens.p${playerIndex}_t$i'] = -1;
         }
 
-        // ✅ Update using Map structure with userId as key
         transaction.update(gameRef, {
           'players.${user!.uid}': newPlayer.toMap(),
           ...tokenUpdates,
@@ -318,39 +308,106 @@ class OnlineLudoService extends BaseLudoService {
 
   }
 
-  Future<void> removePlayerFromGame(String gameId, String userId) async {
+  Future<void> removePlayerFromGame(String gameId, String playerIdToRemove) async {
+    try {
+      final gameRef = ludoReference.collection('inProgress').doc(gameId);
 
-  }
+      return await FirebaseFirestore.instance.runTransaction((transaction) async {
+        final gameSnapshot = await transaction.get(gameRef);
 
-  Future<void> deleteGameWithPlayers(String gameId) async {
-    final batch = FirebaseFirestore.instance.batch();
-    final gameRef = ludoReference.collection('inProgress').doc(gameId);
-    final playersSnapshot = await gameRef.collection('players').get();
+        if (!gameSnapshot.exists) {
+          throw Exception("Game not found");
+        }
 
-    // Add all player deletions to batch
-    for (final playerDoc in playersSnapshot.docs) {
-      batch.delete(playerDoc.reference);
+        final gameData = LudoOnlineModel.fromMap(gameSnapshot.data()!);
+
+        // Validation: Only host can remove players
+        if (gameData.hostId != user?.uid) {
+          showCustomSnackbar("only_host_can_remove".tr, false);
+          throw Exception("Only host can remove players");
+        }
+
+        // Validation: Can't remove yourself as host
+        if (playerIdToRemove == user?.uid) {
+          showCustomSnackbar("host_cannot_remove_self".tr, false);
+          throw Exception("Host cannot remove themselves");
+        }
+
+        // Validation: Player must exist
+        if (!gameData.players.containsKey(playerIdToRemove)) {
+          showCustomSnackbar("player_not_found".tr, false);
+          throw Exception("Player not found in game");
+        }
+
+        // Find the player's index to remove their tokens
+        final sortedPlayers = gameData.players.values.toList()
+          ..sort((a, b) {
+            if (a.playerId == gameData.hostId) return -1;
+            if (b.playerId == gameData.hostId) return 1;
+            return a.playerId.compareTo(b.playerId);
+          });
+
+        final playerIndex = sortedPlayers.indexWhere(
+                (p) => p.playerId == playerIdToRemove
+        );
+
+        if (playerIndex == -1) {
+          throw Exception("Player index not found");
+        }
+
+        // Build update to remove player and their tokens
+        Map<String, dynamic> updates = {
+          'players.$playerIdToRemove': FieldValue.delete(),
+          'lastUpdated': FieldValue.serverTimestamp(),
+        };
+
+        // Remove player's tokens
+        for (int i = 0; i < 4; i++) {
+          updates['tokens.p${playerIndex}_t$i'] = FieldValue.delete();
+        }
+
+        // If it's this player's turn, move to next player
+        if (gameData.currentPlayerTurn == playerIdToRemove) {
+          // Find next active player
+          final currentIndex = sortedPlayers.indexWhere((p) => p.playerId == playerIdToRemove);
+          String? nextPlayerId;
+
+          for (int i = 1; i < sortedPlayers.length; i++) {
+            final nextIndex = (currentIndex + i) % sortedPlayers.length;
+            final nextPlayer = sortedPlayers[nextIndex];
+
+            if (nextPlayer.playerId != playerIdToRemove) {
+              nextPlayerId = nextPlayer.playerId;
+              break;
+            }
+          }
+
+          // If we found a next player, update turn
+          if (nextPlayerId != null) {
+            updates['currentPlayerTurn'] = nextPlayerId;
+          } else {
+            // Only one player left, end game
+            updates['gameState'] = gameProgress2String(GameProgress.finished);
+          }
+        }
+
+        transaction.update(gameRef, updates);
+      });
+
+    } catch (e) {
+      debugPrint("Failed to remove player: $e");
+      rethrow;
     }
-
-    batch.delete(gameRef);
-    await batch.commit();
   }
 
-  Future<void> restartGame(String gameId) async {
-
-  }
 
   Stream<LudoOnlineModel?> listenToGameStateChanges(String gameId) {
-    debugPrint("Listening to game state changes for game ID: $gameId");
-
     return ludoReference
         .collection('inProgress')
         .doc(gameId)
         .snapshots()
         .map((doc) {
       try {
-        debugPrint("Listening to game state changes for game ID: ${doc.data()}");
-
         if (doc.exists && doc.data() != null) {
           return LudoOnlineModel.fromMap(doc.data()!);
         }

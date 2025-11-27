@@ -2,8 +2,13 @@ import 'package:flutter/material.dart';
 import 'enums.dart';
 
 class LudoHelper {
+  static List<List<GlobalKey>>? _cachedKeys;
 
   static List<List<GlobalKey>> getGlobalKeys() {
+    if (_cachedKeys != null) {
+      return _cachedKeys!;
+    }
+
     List<List<GlobalKey>> keysMain = [];
     for (int i = 0; i < 15; i++) {
       List<GlobalKey> keys = [];
@@ -13,6 +18,10 @@ class LudoHelper {
       keysMain.add(keys);
     }
     return keysMain;
+  }
+
+  static void clearKeyCache() {
+    _cachedKeys = null;
   }
 
   static Color getTokenColor(TokenType type) {

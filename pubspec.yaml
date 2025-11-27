@@ -68,10 +68,10 @@ dependencies:
   flutter_native_splash: ^2.4.6
   app_tracking_transparency: ^2.0.6+1
   flutter_launcher_icons: ^0.14.3
-  hive_ce: ^2.11.3
-  hive_ce_flutter: ^2.3.1
-  flutter_riverpod: ^2.6.1
-  go_router: ^16.2.5
+  hive_ce: ^2.15.1
+  hive_ce_flutter: ^2.3.3
+  flutter_riverpod: ^3.0.3
+  go_router: ^17.0.0
 
 
 dev_dependencies:
@@ -80,7 +80,7 @@ dev_dependencies:
 
   #The "flutter_lints" package offers recommended lints for good coding,
   #activated in analysis_options.yaml, where you can customize them.
-  hive_ce_generator: ^1.9.2
+  hive_ce_generator: ^1.10.0
   flutter_lints: ^6.0.0
   build_runner: ^2.4.6
 

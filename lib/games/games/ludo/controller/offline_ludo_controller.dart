@@ -110,13 +110,7 @@ class OfflineLudoController extends BaseLudoController {
       }
     }
 
-    if (isTeamPlay.value) {
-      Map<TokenType, int?> teamAssignments = {};
-      for (var player in players) {
-        teamAssignments[player.tokenType] = player.teamId;
-      }
-      gameService.setTeamAssignments(teamAssignments);
-    }
+    syncTeamAssignments(isTeamPlay.value);
   }
 
   @override
@@ -132,6 +126,7 @@ class OfflineLudoController extends BaseLudoController {
       await Future.delayed(const Duration(milliseconds: 500), () {
         diceController.processNextPlayer();
       });
+
     } else if (giveAnotherTurn) {
       diceController.dice.hasExtraTurn = false;
       final currentPlayerIndex = players.indexWhere((p) => p.tokenType == diceController.color);

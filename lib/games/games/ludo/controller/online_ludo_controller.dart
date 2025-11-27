@@ -2,15 +2,19 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
+import 'package:playbazaar/config/routes/router_provider.dart';
 import 'package:playbazaar/core/dialog/dialog_manager.dart';
 import 'package:playbazaar/games/games/ludo/helper/enum_converter.dart';
 import 'package:playbazaar/games/games/ludo/models/ludo_creattion_params.dart';
 import 'package:playbazaar/games/games/ludo/models/single_online_player.dart';
 import 'package:playbazaar/games/games/ludo/services/online_ludo_service.dart';
+import 'package:playbazaar/global_widgets/dialog/accept_dialog.dart';
 import '../../../../constants/app_dialog_ids.dart';
 import '../../../../global_widgets/show_custom_snackbar.dart';
 import '../../../helper/enum.dart';
 import '../helper/enums.dart';
+import '../helper/functions.dart';
 import '../models/ludo_online_model.dart';
 import '../models/ludo_player.dart';
 import '../models/position.dart';
@@ -80,8 +84,6 @@ class OnlineLudoController extends BaseLudoController {
   Future<void> handleDiceRollResult(int diceValue, TokenType currentPlayerType) async {
     final availableToken = getMovableTokens(currentPlayerType, diceValue);
     if(diceValue != 6 && !availableToken) {
-      //final playerIndex = getPlayerIndexFromTokenType(myTokenType);
-      //final nextPlayer = getNextPlayerInSequence(playerIndex);
       final nextPlayer = getNextPlayerInSequence(myTokenType);
       await Future.delayed(const Duration(milliseconds: 500));
       await onlineLudoService.updateDiceValue(gameId.value, nextPlayer);
@@ -106,7 +108,12 @@ class OnlineLudoController extends BaseLudoController {
             || _hasPlayerListChanged(gameState.players);
 
         if (shouldSyncPlayers) {
-          _syncPlayersProfileWithFirestore(gameState.players);
+          if (!gameState.players.containsKey(user?.uid)) {
+            debugPrint("Current user has been removed from the game");
+            await _handlePlayerRemoved();
+            return;
+          }
+          _syncPlayersProfileWithFirestore(gameState.players, gameState.teamPlay);
           gameCode.value = gameState.gameCode;
           isHost = gameState.hostId == user?.uid;
 
@@ -124,6 +131,10 @@ class OnlineLudoController extends BaseLudoController {
         _handleTurnChange(gameState, _previousGameState);
         _previousGameState = gameState;
       }
+      else{
+        showCustomSnackbar("unexpected_result".tr, false);
+
+      }
     },
       onError: (error) {
         debugPrint("Error listening to game state: $error");
@@ -134,12 +145,28 @@ class OnlineLudoController extends BaseLudoController {
 
   void _checkWinState(List<String>? winnersOrder) {
     if(winnersOrder == null) return;
-    debugPrint("Winner order: $winnersOrder");
-    debugPrint("Players length: ${players.length}");
 
     if(winnersOrder.length >= (players.length-1)) {
       showGameOverDialog();
     }
+  }
+
+  Future<void> _handlePlayerRemoved() async {
+    await _gameStateSubscription?.cancel();
+    _gameStateSubscription = null;
+
+    await dialogManager.showDialog(
+      dialog: AcceptDialogWidget(
+          title: "removed_from_game_title".tr,
+          message: "removed_from_game_description".tr,
+          onOk: (){
+            dialogManager.closeAllDialogs();
+            rootNavigatorKey.currentContext?.push("/ludoHome");
+          }
+      )
+    );
+    await Future.delayed(const Duration(milliseconds: 500));
+    rootNavigatorKey.currentContext?.push("/ludoHome");
   }
 
   void _handleTurnChange(LudoOnlineModel newState, LudoOnlineModel? previousState) {
@@ -215,12 +242,18 @@ class OnlineLudoController extends BaseLudoController {
     // Get tokens from game state
     final tokensMap = _currentGameState?.tokens ?? {};
 
+    // Create a Set to track valid Token IDs - incase of leaving/remove
+    final Set<int> validTokenIds = {};
+
     for (int playerIndex = 0; playerIndex < sortedPlayers.length; playerIndex++) {
       final firestorePlayer = sortedPlayers[playerIndex];
       final localTokenType = localTokenTypeMap[firestorePlayer.playerId]!;
 
       for (int tokenIndex = 0; tokenIndex < 4; tokenIndex++) {
         final globalTokenId = (playerIndex * 4) + tokenIndex;
+
+        // 2. Add this ID to the valid set
+        validTokenIds.add(globalTokenId);
 
         final tokenKey = 'p${playerIndex}_t$tokenIndex';
         final firestorePosition = tokensMap[tokenKey] ?? -1;
@@ -299,11 +332,11 @@ class OnlineLudoController extends BaseLudoController {
     return mapping;
   }
 
-  void _syncPlayersProfileWithFirestore(Map<String, SingleOnlinePlayer> firestorePlayers) {
+  void _syncPlayersProfileWithFirestore(Map<String, SingleOnlinePlayer> firePlayers, bool teamPlay) {
     players.clear();
 
     // Convert Map to List for local state (preserving order)
-    final sortedPlayers = firestorePlayers.values.toList()
+    final sortedPlayers = firePlayers.values.toList()
       ..sort((a, b) {
         // Sort by join order or maintain consistent ordering
         if (a.playerId == _currentGameState?.hostId) return -1;
@@ -312,7 +345,7 @@ class OnlineLudoController extends BaseLudoController {
       });
 
     // Map each Firestore player to a LudoPlayer
-    final localTokenTypeMap = _mapPlayersToLocalTokenTypes(firestorePlayers);
+    final localTokenTypeMap = _mapPlayersToLocalTokenTypes(firePlayers);
 
     for (final firestorePlayer in sortedPlayers) {
       final localTokenType = localTokenTypeMap[firestorePlayer.playerId];
@@ -329,7 +362,7 @@ class OnlineLudoController extends BaseLudoController {
         numberOfreachedHome: firestorePlayer.finishedTokensLength,
         hasFinished: firestorePlayer.finishedTokensLength == 4 ? true : false,
         isRobot: false,
-        teamId: firestorePlayer.teamId != null ? int.tryParse(firestorePlayer.teamId!) : null,
+        teamId: firestorePlayer.teamId,
         isConnected: firestorePlayer.isConnected,
       ));
 
@@ -337,6 +370,8 @@ class OnlineLudoController extends BaseLudoController {
         myTokenType = localTokenType;
       }
     }
+
+    syncTeamAssignments(teamPlay);
   }
 
   // Update game state when players change
@@ -367,6 +402,7 @@ class OnlineLudoController extends BaseLudoController {
       final destination = gameService.getPosition(token.type, newPositionInPath);
       final moveResult = gameService.calculateMoveResult(token, destination);
 
+
       await gameService.animateTokenMovement(token, diceController.diceValue);
       bool hasReached = newPositionInPath == 56;
       bool isLastToken = false;
@@ -380,7 +416,7 @@ class OnlineLudoController extends BaseLudoController {
           || (moveResult.tokenToReset != null && !moveResult.isSelfKill)
           || (diceController.diceValue == 6 && diceController.dice.rxConsecutiveSixes < 3);
 
-      String nextPlayer = hasExtraTurn ? user!.uid : getNextPlayerInSequence(myTokenType); //getNextPlayerInSequence(playerIndex);
+      String nextPlayer = hasExtraTurn ? user!.uid : getNextPlayerInSequence(myTokenType);
 
       await onlineLudoService.syncMoveToFirestore(
         token: token,
@@ -569,13 +605,16 @@ class OnlineLudoController extends BaseLudoController {
 
   @override
   void restartGame() async {
-    try {
-      await onlineLudoService.restartGame(gameId.value);
-      diceController.setDiceRollState(true);
-    } catch (e) {
-      debugPrint("Failed to restart game: $e");
-      showCustomSnackbar("restart_failed".tr, false);
-    }
+    isLoading.value = true;
+    boardBuild.value = false;
+    wasLastToken.value = false;
+
+    LudoHelper.clearKeyCache();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      boardBuild.value = true;
+      isLoading.value = false;
+    });
   }
 
   Future<void> startNextGame() async {
@@ -602,7 +641,9 @@ class OnlineLudoController extends BaseLudoController {
 
   Future<void> removePlayer(String userId) async{
     try{
-      await onlineLudoService.removePlayerFromGame("gameID here", userId);
+      await onlineLudoService.removePlayerFromGame(gameId.value, userId);
+      closeWaitingRoom();
+
     }catch(e){
       showCustomSnackbar("unexpected_result".tr, false);
     }
@@ -633,14 +674,14 @@ class OnlineLudoController extends BaseLudoController {
     }
   }
 
-  void showWaitingRoom() {
+  void showWaitingRoom({bool isManaging = false}) {
     if (dialogManager.isDialogShowingByRouteName(AppDialogIds.ludoWaitingRoom)) {
       debugPrint("Waiting room already showing");
       return;
     }
 
     dialogManager.showDialog(
-      dialog: const LudoWaitingRoomDialog(),
+      dialog: LudoWaitingRoomDialog(isManaging: isManaging),
       barrierDismissible: false,
       priority: DialogPriority.high,
       canBeInterrupted: false,
@@ -656,10 +697,4 @@ class OnlineLudoController extends BaseLudoController {
       dialogManager.closeDialogByRouteName(AppDialogIds.ludoWaitingRoom);
     }
   }
-
-  void deleteGame() {
-    _gameStateSubscription?.cancel();
-    onlineLudoService.deleteGameWithPlayers(gameId.value);
-  }
-
 }

@@ -41,6 +41,7 @@ abstract class BaseLudoController extends GetxController implements IBaseLudoCon
   void onInit() async {
     super.onInit();
     isLoading.value = true;
+    LudoHelper.clearKeyCache();
 
     // Add post frame callback to set boardBuild
     WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -188,5 +189,25 @@ abstract class BaseLudoController extends GetxController implements IBaseLudoCon
       ),
       barrierDismissible: false,
     );
+  }
+
+  void syncTeamAssignments(bool teamPlay) {
+    if (!teamPlay) {
+      gameService.isTeamPlayEnabled = false;
+      return;
+    }
+
+    Map<TokenType, int?> teamAssignments = {};
+
+    for (final player in players) {
+      if (player.teamId != null) {
+        teamAssignments[player.tokenType] = player.teamId;
+      }
+    }
+
+    gameService.setTeamAssignments(teamAssignments);
+    gameService.isTeamPlayEnabled = true;
+
+    debugPrint("Team assignments synced: $teamAssignments");
   }
 }

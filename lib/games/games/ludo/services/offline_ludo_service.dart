@@ -10,7 +10,6 @@ class OfflineLudoService extends BaseLudoService {
   Future<BaseLudoService> init(int numberOfPlayer, {bool teamPlay = false}) async {
     await initializeGame();
     await _initializeOfflineTokens(numberOfPlayer, teamPlay: teamPlay);
-    //await initializeBase(numberOfPlayer, teamPlay: teamPlay);
     return this;
   }
 

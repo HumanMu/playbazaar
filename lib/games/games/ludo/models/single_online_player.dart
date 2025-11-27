@@ -2,7 +2,7 @@
 class SingleOnlinePlayer {
   final String playerId;
   final String name;
-  final String? teamId;
+  final int? teamId;
   final int finishedTokensLength;
   final bool isConnected;
   final String color;
