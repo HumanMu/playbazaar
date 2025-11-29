@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:playbazaar/services/settings/sound_services.dart';
 import '../../../../admob/adaptive_banner_ad.dart';
@@ -37,7 +38,9 @@ class _QuizPlayScreen extends State<OptionizedPlayScreen>{
 
   @override
   void dispose() {
-    playController.dispose();
+    if(Get.isRegistered<QuizPlayController>()) {
+      Get.delete<QuizPlayController>(force: true);
+    }
     super.dispose();
   }
 
@@ -64,7 +67,7 @@ class _QuizPlayScreen extends State<OptionizedPlayScreen>{
             color: Colors.white,
           ),
           onPressed: () {
-            Navigator.of(context).pop();
+            context.go("/mainQuiz");
           },
         ),
       ),

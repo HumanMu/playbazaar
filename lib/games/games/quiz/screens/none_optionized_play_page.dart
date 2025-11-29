@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:playbazaar/admob/adaptive_banner_ad.dart';
 
@@ -34,7 +35,7 @@ class NoneOptionizedPlayScreen extends StatelessWidget {
         backgroundColor: Colors.red,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => context.go("/mainQuiz"),
         ),
       ),
       body: Obx(() => controller.isLoading.value
