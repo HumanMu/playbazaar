@@ -75,9 +75,7 @@ class _QuizMainPage extends State<QuizMainPage> {
               Icons.arrow_back,
               color: Colors.white,
             ),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
+            onPressed: () => context.go("/mainGames"),
           ),
 
         ),
