@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:go_router/go_router.dart';
 import 'package:playbazaar/api/firestore/firestore_account.dart';
-import 'package:playbazaar/screens/main_screens/login_pages.dart';
 import '../../helper/sharedpreferences/sharedpreferences.dart';
 import '../../global_widgets/show_custom_snackbar.dart';
 
@@ -75,11 +75,8 @@ class _CountdownState extends State<CountdownTimer> {
     await FirestoreAccount().forceDeleteAccount();
     navigateToLogin();
   }
-  navigateToLogin() {
-    Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const LoginPage())
-    );
+  void navigateToLogin() {
+    context.go('/login');
   }
 
 

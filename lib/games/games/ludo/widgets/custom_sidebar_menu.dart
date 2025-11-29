@@ -24,8 +24,8 @@ class _CustomSideMenuState extends State<CustomSideMenu> {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
-    double currentWidth = _isDrawerOpen 
-        ? screenWidth * _expandedWidth 
+    double currentWidth = _isDrawerOpen
+        ? screenWidth * _expandedWidth
         : _collapsedWidth;
 
     return AnimatedContainer(
@@ -61,7 +61,7 @@ class _CustomSideMenuState extends State<CustomSideMenu> {
                 _isDrawerOpen? Icons.close : Icons.menu
             ),
           ),
-          
+
           if (_isDrawerOpen)
             Column(
               children: [

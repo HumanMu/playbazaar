@@ -99,7 +99,7 @@ class LudoServiceLocator {
     } else {
       final onlineService = Get.find<OnlineLudoService>();
       final onlineController = Get.find<OnlineLudoController>();
-      await onlineService.init(params.numberOfPlayers?? 0, teamPlay: params.teamPlay);
+      await onlineService.init(params.numberOfPlayers, teamPlay: params.teamPlay);
 
       if (params.gameCode == null || params.gameCode!.isEmpty ) {
         showCustomSnackbar('Game code is required for to create or join a game.', false);
@@ -123,31 +123,31 @@ class LudoServiceLocator {
 
     // Remove all game-related services
     if (Get.isRegistered<BaseLudoService>()) {
-      Get.delete<BaseLudoService>();
+      Get.delete<BaseLudoService>(force: true);
     }
 
     if (Get.isRegistered<OfflineLudoService>()) {
-      Get.delete<OfflineLudoService>();
+      Get.delete<OfflineLudoService>(force: true);
     }
 
     if (Get.isRegistered<OnlineLudoService>()) {
-      Get.delete<OnlineLudoService>();
+      Get.delete<OnlineLudoService>(force: true);
     }
 
     if (Get.isRegistered<BaseLudoController>()) {
-      Get.delete<BaseLudoController>();
+      Get.delete<BaseLudoController>(force: true);
     }
 
     if (Get.isRegistered<OfflineLudoController>()) {
-      Get.delete<OfflineLudoController>();
+      Get.delete<OfflineLudoController>(force: true);
     }
 
     if (Get.isRegistered<OnlineLudoController>()) {
-      Get.delete<OnlineLudoController>();
+      Get.delete<OnlineLudoController>(force: true);
     }
 
     if (Get.isRegistered<DiceController>()) {
-      Get.delete<DiceController>();
+      Get.delete<DiceController>(force: true);
     }
 
     // ← Clear DialogManager

@@ -1,11 +1,11 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:playbazaar/config/routes/router_provider.dart';
 import 'package:playbazaar/games/games/ludo/helper/functions.dart';
 import 'package:playbazaar/games/games/ludo/models/dice_model.dart';
 import 'package:playbazaar/games/games/ludo/models/ludo_creattion_params.dart';
 import 'package:playbazaar/games/games/ludo/models/ludo_player.dart';
+import '../../../../config/routes/router_provider.dart';
 import '../../../../constants/app_dialog_ids.dart';
 import '../../../../core/dialog/dialog_manager.dart';
 import '../helper/enums.dart';
@@ -27,7 +27,7 @@ abstract class BaseLudoController extends GetxController implements IBaseLudoCon
 
   // Common reactive variables
   List<Token?> get gameTokens => gameService.gameTokens;
-  RxList<LudoPlayer> players = <LudoPlayer>[].obs;
+  final RxList<LudoPlayer> players = <LudoPlayer>[].obs;
   final RxBool wasLastToken = false.obs;
   final RxBool boardBuild = false.obs;
   final RxBool isTeamPlay = false.obs;

@@ -22,7 +22,7 @@ Future<void> leavingGroupDialog(
           IconButton(
             onPressed: () async {
               await onLeaveGroup();
-              Navigator.pop(context); // Close the dialog after the action
+              Navigator.pop(context);
             },
             icon: const Icon(Icons.done_outline, color: Colors.green),
           ),

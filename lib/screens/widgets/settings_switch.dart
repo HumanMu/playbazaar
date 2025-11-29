@@ -28,7 +28,7 @@ class SettingsSwitch extends StatelessWidget {
         Switch(
           value: value,
           onChanged: (_) => onToggle(),
-          activeColor: Colors.green,
+          activeThumbColor: Colors.green,
           inactiveThumbColor: Colors.red,
           inactiveTrackColor: Colors.red[200],
           trackOutlineWidth: const WidgetStatePropertyAll(0),
