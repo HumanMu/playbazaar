@@ -73,7 +73,7 @@ class GroupServices {
     }).toList();
   }
 
-  getGroupsById(String id) {
+  Future<DocumentSnapshot<Object?>> getGroupsById(String id) {
     return groupCollection.doc(id).get();
   }
 

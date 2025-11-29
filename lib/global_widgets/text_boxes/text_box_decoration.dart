@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
 
-decoration(String? hintText) {
+InputDecoration decoration(String? hintText) {
   return InputDecoration(
     hintText: hintText!=""? hintText : "",
       enabledBorder: OutlineInputBorder(

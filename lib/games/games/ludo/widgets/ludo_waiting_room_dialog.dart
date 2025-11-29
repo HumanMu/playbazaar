@@ -112,20 +112,7 @@ class LudoWaitingRoomDialog extends StatelessWidget {
               }),
             ),
             const SizedBox(height: 16),
-            isManaging? SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () => controller.closeWaitingRoom(),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                ), child: Text("btn_done".tr,
-                  style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold
-                  )
-              ))
-            ): Row(
+            Row(
               children: [
                 ElevatedButton(
                   onPressed: () => controller.closeWaitingRoom(),
@@ -147,7 +134,7 @@ class LudoWaitingRoomDialog extends StatelessWidget {
                       minimumSize: const Size(double.infinity, 50),
                     ),
                     onPressed: ()=> controller.players.length >= 2
-                        ? controller.startNextGame()
+                        ? controller.startGame()
                         : null,
                     child: Text(controller.players.length >= 2 && controller.canStart.value
                         ? 'btn_start'.tr

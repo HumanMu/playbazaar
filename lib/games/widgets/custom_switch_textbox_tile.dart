@@ -51,7 +51,7 @@ class CustomSwitchTextboxTile extends StatelessWidget {
               subtitle: Text(subtitle),
               value: value,
               onChanged: onSwitchChanged,
-              activeColor: Colors.green,
+              activeThumbColor: Colors.green,
               inactiveThumbColor: Colors.black,
             ),
             if (value) ...[

@@ -14,4 +14,5 @@ class AppDialogIds {
   // User dialogs
   static const String confirmLogout = 'confirm_logout';
   static const String profileSettings = 'profile_settings';
+  static const String acceptDialog = 'accept_dialog';
 }

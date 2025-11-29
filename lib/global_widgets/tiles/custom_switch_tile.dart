@@ -60,7 +60,7 @@ class CustomSwitchTile extends StatelessWidget {
               value: value,
               onChanged: onChanged,
               inactiveThumbColor: inactiveThumbColor,
-              activeColor: activColor,
+              activeThumbColor: activColor,
             ),
             if (showAdditionalInfo && additionalInfo != null) ...[
               const Divider(),

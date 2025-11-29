@@ -10,6 +10,7 @@ import '../../../functions/generate_strings.dart';
 import '../../../global_widgets/dialog/accept_dialog.dart';
 import 'helper/enums.dart';
 import 'helper/utility_color.dart';
+import 'locator/service_locator.dart';
 import 'widgets/online_game_creation_dialog.dart';
 
 class LudoHomeScreen extends ConsumerStatefulWidget {
@@ -312,12 +313,13 @@ class _LudoHomeScreenState extends ConsumerState<LudoHomeScreen> {
     _navigateToPlayScreen(playerCount, mode, false, "");
   }
 
-  void _navigateToPlayScreen(
+  void _navigateToPlayScreen (
       int playerCount,
       GameMode gameMode,
       bool isHost,
       String? gameCode
-    ){
+    ) async {
+    await LudoServiceLocator.cleanup();
     final queryData = Uri(queryParameters: {
       'gameMode': gameMode.name,
       'isHost': isHost.toString(),
@@ -327,7 +329,9 @@ class _LudoHomeScreenState extends ConsumerState<LudoHomeScreen> {
       'enabledRobots': enabledRobots.toString(),
     }).query;
 
-    context.push('/ludoPlayScreen?$queryData');
+    if(mounted) {
+      context.push('/ludoPlayScreen?$queryData');
+    }
   }
 
 
