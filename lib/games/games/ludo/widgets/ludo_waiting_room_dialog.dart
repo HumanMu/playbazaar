@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:playbazaar/functions/string_cases.dart';
 import 'package:playbazaar/games/games/ludo/controller/online_ludo_controller.dart';
+import 'package:playbazaar/games/helper/enum.dart';
+import 'package:playbazaar/global_widgets/buttons/primary_button.dart';
 import 'package:playbazaar/global_widgets/rarely_used/text_2_copy.dart';
 
 class LudoWaitingRoomDialog extends StatelessWidget {
-  final bool isManaging;
+  final bool? isManaging;
   const LudoWaitingRoomDialog({
-    required this.isManaging,
+    this.isManaging = false,
     super.key,
   });
 
@@ -113,7 +115,13 @@ class LudoWaitingRoomDialog extends StatelessWidget {
               }),
             ),
             const SizedBox(height: 16),
-            Row(
+            isManaging == true
+              && controller.currentGameState?.gameState != GameProgress.waiting
+              ? PrimaryButton(
+                onPressed: ()=> OnlineLudoController().closeWaitingRoom(),
+                text: "btn_done".tr,
+                backgroundColor: Colors.green,
+              ) : Row(
               children: [
                 ElevatedButton(
                   onPressed: () => controller.leaveGame(),
@@ -127,27 +135,23 @@ class LudoWaitingRoomDialog extends StatelessWidget {
                 const SizedBox(width: 5),
                 Obx(() => Expanded(
                   child: controller.isHost.value
-                    ? ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: controller.players.length >= 2 && controller.canStart.value
-                            ? Colors.green
-                            : Colors.grey,
-                        minimumSize: const Size(double.infinity, 50),
-                      ),
-                      onPressed: ()=> controller.players.length >= 2
-                          ? controller.startGame()
-                          : null,
-                      child: Text(controller.players.length >= 2 && controller.canStart.value
+                    ? PrimaryButton(
+                      onPressed: controller.players.length >= 2
+                        ? controller.startGame
+                        : null,
+                      borderRadius: 15,
+                      text: controller.players.length >= 2 && controller.canStart.value
                           ? 'btn_start'.tr
                           : 'waiting_participants'.tr,
-                        style: const TextStyle(color: Colors.white),
-                      ),
+                      backgroundColor: controller.players.length >= 2 && controller.canStart.value
+                          ? Colors.green
+                          : Colors.grey
                     ) : Text('waiting_start'.tr,
                     style: TextStyle(fontStyle: FontStyle.italic),
                   ),
                 )),
               ],
-            ),
+            )
           ],
         ),
       ),

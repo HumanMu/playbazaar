@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/dialog/dialog_listner.dart';
 import '../../../global_widgets/dialog/show_error_dialog_utils.dart';
 import 'helper/enums.dart';
+import 'helper/functions.dart';
 import 'locator/service_locator.dart';
 import 'models/ludo_creattion_params.dart';
 import 'widgets/game_play.dart';
@@ -54,6 +55,7 @@ class _LudoPlayScreenState extends ConsumerState<LudoPlayScreen> {
 
       final dialogManager = ref.read(dialogManagerProvider.notifier);
       await LudoServiceLocator.cleanup();
+      LudoHelper.clearKeyCache();
       await LudoServiceLocator.initialize(
           widget.gameMode,
           params,

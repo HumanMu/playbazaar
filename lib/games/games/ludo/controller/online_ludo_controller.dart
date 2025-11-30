@@ -33,7 +33,7 @@ class OnlineLudoController extends BaseLudoController {
   TokenType myTokenType = TokenType.red;
   final RxBool isSelfLeave = false.obs;
   StreamSubscription<LudoOnlineModel?>? _gameStateSubscription;
-  LudoOnlineModel? _currentGameState;
+  LudoOnlineModel? currentGameState;
   LudoOnlineModel? _previousGameState;
   final Set<String> _pendingMoves = {}; // Current user move to prevet double moves
 
@@ -107,7 +107,7 @@ class OnlineLudoController extends BaseLudoController {
         .listen((gameState) async {
       if (gameState != null) {
 
-        _currentGameState = gameState;
+        currentGameState = gameState;
         await _updateChangedTokens(gameState, _previousGameState);
         final shouldSyncPlayers = players.length != gameState.players.length
             || players.isEmpty
@@ -132,7 +132,7 @@ class OnlineLudoController extends BaseLudoController {
           }
         }
 
-        _checkWinState(gameState.winnerOrder, gameState.gameState);
+        _checkWinState(gameState.winnerOrder?.length, gameState.gameState);
         _createLocalTokens(gameState.players);
         _updatePlayerProgress(gameState.players);
         _gameStateDialog(gameState.gameState);
@@ -166,11 +166,11 @@ class OnlineLudoController extends BaseLudoController {
     ) : null;
   }
 
-  void _checkWinState(List<String>? winnersOrder, GameProgress gameState) {
-    if(winnersOrder == null) return;
+  void _checkWinState(int? winnersOrder, GameProgress gameState) {
+    if(winnersOrder == 0 || winnersOrder == null) return;
 
-    if(winnersOrder.length >= (players.length-1)) {
-      gameState != GameProgress.waiting ? showGameOverDialog() : null;
+    if(winnersOrder >= players.length) {
+      showGameOverDialog();
     }
   }
 
@@ -254,7 +254,7 @@ class OnlineLudoController extends BaseLudoController {
     onlineLudoService.setPlayerIndexMap(playerIndexMap);
 
     // Get tokens from game state
-    final tokensMap = _currentGameState?.tokens ?? {};
+    final tokensMap = currentGameState?.tokens ?? {};
 
     for (int i = 0; i < sortedPlayers.length; i++) {
       final firestorePlayer = sortedPlayers[i];
@@ -711,10 +711,10 @@ class OnlineLudoController extends BaseLudoController {
 
   Future<void> leaveGame() async{
     try{
-      isSelfLeave.value = true;
+      /*isSelfLeave.value = true;
       await _gameStateSubscription?.cancel();
       _gameStateSubscription = null;
-      await onlineLudoService.leaveGame(gameId.value);
+      await onlineLudoService.leaveGame(gameId.value);*/
       dialogManager.closeAllDialogs();
       showCustomSnackbar("leaving_game_succeeded".tr, false);
     }catch(e){
