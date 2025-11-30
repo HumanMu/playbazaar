@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:get/get.dart';
+import 'package:playbazaar/games/games/ludo/config/ludo_config.dart';
 import 'package:playbazaar/games/games/ludo/models/ludo_creattion_params.dart';
 import 'package:playbazaar/global_widgets/show_custom_snackbar.dart';
 import '../../../helper/enum.dart';
@@ -122,14 +123,14 @@ class OnlineLudoService extends BaseLudoService {
           throw Exception("The game is full".tr);
         }
 
-        final playerIndex = gameData.players.length;
-        const colorSequence = ["red", "yellow", "green", "blue"];
+        // ✅ Find the first available player slot
+        final playerIndex = _findFirstAvailablePlayerSlot(gameData);
 
-        if (playerIndex >= colorSequence.length) {
+        if (playerIndex == -1) {
           throw Exception("game_is_full".tr);
         }
 
-        final assignedColor = colorSequence[playerIndex];
+        final assignedColor = GameConfig.colorSequences[playerIndex];
 
         int? teamId;
         if (gameData.teamPlay) {
@@ -165,6 +166,36 @@ class OnlineLudoService extends BaseLudoService {
       debugPrint("Error joining game: $e");
       return null;
     }
+  }
+
+  // ✅ Helper method to find first available player slot
+  int _findFirstAvailablePlayerSlot(LudoOnlineModel gameData) {
+    // Sort players to maintain consistent indexing
+    final sortedPlayers = gameData.players.values.toList()
+      ..sort((a, b) {
+        if (a.playerId == gameData.hostId) return -1;
+        if (b.playerId == gameData.hostId) return 1;
+        return a.playerId.compareTo(b.playerId);
+      });
+
+    // Check which indices (0-3) are already taken by existing players
+    Set<int> occupiedIndices = {};
+
+    for (final player in sortedPlayers) {
+      final colorIndex = GameConfig.colorSequences.indexOf(player.color);
+      if (colorIndex != -1) {
+        occupiedIndices.add(colorIndex);
+      }
+    }
+
+    // Find first available index (0-3)
+    for (int i = 0; i < 4; i++) {
+      if (!occupiedIndices.contains(i)) {
+        return i;
+      }
+    }
+
+    return -1; // No slots available
   }
 
 
@@ -304,10 +335,6 @@ class OnlineLudoService extends BaseLudoService {
     _playerIndexMap.addAll(mapping);
   }
 
-  Future<void> leaveGame(String? gameId) async {
-
-  }
-
   Future<void> removePlayerFromGame(String gameId, String playerIdToRemove) async {
     try {
       final gameRef = ludoReference.collection('inProgress').doc(gameId);
@@ -339,17 +366,10 @@ class OnlineLudoService extends BaseLudoService {
           throw Exception("Player not found in game");
         }
 
-        // Find the player's index to remove their tokens
-        final sortedPlayers = gameData.players.values.toList()
-          ..sort((a, b) {
-            if (a.playerId == gameData.hostId) return -1;
-            if (b.playerId == gameData.hostId) return 1;
-            return a.playerId.compareTo(b.playerId);
-          });
-
-        final playerIndex = sortedPlayers.indexWhere(
-                (p) => p.playerId == playerIdToRemove
-        );
+        // ✅ Find player index based on their COLOR (not sorted position)
+        final playerToRemove = gameData.players[playerIdToRemove]!;
+        const colorSequence = ["red", "yellow", "green", "blue"];
+        final playerIndex = colorSequence.indexOf(playerToRemove.color);
 
         if (playerIndex == -1) {
           throw Exception("Player index not found");
@@ -368,25 +388,39 @@ class OnlineLudoService extends BaseLudoService {
 
         // If it's this player's turn, move to next player
         if (gameData.currentPlayerTurn == playerIdToRemove) {
-          // Find next active player
-          final currentIndex = sortedPlayers.indexWhere((p) => p.playerId == playerIdToRemove);
+          // ✅ Sort remaining players by color order to find next turn
+          final remainingPlayers = gameData.players.values
+              .where((p) => p.playerId != playerIdToRemove)
+              .toList()
+            ..sort((a, b) {
+              final indexA = colorSequence.indexOf(a.color);
+              final indexB = colorSequence.indexOf(b.color);
+              return indexA.compareTo(indexB);
+            });
+
+          // Find next player in turn order starting from removed player's position
           String? nextPlayerId;
 
-          for (int i = 1; i < sortedPlayers.length; i++) {
-            final nextIndex = (currentIndex + i) % sortedPlayers.length;
-            final nextPlayer = sortedPlayers[nextIndex];
+          for (int i = 0; i < remainingPlayers.length; i++) {
+            final candidateIndex = colorSequence.indexOf(remainingPlayers[i].color);
 
-            if (nextPlayer.playerId != playerIdToRemove) {
-              nextPlayerId = nextPlayer.playerId;
+            // Find first player with higher color index than removed player
+            if (candidateIndex > playerIndex) {
+              nextPlayerId = remainingPlayers[i].playerId;
               break;
             }
+          }
+
+          // If no player found after removed player, wrap around to first player
+          if (nextPlayerId == null && remainingPlayers.isNotEmpty) {
+            nextPlayerId = remainingPlayers.first.playerId;
           }
 
           // If we found a next player, update turn
           if (nextPlayerId != null) {
             updates['currentPlayerTurn'] = nextPlayerId;
           } else {
-            // Only one player left, end game
+            // Only one player left or no players, end game
             updates['gameState'] = gameProgress2String(GameProgress.finished);
           }
         }
@@ -396,6 +430,115 @@ class OnlineLudoService extends BaseLudoService {
 
     } catch (e) {
       debugPrint("Failed to remove player: $e");
+      rethrow;
+    }
+  }
+
+  Future<void> leaveGame(String? gameId) async {
+    if (gameId == null || user == null) {
+      debugPrint("Cannot leave game: missing gameId or user");
+      return;
+    }
+
+    try {
+      final gameRef = ludoReference.collection('inProgress').doc(gameId);
+
+      await FirebaseFirestore.instance.runTransaction((transaction) async {
+        final gameSnapshot = await transaction.get(gameRef);
+
+        if (!gameSnapshot.exists) {
+          throw Exception("Game not found");
+        }
+
+        final gameData = LudoOnlineModel.fromMap(gameSnapshot.data()!);
+
+        // Validation: Player must be in the game
+        if (!gameData.players.containsKey(user!.uid)) {
+          throw Exception("Player not in game");
+        }
+
+        final leavingPlayer = gameData.players[user!.uid]!;
+        const colorSequence = ["red", "yellow", "green", "blue"];
+        final playerIndex = colorSequence.indexOf(leavingPlayer.color);
+
+        if (playerIndex == -1) {
+          throw Exception("Player index not found");
+        }
+
+        Map<String, dynamic> updates = {
+          'players.${user!.uid}': FieldValue.delete(),
+          'lastUpdated': FieldValue.serverTimestamp(),
+        };
+
+        // Remove player's tokens
+        for (int i = 0; i < 4; i++) {
+          updates['tokens.p${playerIndex}_t$i'] = FieldValue.delete();
+        }
+
+        if (gameData.currentPlayerTurn == user!.uid) {
+          // ✅ Sort remaining players by color order
+          final remainingPlayers = gameData.players.values
+              .where((p) => p.playerId != user!.uid)
+              .toList()
+            ..sort((a, b) {
+              final indexA = colorSequence.indexOf(a.color);
+              final indexB = colorSequence.indexOf(b.color);
+              return indexA.compareTo(indexB);
+            });
+
+          String? nextPlayerId;
+
+          for (int i = 0; i < remainingPlayers.length; i++) {
+            final candidateIndex = colorSequence.indexOf(remainingPlayers[i].color);
+
+            if (candidateIndex > playerIndex) {
+              nextPlayerId = remainingPlayers[i].playerId;
+              break;
+            }
+          }
+
+          if (nextPlayerId == null && remainingPlayers.isNotEmpty) {
+            nextPlayerId = remainingPlayers.first.playerId;
+          }
+
+          if (nextPlayerId != null) {
+            updates['currentPlayerTurn'] = nextPlayerId;
+          } else {
+            updates['gameState'] = gameProgress2String(GameProgress.finished);
+          }
+        }
+
+        // If host is leaving, transfer host to next player
+        if (gameData.hostId == user!.uid) {
+          // ✅ Sort by color order to find new host
+          final remainingPlayers = gameData.players.values
+              .where((p) => p.playerId != user!.uid)
+              .toList()
+            ..sort((a, b) {
+              final indexA = colorSequence.indexOf(a.color);
+              final indexB = colorSequence.indexOf(b.color);
+              return indexA.compareTo(indexB);
+            });
+
+          if (remainingPlayers.isNotEmpty) {
+            updates['hostId'] = remainingPlayers.first.playerId;
+          } else {
+            transaction.delete(gameRef);
+            return;
+          }
+        }
+
+        // Check if only one player remains after leaving
+        if (gameData.players.length <= 1) {
+          updates['gameState'] = gameProgress2String(GameProgress.finished);
+        }
+
+        transaction.update(gameRef, updates);
+      });
+
+      debugPrint("Successfully left game");
+    } catch (e) {
+      debugPrint("Failed to leave game: $e");
       rethrow;
     }
   }

@@ -10,4 +10,6 @@ class GameConfig {
     }
     return GameMode.online;
   }
+
+  static const colorSequences = ["red", "yellow", "green", "blue"];
 }

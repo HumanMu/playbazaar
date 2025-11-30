@@ -66,20 +66,24 @@ class _CustomSideMenuState extends State<CustomSideMenu> {
             Column(
               children: [
                 TextButton(
-                  onPressed: () => context.go("/ludoHome"),
+                  onPressed: () {
+                    controller.leaveGame();
+                    context.go("/ludoHome");
+                  },
                   child: Text("leave_game".tr, style: TextStyle(
                     fontSize: 20,
                     color: Colors.white,
                   )),
                 ),
-
-                controller.isHost? TextButton(
-                  onPressed: () => controller.showWaitingRoom(isManaging: true),
-                  child: Text("kick_a_member".tr, style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.white,
-                  )),
-                ) : Container(),
+                Obx(() => controller.isHost.value
+                  ? TextButton(
+                    onPressed: () => controller.showWaitingRoom(isManaging: true),
+                    child: Text("kick_a_member".tr, style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.white,
+                    )),
+                  ) : Container(),
+                ),
               ],
             ),
         ],
