@@ -84,10 +84,10 @@ class LudoWaitingRoomDialog extends StatelessWidget {
                                 children: [
                                   Text(splitBySpace(player.name!)[0]),
                                   Spacer(),
-                                  index == 0
+                                  controller.isHost.value && controller.players[index].playerId == controller.user?.uid
                                     ?Text(
                                       " ${"host".tr}",
-                                      style: TextStyle(fontSize: 10, color: Colors.red),
+                                      style: TextStyle(fontSize: 12, color: Colors.red),
                                   )
                                       : Text(""),
                                 ],
@@ -97,9 +97,10 @@ class LudoWaitingRoomDialog extends StatelessWidget {
                                 mainAxisSize: MainAxisSize.min,
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
-                                  controller.isHost && controller.players[index].playerId != controller.user?.uid ? IconButton(
-                                    onPressed: () => controller.removePlayer(controller.players[index].playerId!),
-                                    icon: Icon(Icons.remove_circle_sharp, color: Colors.red, size: 20),
+                                  controller.isHost.value && controller.players[index].playerId != controller.user?.uid
+                                      ? IconButton(
+                                        onPressed: () => controller.removePlayer(controller.players[index].playerId!),
+                                        icon: Icon(Icons.remove_circle_sharp, color: Colors.red, size: 25),
                                   ): Container(),
                                 ],
                               ),
@@ -115,7 +116,7 @@ class LudoWaitingRoomDialog extends StatelessWidget {
             Row(
               children: [
                 ElevatedButton(
-                  onPressed: () => controller.closeWaitingRoom(),
+                  onPressed: () => controller.leaveGame(),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red,
                   ),
@@ -124,30 +125,29 @@ class LudoWaitingRoomDialog extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 5),
-                Expanded(
-                  child: controller.isHost
-                      ? Obx(() => ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: controller.players.length >= 2 && controller.canStart.value
-                          ? Colors.green
-                          : Colors.grey,
-                      minimumSize: const Size(double.infinity, 50),
-                    ),
-                    onPressed: ()=> controller.players.length >= 2
-                        ? controller.startGame()
-                        : null,
-                    child: Text(controller.players.length >= 2 && controller.canStart.value
-                        ? 'btn_start'.tr
-                        : 'waiting_participants'.tr,
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                  ))
-                      : Text('waiting_start'.tr,
+                Obx(() => Expanded(
+                  child: controller.isHost.value
+                    ? ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: controller.players.length >= 2 && controller.canStart.value
+                            ? Colors.green
+                            : Colors.grey,
+                        minimumSize: const Size(double.infinity, 50),
+                      ),
+                      onPressed: ()=> controller.players.length >= 2
+                          ? controller.startGame()
+                          : null,
+                      child: Text(controller.players.length >= 2 && controller.canStart.value
+                          ? 'btn_start'.tr
+                          : 'waiting_participants'.tr,
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                    ) : Text('waiting_start'.tr,
                     style: TextStyle(fontStyle: FontStyle.italic),
                   ),
-                ),
+                )),
               ],
-            )
+            ),
           ],
         ),
       ),

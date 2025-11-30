@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:playbazaar/config/routes/router_provider.dart';
 import 'package:playbazaar/core/dialog/dialog_manager.dart';
+import 'package:playbazaar/games/games/ludo/config/ludo_config.dart';
 import 'package:playbazaar/games/games/ludo/helper/enum_converter.dart';
 import 'package:playbazaar/games/games/ludo/models/ludo_creattion_params.dart';
 import 'package:playbazaar/games/games/ludo/models/single_online_player.dart';
@@ -30,7 +31,7 @@ class OnlineLudoController extends BaseLudoController {
   final user = FirebaseAuth.instance.currentUser;
   final onlineLudoService = Get.find<OnlineLudoService>();
   TokenType myTokenType = TokenType.red;
-
+  final RxBool isSelfLeave = false.obs;
   StreamSubscription<LudoOnlineModel?>? _gameStateSubscription;
   LudoOnlineModel? _currentGameState;
   LudoOnlineModel? _previousGameState;
@@ -74,7 +75,6 @@ class OnlineLudoController extends BaseLudoController {
       return;
     }
 
-    showWaitingRoom();
     gameId.value = gameRef;
     await _listeningToGameState();
   }
@@ -123,7 +123,7 @@ class OnlineLudoController extends BaseLudoController {
           }
           _syncPlayersProfileWithFirestore(gameState.players, gameState.teamPlay);
           gameCode.value = gameState.gameCode;
-          isHost = gameState.hostId == user?.uid;
+          isHost.value = gameState.hostId == user?.uid;
 
           gameService.activeTokenTypes.clear();
           for (final player in players) {
@@ -132,7 +132,7 @@ class OnlineLudoController extends BaseLudoController {
           }
         }
 
-        _checkWinState(gameState.winnerOrder);
+        _checkWinState(gameState.winnerOrder, gameState.gameState);
         _createLocalTokens(gameState.players);
         _updatePlayerProgress(gameState.players);
         _gameStateDialog(gameState.gameState);
@@ -141,7 +141,6 @@ class OnlineLudoController extends BaseLudoController {
       }
       else{
         showCustomSnackbar("unexpected_result".tr, false);
-
       }
     },
       onError: (error) {
@@ -154,7 +153,7 @@ class OnlineLudoController extends BaseLudoController {
   Future<void> _updatePlayerRemoved() async{
     await _gameStateSubscription?.cancel();
     _gameStateSubscription = null;
-    await dialogManager.showDialog(
+    !isSelfLeave.value? await dialogManager.showDialog(
         dialog: AcceptDialogWidget(
             title: "removed_from_game_title".tr,
             message: "removed_from_game_description".tr,
@@ -164,14 +163,14 @@ class OnlineLudoController extends BaseLudoController {
             },
         ),
       priority: DialogPriority.critical,
-    );
+    ) : null;
   }
 
-  void _checkWinState(List<String>? winnersOrder) {
+  void _checkWinState(List<String>? winnersOrder, GameProgress gameState) {
     if(winnersOrder == null) return;
 
     if(winnersOrder.length >= (players.length-1)) {
-      showGameOverDialog();
+      gameState != GameProgress.waiting ? showGameOverDialog() : null;
     }
   }
 
@@ -221,23 +220,34 @@ class OnlineLudoController extends BaseLudoController {
   }
 
   void _createLocalTokens(Map<String, SingleOnlinePlayer> firestorePlayers) {
-    // Get the mapping
     final localTokenTypeMap = _mapPlayersToLocalTokenTypes(firestorePlayers);
 
-    // Convert to sorted list for consistent player indices
     final sortedPlayers = firestorePlayers.values.toList()
       ..sort((a, b) {
-        if (a.playerId == _currentGameState?.hostId) return -1;
-        if (b.playerId == _currentGameState?.hostId) return 1;
-        return a.playerId.compareTo(b.playerId);
+        final indexA = GameConfig.colorSequences.indexOf(a.color);
+        final indexB = GameConfig.colorSequences.indexOf(b.color);
+
+        if (indexA == -1 || indexB == -1) {
+          return a.playerId.compareTo(b.playerId);
+        }
+
+        return indexA.compareTo(indexB);
       });
+
+    // ✅ Create mapping from player to their actual Firestore index
+    Map<String, int> playerToFirestoreIndex = {};
+    for (int i = 0; i < sortedPlayers.length; i++) {
+      final colorIndex = GameConfig.colorSequences.indexOf(sortedPlayers[i].color);
+      playerToFirestoreIndex[sortedPlayers[i].playerId] = colorIndex;
+    }
 
     // Create reverse mapping for service
     Map<TokenType, int> playerIndexMap = {};
     for (int i = 0; i < sortedPlayers.length; i++) {
       final tokenType = localTokenTypeMap[sortedPlayers[i].playerId];
       if (tokenType != null) {
-        playerIndexMap[tokenType] = i;
+        final firestoreIndex = playerToFirestoreIndex[sortedPlayers[i].playerId]!;
+        playerIndexMap[tokenType] = firestoreIndex;
       }
     }
 
@@ -246,14 +256,18 @@ class OnlineLudoController extends BaseLudoController {
     // Get tokens from game state
     final tokensMap = _currentGameState?.tokens ?? {};
 
-    for (int playerIndex = 0; playerIndex < sortedPlayers.length; playerIndex++) {
-      final firestorePlayer = sortedPlayers[playerIndex];
+    for (int i = 0; i < sortedPlayers.length; i++) {
+      final firestorePlayer = sortedPlayers[i];
       final localTokenType = localTokenTypeMap[firestorePlayer.playerId]!;
 
-      for (int tokenIndex = 0; tokenIndex < 4; tokenIndex++) {
-        final globalTokenId = (playerIndex * 4) + tokenIndex;
+      // ✅ Use actual Firestore player index (based on color)
+      final firestorePlayerIndex = playerToFirestoreIndex[firestorePlayer.playerId]!;
 
-        final tokenKey = 'p${playerIndex}_t$tokenIndex';
+      for (int tokenIndex = 0; tokenIndex < 4; tokenIndex++) {
+        final globalTokenId = (firestorePlayerIndex * 4) + tokenIndex;
+
+        // ✅ Use Firestore index for token key
+        final tokenKey = 'p${firestorePlayerIndex}_t$tokenIndex';
         final firestorePosition = tokensMap[tokenKey] ?? -1;
 
         final existingToken = gameTokens[globalTokenId];
@@ -335,13 +349,17 @@ class OnlineLudoController extends BaseLudoController {
 
     players.clear();
 
-    // Convert Map to List for local state (preserving order)
     final sortedPlayers = firePlayers.values.toList()
       ..sort((a, b) {
-        // Sort by join order or maintain consistent ordering
-        if (a.playerId == _currentGameState?.hostId) return -1;
-        if (b.playerId == _currentGameState?.hostId) return 1;
-        return a.playerId.compareTo(b.playerId);
+        final indexA = GameConfig.colorSequences.indexOf(a.color);
+        final indexB = GameConfig.colorSequences.indexOf(b.color);
+
+        // Fallback to playerId comparison if colors are somehow invalid
+        if (indexA == -1 || indexB == -1) {
+          return a.playerId.compareTo(b.playerId);
+        }
+
+        return indexA.compareTo(indexB);
       });
 
     // Map each Firestore player to a LudoPlayer
@@ -522,17 +540,30 @@ class OnlineLudoController extends BaseLudoController {
 
     final sortedPlayers = newState.players.values.toList()
       ..sort((a, b) {
-        if (a.playerId == newState.hostId) return -1;
-        if (b.playerId == newState.hostId) return 1;
-        return a.playerId.compareTo(b.playerId);
+        final indexA = GameConfig.colorSequences.indexOf(a.color);
+        final indexB = GameConfig.colorSequences.indexOf(b.color);
+
+        if (indexA == -1 || indexB == -1) {
+          return a.playerId.compareTo(b.playerId);
+        }
+
+        return indexA.compareTo(indexB);
       });
+
+    // ✅ Create mapping from player to their actual Firestore index
+    Map<String, int> playerToFirestoreIndex = {};
+    for (int i = 0; i < sortedPlayers.length; i++) {
+      final colorIndex = GameConfig.colorSequences.indexOf(sortedPlayers[i].color);
+      playerToFirestoreIndex[sortedPlayers[i].playerId] = colorIndex;
+    }
 
     // Set player index map
     Map<TokenType, int> playerIndexMap = {};
     for (int i = 0; i < sortedPlayers.length; i++) {
       final tokenType = localTokenTypeMap[sortedPlayers[i].playerId];
       if (tokenType != null) {
-        playerIndexMap[tokenType] = i;
+        final firestoreIndex = playerToFirestoreIndex[sortedPlayers[i].playerId]!;
+        playerIndexMap[tokenType] = firestoreIndex;
       }
     }
     onlineLudoService.setPlayerIndexMap(playerIndexMap);
@@ -552,11 +583,18 @@ class OnlineLudoController extends BaseLudoController {
       hasChanges = true;
 
       final parts = tokenKey.split('_');
-      final playerIndex = int.parse(parts[0].substring(1));
+      final firestorePlayerIndex = int.parse(parts[0].substring(1));
       final tokenIndex = int.parse(parts[1].substring(1));
 
-      final globalTokenId = (playerIndex * 4) + tokenIndex;
-      final firestorePlayer = sortedPlayers[playerIndex];
+      final globalTokenId = (firestorePlayerIndex * 4) + tokenIndex;
+
+      // ✅ Find player by Firestore index (color)
+      final firestorePlayer = sortedPlayers.firstWhereOrNull(
+              (p) => GameConfig.colorSequences.indexOf(p.color) == firestorePlayerIndex
+      );
+
+      if (firestorePlayer == null) continue;
+
       final localTokenType = localTokenTypeMap[firestorePlayer.playerId]!;
 
       final existingToken = gameTokens[globalTokenId];
@@ -640,7 +678,7 @@ class OnlineLudoController extends BaseLudoController {
   }
 
   Future<void> startGame() async {
-    if (!isHost) {
+    if (!isHost.value) {
       showCustomSnackbar("only_host_can_start".tr, false);
       return;
     }
@@ -665,8 +703,20 @@ class OnlineLudoController extends BaseLudoController {
     try{
       await onlineLudoService.removePlayerFromGame(gameId.value, userId);
       if(userId == user!.uid) _gameStateSubscription?.cancel();
-      closeWaitingRoom();
 
+    }catch(e){
+      showCustomSnackbar("unexpected_result".tr, false);
+    }
+  }
+
+  Future<void> leaveGame() async{
+    try{
+      isSelfLeave.value = true;
+      await _gameStateSubscription?.cancel();
+      _gameStateSubscription = null;
+      await onlineLudoService.leaveGame(gameId.value);
+      dialogManager.closeAllDialogs();
+      showCustomSnackbar("leaving_game_succeeded".tr, false);
     }catch(e){
       showCustomSnackbar("unexpected_result".tr, false);
     }

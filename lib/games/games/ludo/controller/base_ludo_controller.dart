@@ -34,7 +34,7 @@ abstract class BaseLudoController extends GetxController implements IBaseLudoCon
   final RxBool isLoading = false.obs;
   final RxBool isRobotOn = false.obs;
   final RxInt numberOfHumanPlayers = 4.obs;
-  late bool isHost = false;
+  late RxBool isHost = false.obs;
   late GameMode gameMode = GameMode.offline;
 
   @override
