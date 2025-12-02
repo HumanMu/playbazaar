@@ -61,7 +61,24 @@ class _DialogListenerState extends ConsumerState<DialogListener>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    final wasInForeground = _isAppInForeground;
     _isAppInForeground = state == AppLifecycleState.resumed;
+
+    debugPrint('📱 App lifecycle changed: $state, isInForeground: $_isAppInForeground');
+
+    // If app just came back to foreground, check if there are pending dialogs
+    if (!wasInForeground && _isAppInForeground) {
+      debugPrint('✅ App resumed, checking for pending dialogs');
+      // Give a small delay for the app to fully resume
+      Future.delayed(const Duration(milliseconds: 300), () {
+        if (mounted) {
+          final currentState = ref.read(dialogManagerProvider);
+          if (currentState.currentRequest != null) {
+            _handleDialogStateChange(null, currentState);
+          }
+        }
+      });
+    }
 
     // Close all dialogs when app goes to background (optional)
     if (state == AppLifecycleState.paused) {
@@ -92,8 +109,11 @@ class _DialogListenerState extends ConsumerState<DialogListener>
   }
 
   void _handleDialogStateChange(DialogState? previous, DialogState next) {
+    final isCriticalDialog = next.currentRequest is PriorityDialogRequest &&
+        (next.currentRequest as PriorityDialogRequest).priority == DialogPriority.critical;
+
     // Only process if app is in foreground
-    if (!_isAppInForeground) {
+    if (!_isAppInForeground && !isCriticalDialog) {
       debugPrint('⏸️ App in background, skipping dialog operations');
       return;
     }

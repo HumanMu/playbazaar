@@ -7,7 +7,7 @@ import 'package:playbazaar/controller/user_controller/user_controller.dart';
 import 'package:playbazaar/functions/string_cases.dart';
 import 'package:playbazaar/models/DTO/recent_interacted_user_dto.dart';
 import 'package:playbazaar/global_widgets/show_custom_snackbar.dart';
-import '../../admob/adaptive_banner_ad.dart';
+import '../../admob/banner/adaptive_banner_ad.dart';
 import '../../models/private_message_model.dart';
 import '../widgets/tiles/message_tile_private.dart';
 import 'package:playbazaar/services/push_notification_service/push_notification_service.dart';

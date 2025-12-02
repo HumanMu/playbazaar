@@ -5,6 +5,7 @@ import 'package:playbazaar/games/games/ludo/helper/functions.dart';
 import 'package:playbazaar/games/games/ludo/models/dice_model.dart';
 import 'package:playbazaar/games/games/ludo/models/ludo_creattion_params.dart';
 import 'package:playbazaar/games/games/ludo/models/ludo_player.dart';
+import '../../../../admob/interstitial_rewarded.dart';
 import '../../../../config/routes/router_provider.dart';
 import '../../../../constants/app_dialog_ids.dart';
 import '../../../../core/dialog/dialog_manager.dart';
@@ -21,6 +22,9 @@ abstract class BaseLudoController extends GetxController implements IBaseLudoCon
   BaseLudoService get gameService => LudoServiceLocator.get<BaseLudoService>();
   DiceController get diceController => LudoServiceLocator.get<DiceController>();
   DialogManager get dialogManager => LudoServiceLocator.get<DialogManager>();
+
+  final _rewardedAdManager = RewardedInterstitialAdManager();
+
 
   final List<List<GlobalKey>> keyReferences = LudoHelper.getGlobalKeys();
   final DiceModel diceModel = DiceModel();
@@ -168,29 +172,6 @@ abstract class BaseLudoController extends GetxController implements IBaseLudoCon
     return true;
   }
 
-
-  void showGameOverDialog() {
-    if (dialogManager.isDialogShowingByRouteName(AppDialogIds.ludoWaitingRoom)) {
-      return;
-    }
-
-    dialogManager.showDialog(
-      dialog: GameOverDialog(
-        players: players,
-        isTeamPlay: isTeamPlay.value,
-        onPlayAgain: () {
-          Get.back();
-          // Reset game function here
-        },
-        onExit: () {
-          dialogManager.closeDialog();
-          rootNavigatorKey.currentContext?.push("/ludoHome");
-        },
-      ),
-      barrierDismissible: false,
-    );
-  }
-
   void syncTeamAssignments(bool teamPlay) {
     if (!teamPlay) {
       gameService.isTeamPlayEnabled = false;
@@ -209,5 +190,53 @@ abstract class BaseLudoController extends GetxController implements IBaseLudoCon
     gameService.isTeamPlayEnabled = true;
 
     debugPrint("Team assignments synced: $teamAssignments");
+  }
+
+  Future<void> showGameOverDialog() async {
+    if (dialogManager.isShowingByRouteName(AppDialogIds.ludoWaitingRoom)) {
+      return;
+    }
+
+    await _rewardedAdManager.loadAd();
+    _showRewardedAdBeforeGameOver();
+  }
+
+
+  Future<void> _showRewardedAdBeforeGameOver() async {
+    if (_rewardedAdManager.isAdReady) {
+      await _rewardedAdManager.showAd(
+        onUserEarnedReward: () {
+          debugPrint('User earned reward from Ludo game completion');
+        },
+        onAdDismissed: () {
+          _displayGameOverDialog();
+        },
+        onAdFailedToShow: () {
+          _displayGameOverDialog();
+        },
+      );
+    } else {
+      // If ad not ready, show dialog directly
+      _displayGameOverDialog();
+    }
+  }
+
+  void _displayGameOverDialog() {
+    dialogManager.showDialog(
+      dialog: GameOverDialog(
+        players: players,
+        isTeamPlay: isTeamPlay.value,
+        onPlayAgain: () {
+          Get.back();
+          // Reset game and preload next ad
+          _rewardedAdManager.loadAd();
+        },
+        onExit: () {
+          dialogManager.closeDialog();
+          rootNavigatorKey.currentContext?.push("/ludoHome");
+        },
+      ),
+      barrierDismissible: false,
+    );
   }
 }

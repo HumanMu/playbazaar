@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:playbazaar/controller/message_controller/group_message_controller.dart';
 import 'package:playbazaar/functions/string_cases.dart';
 import 'package:playbazaar/global_widgets/show_custom_snackbar.dart';
-import '../../admob/adaptive_banner_ad.dart';
+import '../../admob/banner/adaptive_banner_ad.dart';
 import '../../models/group_message.dart';
 import '../widgets/tiles/message_tile_group.dart';
 

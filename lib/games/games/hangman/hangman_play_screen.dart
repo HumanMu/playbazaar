@@ -2,7 +2,7 @@ import 'dart:math' as math;
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
-import '../../../admob/adaptive_banner_ad.dart';
+import '../../../admob/banner/adaptive_banner_ad.dart';
 import 'widgets/animated_hangman_painter.dart';
 import 'package:flutter/material.dart';
 import 'controller/play_controller.dart';

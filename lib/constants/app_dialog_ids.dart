@@ -6,6 +6,9 @@ class AppDialogIds {
   static const String ludoWaitingRoom = 'ludo_waiting_room';
   static const String ludoGameOver = 'ludo_game_over';
   static const String ludoOnlineGameCreation = 'ludo_online_game_creation';
+  static const String optionizedQuizDialog = 'quiz_end_game_dialog';
+  static const String noneOptionizedQuizDialog = 'quiz_end_game_dialog';
+
 
   // System dialogs
   static const String networkError = 'network_error';

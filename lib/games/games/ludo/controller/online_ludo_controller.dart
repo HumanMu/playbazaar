@@ -742,7 +742,7 @@ class OnlineLudoController extends BaseLudoController {
   }
 
   void showWaitingRoom({bool isManaging = false}) {
-    if (dialogManager.isDialogShowingByRouteName(AppDialogIds.ludoWaitingRoom)) {
+    if (dialogManager.isShowingByRouteName(AppDialogIds.ludoWaitingRoom)) {
       debugPrint("Waiting room already showing");
       return;
     }
@@ -760,8 +760,8 @@ class OnlineLudoController extends BaseLudoController {
   }
 
   Future<void> closeWaitingRoom() async {
-    if (dialogManager.isDialogShowingByRouteName(AppDialogIds.ludoWaitingRoom)) {
-      dialogManager.closeDialogByRouteName(AppDialogIds.ludoWaitingRoom);
+    if (dialogManager.isShowingByRouteName(AppDialogIds.ludoWaitingRoom)) {
+      dialogManager.closeByRouteName(AppDialogIds.ludoWaitingRoom);
     }
   }
 }
