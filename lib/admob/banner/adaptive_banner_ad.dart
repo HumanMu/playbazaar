@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'ad_manager_services.dart';
+import '../ad_manager_services.dart';
 
 class AdaptiveBannerAd extends StatefulWidget {
   final void Function(bool)? onAdLoaded;
@@ -44,7 +44,7 @@ class _AdaptiveBannerAdState extends State<AdaptiveBannerAd> {
     }
 
     _bannerAd = BannerAd(
-      adUnitId: adManagerService.adUnitId,
+      adUnitId: adManagerService.adBannerUnitId,
       size: adSize,
       request: const AdRequest(),
       listener: BannerAdListener(

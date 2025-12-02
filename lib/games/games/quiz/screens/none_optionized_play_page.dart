@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:playbazaar/admob/adaptive_banner_ad.dart';
-
+import 'package:playbazaar/admob/banner/adaptive_banner_ad.dart';
+import 'package:playbazaar/core/dialog/dialog_listner.dart';
 import '../controller/quiz_play_controller.dart';
 
-class NoneOptionizedPlayScreen extends StatelessWidget {
+class NoneOptionizedPlayScreen extends ConsumerStatefulWidget {
   final String selectedQuiz;
   final String quizTitle;
 
@@ -17,19 +18,41 @@ class NoneOptionizedPlayScreen extends StatelessWidget {
   });
 
   @override
+  ConsumerState<NoneOptionizedPlayScreen> createState() =>
+      _NoneOptionizedPlayScreenState();
+}
+
+class _NoneOptionizedPlayScreenState extends ConsumerState<NoneOptionizedPlayScreen> {
+  late QuizPlayController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = Get.put(
+      QuizPlayController(
+        selectedQuiz: widget.selectedQuiz,
+        quizTitle: widget.quizTitle,
+      ),
+      tag: widget.selectedQuiz,
+    );
+  }
+
+  @override
+  void dispose() {
+    Get.delete<QuizPlayController>(force: true, tag: widget.selectedQuiz);
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final QuizPlayController controller =
-    Get.put(QuizPlayController(
-        selectedQuiz: selectedQuiz,
-        quizTitle: quizTitle
-    ));
+    final dialogManager = ref.read(dialogManagerProvider.notifier);
 
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         elevation: 0,
         title: Text(
-          quizTitle,
+          widget.quizTitle,
           style: const TextStyle(color: Colors.white, fontSize: 30),
         ),
         backgroundColor: Colors.red,
@@ -98,7 +121,7 @@ class NoneOptionizedPlayScreen extends StatelessWidget {
                         Container(
                           margin: const EdgeInsets.only(bottom: 20),
                           child: ElevatedButton(
-                            onPressed: ()=> controller.nextQuestion(false, context),
+                            onPressed: ()=> controller.nextQuestion(false, dialogManager),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: controller.selectedAnswerIndex.value != null
                                   ? Colors.green

@@ -2,17 +2,20 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
+import 'package:playbazaar/games/games/quiz/widgets/quiz_end_message_dialog.dart';
 import 'package:playbazaar/games/services/firestore_quiz.dart';
 import 'package:playbazaar/global_widgets/show_custom_snackbar.dart';
+import '../../../../admob/interstitial_rewarded.dart';
 import '../../../../config/routes/router_provider.dart';
+import '../../../../constants/app_dialog_ids.dart';
+import '../../../../core/dialog/dialog_manager.dart';
 import '../models/question_models.dart';
-import '../widgets/quiz_end_message_dialog.dart';
 import '../widgets/quiz_result_dialog.dart';
 
 class QuizPlayController extends GetxController {
-
   final RxList<QuizQuestionModel> questionData = <QuizQuestionModel>[].obs;
   final RxList<QuizAttempt> quizAttempts = <QuizAttempt>[].obs;
+  final _rewardedAdManager = RewardedInterstitialAdManager();
 
   final RxBool isLoading = true.obs;
   final RxBool showAnswer = false.obs;
@@ -28,7 +31,6 @@ class QuizPlayController extends GetxController {
   final String selectedQuiz;
   final String quizTitle;
 
-
   QuizPlayController({
     required this.selectedQuiz,
     required this.quizTitle,
@@ -38,6 +40,10 @@ class QuizPlayController extends GetxController {
   void onInit() async {
     super.onInit();
     await getQuestionsFromFirestore();
+    Future<void>.delayed(const Duration(seconds: 1), () {
+      isLoading.value = false;
+    });
+    await _rewardedAdManager.loadAd();
   }
 
   @override
@@ -47,16 +53,11 @@ class QuizPlayController extends GetxController {
   }
 
   Future<void> getQuestionsFromFirestore() async {
-    isLoading.value = true;
-
     try {
       final questionResult = await FirestoreQuiz().getRandomQuizQuestions(
           quizId: selectedQuiz
       );
-
-      if (questionResult.isEmpty) {
-        return;
-      }
+      if (questionResult.isEmpty) return;
 
       // Optimize duplicate removal using toSet() and a custom comparator
       final uniqueQuestionsList = questionResult.toSet().toList();
@@ -71,7 +72,7 @@ class QuizPlayController extends GetxController {
     } catch (error) {
       showCustomSnackbar('error_loading_quiz'.tr, false);
     }finally{
-      isLoading.value = false;
+      //isLoading.value = false;
     }
   }
 
@@ -91,7 +92,10 @@ class QuizPlayController extends GetxController {
     return uniqueAnswers;
   }
 
-  void nextQuestion(bool isOptionized, BuildContext context) {
+
+  void nextQuestion(bool isOptionized, DialogManager dialogManager) {
+    debugPrint('✅ Quiz result dialog with ${quizAttempts.length} attempts');
+
     showAnswer.value = false;
     currentDescription.value = null;
     if (selectedAnswerIndex.value == null) {
@@ -100,11 +104,7 @@ class QuizPlayController extends GetxController {
     }
 
     if (selectedAnswer.value == (questionData.length - 1)) {
-      if (isOptionized) {
-        showResult(context);
-      } else {
-        showQuizzEnd();
-      }
+      showResult(dialogManager, isOptionized);
     } else {
       selectedAnswer.value++;
       final QuizQuestionModel nextQuestion = questionData[selectedAnswer.value];
@@ -120,6 +120,7 @@ class QuizPlayController extends GetxController {
       isCorrect.value = null;
     }
   }
+
 
   Color getButtonColor(int index) {
     if (selectedAnswerIndex.value != null &&
@@ -148,12 +149,7 @@ class QuizPlayController extends GetxController {
     );
 
     if (!alreadyAnswered) {
-      QuizAttempt attempt = QuizAttempt(
-        question: questionData[selectedAnswer.value].question,
-        userAnswer: currentAnswer[index],
-        correctAnswer: questionData[selectedAnswer.value].correctAnswer,
-        isCorrect: isCorrect.value ?? false,
-      );
+      QuizAttempt attempt = currentAttempt(index);
       quizAttempts.add(attempt);
     }
     else {
@@ -161,41 +157,27 @@ class QuizPlayController extends GetxController {
     }
   }
 
+  QuizAttempt currentAttempt( int index ) {
+    QuizAttempt attempt = QuizAttempt(
+      question: questionData[selectedAnswer.value].question,
+      userAnswer: currentAnswer[index],
+      correctAnswer: questionData[selectedAnswer.value].correctAnswer,
+      isCorrect: isCorrect.value ?? false,
+    );
+
+    return attempt;
+  }
+
   void displayAnswer(int index) {
     showAnswer.value = true;
     selectedAnswerIndex.value = index;
-  }
 
-  void showQuizzEnd() {
-    if (questionData.isEmpty) return;
-    endQuiz();
-
-    Get.dialog(
-        QuizEndMessageDialog(
-            quizAttempts: quizAttempts)
-    );
-  }
-
-
-  void showResult(BuildContext context) async {
-    if (quizAttempts.isEmpty) {
+    if (questionData.isEmpty || index < 0 || index >= currentAnswer.length) {
       return;
     }
-
-
-    showDialog(
-      context: context,
-      builder: (context) => QuizResultDialog(
-        quizAttempts: quizAttempts,
-        onContinue: () {
-          endQuiz();
-          Navigator.of(context).pop();
-          rootNavigatorKey.currentContext?.push('/mainGames');
-        },
-      ),
-    );
+    QuizAttempt attempt = currentAttempt(index);
+    quizAttempts.add(attempt);
   }
-
 
   void endQuiz() {
     questionData.clear();
@@ -204,4 +186,78 @@ class QuizPlayController extends GetxController {
     currentQuestion.value = "";
     selectedAnswer.value = 0;
   }
+
+  void showResult(DialogManager dialogManager, bool isOptionized) async {
+    if (quizAttempts.isEmpty) {
+      return;
+    }
+
+    _showAdWithGameOver(dialogManager, isOptionized);
+  }
+
+
+  Future<void> _showAdWithGameOver(DialogManager dialogManager, bool isOptionized) async {
+    if (_rewardedAdManager.isAdReady) {
+      await _rewardedAdManager.showAd(
+        onUserEarnedReward: () {
+          debugPrint('✅ User earned reward from quiz completion');
+        },
+        onAdDismissed: () {
+          debugPrint('✅ Ad dismissed, showing dialog in 1 second');
+          _showGameOverDialog(dialogManager, isOptionized);
+
+        },
+        onAdFailedToShow: () {
+          debugPrint('❌ Ad failed to show, showing dialog immediately');
+          _showGameOverDialog(dialogManager, isOptionized);
+        },
+      );
+    } else {
+      debugPrint('ℹ️ Ad not ready, showing dialog immediately');
+      _showGameOverDialog(dialogManager, isOptionized);
+    }
+  }
+
+
+  void _showGameOverDialog(DialogManager dialogManager, bool isOptionized) {
+    if (dialogManager.isShowingByRouteName(AppDialogIds.optionizedQuizDialog)) {
+      debugPrint("⚠️ Quiz result dialog already showing");
+      return;
+    }
+
+    // Use a post-frame callback to ensure we're on the UI thread after ad dismissal
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      isOptionized? dialogManager.showDialog(
+        dialog: QuizResultDialog(
+          quizAttempts: quizAttempts,
+          onContinue: () {
+            endQuiz();
+            dialogManager.closeByRouteName(AppDialogIds.optionizedQuizDialog);
+            rootNavigatorKey.currentContext?.push('/mainGames');
+          },
+        ),
+        barrierDismissible: false,
+        routeSettings: const RouteSettings(
+          name: AppDialogIds.optionizedQuizDialog,
+        ),
+        priority: DialogPriority.critical, // Critical priority bypasses background check
+
+      ) : dialogManager.showDialog(
+          dialog: QuizEndMessageDialog(
+              quizAttempts: quizAttempts,
+              onContinue: () {
+                endQuiz();
+                dialogManager.closeByRouteName(AppDialogIds.noneOptionizedQuizDialog);
+                rootNavigatorKey.currentContext?.push('/mainGames');
+              }
+          ),
+          barrierDismissible: false,
+          priority: DialogPriority.critical,
+          routeSettings: const RouteSettings(
+            name: AppDialogIds.noneOptionizedQuizDialog,
+          ),
+      );
+    });
+  }
+
 }

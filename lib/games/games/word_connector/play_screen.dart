@@ -5,7 +5,7 @@ import 'package:playbazaar/games/games/word_connector/controller/connector_play_
 import 'package:playbazaar/games/games/word_connector/widgets/letter_circle.dart';
 import 'package:playbazaar/games/games/word_connector/widgets/word_connector_grid.dart';
 
-import '../../../admob/adaptive_banner_ad.dart';
+import '../../../admob/banner/adaptive_banner_ad.dart';
 
 
 class WordConnectorPlayScreen extends StatelessWidget {

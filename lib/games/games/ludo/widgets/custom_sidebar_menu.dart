@@ -66,9 +66,11 @@ class _CustomSideMenuState extends State<CustomSideMenu> {
             Column(
               children: [
                 TextButton(
-                  onPressed: () {
-                    controller.leaveGame();
-                    context.go("/ludoHome");
+                  onPressed: () async {
+                    setState(() {
+                      _isDrawerOpen = !_isDrawerOpen;
+                    });
+                    await controller.showGameOverDialog();
                   },
                   child: Text("leave_game".tr, style: TextStyle(
                     fontSize: 20,

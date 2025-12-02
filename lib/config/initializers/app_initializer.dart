@@ -87,7 +87,7 @@ class AppInitializer {
     Get.put(SoundService(), permanent: true);
 
     _updateStatus('done');
-    await Future.delayed(Duration(milliseconds: 500));
+    await Future.delayed(Duration(milliseconds: 300));
   }
 
   void _updateStatus(String status) {

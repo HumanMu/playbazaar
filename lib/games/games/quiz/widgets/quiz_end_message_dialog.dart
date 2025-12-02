@@ -5,10 +5,12 @@ import '../models/question_models.dart';
 
 class QuizEndMessageDialog extends StatelessWidget {
   final List<QuizAttempt> quizAttempts;
+  final VoidCallback onContinue;
 
   const QuizEndMessageDialog({
     super.key,
     required this.quizAttempts,
+    required this.onContinue,
   });
 
   @override
@@ -31,10 +33,7 @@ class QuizEndMessageDialog extends StatelessWidget {
               Align(
                 alignment: Alignment.center,
                 child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    context.go('/mainQuiz');
-                  },
+                  onPressed: ()  => onContinue(),
                   child: Text(
                     "btn_continue".tr,
                     style: const TextStyle(

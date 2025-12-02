@@ -62,6 +62,7 @@ class DialogManager extends StateNotifier<DialogState> {
     Duration? timeout,
     DialogPriority priority = DialogPriority.normal,
     bool canBeInterrupted = true,
+    bool ignoreBackgroundCheck = false,
   }) async {
     // Validate queue size to prevent memory issues
     if (state.activeDialogs.length >= _maxQueuedDialogs) {
@@ -172,14 +173,14 @@ class DialogManager extends StateNotifier<DialogState> {
   }
 
   /// Check if a dialog with specific route name is showing
-  bool isDialogShowingByRouteName(String routeName) {
+  bool isShowingByRouteName(String routeName) {
     return state.activeDialogs.any(
           (d) => d.routeSettings?.name == routeName,
     );
   }
 
   /// Close dialog by route name
-  void closeDialogByRouteName(String routeName) {
+  void closeByRouteName(String routeName) {
     final dialog = getDialogByRouteName(routeName);
     if (dialog != null) {
       closeDialogById(dialog.id);
@@ -295,7 +296,6 @@ class DialogManager extends StateNotifier<DialogState> {
 
   @override
   void dispose() {
-    // Clean up all resources
     for (final completer in _completers.values) {
       if (!completer.isCompleted) {
         completer.complete(null);

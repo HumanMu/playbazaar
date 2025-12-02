@@ -1,5 +1,5 @@
 import 'package:go_router/go_router.dart';
-import '../../../../admob/adaptive_banner_ad.dart';
+import '../../../../admob/banner/adaptive_banner_ad.dart';
 import 'custom_sidebar_menu.dart';
 import '../controller/base_ludo_controller.dart';
 import '../controller/dice_controller.dart';
@@ -61,7 +61,10 @@ class _GamePlayState extends State<GamePlay> {
                         gameController.gameMode == GameMode.online
                             ? CustomSideMenu()
                             : IconButton(
-                                onPressed: () => context.go("/ludoHome"),
+                                onPressed: () {
+                                  gameController.showGameOverDialog();
+                                  context.go("/ludoHome");
+                                },
                                 icon: const Icon(
                                   Icons.arrow_back,
                                   color: Colors.red,
@@ -72,8 +75,7 @@ class _GamePlayState extends State<GamePlay> {
                 ),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    // ✅ Wrap player profiles in Obx to make them reactive
+                    children: [
                     Obx(() {
                       final greenPlayer = gameController.players.firstWhereOrNull(
                             (player) => player.tokenType == TokenType.green,
@@ -164,7 +166,6 @@ class _GamePlayState extends State<GamePlay> {
                       ),
                     ),
 
-                    // ✅ Wrap bottom player profiles in Obx
                     Obx(() {
                       final redPlayer = gameController.players.firstWhereOrNull(
                             (player) => player.tokenType == TokenType.red,
