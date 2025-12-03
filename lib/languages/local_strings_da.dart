@@ -108,6 +108,9 @@ class LocalStringsDa extends Translations {
       'round_result': 'Scoret i denne runde: %1 point. Vil du spille flere spil?',
       'waiting_players_to_finish': 'Venter på, at andre spillere afslutter spillet',
       'winner': 'Vinder',
+      "red_yellow_winner": "Rød & Gul Hold vinder!",
+      "green_blue_winner": "Grøn & Blå Hold vinder!",
+      "game_over": "SPILLET ER SLUT",
 
 
       //Personal information
@@ -259,6 +262,7 @@ class LocalStringsDa extends Translations {
       'btn_remove': 'Fjern',
       'btn_reset': 'Nulstil',
       'btn_done': 'Færdig',
+      "btn_watch_remaining": "Se spillet",
 
       // Settings
       'settings': 'Indstillinger',

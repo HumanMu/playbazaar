@@ -15,8 +15,8 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsState extends State<SettingsPage> {
-  late final NotificationSettingsController notificationController = Get.put(NotificationSettingsController());
-  final AccountController accountController = Get.put(AccountController());
+  final notificationController = Get.find<NotificationSettingsController>();
+  final accountController = Get.find<AccountController>();
   var isSignedIn = false.obs;
   int selectedCategoryIndex = 0;
 

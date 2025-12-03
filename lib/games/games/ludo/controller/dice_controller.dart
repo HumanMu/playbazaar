@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:get/get.dart';
+import 'package:just_audio/just_audio.dart';
 import 'dart:async';
 import '../models/dice_model.dart';
 import '../models/ludo_player.dart';
@@ -10,6 +11,7 @@ import 'base_ludo_controller.dart';
 class DiceController extends GetxController {
   final DiceModel dice = DiceModel();
   final BaseLudoController gameController = Get.find<BaseLudoController>();
+  final AudioPlayer _audioPlayer = AudioPlayer(); // Add this
 
   // Expose getters for easier access
   bool get hasExtraTurn  => dice.hasExtraTurn;
@@ -24,6 +26,12 @@ class DiceController extends GetxController {
   void onReady() {
     initializeFirstPlayer(gameController.players);
     super.onReady();
+  }
+
+  @override
+  void onClose() {
+    _audioPlayer.dispose();
+    super.onClose();
   }
 
   void initializeFirstPlayer(List<LudoPlayer> currentPlayers) {
@@ -62,6 +70,9 @@ class DiceController extends GetxController {
       if (!dice.isRobotTurn) {
         dice.rollState = false;
       }
+
+      await _audioPlayer.setAsset('assets/games/ludo/dice/ludo_glass_dice.wav');
+      await _audioPlayer.play();
 
       int finalValue = 0;
       for (int i = 0; i < 6; i++) {

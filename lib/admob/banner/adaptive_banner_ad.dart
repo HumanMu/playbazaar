@@ -62,7 +62,6 @@ class _AdaptiveBannerAdState extends State<AdaptiveBannerAd> {
         onAdFailedToLoad: (Ad ad, LoadAdError error) {
           debugPrint('Banner ad failed to load: $error');
 
-          // Dispose of the failed ad
           ad.dispose();
 
           setState(() {
@@ -85,7 +84,7 @@ class _AdaptiveBannerAdState extends State<AdaptiveBannerAd> {
   @override
   Widget build(BuildContext context) {
     if (!_isAdLoaded || _bannerAd == null) {
-      return const SizedBox.shrink(); // Minimal space when ad is not loaded
+      return const SizedBox.shrink();
     }
 
     return Container(

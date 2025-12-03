@@ -106,6 +106,10 @@ class LocalStringsAr extends Translations {
       'round_result': 'النقاط في هذه الجولة: %1 نقطة\nهل تريد لعب المزيد من الألعاب؟',
       'waiting_players_to_finish': 'في انتظار انتهاء اللاعبين الآخرين من اللعبة',
       'winner': 'الفائز',
+      "red_yellow_winner": "فريق الأحمر والأصفر يفوز!",
+      "green_blue_winner": "فريق الأخضر والأزرق يفوز!",
+      "game_over": "انتهت اللعبة",
+
 
       //Personal information
       'aboutme': 'نبذة عني',
@@ -258,6 +262,7 @@ class LocalStringsAr extends Translations {
       'btn_remove': 'إزالة',
       'btn_reset': 'إعادة تعيين',
       'btn_done': 'تم',
+      "btn_watch_remaining": "شاهد المباراة",
 
       // Settings
       'settings': 'الإعدادات',

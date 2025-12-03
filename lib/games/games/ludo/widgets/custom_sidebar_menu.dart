@@ -1,28 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
-import 'package:go_router/go_router.dart';
-import 'package:playbazaar/games/games/ludo/controller/online_ludo_controller.dart';
+import 'package:playbazaar/core/dialog/dialog_listner.dart';
+import '../controller/online_ludo_controller.dart';
 
 
-class CustomSideMenu extends StatefulWidget {
+class CustomSideMenu extends ConsumerStatefulWidget {
   const CustomSideMenu({super.key});
 
   @override
-  State<CustomSideMenu> createState() => _CustomSideMenuState();
+  ConsumerState<CustomSideMenu> createState() => _CustomSideMenuState();
 }
 
 
 
-class _CustomSideMenuState extends State<CustomSideMenu> {
+class _CustomSideMenuState extends ConsumerState<CustomSideMenu> {
   bool _isDrawerOpen = false;
   static const double _collapsedWidth = 60.0;
   static const double _expandedWidth = 0.35;
-
   final controller = Get.find<OnlineLudoController>();
 
 
   @override
   Widget build(BuildContext context) {
+    final river = ref.watch(dialogManagerProvider.notifier);
+
     double screenWidth = MediaQuery.of(context).size.width;
     double currentWidth = _isDrawerOpen
         ? screenWidth * _expandedWidth
@@ -71,6 +73,7 @@ class _CustomSideMenuState extends State<CustomSideMenu> {
                       _isDrawerOpen = !_isDrawerOpen;
                     });
                     await controller.showGameOverDialog();
+                    river.closeAllDialogs();
                   },
                   child: Text("leave_game".tr, style: TextStyle(
                     fontSize: 20,
