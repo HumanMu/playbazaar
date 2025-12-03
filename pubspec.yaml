@@ -144,6 +144,7 @@ flutter:
     - assets/icons/splash_screen_960x960.png
     - assets/games/hangman/
     - assets/games/ludo/
+    - assets/games/ludo/dice/
     - assets/games/ludo/dice/blue/
     - assets/games/ludo/dice/green/
     - assets/games/ludo/dice/red/

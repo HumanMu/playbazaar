@@ -108,6 +108,10 @@ class LocalStringsEn extends Translations {
       'round_result': 'Scored in this round: %1 points\ndo you want to play more games?',
       'waiting_players_to_finish': 'Waiting for other players to finish the game',
       'winner': 'Winner',
+      "red_yellow_winner": "Red & Yellow Team Wins!",
+      "green_blue_winner": "Green & Blue Team Wins!",
+      "game_over": "GAME OVER",
+
 
       //Personal information
       'aboutme' : 'About me ',
@@ -257,6 +261,7 @@ class LocalStringsEn extends Translations {
       'btn_remove': 'Remove',
       'btn_reset': 'Reset',
       'btn_done': 'Done',
+      "btn_watch_remaining": "Watch the game",
 
       // Settings
       'settings': 'Settings',

@@ -52,6 +52,7 @@ abstract class BaseLudoController extends GetxController implements IBaseLudoCon
       boardBuild.value = true;
       await onBoardBuilt();
     });
+    _rewardedAdManager.loadAd();
 
     isLoading.value = false;
   }
@@ -197,7 +198,6 @@ abstract class BaseLudoController extends GetxController implements IBaseLudoCon
       return;
     }
 
-    await _rewardedAdManager.loadAd();
     _showRewardedAdBeforeGameOver();
   }
 
@@ -216,7 +216,6 @@ abstract class BaseLudoController extends GetxController implements IBaseLudoCon
         },
       );
     } else {
-      // If ad not ready, show dialog directly
       _displayGameOverDialog();
     }
   }
@@ -226,17 +225,18 @@ abstract class BaseLudoController extends GetxController implements IBaseLudoCon
       dialog: GameOverDialog(
         players: players,
         isTeamPlay: isTeamPlay.value,
-        onPlayAgain: () {
-          Get.back();
-          // Reset game and preload next ad
+        onWatchRemaining: () {
+          dialogManager.closeDialog();
           _rewardedAdManager.loadAd();
         },
-        onExit: () {
+        onLeave: () {
           dialogManager.closeDialog();
           rootNavigatorKey.currentContext?.push("/ludoHome");
         },
       ),
       barrierDismissible: false,
+      priority: DialogPriority.critical,
+      routeSettings: const RouteSettings(name: AppDialogIds.ludoGameOver),
     );
   }
 }

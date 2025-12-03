@@ -108,6 +108,11 @@ class LocalStringsFa extends Translations {
       'round_result': 'امتیاز در این دور: %1 امتیاز\nآیا می‌خواهید بازی‌های بیشتری انجام دهید؟',
       'waiting_players_to_finish': 'در انتظار پایان بازی سایر بازیکنان',
       'winner': 'برنده',
+      "red_yellow_winner": "تیم قرمز و زرد برنده شد!",
+      "green_blue_winner": "تیم سبز و آبی برنده شد!",
+      "game_over": "پایان بازی",
+
+
 
       //Personal information
       'name': ' نام  ',
@@ -257,6 +262,7 @@ class LocalStringsFa extends Translations {
       'btn_remove': 'حذف',
       'btn_reset': 'بازگشت به اول',
       'btn_done': 'انجام شد',
+      "btn_watch_remaining": "تماشای بازی",
 
       //  Settings
       'settings': 'تنظیمات',

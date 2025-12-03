@@ -711,10 +711,10 @@ class OnlineLudoController extends BaseLudoController {
 
   Future<void> leaveGame() async{
     try{
-      /*isSelfLeave.value = true;
+      isSelfLeave.value = true;
       await _gameStateSubscription?.cancel();
       _gameStateSubscription = null;
-      await onlineLudoService.leaveGame(gameId.value);*/
+      await onlineLudoService.leaveGame(gameId.value);
       dialogManager.closeAllDialogs();
       showCustomSnackbar("leaving_game_succeeded".tr, false);
     }catch(e){

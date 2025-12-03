@@ -6,15 +6,15 @@ import '../models/ludo_player.dart';
 class GameOverDialog extends StatelessWidget {
   final List<LudoPlayer> players;
   final bool isTeamPlay;
-  final VoidCallback onPlayAgain;
-  final VoidCallback onExit;
+  final VoidCallback onWatchRemaining;
+  final VoidCallback onLeave;
 
   const GameOverDialog({
     super.key,
     required this.players,
     required this.isTeamPlay,
-    required this.onPlayAgain,
-    required this.onExit,
+    required this.onWatchRemaining,
+    required this.onLeave,
   });
 
   @override
@@ -37,10 +37,10 @@ class GameOverDialog extends StatelessWidget {
         if (teamWon) {
           // Determine team colors
           if (teamId == 1) {
-            winnerText = 'Red & Yellow Team Wins!';
+            winnerText = 'red_yellow_winner'.tr;
             winnerColor = Colors.red;
           } else {
-            winnerText = 'Green & Blue Team Wins!';
+            winnerText = 'green_blue_winner'.tr;
             winnerColor = Colors.green;
           }
           break;
@@ -50,7 +50,7 @@ class GameOverDialog extends StatelessWidget {
       // Individual play logic
       for (var player in players) {
         if (player.hasFinished) {
-          winnerText = '${player.name} Wins!';
+          winnerText = '${"winner".tr}: ${player.name}';
 
           // Set color based on token type
           switch (player.tokenType) {
@@ -119,10 +119,10 @@ class GameOverDialog extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 24),
-            const Text(
-              'GAME OVER',
+            Text(
+              'game_over'.tr,
               style: TextStyle(
-                fontSize: 22,
+                fontSize: 30,
                 fontWeight: FontWeight.bold,
                 letterSpacing: 2,
               ),
@@ -131,7 +131,7 @@ class GameOverDialog extends StatelessWidget {
             Text(
               winnerText,
               style: TextStyle(
-                fontSize: 26,
+                fontSize: 15,
                 fontWeight: FontWeight.bold,
                 color: winnerColor,
               ),
@@ -142,14 +142,14 @@ class GameOverDialog extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 _buildDialogButton(
-                  'PLAY AGAIN',
-                  winnerColor,
-                  onPlayAgain,
+                  'btn_watch_remaining'.tr,
+                  Colors.green,
+                  onWatchRemaining,
                 ),
                 _buildDialogButton(
-                  'EXIT',
-                  Colors.grey.shade800,
-                  onExit,
+                  'btn_leave'.tr,
+                  Colors.red,
+                  onLeave,
                 ),
               ],
             ),

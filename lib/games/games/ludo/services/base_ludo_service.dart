@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:just_audio/just_audio.dart';
 import 'dart:async';
 import '../helper/enums.dart';
 import '../helper/path.dart';
@@ -14,6 +15,9 @@ abstract class BaseLudoService extends GetxService {
 
   final RxList<Token?> gameTokens = RxList<Token?>([]);
   final Set<TokenType> activeTokenTypes = <TokenType>{};
+  final AudioPlayer _audioPlayer = AudioPlayer(); // Add this
+  bool _isSoundLoaded = false;
+
 
   // Initialize paths once and cache them
   static final Map<TokenType, List<List<int>>> _pathCache = {};
@@ -43,10 +47,18 @@ abstract class BaseLudoService extends GetxService {
     activeTokenTypes.clear();
     teamAssignments.clear();
 
-    // Clear and reinitialize with 16 null tokens
     gameTokens.clear();
     for (int i = 0; i < 16; i++) {
       gameTokens.add(null);
+    }
+
+    try {
+      await _audioPlayer.setAsset('assets/games/ludo/token_move3.wav');
+    } catch (e) {
+      debugPrint('Error loading token move sound: $e');
+    }
+    finally {
+      _isSoundLoaded = true;
     }
   }
 
@@ -197,10 +209,14 @@ abstract class BaseLudoService extends GetxService {
     }
 
     for (int i = 1; i <= steps; i++) {
-      final stepDelay = Duration(milliseconds: 120 * i);
+      final stepDelay = Duration(milliseconds: 200 * i);
       final stepPosition = token.positionInPath + i;
 
-      final stepFuture = Future.delayed(stepDelay, () {
+      final stepFuture = Future.delayed(stepDelay, () async {
+        if (_isSoundLoaded) {
+          _audioPlayer.seek(Duration.zero);
+          _audioPlayer.play();
+        }
         updateTokenState(
           token,
           token.tokenState,
