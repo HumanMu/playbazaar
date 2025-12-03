@@ -52,9 +52,7 @@ class _QuizPlayScreen extends ConsumerState<OptionizedPlayScreen>{
   Widget build(BuildContext context) {
     final dialogManager = ref.read(dialogManagerProvider.notifier);
 
-    return playController.isLoading.value
-      ? Center(child: CircularProgressIndicator())
-      : Scaffold(
+    return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
           centerTitle: true,

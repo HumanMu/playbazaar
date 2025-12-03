@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:advertising_id/advertising_id.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -18,6 +19,7 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
   unawaited(MobileAds.instance.initialize());
   final language = Get.put(LanguageController(), permanent: true);
   await language.loadLanguage();

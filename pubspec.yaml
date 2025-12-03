@@ -72,6 +72,7 @@ dependencies:
   hive_ce_flutter: ^2.3.3
   flutter_riverpod: ^3.0.3
   go_router: ^17.0.0
+  advertising_id: ^2.7.1
 
 
 dev_dependencies:
