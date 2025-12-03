@@ -53,7 +53,7 @@ abstract class BaseLudoService extends GetxService {
     }
 
     try {
-      await _audioPlayer.setAsset('assets/games/ludo/token_move3.wav');
+      await _audioPlayer.setAsset('assets/games/ludo/token_move_0.wav');
     } catch (e) {
       debugPrint('Error loading token move sound: $e');
     }
@@ -85,7 +85,7 @@ abstract class BaseLudoService extends GetxService {
     final team1 = teamAssignments[type1];
     final team2 = teamAssignments[type2];
 
-    // For debugging
+    // For debugging porpuses
     if (team1 != null && team2 != null) {
       debugPrint("Team check: $type1 (Team $team1) and $type2 (Team $team2) - ${team1 == team2 ? 'Same team' : 'Different teams'}");
     }
