@@ -5,7 +5,7 @@ class LocalStringsFa extends Translations {
   @override
   Map<String, Map<String, String>> get keys => {
     'fa_IR': {
-      'app_name' : 'Play Bazaar',
+      'app_name' : 'پلی بازار',
       'notification_title' : 'Play Bazaar',
       'language_shortcut': 'fa',
 
@@ -111,6 +111,8 @@ class LocalStringsFa extends Translations {
       "red_yellow_winner": "تیم قرمز و زرد برنده شد!",
       "green_blue_winner": "تیم سبز و آبی برنده شد!",
       "game_over": "پایان بازی",
+      "save_the_game": "ذخیره بازی",
+      "game_saved_succesfully": "بازی شما با موفقیت ذخیره شد. می‌توانید خارج شوید و هر زمان خواستید بازگردید.",
 
 
 
@@ -278,7 +280,8 @@ class LocalStringsFa extends Translations {
       'fill_all_input_title': 'فرستادن سؤال',
 
 
-      // Snackbar Message
+      // Messages
+      "looking_for_update": "در حال جستجو برای به‌روزرسانی...",
       'leaving_group': 'مطمئن هستی از اینکه گروه را ترک میکنی؟',
       'leaving_group_succed' : 'با موفقیت از گروه خارج شدی',
       'group_membership_succed' : 'با موفقیت عضو گروه شدی',
@@ -337,6 +340,10 @@ class LocalStringsFa extends Translations {
       'failed_to_accept_friend_request': 'قبول درخواست دوستی ناموفق بود',
       'adding_word_succed': 'افزودن کلمات جدید با موفقیت انجام شد',
       'reading_your_profile': 'در حال خواندن پروفایل شما...',
+      "processing": "در حال پردازش...",
+      "retrieve_saved_code": "بازیابی کد ذخیره‌شده",
+      "code_not_found": "هیچ کدی پیدا نشد",
+      "leave_online_ludo_descriptin": "آیا مطمئن هستید که می‌خواهید خارج شوید؟\n\nاگر دکمه «بله» را بزنید، از بازی خارج می‌شوید و تمام پیشرفت شما حذف خواهد شد. اگر شما و تیم‌تان تصمیم دارید بازی را ذخیره کرده و بعداً ادامه دهید، دکمه «خیر» را بزنید و سپس از منو گزینه «ذخیره بازی» را انتخاب کنید.",
 
 
       // سیاست حفظ حریم خصوصی

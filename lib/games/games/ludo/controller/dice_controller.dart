@@ -11,7 +11,7 @@ import 'base_ludo_controller.dart';
 class DiceController extends GetxController {
   final DiceModel dice = DiceModel();
   final BaseLudoController gameController = Get.find<BaseLudoController>();
-  final AudioPlayer _audioPlayer = AudioPlayer(); // Add this
+  final AudioPlayer _audioPlayer = AudioPlayer();
 
   // Expose getters for easier access
   bool get hasExtraTurn  => dice.hasExtraTurn;

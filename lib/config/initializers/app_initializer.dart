@@ -14,6 +14,7 @@ import 'package:playbazaar/services/push_notification_service/push_notification_
 import 'package:playbazaar/services/user_services.dart';
 import 'package:playbazaar/helper/sharedpreferences/sharedpreferences.dart';
 
+import '../../services/app_update/version_manager_service.dart';
 import '../../services/settings/sound_services.dart';
 
 /// Handles all app initialization logic in a centralized, testable way
@@ -27,6 +28,7 @@ class AppInitializer {
   Future<void> initialize() async {
     try {
       await _loadLanguagePreferences();
+      await _lookingForUpdates();
       await _initializeNotifications();
       await _loadEnvironmentConfig();
       await _setupSecureStorage();
@@ -41,6 +43,12 @@ class AppInitializer {
 
   Future<void> _loadLanguagePreferences() async {
     _updateStatus('loading_notifications');
+    await Future.delayed(Duration(milliseconds: 200));
+  }
+
+  Future<void> _lookingForUpdates() async {
+    _updateStatus('looking_for_update');
+    await VersionManagerService().init();
     await Future.delayed(Duration(milliseconds: 200));
   }
 

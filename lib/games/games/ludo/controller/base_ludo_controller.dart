@@ -189,38 +189,31 @@ abstract class BaseLudoController extends GetxController implements IBaseLudoCon
 
     gameService.setTeamAssignments(teamAssignments);
     gameService.isTeamPlayEnabled = true;
-
-    debugPrint("Team assignments synced: $teamAssignments");
   }
 
-  Future<void> showGameOverDialog() async {
-    if (dialogManager.isShowingByRouteName(AppDialogIds.ludoWaitingRoom)) {
+  Future<void> showGameOverDialog({bool isLeaving = false}) async {
+    _showRewardedAdBeforeGameOver(isLeaving: isLeaving);
+  }
+
+
+  Future<void> _showRewardedAdBeforeGameOver({bool isLeaving = false}) async {
+    if (_rewardedAdManager.isAdReady) {
+      await _rewardedAdManager.showAd(
+        onUserEarnedReward: () => _displayGameOverDialog(isLeaving: isLeaving),
+        onAdDismissed: () => _displayGameOverDialog(isLeaving: isLeaving),
+        onAdFailedToShow: ()=> _displayGameOverDialog(isLeaving: isLeaving),
+      );
+    } else {
+      _displayGameOverDialog(isLeaving: isLeaving);
+    }
+  }
+
+  void _displayGameOverDialog({bool isLeaving = false}) {
+    if(isLeaving) {
+      rootNavigatorKey.currentContext?.push("/ludoHome");
       return;
     }
 
-    _showRewardedAdBeforeGameOver();
-  }
-
-
-  Future<void> _showRewardedAdBeforeGameOver() async {
-    if (_rewardedAdManager.isAdReady) {
-      await _rewardedAdManager.showAd(
-        onUserEarnedReward: () {
-          debugPrint('User earned reward from Ludo game completion');
-        },
-        onAdDismissed: () {
-          _displayGameOverDialog();
-        },
-        onAdFailedToShow: () {
-          _displayGameOverDialog();
-        },
-      );
-    } else {
-      _displayGameOverDialog();
-    }
-  }
-
-  void _displayGameOverDialog() {
     dialogManager.showDialog(
       dialog: GameOverDialog(
         players: players,

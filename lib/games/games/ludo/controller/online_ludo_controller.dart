@@ -11,6 +11,8 @@ import 'package:playbazaar/games/games/ludo/models/ludo_creattion_params.dart';
 import 'package:playbazaar/games/games/ludo/models/single_online_player.dart';
 import 'package:playbazaar/games/games/ludo/services/online_ludo_service.dart';
 import 'package:playbazaar/global_widgets/dialog/accept_dialog.dart';
+import 'package:playbazaar/global_widgets/dialog/yes_no_dialog.dart';
+import 'package:playbazaar/helper/sharedpreferences/sharedpreferences.dart';
 import '../../../../constants/app_dialog_ids.dart';
 import '../../../../global_widgets/show_custom_snackbar.dart';
 import '../../../helper/enum.dart';
@@ -709,6 +711,25 @@ class OnlineLudoController extends BaseLudoController {
     }
   }
 
+  Future<bool> leaveGameProof() async {
+    bool hasProved = false;
+    await dialogManager.showDialog(
+        dialog: YesNoDialog(
+            title: "leave_game".tr,
+            description: "leave_online_ludo_descriptin".tr,
+            onYes: () async {
+              await leaveGame();
+              hasProved = true;
+            },
+            onNo: () {
+              dialogManager.closeAllDialogs();
+            }
+        ),
+    );
+
+    return hasProved;
+  }
+
   Future<void> leaveGame() async{
     try{
       isSelfLeave.value = true;
@@ -763,5 +784,12 @@ class OnlineLudoController extends BaseLudoController {
     if (dialogManager.isShowingByRouteName(AppDialogIds.ludoWaitingRoom)) {
       dialogManager.closeByRouteName(AppDialogIds.ludoWaitingRoom);
     }
+  }
+
+  Future<void> saveGame() async {
+    await SharedPreferencesManager.setString(
+        SharedPreferencesGameKeys.ludoLatestGameCode, gameCode.value
+    );
+    await Future.delayed(const Duration(seconds: 1));
   }
 }

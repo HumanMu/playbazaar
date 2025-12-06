@@ -111,6 +111,9 @@ class LocalStringsEn extends Translations {
       "red_yellow_winner": "Red & Yellow Team Wins!",
       "green_blue_winner": "Green & Blue Team Wins!",
       "game_over": "GAME OVER",
+      "save_the_game": "Save the game",
+      "game_saved_succesfully": "Your game has been saved. You can leave and return whenever you like.",
+
 
 
       //Personal information
@@ -279,6 +282,7 @@ class LocalStringsEn extends Translations {
 
 
       //Message
+      "looking_for_update": "Checking for updates...",
       'leaving_group': 'Are you sure about leaving the group?',
       'leaving_group_succed' : 'You left the group succesfully',
       'group_membership_succed' : 'Your membershipt approved',
@@ -337,6 +341,10 @@ class LocalStringsEn extends Translations {
       'failed_to_accept_friend_request': 'Failed to accept friend request',
       'adding_word_succed': 'Adding new words succeeded',
       'reading_your_profile': 'Reading your profile...',
+      "processing": "Processing...",
+      "retrieve_saved_code": "Retrieve saved code",
+      "code_not_found": "Couldn't find any code",
+      "leave_online_ludo_descriptin": "Are you sure you want to leave?\n\nIf you press Yes, you will be removed from the game and all your progress will be deleted. If you and your team have decided to save the game and return later, press No and then select 'Save the game' from the menu.",
 
 
 

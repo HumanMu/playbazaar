@@ -1,22 +1,26 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:playbazaar/constants/app_dialog_ids.dart';
+import 'package:playbazaar/global_widgets/dialog/accept_dialog.dart';
 import '../../../constants/enums.dart';
+import '../../../core/dialog/dialog_listner.dart';
+import '../../../core/dialog/dialog_manager.dart';
 import 'controller/connector_play_controller.dart';
-import '../../../global_widgets/dialog/accept_dialog.dart';
 import '../../../controller/user_controller/user_controller.dart';
 import 'package:playbazaar/helper/sharedpreferences/sharedpreferences.dart';
 
 import 'widgets/language_directory.dart';
 
-class WordConnectorSettingsScreen extends StatefulWidget {
+class WordConnectorSettingsScreen extends ConsumerStatefulWidget {
   const WordConnectorSettingsScreen({super.key});
 
   @override
-  State<WordConnectorSettingsScreen> createState() => _WordConnectorSettingsScreenState();
+  ConsumerState<WordConnectorSettingsScreen> createState() => _WordConnectorSettingsScreenState();
 }
 
-class _WordConnectorSettingsScreenState extends State<WordConnectorSettingsScreen> {
+class _WordConnectorSettingsScreenState extends ConsumerState<WordConnectorSettingsScreen> {
   final ConnectorPlayController controller = Get.isRegistered<ConnectorPlayController>()
       ? Get.find<ConnectorPlayController>()
       : Get.put(ConnectorPlayController(), permanent: true);
@@ -54,6 +58,8 @@ class _WordConnectorSettingsScreenState extends State<WordConnectorSettingsScree
 
   @override
   Widget build(BuildContext context) {
+    final dialogManager = ref.read(dialogManagerProvider.notifier);
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -87,7 +93,7 @@ class _WordConnectorSettingsScreenState extends State<WordConnectorSettingsScree
                   _buildPlayCard(),
                 ],
               ),
-              _buildFancyControlBar(),
+              _buildFancyControlBar(dialogManager),
             ],
           ),
         ),
@@ -235,7 +241,7 @@ class _WordConnectorSettingsScreenState extends State<WordConnectorSettingsScree
     );
   }
 
-  Widget _buildFancyControlBar() {
+  Widget _buildFancyControlBar(DialogManager dialogManager) {
     return SafeArea(
       child: Container(
         width: double.infinity,
@@ -264,10 +270,12 @@ class _WordConnectorSettingsScreenState extends State<WordConnectorSettingsScree
                 ),
               ),
             TextButton(
-              onPressed: () => acceptDialog(
-                context,
-                'play_rules_title'.tr,
-                'word_connector_play_rules'.tr,
+              onPressed: () => dialogManager.showDialog(
+                dialog: AcceptDialogWidget(
+                  title: 'play_rules_title'.tr,
+                    message: 'word_connector_play_rules'.tr,
+                    onOk: ()=> dialogManager.closeDialog(AppDialogIds.acceptDialog),
+                )
               ),
               child: Text(
                 'guide'.tr,

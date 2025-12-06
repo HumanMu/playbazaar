@@ -2,8 +2,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:playbazaar/constants/app_dialog_ids.dart';
 import '../../../constants/enums.dart';
 import '../../../controller/user_controller/user_controller.dart';
+import '../../../core/dialog/dialog_listner.dart';
 import '../../../global_widgets/dialog/accept_dialog.dart';
 import '../../../global_widgets/tiles/custom_switch_tile.dart';
 import 'package:playbazaar/games/games/hangman/controller/play_controller.dart';
@@ -35,6 +37,8 @@ class _HangmanPlaySettingsScreenState extends ConsumerState<HangmanPlaySettingsS
 
   @override
   Widget build(BuildContext context) {
+    final dialogManager = ref.read(dialogManagerProvider.notifier);
+
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.red,
@@ -108,12 +112,14 @@ class _HangmanPlaySettingsScreenState extends ConsumerState<HangmanPlaySettingsS
                         ),
 
                       TextButton(
-                        onPressed: () => acceptDialog(
-                            context,
-                            'hangman_settings_title'.tr,
-                            "${'hangman_settings_description'.tr}"
-                                "\n\n${"play_rules_title".tr}"
-                                "\n${"play_rules_description".tr}"
+                        onPressed: ()=> dialogManager.showDialog(
+                          dialog: AcceptDialogWidget(
+                              title: 'hangman_settings_title'.tr,
+                              message: "${'hangman_settings_description'.tr}"
+                                        "\n\n${"play_rules_title".tr}"
+                                        "\n${"play_rules_description".tr}",
+                              onOk: ()=> dialogManager.closeDialog(AppDialogIds.acceptDialog),
+                          ),
                         ),
                         child: Text('guide'.tr,
                             style: const TextStyle(

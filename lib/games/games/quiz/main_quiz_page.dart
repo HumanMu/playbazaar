@@ -1,21 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:playbazaar/constants/enums.dart';
 import 'package:playbazaar/controller/user_controller/user_controller.dart';
 import 'package:playbazaar/global_widgets/dialog/accept_dialog.dart';
 import '../../../api/Authentication/auth_service.dart';
+import '../../../constants/app_dialog_ids.dart';
+import '../../../core/dialog/dialog_listner.dart';
+import '../../../core/dialog/dialog_manager.dart';
 import '../../widgets/game_list_box.dart';
 import '../../functions/get_quiz_language.dart';
 
-class QuizMainPage extends StatefulWidget {
+class QuizMainPage extends ConsumerStatefulWidget {
   const QuizMainPage({super.key});
 
   @override
-  State<QuizMainPage> createState() => _QuizMainPage();
+  ConsumerState<QuizMainPage> createState() => _QuizMainPage();
 }
 
-class _QuizMainPage extends State<QuizMainPage> {
+class _QuizMainPage extends ConsumerState<QuizMainPage> {
   AuthService authService = AuthService();
   final userController = Get.find<UserController>();
 
@@ -53,6 +57,8 @@ class _QuizMainPage extends State<QuizMainPage> {
 
   @override
   Widget build(BuildContext context) {
+    final dialogManager = ref.read(dialogManagerProvider.notifier);
+
     return Scaffold(
         backgroundColor: Colors.grey.shade300,
         appBar: AppBar(
@@ -100,13 +106,13 @@ class _QuizMainPage extends State<QuizMainPage> {
           ),
           child: quizPath.isEmpty && quizLength == 0
               ? const Center(child: CircularProgressIndicator())
-              : _quizList(),
+              : _quizList(dialogManager),
         ),
       ),
     );
   }
 
-  Widget _quizList() {
+  Widget _quizList(DialogManager dialogManager) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -167,10 +173,12 @@ class _QuizMainPage extends State<QuizMainPage> {
                   children: [
                     Expanded(
                       child: TextButton(
-                        onPressed: () => acceptDialog(
-                            context,
-                            'guide'.tr,
-                            'quiz_play_guide'.tr
+                        onPressed: () => dialogManager.showDialog(
+                            dialog: AcceptDialogWidget(
+                                title: 'guide'.tr,
+                                message:  'quiz_play_guide'.tr,
+                                onOk: ()=> dialogManager.closeDialog(AppDialogIds.acceptDialog),
+                            ),
                         ),
                         child: Text(
                           'guide'.tr,

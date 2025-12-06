@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:go_router/go_router.dart';
 import 'package:playbazaar/config/routes/notification_route.dart';
 import 'package:playbazaar/config/routes/static_app_routes.dart';
@@ -200,8 +201,8 @@ class _AppLoaderState extends State<AppLoader> with SingleTickerProviderStateMix
   }
 
   Widget _buildAppTitle() {
-    return const Text(
-      "Play Bazaar",
+    return Text(
+      "app_name".tr,
       style: TextStyle(
         fontSize: 28,
         fontWeight: FontWeight.bold,

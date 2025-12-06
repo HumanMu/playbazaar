@@ -1,8 +1,12 @@
 import 'dart:math' as math;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
+import 'package:playbazaar/core/dialog/dialog_listner.dart';
+import 'package:playbazaar/core/dialog/dialog_manager.dart';
 import '../../../admob/banner/adaptive_banner_ad.dart';
+import '../../../constants/app_dialog_ids.dart';
 import 'widgets/animated_hangman_painter.dart';
 import 'package:flutter/material.dart';
 import 'controller/play_controller.dart';
@@ -11,14 +15,14 @@ import '../../../global_widgets/dialog/accept_dialog.dart';
 import 'package:playbazaar/games/games/hangman/widgets/animated_keyboard.dart';
 
 
-class HangmanPlayScreen extends StatefulWidget {
+class HangmanPlayScreen extends ConsumerStatefulWidget {
   const HangmanPlayScreen({super.key});
 
   @override
-  State<HangmanPlayScreen> createState() => _HangmanPlayScreenState();
+  ConsumerState<HangmanPlayScreen> createState() => _HangmanPlayScreenState();
 }
 
-class _HangmanPlayScreenState extends State<HangmanPlayScreen> with SingleTickerProviderStateMixin {
+class _HangmanPlayScreenState extends ConsumerState<HangmanPlayScreen> with SingleTickerProviderStateMixin {
   final PlayController _controller = Get.find<PlayController>();
   late AnimationController _animationController;
 
@@ -43,6 +47,8 @@ class _HangmanPlayScreenState extends State<HangmanPlayScreen> with SingleTicker
 
   @override
   Widget build(BuildContext context) {
+    final dialogManager = ref.read(dialogManagerProvider.notifier);
+
     return Directionality(
       textDirection: _controller.isAlphabetRTL.value ? TextDirection.rtl : TextDirection.ltr,
       child: Scaffold(
@@ -80,7 +86,7 @@ class _HangmanPlayScreenState extends State<HangmanPlayScreen> with SingleTicker
                               children: [
                                 _buildHiddenWord(),
                                 _buildGameStatus(),
-                                _buildHintButtons(),
+                                _buildHintButtons(dialogManager),
                                 _buildKeyboard(),
                               ],
                             )),
@@ -178,26 +184,30 @@ class _HangmanPlayScreenState extends State<HangmanPlayScreen> with SingleTicker
     );
   }
 
-  Widget _buildHintButtons() {
+  Widget _buildHintButtons(DialogManager dialogManager) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         if (_controller.wordHint.value.isNotEmpty)
           _buildHintButton(
             title: "${'guide'.tr}: 1",
-            onTap: () => acceptDialog(
-              context,
-              "guide".tr,
-              "${"first_letter".tr}: ${_controller.wordToGuess.value[0]}",
-            ),
+            onTap: () => dialogManager.showDialog(
+                dialog: AcceptDialogWidget(
+                    title: "guide".tr,
+                    message: "${"first_letter".tr}: ${_controller.wordToGuess.value[0]}",
+                    onOk: () => dialogManager.closeDialog(AppDialogIds.acceptDialog)
+                )
+            )
           ),
         const SizedBox(width: 10),
         _buildHintButton(
           title: "${'guide'.tr}: 2",
-          onTap: () => acceptDialog(
-            context,
-            "guide".tr,
-            _controller.wordHint.value,
+          onTap: () => dialogManager.showDialog(
+            dialog: AcceptDialogWidget(
+              title: "guide".tr,
+              message:  _controller.wordHint.value,
+              onOk: () => dialogManager.closeDialog(AppDialogIds.acceptDialog)
+            )
           ),
         ),
       ],
