@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:playbazaar/constants/app_colors.dart';
 import 'package:playbazaar/constants/app_dialog_ids.dart';
+import 'package:playbazaar/core/dialog/dialog_manager.dart';
 import '../../../core/dialog/dialog_listner.dart';
 import '../../../functions/generate_strings.dart';
 import '../../../global_widgets/dialog/accept_dialog.dart';
@@ -30,6 +31,8 @@ class _LudoHomeScreenState extends ConsumerState<LudoHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final dialogManager = ref.read(dialogManagerProvider.notifier);
+
     return Scaffold(
       backgroundColor: LudoColors.background,
       appBar: AppBar(
@@ -58,12 +61,12 @@ class _LudoHomeScreenState extends ConsumerState<LudoHomeScreen> {
         iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: Center(
-        child: _buildBody(),
+        child: _buildBody(dialogManager),
       )
     );
   }
 
-  Widget _buildBody() {
+  Widget _buildBody(DialogManager dialogManager) {
     return Container(
       padding: const EdgeInsets.all(24),
       constraints: const BoxConstraints(maxWidth: 700),
@@ -71,7 +74,7 @@ class _LudoHomeScreenState extends ConsumerState<LudoHomeScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const SizedBox(height: 10),
-          _buildLudoLogo(),
+          _buildLudoLogo(dialogManager),
           const SizedBox(height: 30),
           Text(
             'choose_player_numbers'.tr,
@@ -83,13 +86,13 @@ class _LudoHomeScreenState extends ConsumerState<LudoHomeScreen> {
           ),
           const SizedBox(height: 10),
           _buildSettingsToggleRow(),
-          _buildGameOptionsGrid(),
+          _buildGameOptionsGrid(dialogManager),
         ],
       ),
     );
   }
 
-  Widget _buildLudoLogo() {
+  Widget _buildLudoLogo(DialogManager dialogManager) {
     return Container(
       width: 120,
       height: 120,
@@ -111,14 +114,14 @@ class _LudoHomeScreenState extends ConsumerState<LudoHomeScreen> {
             _buildQuadrant(Alignment.topRight, LudoColors.green),
             _buildQuadrant(Alignment.bottomLeft, LudoColors.yellow),
             _buildQuadrant(Alignment.bottomRight, LudoColors.blue),
-            _buildGuideButton(),
+            _buildGuideButton(dialogManager),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildGuideButton() {
+  Widget _buildGuideButton(DialogManager dialogManager) {
     return Center(
       child: Container(
         width: 50,
@@ -137,10 +140,12 @@ class _LudoHomeScreenState extends ConsumerState<LudoHomeScreen> {
         ),
         child: Center(
           child: GestureDetector(
-            onTap: () => acceptDialog(
-                context,
-                'ludo_home_screen_guide_title'.tr,
-                'ludo_home_screen_guide'.tr
+            onTap: () => dialogManager.showDialog(
+              dialog: AcceptDialogWidget(
+                title: 'ludo_home_screen_guide_title'.tr,
+                message: 'ludo_home_screen_guide'.tr,
+                onOk: ()=> dialogManager.closeDialog(AppDialogIds.acceptDialog)
+              ),
             ),
             child: Text(
               'guide'.tr,
@@ -202,18 +207,18 @@ class _LudoHomeScreenState extends ConsumerState<LudoHomeScreen> {
     );
   }
 
-  Widget _buildGameOptionsGrid() {
+  Widget _buildGameOptionsGrid(DialogManager dialogManager) {
     return Expanded(
       child: GridView.count(
         crossAxisCount: 2,
         crossAxisSpacing: 20,
         mainAxisSpacing: 20,
         children: [
-          _buildGameTypeContainer(10, Colors.orangeAccent, GameMode.online),
-          _buildGameTypeContainer(1, LudoColors.yellow, GameMode.offline),
-          _buildGameTypeContainer(2, LudoColors.red, GameMode.offline),
-          _buildGameTypeContainer(3, LudoColors.green, GameMode.offline),
-          _buildGameTypeContainer(4, LudoColors.blue, GameMode.offline),
+          _buildGameTypeContainer(10, Colors.orangeAccent, GameMode.online, dialogManager),
+          _buildGameTypeContainer(1, LudoColors.yellow, GameMode.offline, dialogManager),
+          _buildGameTypeContainer(2, LudoColors.red, GameMode.offline, dialogManager),
+          _buildGameTypeContainer(3, LudoColors.green, GameMode.offline, dialogManager),
+          _buildGameTypeContainer(4, LudoColors.blue, GameMode.offline, dialogManager),
           /*ElevatedButton(onPressed: () {
             Navigator.push(
               context,
@@ -247,9 +252,8 @@ class _LudoHomeScreenState extends ConsumerState<LudoHomeScreen> {
     );
   }
 
-  void _handleGameSelection(int playerCount, GameMode mode) {
+  void _handleGameSelection(int playerCount, GameMode mode, DialogManager dialogManager) {
     if(mode == GameMode.online){
-      final dialogManager = ref.read(dialogManagerProvider.notifier);
       final String gameCode = generateStrings(6);
 
       dialogManager.showDialog(
@@ -282,10 +286,12 @@ class _LudoHomeScreenState extends ConsumerState<LudoHomeScreen> {
 
     if ((playerCount == 2 || playerCount == 3) && teamPlay && !enabledRobots) {
       debugPrint("Game start: mumber player: $playerCount - robot: $enabledRobots");
-      acceptDialog(
-        context,
-          'ludo_home_screen_guide_title'.tr,
-          'ludo_game_start_guide'.tr
+      dialogManager.showDialog(
+        dialog: AcceptDialogWidget(
+          title: 'ludo_home_screen_guide_title'.tr,
+          message: 'ludo_game_start_guide'.tr,
+          onOk: () => dialogManager.closeDialog(AppDialogIds.acceptDialog)
+        ),
       );
       return;
     }
@@ -335,9 +341,12 @@ class _LudoHomeScreenState extends ConsumerState<LudoHomeScreen> {
   }
 
 
-  Widget _buildGameTypeContainer(int playerCount, Color color, GameMode mode) {
+  Widget _buildGameTypeContainer(
+      int playerCount, Color color,
+      GameMode mode,
+      DialogManager dialogManager) {
     return GestureDetector(
-      onTap: () => _handleGameSelection(playerCount, mode),
+      onTap: () => _handleGameSelection(playerCount, mode, dialogManager),
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,

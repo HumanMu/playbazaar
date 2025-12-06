@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/utils.dart';
+import 'package:playbazaar/global_widgets/buttons/primary_button.dart';
 import '../../../../global_widgets/rarely_used/text_2_copy.dart';
+import '../../../../helper/sharedpreferences/sharedpreferences.dart';
 
 class OnlineGameOptionsDialog extends StatefulWidget {
   final Function(String gameCode) onJoinGame;
@@ -34,6 +36,10 @@ class _OnlineGameOptionsDialogState extends State<OnlineGameOptionsDialog> {
   final TextEditingController _codeController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _isJoinMode = true;
+  String savedCode = '';
+  bool isRetrivedClicked = false;
+
+
 
   @override
   void dispose() {
@@ -52,6 +58,24 @@ class _OnlineGameOptionsDialogState extends State<OnlineGameOptionsDialog> {
 
   void _handleCreateGame() {
     widget.onCreateGame();
+  }
+
+  Future<void> _retriveSavedGameCode() async {
+    String? code = await SharedPreferencesManager.getString(
+        SharedPreferencesGameKeys.ludoLatestGameCode);
+
+    if(code != null){
+      setState(() {
+        savedCode = code;
+        isRetrivedClicked = true;
+      });
+    }
+    else{
+      setState(() {
+        isRetrivedClicked = true;
+        savedCode = 'code_not_found'.tr;
+      });
+    }
   }
 
   String? _validateGameCode(String? value) {
@@ -82,6 +106,7 @@ class _OnlineGameOptionsDialogState extends State<OnlineGameOptionsDialog> {
             _buildHeader(),
             const SizedBox(height: 24),
             _buildToggleButtons(),
+            _retriveSavedCode(),
             const SizedBox(height: 24),
             _buildContent(),
             const SizedBox(height: 24),
@@ -90,6 +115,23 @@ class _OnlineGameOptionsDialogState extends State<OnlineGameOptionsDialog> {
         ),
       ),
     );
+  }
+
+  Widget _retriveSavedCode() {
+    return Container(
+      padding: const EdgeInsets.all(2),
+      child: PrimaryButton(
+        onPressed: () => _retriveSavedGameCode(),
+        text: savedCode.isEmpty ? 'retrieve_saved_code'.tr : savedCode,
+        backgroundColor: Colors.white,
+        borderColor: !isRetrivedClicked? Colors.black : getClickedColor(),
+        textColor: !isRetrivedClicked? Colors.black : getClickedColor(),
+      ),
+    );
+  }
+
+  Color getClickedColor() {
+    return (savedCode == 'code_not_found'.tr)? Colors.red : Colors.green;
   }
 
   Widget _buildHeader() {

@@ -111,6 +111,9 @@ class LocalStringsDa extends Translations {
       "red_yellow_winner": "Rød & Gul Hold vinder!",
       "green_blue_winner": "Grøn & Blå Hold vinder!",
       "game_over": "SPILLET ER SLUT",
+      "save_the_game": "Gem spillet",
+      "game_saved_succesfully": "Dit spil er gemt. Du kan forlade det og vende tilbage, når det passer dig.",
+
 
 
       //Personal information
@@ -280,6 +283,7 @@ class LocalStringsDa extends Translations {
 
 
       //Message
+      "looking_for_update": "Søger efter opdateringer...",
       'leaving_group': 'Er du sikker på, at du vil forlade gruppen?',
       'leaving_group_succed': 'Du har forladt gruppen succesfuldt',
       'group_membership_succed': 'Dit medlemskab blev godkendt',
@@ -338,6 +342,10 @@ class LocalStringsDa extends Translations {
       'failed_to_accept_friend_request': 'Kunne ikke acceptere venneanmodning',
       'adding_word_succed': 'Tilføjelse af nye ord lykkedes',
       'reading_your_profile': 'Læser din profil...',
+      "processing": "Behandler...",
+      "retrieve_saved_code": "Hent gemt kode",
+      "code_not_found": "Kunne ikke finde nogen kode",
+      "leave_online_ludo_descriptin": "Er du sikker på, at du vil forlade spillet?\n\nHvis du trykker Ja, bliver du fjernet fra spillet, og al din fremgang bliver slettet. Hvis du og dit hold ønsker at gemme spillet og fortsætte senere, skal du trykke Nej og derefter vælge 'Gem spillet' i menuen.",
 
 
       // Policy

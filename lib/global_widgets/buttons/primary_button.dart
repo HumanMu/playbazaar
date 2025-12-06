@@ -12,6 +12,9 @@ class PrimaryButton extends StatelessWidget {
   final Size? maxSize;
   final double? borderRadius;
 
+  final Color? borderColor;
+  final double? borderWidth;
+
   const PrimaryButton({
     super.key,
     required this.onPressed,
@@ -22,6 +25,8 @@ class PrimaryButton extends StatelessWidget {
     this.minSize,
     this.maxSize,
     this.borderRadius,
+    this.borderColor,
+    this.borderWidth
   });
 
   @override
@@ -33,6 +38,12 @@ class PrimaryButton extends StatelessWidget {
         maximumSize: maxSize,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(borderRadius ?? 10),
+          side: borderColor != null
+              ? BorderSide(
+            color: borderColor!,
+            width: borderWidth ?? 2.0,
+          )
+              : BorderSide.none,
         ),
       ),
       onPressed: onPressed,

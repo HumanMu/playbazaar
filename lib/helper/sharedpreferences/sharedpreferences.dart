@@ -75,6 +75,8 @@ class SharedPreferencesManager {
 // Game Keys
 class SharedPreferencesGameKeys {
   static const String wordConnectorUserLevel = "WORDCONNECTORPLAYINFO";
+  static const String ludoLatestGameCode = "LUDOLATESTGAMECODE";
+
 }
 
 class SharedPreferencesKeys {

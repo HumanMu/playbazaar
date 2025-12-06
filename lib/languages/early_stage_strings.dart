@@ -40,6 +40,7 @@ const Map<String, String> getTranslationArabic = {
   'loading_other_services': 'جارٍ تحميل الخدمات الأخرى...',
   'done': 'تم!',
   'error_retry': 'حدث خطأ - سنحاول مرة أخرى...',
+  "looking_for_update": "جارٍ البحث عن التحديثات...",
 };
 
 const Map<String, String> getTranslationDanish = {
@@ -59,6 +60,8 @@ const Map<String, String> getTranslationDanish = {
   'loading_other_services': 'Indlæser andre tjenester...',
   'done': 'Klart!',
   'error_retry': 'Fejl opstod - Vi prøver igen...',
+  "looking_for_update": "Søger efter opdateringer...",
+
 
 };
 
@@ -79,6 +82,7 @@ const Map<String, String> getTranslationEnglish = {
   'loading_other_services': 'Loading other services...',
   'done': 'Done!',
   'error_retry': 'An error occurred - Retrying...',
+  "looking_for_update": "Checking for updates...",
 
 };
 
@@ -99,6 +103,8 @@ const Map<String, String> getTranslationFarsi = {
   'loading_other_services': 'در حال بارگذاری سایر خدمات...',
   'done': 'انجام شد!',
   'error_retry': 'خطا رخ داد - دوباره تلاش می‌کنیم...',
+  "looking_for_update": "در حال جستجو برای به‌روزرسانی...",
+
 };
 
 

@@ -1,21 +1,24 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:playbazaar/global_widgets/dialog/accept_dialog.dart';
 import 'package:playbazaar/global_widgets/show_custom_snackbar.dart';
+import '../../constants/app_dialog_ids.dart';
 import '../../controller/user_controller/auth_controller.dart';
+import '../../core/dialog/dialog_listner.dart';
 import '../../services/push_notification_service/device_service.dart';
 
-class EmailVerificationPage extends StatefulWidget {
+class EmailVerificationPage extends ConsumerStatefulWidget {
   const EmailVerificationPage({super.key});
 
   @override
-  State<EmailVerificationPage> createState() => _EmailVerificationState();
+  ConsumerState<EmailVerificationPage> createState() => _EmailVerificationState();
 }
 
-class _EmailVerificationState extends State<EmailVerificationPage> {
+class _EmailVerificationState extends ConsumerState<EmailVerificationPage> {
   User? user = FirebaseAuth.instance.currentUser;
   final authController = Get.find<AuthController>();
 
@@ -55,7 +58,16 @@ class _EmailVerificationState extends State<EmailVerificationPage> {
   }
 
   Future<void> askForNotificationPermission()async {
-    acceptDialog(context, "notifications".tr, "notification_permission_description".tr);
+    final dialogManager = ref.read(dialogManagerProvider.notifier);
+    dialogManager.showDialog(
+        dialog: AcceptDialogWidget(
+            title: "notifications".tr,
+            message: "notification_permission_description".tr,
+            onOk: () => dialogManager.closeDialog(AppDialogIds.acceptDialog),
+
+        ),
+    );
+    //acceptDialog(context, "notifications".tr, "notification_permission_description".tr);
   }
 
   void startResendCooldown() {

@@ -6,7 +6,7 @@ class LocalStringsAr extends Translations {
   Map<String, Map<String, String>> get keys => {
     'ar_SA': {
       //appName
-      'app_name': 'بازار اللعب',
+      'app_name': 'پلی بازار',
       'notification_title': 'Play Bazaar',
       'language_shortcut': 'ar',
 
@@ -109,6 +109,8 @@ class LocalStringsAr extends Translations {
       "red_yellow_winner": "فريق الأحمر والأصفر يفوز!",
       "green_blue_winner": "فريق الأخضر والأزرق يفوز!",
       "game_over": "انتهت اللعبة",
+      "save_the_game": "حفظ اللعبة",
+      "game_saved_succesfully": "تم حفظ لعبتك. يمكنك المغادرة والعودة متى شئت.",
 
 
       //Personal information
@@ -279,7 +281,8 @@ class LocalStringsAr extends Translations {
       'fill_all_input_title': 'إرسال السؤال',
 
 
-      //Message
+      //Messages
+      "looking_for_update": "جارٍ البحث عن التحديثات...",
       'leaving_group': 'هل أنت متأكد من مغادرة المجموعة؟',
       'leaving_group_succed': 'لقد غادرت المجموعة بنجاح',
       'group_membership_succed': 'تمت الموافقة على عضويتك',
@@ -339,6 +342,10 @@ class LocalStringsAr extends Translations {
       'failed_to_accept_friend_request': 'فشل في قبول طلب الصداقة',
       'adding_word_succed': 'تمت إضافة الكلمات الجديدة بنجاح',
       'reading_your_profile': 'جارٍ قراءة ملفك الشخصي...',
+      "processing": "جارٍ المعالجة...",
+      "retrieve_saved_code": "استرجاع الكود المحفوظ",
+      "code_not_found": "لم يتم العثور على أي كود",
+      "leave_online_ludo_descriptin": "هل أنت متأكد أنك تريد المغادرة؟\n\nإذا ضغطت على نعم، سيتم إزالتك من اللعبة وسيتم حذف جميع تقدمك. إذا كنت أنت وفريقك ترغبون في حفظ اللعبة والعودة لاحقًا، فاضغط على لا ثم اختر «حفظ اللعبة» من القائمة.",
 
 
 

@@ -4,6 +4,7 @@ import '../../helper/sharedpreferences/sharedpreferences.dart';
 
 class LanguageController extends GetxController {
   RxList<String> currentLanguage = ['en', 'US'].obs;
+  RxBool hasNewUpdate = false.obs;
 
   final List<Map<String, dynamic>> supportedLanguages = [
     {'name': 'English', 'locale': const Locale('en', 'US')},

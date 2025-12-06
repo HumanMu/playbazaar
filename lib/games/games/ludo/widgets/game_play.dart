@@ -54,25 +54,6 @@ class _GamePlayState extends State<GamePlay> {
 
             return Stack(
               children: [
-                SafeArea(
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        gameController.gameMode == GameMode.online
-                            ? CustomSideMenu()
-                            : IconButton(
-                                onPressed: () {
-                                  gameController.showGameOverDialog();
-                                  context.go("/ludoHome");
-                                },
-                                icon: const Icon(
-                                  Icons.arrow_back,
-                                  color: Colors.red,
-                                ),
-                              ),
-                      ]
-                  ),
-                ),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -267,7 +248,26 @@ class _GamePlayState extends State<GamePlay> {
                           ),
                         )
                     )
-                )
+                ),
+                SafeArea(
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        gameController.gameMode == GameMode.online
+                            ? CustomSideMenu()
+                            : IconButton(
+                          onPressed: () {
+                            gameController.showGameOverDialog();
+                            context.go("/ludoHome");
+                          },
+                          icon: const Icon(
+                            Icons.arrow_back,
+                            color: Colors.red,
+                          ),
+                        ),
+                      ]
+                  ),
+                ),
               ],
             );
           }
